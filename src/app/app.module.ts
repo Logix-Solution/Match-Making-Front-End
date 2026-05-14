@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 
 import { LocationStrategy, HashLocationStrategy, DatePipe } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -31,8 +32,9 @@ import { EventGalleryComponent } from './event-gallery/event-gallery.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-      HttpClientModule,
-      BrowserAnimationsModule,  
+    HttpClientModule,
+    BrowserAnimationsModule,
+    FormsModule,  
 
      ToastrModule.forRoot({ // Configure toastr here
       timeOut: 3000,
