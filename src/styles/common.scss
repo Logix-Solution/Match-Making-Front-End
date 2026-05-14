@@ -1,0 +1,208 @@
+
+/////////////////////////////////page loader comoponent styles///////////////////////////////////
+
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loader-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 30px;
+  border-radius: 15px;
+  background: var(--white);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.spinner {
+  width: 45px;
+  height: 45px;
+  border: 5px solid var(--seconday-color);
+  border-top-color:  var(--spinner-color);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+  font-weight: 600;
+}
+
+
+
+/////////////////////////////////// How It Works Component styles///////////////////////////////////
+
+
+
+
+// Circle icon size only (Bootstrap handles the rest)
+.circle-icon {
+  width: 110px;
+  height: 110px;
+}
+
+// Step number badge size
+.step-badge {
+  width: 28px;
+  height: 28px;
+  font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid  var(--white);
+}
+
+
+
+.connector-line {
+  position: absolute;
+  top: 54px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 75%;   // col1-center to col4-center = 3 column-widths = 75% of row
+  height: 2px;
+  background-color: var(--maroon);
+  z-index: 0;
+}
+
+// Circles above the line
+.step-circle { z-index: 1; position: relative; }
+
+// KEY FIX: prevent horizontal overflow
+.how-it-works-section { overflow-x: hidden; }
+
+///////////////////////////////////////////////sucess stories component styles////////////////////////////////////
+
+
+.text-navy   { color: var(--navy); }
+
+.track-wrap {
+  overflow: hidden;
+  width: 100%;
+}
+
+.track {
+  display: flex;
+  gap: 24px;
+  transition: transform 0.6s ease;
+}
+
+.t-card {
+  flex: 0 0 calc(50% - 12px);   
+  border-radius: 20px;
+  background: var(--white);
+  padding: 32px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+}
+
+.quote-icon {
+  font-size: 48px;
+  line-height: 1;
+  color: var(--light-peach);
+  font-family: Georgia, serif;
+}
+
+.stars span { color: var(--orange); font-size: 18px; }
+
+.dots button {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: var(--light-peach);
+  padding: 0;
+  transition: background 0.3s, width 0.3s;
+  cursor: pointer;
+}
+
+.dots button.active {
+  background: var(--maroon);
+  width: 24px;
+  border-radius: 6px;
+}
+
+@media (max-width: 768px) {
+  .t-card {
+    flex: 0 0 100%;
+  }
+}
+///////////////////////////////////////////////event gallery component styles////////////////////////////////////
+
+.gallery-strip {
+  display: flex;
+  width: 100%;
+  height: 75vh;
+  min-height: 500px;
+  overflow: hidden;
+}
+
+.gallery-item {
+  flex: 1;                          // collapsed = equal share
+  transition: flex 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.8s ease;
+  }
+
+  // subtle zoom on active
+  &.active {
+    flex: 4;                        // expanded = 4x wider than collapsed
+
+    img {
+      transform: scale(1.03);
+    }
+  }
+
+  // dim non-active slightly
+  &:not(.active) img {
+    filter: brightness(0.75);
+    transition: filter 0.8s ease, transform 0.8s ease;
+  }
+}
+
+// Mobile: stack vertically
+@media (max-width: 768px) {
+  .gallery-strip {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .gallery-item {
+    flex: 1;
+    height: 120px;
+    transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &.active {
+      flex: unset;
+      height: 320px;
+    }
+  }
+}

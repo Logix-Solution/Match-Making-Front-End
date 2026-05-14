@@ -1,1 +1,75 @@
-/* You can add global styles to this file, and also import other style files */
+/////////////////////////////////////global styles////////////////////////
+@use 'ngx-toastr/toastr';
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import "./styles/common.scss";
+@import "./styles/icon.scss";    
+
+
+
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap');
+// Boostrap Icons//
+@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css');
+
+///////////////////////////////global font family////////////////////////
+
+html, body { height: 100%; }
+body { margin: 0;   font-family: 'Plus Jakarta Sans'  }
+
+* {
+  font-family: 'Plus Jakarta Sans';
+}
+
+
+
+////////////////////////global colors variables////////////////////////
+:root{
+   --maroon:#590117;
+   --light-pink:#F1CEB2;
+   --brown:#C84B31;
+   --light-peach:#F1CEB2;
+   --white: white;
+   --spinner-color:#3f51b5;
+   --navy:#0F172B;
+   --orange:#f59e0b;
+   --seconday-color:#ddd;
+}
+
+
+
+////////////////////////////variables classes////////////////////////
+.bg-maroon{
+    background-color: var(--maroon);
+}
+.text-maroon{
+    color: var(--maroon);
+}
+
+.bg-pink{
+    background-color: var(--light-pink);
+}
+.bg-brown{
+    background-color: var(--brown);
+}
+.text-color{
+    background-color: var(--light-peach);
+}
+.bg-white{
+    background-color: var(--white);
+}
+.text-white{
+    color: var(--white);
+}
+
+
+
+//////////////////////////////////////fonts////////////////////////////
+.custom-font{
+    font-family: 'Marcellus' !important ;
+    font-size: 36px !important;
+    color: var(--maroon) !important;
+    font-weight: 400 !important;
+    letter-spacing: 0% !important;
+}
+
+

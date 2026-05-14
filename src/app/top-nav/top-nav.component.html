@@ -1,0 +1,56 @@
+<nav class="navbar navbar-expand-lg bg-maroon py-2 px-3">
+  <div class="container-fluid">
+
+    <!-- LOGO -->
+    <div class="navbar-brand d-flex align-items-center websiteLogo text-decoration-none">
+      <!-- your logo/svg here -->
+    </div>
+
+    <!-- TOGGLER (mobile) -->
+    <button
+      class="navbar-toggler border-0 shadow-none"
+      type="button"
+      (click)="toggleNav()"
+      aria-label="Toggle navigation"
+      [attr.aria-expanded]="isNavOpen">
+      <span class="navbar-toggler-icon"
+        style="filter:invert(1) sepia(1) saturate(3) hue-rotate(310deg);">
+      </span>
+    </button>
+
+    <!-- NAV LINKS + BUTTONS -->
+    <div
+      class="navbar-collapse"
+      [class.collapse]="!isNavOpen"
+      id="mainNav">
+
+      <!-- Centre links -->
+       <div class="col-3"></div>
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-2 gap-xl-3 ">
+        <li class="nav-item">
+          <a class="nav-link text-white fw-normal px-2" href="#" routerLink="#">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white fw-normal px-2" href="#" routerLink="#">How It Works</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white fw-normal px-2" href="#" routerLink="#">Features</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white fw-normal px-2" href="#" routerLink="#">Success Stories</a>
+        </li>
+      </ul>
+
+      <!-- Right buttons -->
+      <div class="d-flex flex-column flex-lg-row gap-2 mt-3 mt-lg-0">
+        <button class="bg-pink rounded-pill px-4 py-1 fw-semibold" >
+          Log In
+        </button>
+        <button class="bg-pink rounded-pill px-4 py-1 fw-semibold" >
+          Sign Up
+        </button>
+      </div>
+
+    </div>
+  </div>
+</nav>

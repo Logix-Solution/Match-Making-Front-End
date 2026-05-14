@@ -1,0 +1,37 @@
+<section class="py-5 bg-light">
+  <div class="container">
+
+    <!-- Header -->
+    <div class="text-center mb-5">
+      <h2 class="fw-bold text-navy mb-2 custom-font">Real Stories, Happy Marriages</h2>
+      <p class="text-maroon fw-medium">Thousands Have Found Their Perfect Match</p>
+    </div>
+
+    <!-- Slider -->
+    <div class="track-wrap">
+      <div class="track" [style.transform]="translateX">
+        <div class="t-card" *ngFor="let t of testimonials">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="quote-icon">"</span>
+            <div class="stars"><span>★★★★★</span></div>
+          </div>
+          <p class="mb-4 text-secondary lh-base">"{{ t.quote }}"</p>
+          <div>
+            <div class="fw-bold text-dark">{{ t.name }}</div>
+            <div class="text-muted small">{{ t.year }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dots — 2 on desktop, 4 on mobile -->
+    <div class="dots d-flex justify-content-center align-items-center gap-2 mt-4">
+      <button
+        *ngFor="let s of (isMobile ? [0,1,2,3] : [0,1]); let i = index"
+        [class.active]="currentIndex === i"
+        (click)="goToSlide(i)">
+      </button>
+    </div>
+
+  </div>
+</section>
