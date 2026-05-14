@@ -12,11 +12,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TopNavComponent } from './top-nav/top-nav.component';
-import { HowItsWorksComponent } from './how-its-works/how-its-works.component';
+import { HowItsWorksComponent } from './home-page/how-its-works/how-its-works.component';
 import { PageLoaderComponent } from './page-loader/page-loader.component';
-import { AboutComponent } from './about/about.component';
-import { SucessStoriesComponent } from './sucess-stories/sucess-stories.component';
-import { EventGalleryComponent } from './event-gallery/event-gallery.component';
+import { AboutComponent } from './home-page/about/about.component';
+import { SucessStoriesComponent } from './home-page/sucess-stories/sucess-stories.component';
+import { EventGalleryComponent } from './home-page/event-gallery/event-gallery.component';
+import { HomePageComponent } from './home-page/home-page.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { EventGalleryComponent } from './event-gallery/event-gallery.component';
     AboutComponent,
     SucessStoriesComponent,
     EventGalleryComponent,
+    HomePageComponent,
   
   ],
   imports: [
