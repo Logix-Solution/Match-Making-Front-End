@@ -1,75 +1,93 @@
 /////////////////////////////////////global styles////////////////////////
-@use 'ngx-toastr/toastr';
+@use "ngx-toastr/toastr";
 @import "bootstrap/dist/css/bootstrap.min.css";
 @import "./styles/common.scss";
-@import "./styles/icon.scss";    
-
-
+@import "./styles/icon.scss";
 
 /* Google Font */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap");
 // Boostrap Icons//
-@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css');
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 
 ///////////////////////////////global font family////////////////////////
 
-html, body { height: 100%; }
-body { margin: 0;   font-family: 'Plus Jakarta Sans'  }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: "Plus Jakarta Sans";
+}
 
 * {
-  font-family: 'Plus Jakarta Sans';
+  font-family: "Plus Jakarta Sans";
 }
-
-
 
 ////////////////////////global colors variables////////////////////////
-:root{
-   --maroon:#590117;
-   --light-pink:#F1CEB2;
-   --brown:#C84B31;
-   --light-peach:#F1CEB2;
-   --white: white;
-   --spinner-color:#3f51b5;
-   --navy:#0F172B;
-   --orange:#f59e0b;
-   --seconday-color:#ddd;
+:root {
+  --primary: #590117; //maroon
+  --secondary: #c84b31; // brown
+  --third: #f59e0b; // orange
+
+  --bg-primary: #f1ceb2; //light-peach
+  --bg-secondary: #fcfcfc; //seconday-color
+  --bg-third: white; // white
+  --spinner-color: #3f51b5; //nspinner-color
+  --text-primary: #4a5568;
+  --text-secondary: #0f172b; //navy
 }
-
-
 
 ////////////////////////////variables classes////////////////////////
-.bg-maroon{
-    background-color: var(--maroon);
-}
-.text-maroon{
-    color: var(--maroon);
+//bg-maroon
+.bg-primary {
+  background-color: var(--primary) !important;
 }
 
-.bg-pink{
-    background-color: var(--light-pink);
-}
-.bg-brown{
-    background-color: var(--brown);
-}
-.text-color{
-    background-color: var(--light-peach);
-}
-.bg-white{
-    background-color: var(--white);
-}
-.text-white{
-    color: var(--white);
+//bg-brown
+.bg-secondary {
+  background-color: var(--secondary);
 }
 
+//bg-white
+.bg-third {
+  background-color: var(--bg-third);
+}
 
+.bg-fourth {
+  background-color: var(--bg-secondary);
+}
+
+//text-navy
+.txt-primary {
+  color: var(--text-primary);
+}
+
+//text-maroon
+.txt-secondary {
+  color: var(--primary);
+}
+
+//text-color
+.txt-third {
+  background-color: var(--bg-primary);
+}
+
+//text-white
+.txt-fourth {
+  color: var(--bg-third);
+}
+
+//text-fifth
+.txt-fifth {
+  color: var(--text-secondary);
+}
 
 //////////////////////////////////////fonts////////////////////////////
-.custom-font{
-    font-family: 'Marcellus' !important ;
-    font-size: 36px !important;
-    color: var(--maroon) !important;
-    font-weight: 400 !important;
-    letter-spacing: 0% !important;
+.custom-font {
+  font-family: "Marcellus" !important ;
+  font-size: 36px !important;
+  color: var(--primary) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0% !important;
 }
-
-
