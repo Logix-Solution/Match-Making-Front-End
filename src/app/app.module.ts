@@ -18,6 +18,7 @@ import { AboutComponent } from './home-page/about/about.component';
 import { SucessStoriesComponent } from './home-page/sucess-stories/sucess-stories.component';
 import { EventGalleryComponent } from './home-page/event-gallery/event-gallery.component';
 import { HomePageComponent } from './home-page/home-page.component';
+import { ClientProfileComponent } from './profile/client-profile/client-profile/client-profile.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { HomePageComponent } from './home-page/home-page.component';
     SucessStoriesComponent,
     EventGalleryComponent,
     HomePageComponent,
+    ClientProfileComponent,
   
   ],
   imports: [
