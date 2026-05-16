@@ -3,6 +3,7 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 @import "./styles/common.scss";
 @import "./styles/icon.scss";
+@import "./styles/animate.min.css";
 
 /* Google Font */
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap");
@@ -49,16 +50,20 @@ body {
 
 //bg-brown
 .bg-secondary {
-  background-color: var(--secondary);
+  background-color: var(--secondary) !important;
 }
 
 //bg-white
 .bg-third {
-  background-color: var(--bg-third);
+  background-color: var(--bg-third) !important;
 }
 
 .bg-fourth {
   background-color: var(--bg-secondary);
+}
+
+.bg-fifth {
+  background-color: var(--bg-primary) !important;
 }
 
 //text-navy

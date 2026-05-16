@@ -1,76 +1,98 @@
-.websiteLogo{
-    background: url('../assets/images/websiteLogo.svg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    // height: 32px;
-    // width: 141px;
-    width: 276.53515625px;
-    height: 45px;
-// top: 16px;
-// left: 50px;
-opacity: 1;
-//  border-radius: 8px;  
+.websiteLogo {
+  background: url("../assets/images/websiteLogo.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  // height: 32px;
+  // width: 141px;
+  width: 276.53515625px;
+  height: 45px;
+  // top: 16px;
+  // left: 50px;
+  opacity: 1;
+  //  border-radius: 8px;
 }
 
-.bg{
-    background: url('../assets/images/bgflower.png');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-   
-    // width: 1445px;
-    // height: 728px;
+.bg {
+  background: url("../assets/images/bgflower.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  // width: 1445px;
+  // height: 728px;
 }
 
-.aboutus{
-    background: url('../assets/images/aboutus.svg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-   
-    // width: 1445px;
-    // height: 728px;
+.aboutus {
+  background: url("../assets/images/aboutus.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  // width: 1445px;
+  // height: 728px;
 }
 
+.discoverIcon {
+  background: url("../assets/icons/discover.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 
-.discoverIcon{
-    background: url('../assets/icons/discover.svg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-  
-   width:  40px;
-    height: 40px;
-
+  width: 40px;
+  height: 40px;
 }
-.profileIcon{
-    background: url('../assets/icons/profile.svg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-   
-    width:  40px;
-    height: 40px;
+.profileIcon {
+  background: url("../assets/icons/profile.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 
+  width: 40px;
+  height: 40px;
 }
-.searchPresenceIcon{
-    background: url('../assets/icons/searchPreferences.svg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+.searchPresenceIcon {
+  background: url("../assets/icons/searchPreferences.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 
-     width:  40px;
-    height: 40px;
-
+  width: 40px;
+  height: 40px;
 }
-.securelyConnectIcon{
-    background: url('../assets/icons/securely.svg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
- 
-    width:  40px;
-    height: 40px;
+.securelyConnectIcon {
+  background: url("../assets/icons/securely.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 
+  width: 40px;
+  height: 40px;
+}
+.locationPinIcon {
+  background: url("../assets/icons/locationPin.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  width: 17px;
+  height: 17px;
+}
+.occupationIcon {
+  background: url("../assets/icons/occupation.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  width: 17px;
+  height: 17px;
+}
+.profile-statusIcon {
+  background: url("../assets/icons/profile-status.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  width: 17px;
+  height: 17px;
 }

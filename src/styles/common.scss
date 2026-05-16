@@ -208,6 +208,15 @@ p {
   }
 }
 
+/////////////////////////// Image container designs //////////////////////
+.client-profile-img {
+  width: 8em;
+  height: 8em;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px dashed var(--primary);
+}
+
 /***********************************/
 /******** Font Size & Style ********/
 /***********************************/
@@ -222,7 +231,10 @@ p {
 }
 .fh-5 {
   font-size: 18px !important;
-  font-weight: 400 !important;
+}
+.fh-6 {
+  font-size: 16px !important;
+  font-weight: 600 !important;
 }
 
 //normal text
@@ -232,12 +244,18 @@ p {
 .ft-2 {
   font-size: 16px !important;
 }
+.ft-3 {
+  font-size: 14px !important;
+}
 //line-heights
 .lh-40 {
   line-height: 40px !important;
 }
 .lh-28 {
   line-height: 28px !important;
+}
+.lh-15 {
+  line-height: 15px !important;
 }
 
 /********************************************************/
@@ -302,3 +320,30 @@ p {
 }
 
 /*************** end Scroll bar ****************/
+
+/***********************************************/
+/*************** Buttons Styles ****************/
+/***********************************************/
+.btnPrimary {
+  // position: fixed;
+  right: 0;
+  height: 2.5em;
+  padding: 0px 15px 0px !important;
+  // width: 6em;
+  min-width: 8em;
+  background-color: var(--secondary) !important;
+  color: var(--bg-third) !important;
+  border-radius: 8px !important;
+  border: 0px solid transparent !important;
+  font-size: 1em !important;
+}
+.btnPrimary:hover {
+  animation: headShake;
+  animation-duration: 1s;
+}
+.btnPrimary:active {
+  animation: rubberBand;
+  animation-duration: 1s;
+}
+
+/******************* end button styles *********************/
