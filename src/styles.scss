@@ -31,15 +31,15 @@ body {
 ////////////////////////global colors variables////////////////////////
 :root {
   --primary: #590117; //maroon
-  --secondary: #c84b31; // brown
-  --third: #f59e0b; // orange
+  --2nd: #c84b31; // brown // secondary
+  --3rd: #f59e0b; // orange // third
 
-  --bg-primary: #f1ceb2; //light-peach
-  --bg-secondary: #ebebeb; //seconday-color
-  --bg-third: white; // white
+  --4th: #f1ceb2; //light-peach //bg-primary
+  --5th: #ebebeb; //seconday-color // bg-secondary
+  --6th: white; // white // bg-third
   --spinner-color: #3f51b5; //nspinner-color
-  --text-primary: #4a5568;
-  --text-secondary: #0f172b; //navy
+  --7th: #4a5568; // text-primary
+  --8th: #0f172b; //navy // text-secondary
 }
 
 ////////////////////////////variables classes////////////////////////
@@ -49,46 +49,74 @@ body {
 }
 
 //bg-brown
-.bg-secondary {
-  background-color: var(--secondary) !important;
+.bg-2nd {
+  background-color: var(--2nd) !important;
 }
 
 //bg-white
-.bg-third {
-  background-color: var(--bg-third) !important;
+.bg-3rd {
+  background-color: var(--3rd) !important;
 }
 
-.bg-fourth {
-  background-color: var(--bg-secondary);
+.bg-4th {
+  background-color: var(--4th);
 }
 
-.bg-fifth {
-  background-color: var(--bg-primary) !important;
+.bg-5th {
+  background-color: var(--5th) !important;
+}
+
+.bg-6th {
+  background-color: var(--6th) !important;
+}
+
+.bg-7th {
+  background-color: var(--7th) !important;
+}
+
+.bg-8th {
+  background-color: var(--8th) !important;
 }
 
 //text-navy
 .txt-primary {
-  color: var(--text-primary);
+  color: var(--primary) !important;
 }
 
 //text-maroon
-.txt-secondary {
-  color: var(--primary);
+.txt-2nd {
+  color: var(--2nd);
 }
 
 //text-color
-.txt-third {
-  background-color: var(--bg-primary);
+.txt-3rd {
+  background-color: var(--3rd);
 }
 
 //text-white
-.txt-fourth {
-  color: var(--bg-third);
+.txt-4th {
+  color: var(--4th);
 }
 
 //text-fifth
-.txt-fifth {
-  color: var(--text-secondary);
+.txt-5th {
+  color: var(--5th);
+}
+
+.txt-6th {
+  color: var(--6th);
+}
+
+.txt-7th {
+  color: var(--7th);
+}
+
+.txt-8th {
+  color: var(--8th);
+}
+
+.justify-text {
+  text-align: justify !important;
 }
 
 //////////////////////////////////////fonts////////////////////////////
