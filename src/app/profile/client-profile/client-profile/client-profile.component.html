@@ -74,5 +74,21 @@
   </div>
 
   <!-- details -->
-  <div>detail row</div>
+  <div class="row px-4 mt-3">
+    <div class="col-md-3 px-4">
+      <div class="bg-6th rounded-3 p-3 mat-elevation-z2">
+        <div class="fh-6 pb-2 d-flex flex-row gap-2 txt-8th">
+          <span class="personIcon"></span>
+          About Me
+        </div>
+        <div
+          *ngFor="let item of personalInfoList"
+          class="d-flex flex-row justify-content-between py-1"
+        >
+          <div class="ft-4">{{ item.description }}</div>
+          <div class="ft-4">{{ item.value }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
