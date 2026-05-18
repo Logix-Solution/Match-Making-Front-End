@@ -1,0 +1,164 @@
+
+// ── Section ───────────────────────────────────────────────────────────────────
+.hero-section {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+// ── Background crossfade layers ───────────────────────────────────────────────
+.hero-bg-layer {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 1.2s ease-in-out;
+  z-index: 0;
+
+  &.active {
+    opacity: 1;
+  }
+}
+
+// ── Dark overlay ──────────────────────────────────────────────────────────────
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1;
+}
+
+// ── Content wrapper ───────────────────────────────────────────────────────────
+.hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding-top: 80px;
+  padding-bottom: 80px;
+}
+
+.min-vh-content {
+  min-height: 80vh;
+}
+
+// ── Headline ──────────────────────────────────────────────────────────────────
+.hero-title {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.25;
+  max-width: 640px;
+}
+
+.txt-highlight {
+  color: var(--2nd); 
+}
+
+// ── Couples strip ─────────────────────────────────────────────────────────────
+.couples-strip {
+  display: flex;
+  align-items: center;
+}
+
+.avatars-stack {
+  position: relative;
+  width: 130px;   // 4 avatars × 22px offset + 44px avatar width
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.couple-avatar {
+  position: absolute;
+  top: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  transition: opacity 0.5s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.couples-count {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--2nd);
+}
+
+.couples-sub {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+// ── Tagline ───────────────────────────────────────────────────────────────────
+.hero-tagline {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.88);
+  font-weight: 400;
+  margin-top: 1rem;
+}
+
+// ── Heart card (right side) ───────────────────────────────────────────────────
+.heart-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+
+  &.heart-visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.heart-img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50% 50% 50% 0;   // heart-like shape
+  border: 3px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.heart-caption {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 200px;
+}
+
+// ── Heartbeat animation ───────────────────────────────────────────────────────
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14%       { transform: scale(1.1); }
+  28%       { transform: scale(1); }
+  42%       { transform: scale(1.08); }
+  70%       { transform: scale(1); }
+}
+
+// ── Responsive ────────────────────────────────────────────────────────────────
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 1.6rem;
+  }
+
+  .heart-card {
+    display: none; // hide on small screens to avoid clutter
+  }
+
+  .hero-content {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}

@@ -1,0 +1,42 @@
+// Input focus states
+.form-control {
+  &:focus {
+    border-color: #6b1a52 !important;
+    box-shadow: 0 0 0 0.2rem rgba(107, 26, 82, 0.15) !important;
+  }
+}
+
+// Card shadow
+.shadow-lg {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+// Cursor pointer
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+// Close button
+.btn-close {
+  filter: invert(1);
+  color: black;
+  
+  &:hover {
+    opacity: 1 !important;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 576px) {
+  .bgLogin {
+    background-attachment: scroll;
+  }
+
+  .rounded-4 {
+    border-radius: 1rem !important;
+  }
+
+  .p-4 {
+    padding: 1.5rem !important;
+  }
+}

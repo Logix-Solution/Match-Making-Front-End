@@ -1,0 +1,84 @@
+<div class="container-xl matching-section py-4">
+
+  <!-- ── Static grid: 6 or fewer profiles ─────────────────────────────── -->
+  <ng-container *ngIf="!useSlider; else sliderMode">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      <div class="col" *ngFor="let profile of profiles">
+        <ng-container *ngTemplateOutlet="profileCard; context: { $implicit: profile }"></ng-container>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- ── Pure Angular slider: more than 6 profiles ─────────────────────── -->
+  <ng-template #sliderMode>
+    <div class="slider-viewport">
+      <div class="slider-track" [style.transform]="translateX">
+        <div class="slider-page" *ngFor="let chunk of slideChunks">
+          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class="col" *ngFor="let profile of chunk">
+              <ng-container *ngTemplateOutlet="profileCard; context: { $implicit: profile }"></ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dots -->
+    <div class="slider-dots mt-4">
+      <button
+        *ngFor="let chunk of slideChunks; let i = index"
+        class="dot"
+        [class.active]="i === currentIndex"
+        (click)="goToSlide(i)"
+        [attr.aria-label]="'Go to slide ' + (i + 1)"
+      ></button>
+    </div>
+  </ng-template>
+</div>
+
+<!-- ── Reusable card template ─────────────────────────────────────────────── -->
+<ng-template #profileCard let-profile>
+  <div class="profile-card h-100">
+
+    <!-- Avatar -->
+    <div class="avatar-wrapper">
+      <img [src]="profile.avatar" [alt]="profile.name" class="avatar-img" />
+    </div>
+
+    <!-- Body -->
+    <div class="card-body-content">
+      <h5 class="profile-name">{{ profile.name }}</h5>
+      <p class="profile-gender">{{ profile.gender }}</p>
+
+      <!-- Age | Height | Marital Status -->
+      <div class="profile-meta">
+        <span class="meta-item">
+          <i class="ageIcon meta-icon"></i>
+          {{ profile.age }}
+        </span>
+        <span class="meta-item">
+          <i class="heightIcon meta-icon"></i>
+          {{ profile.height }}
+        </span>
+        <span class="meta-item">
+          <i class="profile-statusIcon meta-icon"></i>
+          {{ profile.maritalStatus }}
+        </span>
+      </div>
+
+      <!-- Location & Profession -->
+      <div class="profile-details">
+        <div class="profile-detail">
+          <i class="locationPinIcon detail-icon"></i>
+          <span>{{ profile.location }}</span>
+        </div>
+        <div class="profile-detail">
+          <i class="occupationIcon detail-icon"></i>
+          <span>{{ profile.profession }}</span>
+        </div>
+      </div>
+
+      <button class="btn w-100 mt-3 view-btn">View Profile</button>
+    </div>
+  </div>
+</ng-template>

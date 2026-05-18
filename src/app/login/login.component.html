@@ -1,0 +1,138 @@
+<!-- Full Screen Background -->
+<div class="bgLogin min-vh-100 d-flex align-items-center justify-content-end p-3 position-relative">
+  
+  
+
+  <!-- Login Card Container -->
+  <div class="container">
+    <div class="row justify-content-end">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4">
+        
+        <!-- Login Card -->
+        <div class="bg-white rounded-4 shadow-lg p-4 p-md-5" style="max-width: 550px; margin: 0 auto;">
+
+                           <!-- Close Button (Top Right) -->
+  <button class="btn-close    position-absolute top-0 end-0 m-3 m-md-4" 
+          (click)="closeModal()"
+          style=" z-index: 10; "
+          aria-label="Close"></button>
+          
+          <!-- Logo -->
+          <div class="text-center mb-4">
+
+            <div class=" mb-3" style="height: 80px; display: flex; align-items: center; justify-content: center;">
+              <!-- Replace with your logo -->
+              <img src="../../assets/images/loginLogo.svg" 
+              
+                   alt="Muslim Matchmaking" 
+                   class="img-fluid"
+                   style="max-height: 100%; max-width: 100%;">
+            </div>
+            <p class="text-muted mb-0" style="font-size: 0.95rem; font-family: 'Inter', sans-serif;">
+              Sign in to continue your journey
+            </p>
+          </div>
+
+          <!-- Google Sign In Button -->
+          <button class="btn btn-outline-secondary w-100 rounded-pill py-3 mb-3 d-flex align-items-center justify-content-center gap-2" 
+                  (click)="signInWithGoogle()"
+                  style="font-family: 'Inter', sans-serif; font-size: 0.95rem;">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+                 alt="Google" 
+                 width="20" 
+                 height="20">
+            Continue with Google
+          </button>
+
+          <!-- Divider -->
+          <div class="d-flex align-items-center my-4">
+            <hr class="flex-grow-1 border-top">
+            <span class="px-3 text-muted" style="font-size: 0.875rem; ">
+              Or continue with email
+            </span>
+            <hr class="flex-grow-1 border-top">
+          </div>
+
+          <!-- Email Address -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold mb-2" 
+                   style="font-size: 0.875rem;  color: #1a1a1a;">
+              Email Address
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0" style="border-color: #e5e7eb;">
+                <i class="bi bi-envelope text-muted"></i>
+              </span>
+              <input type="email" 
+                     class="form-control border-start-0 ps-0" 
+                     placeholder="your@email.com"
+                     [(ngModel)]="email"
+                     (keyup.enter)="login()"
+                     style="border-color: #e5e7eb; background-color: #f9fafb; ">
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold mb-2" 
+                   style="font-size: 0.875rem; font-family: 'Inter', sans-serif; color: #1a1a1a;">
+              Password
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0" style="border-color: #e5e7eb;">
+                <i class="bi bi-lock text-muted"></i>
+              </span>
+              <input [type]="hidePassword ? 'password' : 'text'" 
+                     class="form-control border-start-0 border-end-0 ps-0" 
+                     placeholder="Enter your password"
+                     [(ngModel)]="password"
+                     (keyup.enter)="login()"
+                     style="border-color: #e5e7eb; background-color: #f9fafb; ">
+              <span class="input-group-text bg-light border-start-0 cursor-pointer" 
+                    (click)="togglePasswordVisibility()"
+                    style="border-color: #e5e7eb; cursor: pointer;">
+                <i [class]="hidePassword ? 'bi bi-eye-slash text-muted' : 'bi bi-eye text-muted'"></i>
+              </span>
+            </div>
+          </div>
+
+          <!-- Forgot Password -->
+          <div class="text-end mb-4">
+            <a class="txt-primary text-decoration-none cursor-pointer" 
+               (click)="goToForgotPassword()"
+               style="font-size: 0.875rem;  cursor: pointer;">
+              Forgot Password?
+            </a>
+          </div>
+
+          <!-- Sign In Button -->
+          <button class="btn bg-primary text-white w-100 rounded-pill py-3 fw-semibold mb-3" 
+                  (click)="login()"
+                  [disabled]="isLoading"
+                  style="font-family: 'Inter', sans-serif; font-size: 1rem;">
+            <span *ngIf="!isLoading">Sign In</span>
+            <span *ngIf="isLoading" class="d-flex align-items-center justify-content-center gap-2">
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              Signing In...
+            </span>
+          </button>
+
+          <!-- Sign Up Link -->
+          <div class="text-center">
+            <span class="text-muted" style="font-size: 0.875rem; font-family: 'Inter', sans-serif;">
+              Don't have an account? 
+            </span>
+            <a class="txt-primary text-decoration-none fw-semibold cursor-pointer ms-1" 
+               (click)="goToSignUp()"
+               style="font-size: 0.875rem; font-family: 'Inter', sans-serif; cursor: pointer;">
+              Create Account
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>

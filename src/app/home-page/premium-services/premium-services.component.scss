@@ -1,0 +1,57 @@
+// Variables
+$animation-duration: 300ms;
+$animation-timing: ease-in;
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+// Background Card Styling
+.service-card {
+  height: 280px;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+
+  .card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 60%, rgba(0, 0, 0, 0) 100%);
+  }
+}
+
+// Custom Modal Overlay with Dissolve Animation
+.custom-modal-backdrop {
+  z-index: 1050;
+  background-color: rgba(0, 0, 0, 0.65);
+  
+  // Dissolve (Fade-in) configurations
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity #{$animation-duration} #{$animation-timing}, 
+              visibility #{$animation-duration} #{$animation-timing};
+
+  &.show {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+// Modal Windows Structure
+.modal-window {
+  width: 90%;
+  max-width: 850px;
+  transform: scale(0.95);
+  transition: transform #{$animation-duration} #{$animation-timing};
+}
+
+.custom-modal-backdrop.show .modal-window {
+  transform: scale(1);
+}

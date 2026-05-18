@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 import { LocationStrategy, HashLocationStrategy, DatePipe } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -19,6 +20,12 @@ import { SucessStoriesComponent } from './home-page/sucess-stories/sucess-storie
 import { EventGalleryComponent } from './home-page/event-gallery/event-gallery.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { ClientProfileComponent } from './profile/client-profile/client-profile/client-profile.component';
+import { LoginComponent } from './login/login.component';
+import { FooterComponent } from './home-page/footer/footer.component';
+import { PremiumServicesComponent } from './home-page/premium-services/premium-services.component';
+import { FindYourMatchComponent } from './home-page/find-your-match/find-your-match.component';
+import { MatchingProfileComponent } from './home-page/find-your-match/matching-profile/matching-profile.component';
+import { HeroSectionComponent } from './home-page/hero-section/hero-section.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +38,12 @@ import { ClientProfileComponent } from './profile/client-profile/client-profile/
     EventGalleryComponent,
     HomePageComponent,
     ClientProfileComponent,
+    LoginComponent,
+    FooterComponent,
+    PremiumServicesComponent,
+    FindYourMatchComponent,
+    MatchingProfileComponent,
+    HeroSectionComponent,
   
   ],
   imports: [
@@ -39,6 +52,7 @@ import { ClientProfileComponent } from './profile/client-profile/client-profile/
     HttpClientModule,
     BrowserAnimationsModule,
     FormsModule,  
+    NgSelectModule,
 
      ToastrModule.forRoot({ // Configure toastr here
       timeOut: 3000,

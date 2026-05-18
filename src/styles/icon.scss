@@ -23,6 +23,26 @@
   // height: 728px;
 }
 
+
+.bgLogin {
+  background: url("../assets/images/loginBackground.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  // width: 1445px;
+  // height: 728px;
+}
+
+.matching-profile-bg {
+  background: url("../assets/images/findYourMatch.png");
+  background-repeat: no-repeat;
+  // background-size: cover;
+  background-position: center;
+
+  // width: 1445px;
+  // height: 728px;
+}
 .aboutus {
   background: url("../assets/images/aboutus.svg");
   background-repeat: no-repeat;
@@ -98,6 +118,26 @@
 }
 .personIcon {
   background: url("../assets/icons/person.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  width: 17px;
+  height: 17px;
+}
+
+.ageIcon {
+  background: url("../assets/icons/birthday-cakeicon.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  width: 17px;
+  height: 17px;
+}
+
+.heightIcon {
+  background: url("../assets/icons/height_rulericon.svg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
