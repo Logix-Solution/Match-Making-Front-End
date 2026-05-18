@@ -1,0 +1,160 @@
+
+///////////////////////add in coommon scss///
+
+
+.lh-26 {
+  line-height: 26px !important;
+}
+
+
+// Footer Links Hover Effects
+.footer-link {
+  position: relative;
+  display: inline-block;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #FFFFFF;
+    transition: width 0.3s ease;
+  }
+
+  &:hover {
+    color: #FFFFFF !important;
+    transform: translateX(5px);
+
+    &::after {
+      width: 100%;
+    }
+  }
+}
+
+// Footer Email Hover
+.footer-email {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #FFFFFF;
+    transition: width 0.3s ease;
+  }
+
+  &:hover {
+    color: #FFFFFF !important;
+    transform: translateX(5px);
+
+    &::before {
+      width: 100%;
+    }
+
+    i {
+      animation: bounce 0.6s ease;
+    }
+  }
+}
+
+// Heading Animation on Hover
+.footer-heading {
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    text-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+  }
+}
+
+// Tagline Fade Effect
+.footer-tagline {
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #FFFFFF !important;
+  }
+}
+
+// Border Bottom Animation
+.border-bottom {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #FFFFFF, transparent);
+    transition: width 0.6s ease;
+  }
+
+  &:hover::after {
+    width: 100%;
+  }
+}
+
+// Bounce Animation for Icons
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+// Fade In Animation for Links
+.footer-links {
+  li {
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+
+    @for $i from 1 through 10 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{$i * 0.1}s;
+      }
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive
+@media (max-width: 991px) {
+  .footer-heading {
+    font-size: 0.9rem !important;
+  }
+
+  .footer-link,
+  .footer-email {
+    font-size: 0.875rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .webLogo {
+    max-width: 200px !important;
+  }
+
+  .footer-tagline {
+    font-size: 0.875rem !important;
+  }
+}

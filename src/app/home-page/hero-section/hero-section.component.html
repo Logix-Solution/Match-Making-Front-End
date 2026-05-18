@@ -1,0 +1,67 @@
+<section class="hero-section">
+
+  <!-- ── Background layers (crossfade) ──────────────────────────────────── -->
+  <div class="hero-bg-layer"
+       *ngFor="let bg of bgImages; let i = index"
+       [style.backgroundImage]="'url(' + bg + ')'"
+       [class.active]="i === activeBg">
+  </div>
+
+  <!-- ── Dark overlay ───────────────────────────────────────────────────── -->
+  <div class="hero-overlay"></div>
+
+  <!-- ── Content ───────────────────────────────────────────────────────── -->
+  <div class="hero-content container-fluid px-5">
+    <div class="row align-items-center min-vh-content">
+
+      <!-- Left: headline + couples strip ─────────────────────────────── -->
+      <div class="col-lg-7 col-md-8">
+
+        <h1 class="hero-title">
+          Find Your Perfect
+          <span class="txt-highlight">Life Partner</span>
+          with Trusted Matchmaking
+        </h1>
+
+        <!-- Happy Couples strip -->
+        <div class="couples-strip d-flex align-items-center gap-3 mt-4">
+          <!-- Dynamic rotating avatars -->
+          <div class="avatars-stack">
+            <img
+              *ngFor="let avatar of visibleAvatars; let i = index"
+              [src]="avatar"
+              [style.z-index]="10 - i"
+              [style.left.px]="i * 22"
+              class="couple-avatar"
+              alt="happy couple" />
+          </div>
+
+          <div class="couples-text ms-4">
+            <p class="couples-count txt-2nd fw-700 mb-0">500+ Happy Couples</p>
+            <p class="couples-sub mb-0">Successfully matched and married</p>
+          </div>
+        </div>
+
+        <!-- Tagline -->
+        <p class="hero-tagline mt-4">
+          Discover Compatible Connections with Confidence
+        </p>
+      </div>
+
+      <!-- Right: heart couple card ─────────────────────────────────────── -->
+      <div class="col-lg-5 col-md-4 d-flex justify-content-end">
+        <div class="heart-card" [class.heart-visible]="heartVisible">
+          <img
+            [src]="heartImages[activeHeart]"
+            alt="couple"
+            class="heart-img" />
+          <p class="heart-caption">
+            Wishing you a lifetime filled with love,<br>
+            happiness, and endless togetherness.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

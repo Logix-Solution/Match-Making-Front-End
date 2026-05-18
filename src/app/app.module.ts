@@ -1,8 +1,13 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 
-import { LocationStrategy, HashLocationStrategy, DatePipe } from '@angular/common';
+import {
+  LocationStrategy,
+  HashLocationStrategy,
+  DatePipe,
+} from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LoaderInterceptor } from '../../src/shared/interceptors/loader.interceptor';
 import { AuthInterceptor } from '../../src/shared/interceptors/auth.interceptor';
@@ -20,6 +25,12 @@ import { EventGalleryComponent } from './home-page/event-gallery/event-gallery.c
 import { HomePageComponent } from './home-page/home-page.component';
 import { ClientProfileComponent } from './profile/client-profile/client-profile/client-profile.component';
 import { CreateProfileComponent } from './profile/create-profile/create-profile.component';
+import { LoginComponent } from './login/login.component';
+import { FooterComponent } from './home-page/footer/footer.component';
+import { PremiumServicesComponent } from './home-page/premium-services/premium-services.component';
+import { FindYourMatchComponent } from './home-page/find-your-match/find-your-match.component';
+import { MatchingProfileComponent } from './home-page/find-your-match/matching-profile/matching-profile.component';
+import { HeroSectionComponent } from './home-page/hero-section/hero-section.component';
 
 @NgModule({
   declarations: [
@@ -33,16 +44,23 @@ import { CreateProfileComponent } from './profile/create-profile/create-profile.
     HomePageComponent,
     ClientProfileComponent,
     CreateProfileComponent,
-  
+    LoginComponent,
+    FooterComponent,
+    PremiumServicesComponent,
+    FindYourMatchComponent,
+    MatchingProfileComponent,
+    HeroSectionComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    FormsModule,  
+    FormsModule,
+    NgSelectModule,
 
-     ToastrModule.forRoot({ // Configure toastr here
+    ToastrModule.forRoot({
+      // Configure toastr here
       timeOut: 3000,
       positionClass: 'toast-top-right',
       preventDuplicates: true,
@@ -51,9 +69,8 @@ import { CreateProfileComponent } from './profile/create-profile/create-profile.
     }),
   ],
   providers: [
-     { provide: LocationStrategy, useClass: HashLocationStrategy },
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
     DatePipe,
-
 
     {
       provide: HTTP_INTERCEPTORS,
@@ -66,6 +83,6 @@ import { CreateProfileComponent } from './profile/create-profile/create-profile.
       multi: true,
     },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
