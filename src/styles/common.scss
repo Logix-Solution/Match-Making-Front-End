@@ -265,6 +265,11 @@ p {
   line-height: 15px !important;
 }
 
+// letter spancing
+.ls-3 {
+  letter-spacing: 3px;
+}
+
 /********************************************************/
 /************** Scroll bar *************/
 /********************************************************/
@@ -338,11 +343,12 @@ p {
   padding: 0px 15px 0px !important;
   // width: 6em;
   min-width: 8em;
-  background-color: var(--2nd) !important;
+  background-color: var(--primary) !important;
   color: var(--6th) !important;
   border-radius: 8px !important;
   border: 0px solid transparent !important;
   font-size: 1em !important;
+  cursor: pointer !important;
 }
 .btnPrimary:hover {
   animation: headShake;
@@ -353,4 +359,36 @@ p {
   animation-duration: 1s;
 }
 
+.btn-6th {
+  // position: fixed;
+  right: 0;
+  height: 2.5em;
+  padding: 0px 15px 0px !important;
+  // width: 6em;
+  min-width: 8em;
+  background-color: var(--6th) !important;
+  color: var(--7th) !important;
+  border-radius: 8px !important;
+  border: 0px solid transparent !important;
+  font-size: 1em !important;
+  cursor: pointer !important;
+}
+.btn-6th:hover {
+  animation: headShake;
+  animation-duration: 1s;
+}
+.btn-6th:active {
+  animation: rubberBand;
+  animation-duration: 1s;
+}
 /******************* end button styles *********************/
+
+/******************************************/
+/*********** Bootstrap override ***********/
+/******************************************/
+.form-control:focus {
+  border-color: var(--2nd); /* border color */
+  box-shadow: 0 0 0 0.25rem rgba(200, 75, 49, 0.25); /* glow color */
+}
+
+/***************** end bootstrap override ****************/

@@ -58,7 +58,6 @@ import { HeroSectionComponent } from './home-page/hero-section/hero-section.comp
     BrowserAnimationsModule,
     FormsModule,
     NgSelectModule,
-
     ToastrModule.forRoot({
       // Configure toastr here
       timeOut: 3000,
