@@ -1,4 +1,4 @@
-<div class="container-fluid mx-4 d-flex flex-column h-100 no-scroll">
+<div class="container-fluid d-flex flex-column h-100 no-scroll">
   <!-- heading -->
   <div class="d-flex flex-column align-items-center mt-3">
     <div class="fh-4">Create Your Profile</div>
@@ -57,25 +57,160 @@
   </div>
 
   <!-- input row -->
-  <div class="flex-grow-1 scroll-verticle style-1 mt-3">
+  <div class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5">
     <!-- personal info -->
-    <div>
-      <div class="fh-5 fw-bold">Personal Information</div>
-      <div class="row mt-4">
-        <div class="col-md-4">
-          <div class="form-group">
-            <label for="exampleInputEmail1" class="txt-7th"
-              >Full Name (Cannot be changed once approved)<span class="txt-2nd"
-                >&nbsp;*</span
-              ></label
-            >
-            <input
-              type="text"
-              class="form-control form-control-sm mat-elevation-z1 mt-2"
-              aria-describedby="fullName"
-              placeholder="Enter your full name"
-            />
+
+    <div class="fh-5 fw-bold mt-3">Personal Information</div>
+    <div class="row mt-4">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="exampleInputEmail1" class="txt-7th ft-5"
+            >Full Name (Cannot be changed once approved)<span class="txt-2nd"
+              >&nbsp;*</span
+            ></label
+          >
+          <input
+            type="text"
+            class="form-control form-control-sm mt-2"
+            aria-describedby="fullName"
+            placeholder="Enter your full name"
+          />
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="gender" class="txt-7th ft-5"
+            >Gender<span class="txt-2nd">&nbsp;*</span></label
+          >
+          <select class="form-control form-control-sm mt-2" id="gender">
+            <option>Male</option>
+            <option>FeMale</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label class="txt-7th ft-5"
+            >Date of Birth (Cannot be changed once approved)
+            <span class="txt-2nd">&nbsp;*</span></label
+          >
+
+          <input type="date" class="form-control form-control-sm mt-2" />
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="gender" class="txt-7th ft-5"
+            >Phone Number<span class="txt-2nd">&nbsp;*</span></label
+          >
+          <div class="d-flex flex-row gap-2">
+            <div class="w-25">
+              <select class="form-control form-control-sm mt-2" id="gender">
+                <option>+92</option>
+                <option>+91</option>
+              </select>
+            </div>
+            <div class="w-50">
+              <input
+                type="text"
+                class="form-control form-control-sm mt-2"
+                aria-describedby="fullName"
+                placeholder="Enter your full name"
+              />
+            </div>
           </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="gender" class="txt-7th ft-5"
+            >Country<span class="txt-2nd">&nbsp;*</span></label
+          >
+          <select class="form-control form-control-sm mt-2" id="gender">
+            <option>Pakistan</option>
+            <option>Turkey</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="gender" class="txt-7th ft-5"
+            >City<span class="txt-2nd">&nbsp;*</span></label
+          >
+          <select class="form-control form-control-sm mt-2" id="gender">
+            <option>Islamabad</option>
+            <option>Rawalpindi</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="gender" class="txt-7th ft-5"
+            >Nationality<span class="txt-2nd">&nbsp;*</span></label
+          >
+          <select class="form-control form-control-sm mt-2" id="gender">
+            <option>Pakistani</option>
+            <option>Turkish</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="gender" class="txt-7th ft-5"
+            >Cast<span class="txt-2nd">&nbsp;*</span></label
+          >
+          <select class="form-control form-control-sm mt-2" id="gender">
+            <option>Arain</option>
+            <option>Jatt</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="gender" class="txt-7th ft-5"
+            >Ethnicity<span class="txt-2nd">&nbsp;*</span></label
+          >
+          <select class="form-control form-control-sm mt-2" id="gender">
+            <option>PUnjabi</option>
+            <option>Pashtoon</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="gender" class="txt-7th ft-5"
+            >About Me<span class="txt-2nd">&nbsp;*</span></label
+          >
+
+          <textarea
+            class="form-control form-control-sm"
+            id="message"
+            rows="4"
+            placeholder="Enter your message"
+          >
+          </textarea>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-3 px-2 d-flex flex-column">
+        <div class="txt-7th ft-5">
+          Profile Picture <span class="txt-2nd">&nbsp;*</span>
+        </div>
+        <div
+          class="bg-3rd rounded-3 mat-elevation-z2 d-flex flex-column align-items-center ft-5 py-3"
+        >
+          <div
+            class="btn-6th-icon mat-elevation-z1 d-flex flex-row justify-content-center align-items-center"
+          >
+            <div class="uploadIcon"></div>
+          </div>
+          <div class="fh-6 mt-2">Drag and drop or click to browse</div>
+          <div class="ft-6 mt-2 txt-7th">No file chosen</div>
         </div>
       </div>
     </div>
