@@ -31,6 +31,7 @@ import { PremiumServicesComponent } from './home-page/premium-services/premium-s
 import { FindYourMatchComponent } from './home-page/find-your-match/find-your-match.component';
 import { MatchingProfileComponent } from './home-page/find-your-match/matching-profile/matching-profile.component';
 import { HeroSectionComponent } from './home-page/hero-section/hero-section.component';
+import { ProfilePersonalInfoInputComponent } from './profile/create-profile/profile-personal-info-input/profile-personal-info-input.component';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { HeroSectionComponent } from './home-page/hero-section/hero-section.comp
     FindYourMatchComponent,
     MatchingProfileComponent,
     HeroSectionComponent,
+    ProfilePersonalInfoInputComponent,
   ],
   imports: [
     BrowserModule,
@@ -67,6 +69,7 @@ import { HeroSectionComponent } from './home-page/hero-section/hero-section.comp
       progressBar: true,
     }),
   ],
+  exports: [ProfilePersonalInfoInputComponent],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     DatePipe,
