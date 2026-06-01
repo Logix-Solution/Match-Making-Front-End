@@ -256,6 +256,9 @@ p {
 .ft-5 {
   font-size: 12px !important;
 }
+.ft-6 {
+  font-size: 11px !important;
+}
 
 //line-heights
 .lh-40 {
@@ -418,3 +421,17 @@ p {
 }
 
 /***************** end bootstrap override ****************/
+
+/*********************************************/
+/************** borders & Margins **********************/
+/********************************************/
+.border-6th {
+  border: 1px solid var(--6th) !important;
+}
+.m-10-minus {
+  margin-left: -10px !important;
+}
+.m-35-minus {
+  margin-left: -35px !important;
+}
+/************* end borders ******************/
