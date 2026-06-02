@@ -8,38 +8,60 @@
   <div class="row mt-3 align-items-around">
     <div class="col-md-10 d-flex flex-row gap-3">
       <div
-        class="btnPrimary d-flex flex-row align-items-center mat-elevation-z1"
+        class="d-flex flex-row align-items-center mat-elevation-z1"
+        (click)="stepper = 1"
+        [ngClass]="{ btnPrimary: stepper === 1, 'btn-6th': stepper !== 1 }"
       >
         <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">
           1
         </div>
         <div>Personal</div>
       </div>
-      <div class="btn-6th d-flex flex-row align-items-center mat-elevation-z1">
+      <div
+        class="btn-6th d-flex flex-row align-items-center mat-elevation-z1"
+        [ngClass]="{ btnPrimary: stepper === 2, 'btn-6th': stepper !== 2 }"
+        (click)="stepper = 2"
+      >
         <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">
           2
         </div>
         <div>Career</div>
       </div>
-      <div class="btn-6th d-flex flex-row align-items-center mat-elevation-z1">
+      <div
+        class="btn-6th d-flex flex-row align-items-center mat-elevation-z1"
+        [ngClass]="{ btnPrimary: stepper === 3, 'btn-6th': stepper !== 3 }"
+        (click)="stepper = 3"
+      >
         <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">
           3
         </div>
         <div>Religion</div>
       </div>
-      <div class="btn-6th d-flex flex-row align-items-center mat-elevation-z1">
+      <div
+        class="btn-6th d-flex flex-row align-items-center mat-elevation-z1"
+        [ngClass]="{ btnPrimary: stepper === 4, 'btn-6th': stepper !== 4 }"
+        (click)="stepper = 4"
+      >
         <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">
           4
         </div>
         <div>Family</div>
       </div>
-      <div class="btn-6th d-flex flex-row align-items-center mat-elevation-z1">
+      <div
+        class="btn-6th d-flex flex-row align-items-center mat-elevation-z1"
+        [ngClass]="{ btnPrimary: stepper === 5, 'btn-6th': stepper !== 5 }"
+        (click)="stepper = 5"
+      >
         <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">
           5
         </div>
         <div>Appearance</div>
       </div>
-      <div class="btn-6th d-flex flex-row align-items-center mat-elevation-z1">
+      <div
+        class="btn-6th d-flex flex-row align-items-center mat-elevation-z1"
+        [ngClass]="{ btnPrimary: stepper === 6, 'btn-6th': stepper !== 6 }"
+        (click)="stepper = 6"
+      >
         <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">
           6
         </div>
@@ -58,6 +80,7 @@
 
   <!-- Personal Profile -->
   <app-profile-personal-info-input
+    *ngIf="stepper === 1"
     class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5"
   ></app-profile-personal-info-input>
 </div>
