@@ -35,6 +35,7 @@ import { ProfilePersonalInfoInputComponent } from './profile/create-profile/prof
 import { ProfileCareerInfoInputComponent } from './profile/create-profile/profile-career-info-input/profile-career-info-input.component';
 import { ProfileReligionInfoInputComponent } from './profile/create-profile/profile-religion-info-input/profile-religion-info-input.component';
 import { ProfileFamilyInfoInputComponent } from './profile/create-profile/profile-family-info-input/profile-family-info-input.component';
+import { ProfileAppearanceInfoInputComponent } from './profile/create-profile/profile-appearance-info-input/profile-appearance-info-input.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { ProfileFamilyInfoInputComponent } from './profile/create-profile/profil
     ProfileCareerInfoInputComponent,
     ProfileReligionInfoInputComponent,
     ProfileFamilyInfoInputComponent,
+    ProfileAppearanceInfoInputComponent,
   ],
   imports: [
     BrowserModule,
