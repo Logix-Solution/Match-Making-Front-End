@@ -34,6 +34,7 @@ import { HeroSectionComponent } from './home-page/hero-section/hero-section.comp
 import { ProfilePersonalInfoInputComponent } from './profile/create-profile/profile-personal-info-input/profile-personal-info-input.component';
 import { ProfileCareerInfoInputComponent } from './profile/create-profile/profile-career-info-input/profile-career-info-input.component';
 import { ProfileReligionInfoInputComponent } from './profile/create-profile/profile-religion-info-input/profile-religion-info-input.component';
+import { ProfileFamilyInfoInputComponent } from './profile/create-profile/profile-family-info-input/profile-family-info-input.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { ProfileReligionInfoInputComponent } from './profile/create-profile/prof
     ProfilePersonalInfoInputComponent,
     ProfileCareerInfoInputComponent,
     ProfileReligionInfoInputComponent,
+    ProfileFamilyInfoInputComponent,
   ],
   imports: [
     BrowserModule,
