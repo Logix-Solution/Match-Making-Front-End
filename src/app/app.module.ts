@@ -33,6 +33,7 @@ import { MatchingProfileComponent } from './home-page/find-your-match/matching-p
 import { HeroSectionComponent } from './home-page/hero-section/hero-section.component';
 import { ProfilePersonalInfoInputComponent } from './profile/create-profile/profile-personal-info-input/profile-personal-info-input.component';
 import { ProfileCareerInfoInputComponent } from './profile/create-profile/profile-career-info-input/profile-career-info-input.component';
+import { ProfileReligionInfoInputComponent } from './profile/create-profile/profile-religion-info-input/profile-religion-info-input.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { ProfileCareerInfoInputComponent } from './profile/create-profile/profil
     HeroSectionComponent,
     ProfilePersonalInfoInputComponent,
     ProfileCareerInfoInputComponent,
+    ProfileReligionInfoInputComponent,
   ],
   imports: [
     BrowserModule,
