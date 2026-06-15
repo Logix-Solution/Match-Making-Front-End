@@ -1,0 +1,100 @@
+<main class="container-fluid p-4 h-100 scroll-verticle">
+  <header class="dashboard-header mb-4">
+    <h1 class="fh-3 txt-8th m-0">Request Management</h1>
+    <p class="ft-3 txt-7th mt-1 mb-0">Welcome back, view your recent platform analytics.</p>
+  </header>
+
+  <nav class="d-inline-flex bg-6th border-6th p-2 rounded-3 mb-4">
+    <button 
+      type="button"
+      class="tab-btn px-4 py-2 border-0 rounded-2 ft-3 fw-semibold transition-all"
+      [class.active-tab]="activeTab === 'pending'"
+      (click)="setTab('pending')">
+      Pending
+    </button>
+    <button 
+      type="button"
+      class="tab-btn px-4 py-2 border-0 rounded-2 ft-3 fw-semibold transition-all"
+      [class.active-tab]="activeTab === 'accepted'"
+      (click)="setTab('accepted')">
+      Accepted
+    </button>
+    <button 
+      type="button"
+      class="tab-btn px-4 py-2 border-0 rounded-2 ft-3 fw-semibold transition-all"
+      [class.active-tab]="activeTab === 'rejected'"
+      (click)="setTab('rejected')">
+      Rejected
+    </button>
+  </nav>
+
+  <section class="row g-4">
+    
+    <div class="col-12 col-md-6 col-xl-4" *ngFor="let request of filteredRequests">
+      <div class="card bg-6th border-6th rounded-3 p-3 shadow-sm h-100 d-flex flex-column justify-content-between">
+        
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <img [src]="request.image" [alt]="request.name" class="profile-avatar rounded-2 object-fit-cover">
+          <div>
+            <h3 class="fh-6 txt-8th m-0 mb-1">{{ request.name }}, {{ request.age }}</h3>
+            <p class="ft-4 txt-7th m-0 d-flex align-items-center gap-1">
+              <i class="bi bi-geo-alt-fill text-muted"></i> 
+              {{ request.location }}
+            </p>
+          </div>
+        </div>
+
+        <div class="row g-2 pt-2">
+          
+          <ng-container *ngIf="activeTab === 'pending'">
+            <div class="col-5">
+              <button class="w-100 py-2 rounded-2 border-0 bg-5th txt-8th ft-4 fw-medium d-flex align-items-center justify-content-center gap-1" (click)="onViewDetails(request)">
+                <i class="bi bi-eye"></i> View Details
+              </button>
+            </div>
+            <div class="col-3">
+              <button class="w-100 py-2 rounded-2 border-6th bg-6th txt-2nd ft-4 fw-medium d-flex align-items-center justify-content-center gap-1 reject-outline" (click)="onReject(request)">
+                <i class="bi bi-x-lg"></i> Reject
+              </button>
+            </div>
+            <div class="col-4">
+              <button class="w-100 py-2 rounded-2 border-0 bg-2nd txt-6th ft-4 fw-medium d-flex align-items-center justify-content-center gap-1 accept-solid" (click)="onAccept(request)">
+                <i class="bi bi-check-lg"></i> Accept
+              </button>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="activeTab !== 'pending'">
+            <div class="col-6">
+              <button class="w-100 py-2 rounded-2 border-0 bg-5th txt-8th ft-4 fw-medium d-flex align-items-center justify-content-center gap-1" (click)="onViewDetails(request)">
+                <i class="bi bi-eye"></i> View Details
+              </button>
+            </div>
+            <div class="col-6" [ngSwitch]="request.status">
+              
+              <div *ngSwitchCase="'accepted'" class="badge-status badge-approved w-100 py-2 rounded-2 ft-4 fw-medium d-flex align-items-center justify-content-center gap-1">
+                <i class="bi bi-check-lg"></i> Approved
+              </div>
+
+              <div *ngSwitchCase="'rejected'" class="badge-status badge-rejected w-100 py-2 rounded-2 ft-4 fw-medium d-flex align-items-center justify-content-center gap-1">
+                <i class="bi bi-x-lg"></i> Rejected
+              </div>
+
+              <div *ngSwitchCase="'pending'" class="badge-status badge-pending-active w-100 py-2 rounded-2 ft-4 fw-medium d-flex align-items-center justify-content-center gap-1">
+                <i class="bi bi-check-lg"></i> Pending
+              </div>
+              
+            </div>
+          </ng-container>
+
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-12 text-center py-5 border border-dashed rounded-3 bg-5th mt-4" *ngIf="filteredRequests.length === 0">
+      <p class="ft-2 txt-7th m-0">No entries found under the {{ activeTab }} tab.</p>
+    </div>
+
+  </section>
+</main>

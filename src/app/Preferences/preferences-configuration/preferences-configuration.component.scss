@@ -1,0 +1,108 @@
+ .preference-card {
+      border-radius: 24px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      border: none;
+      overflow: hidden;
+    }
+    .nav-tabs {
+      border-bottom: 1px solid #e9ecef;
+      gap: 0.25rem;
+      flex-wrap: wrap;
+    }
+    .nav-tabs .nav-link {
+      color: #6c757d;
+      font-weight: 600;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 30px;
+      margin-bottom: 0.25rem;
+      transition: all 0.2s;
+      background: transparent;
+    }
+    .nav-tabs .nav-link i {
+      margin-right: 6px;
+    }
+    .nav-tabs .nav-link.active {
+      color: #0d6efd;
+      background-color: #e7f1ff;
+      border: none;
+      font-weight: 700;
+    }
+    .nav-tabs .nav-link:hover:not(.active) {
+      color: #0d6efd;
+      background-color: #f8f9fa;
+    }
+    .form-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #495057;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+    .form-control, .form-select {
+      border-radius: 12px;
+      border: 1px solid #dee2e6;
+      padding: 0.6rem 1rem;
+      transition: 0.2s;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #86b7fe;
+      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+    }
+    .occupation-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+      gap: 10px;
+      max-height: 280px;
+      overflow-y: auto;
+      padding: 1rem;
+      background: #f8fafc;
+      border-radius: 20px;
+      border: 1px solid #e2e8f0;
+    }
+    .occupation-btn {
+      border-radius: 40px;
+      font-size: 0.8rem;
+      padding: 0.45rem 0.75rem;
+      font-weight: 500;
+      background: white;
+      border: 1px solid #cbd5e1;
+      color: #1e293b;
+      transition: all 0.15s;
+    }
+    .occupation-btn.selected {
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+      color: white;
+    }
+    .occupation-btn:disabled:not(.selected) {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .priority-badge {
+      background: #eef2ff;
+      border-radius: 30px;
+      padding: 0.3rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #1e40af;
+    }
+    .save-btn {
+      border-radius: 40px;
+      font-weight: 600;
+      padding: 0.6rem 2rem;
+    }
+    .tab-content-fade {
+      animation: fadeIn 0.25s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .card-header {
+      border-bottom: none;
+    }
+    .card-body {
+      padding: 1.5rem;
+    }

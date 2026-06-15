@@ -1,0 +1,103 @@
+
+$soft-peach-badge: #f2d6cd;  
+$soft-purple-badge: #ebdce0; 
+
+.account-settings-container {
+  // Navigation Transitions
+  .back-btn {
+    transition: transform 0.2s ease;
+    &:hover {
+      transform: translateX(-3px);
+    }
+  }
+
+  // Header Details Border Match
+  .status-panel {
+    border: 1px solid var(--5th) !important;
+  }
+
+  // Circular Canvas Wrappers for Analytics Tracking
+  .counter-card {
+    border: 1px solid var(--5th) !important;
+    
+    .progress-circle {
+      width: 76px;
+      height: 76px;
+      border: 6px solid var(--5th);
+      border-radius: 50%;
+      
+      &.border-2nd {
+        border-top: 6px solid var(--2nd);
+      }
+      &.border-primary {
+        border-top: 6px solid var(--primary);
+      }
+    }
+  }
+
+  // Main Pricing Grid Structures
+  .pricing-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border: 1px solid var(--5th);
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04) !important;
+    }
+
+    // Active Card State Selection
+    &.current-plan-border {
+      border: 2px solid var(--primary) !important;
+    }
+
+    .price-display {
+      line-height: 1;
+      .amount {
+        letter-spacing: -0.03em;
+      }
+    }
+
+    // Pill Badges for Metadata Tags
+    .badge-capsule {
+      font-size: 11px; // Formatted to match your .ft-6 token framework
+      font-weight: 700;
+      padding: 0.5em 1em;
+      border-radius: 50rem;
+      letter-spacing: 0.02em;
+    }
+
+    // Custom background capsule allocations
+    .bg-orange-soft {
+      background-color: $soft-peach-badge !important;
+    }
+
+    .bg-maroon-soft {
+      background-color: $soft-purple-badge !important;
+    }
+
+    // Layout Button Structural Elements
+    .btn-current-plan {
+      background-color: var(--5th);
+      color: var(--7th);
+      border: none;
+      padding: 0px 15px;
+      height: 2.5em;
+      cursor: not-allowed;
+    }
+
+    // Align custom global structural block with cards
+    .btnPrimary {
+      width: 100% !important; 
+      right: unset;
+    }
+
+    // List Line-Height Layout adjustments
+    .feature-list {
+      line-height: 1.5;
+      
+      li i {
+        font-size: 1.1rem;
+      }
+    }
+  }
+}

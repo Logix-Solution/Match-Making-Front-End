@@ -1,0 +1,124 @@
+// Search View Constraint Wrapper Mapping
+.max-w-search {
+  max-width: 320px;
+}
+
+.custom-search-input {
+  height: 44px;
+}
+
+// Selection Action Header CTA Configuration Button Systems
+.compare-action-btn {
+  background-color: var(--2nd) !important; // Global dark red/brown design token
+  border: none;
+  
+  &:disabled {
+    background-color: #cbd5e1 !important;
+    color: #94a3b8 !important;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+}
+
+// --- Dynamic Selection Matrix Grid Card Components Styles ---
+.selection-card {
+  border: 1px solid var(--6th);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  // Active highlighted card boundary state rules configuration logic
+  &.card-selected {
+    border: 1px solid var(--primary) !important; // Deep maroon accent selection ring frame
+    background-color: #fdfafb !important;
+  }
+}
+
+.profile-avatar {
+  width: 52px;
+  height: 52px;
+}
+
+// Built custom operational markup checkboxes mapping screenshot layout elements
+.custom-checkbox-marker {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #cbd5e1;
+  background-color: #ffffff;
+  transition: all 0.15s ease;
+
+  &.checked {
+    background-color: var(--primary) !important; // Primary maroon color check fill
+    border-color: var(--primary) !important;
+  }
+}
+
+// Multi Layer Avatar Stack Component Framework Styling
+.avatar-stack {
+  .stack-thumb {
+    width: 28px;
+    height: 28px;
+    object-fit: cover;
+    margin-left: -8px;
+    box-shadow: 0 0 0 2px #ffffff;
+    
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}
+
+// --- Dynamic Side-by-Side Matrix Screen Layout Styles ---
+.comparison-matrix-row {
+  min-height: 500px;
+}
+
+.comparison-column {
+  min-width: 300px;
+  max-width: 400px;
+  transition: all 0.25s ease-in-out;
+}
+
+// Empty Placeholder Column layout map mapping graphic file specifications
+.column-placeholder {
+  background-color: #edeae9 !important; // Tinted gray/beige background palette fill
+  border: 2px dashed #cbd5e1 !important;
+  min-width: 300px;
+
+  .add-slot-btn {
+    width: 50px;
+    height: 50px;
+    background-color: #fbe6dc !important; // Highlighted color tag fill parameters
+    border: none;
+    transition: transform 0.2s ease;
+    
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+// Nested inner column content blocks system customization
+.pill-attribute {
+  background-color: #f6d8c7 !important; // Sand color block parameters mapping Container (6).jpg 
+  border: 1px solid rgba(0, 0, 0, 0.02);
+  
+  .font-scale-sub {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    opacity: 0.7;
+  }
+}
+
+.attribute-group-box {
+  background-color: #fafbfc;
+}
+
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}

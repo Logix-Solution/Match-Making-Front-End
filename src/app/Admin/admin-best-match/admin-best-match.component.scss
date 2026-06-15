@@ -1,0 +1,275 @@
+// Layout Variable Palette & Context Base Tokens
+.bg-light-profile {
+  background-color: #fafbfd;
+}
+
+.max-w-search {
+  max-width: 320px;
+}
+
+.custom-search-input {
+  height: 44px;
+}
+
+
+
+.back-circle-btn {
+  width: 42px;
+  height: 42px;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  transition: background-color 0.15s ease;
+  &:hover { background-color: #f8fafc; }
+}
+
+.section-main-heading {
+  font-size: 1.5rem;
+  letter-spacing: -0.3px;
+  color: #1a202c;
+}
+
+// --- VIEW 1: Grid Cards Styles Configuration Layout Rules ---
+.match-grid-card {
+  cursor: pointer;
+  border: 1px solid transparent;
+  background-color: #f8fafc;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06) !important;
+    border: 1px solid rgba(89, 1, 23, 0.1);
+  }
+}
+
+.profile-avatar {
+  width: 54px;
+  height: 54px;
+}
+
+.txt-maroon-accent {
+  color: var(--2nd, #590117) !important; 
+}
+
+.avatar-stack {
+  cursor: pointer;
+  
+  .stack-thumbs-wrap {
+    display: flex;
+  }
+
+  .stack-thumb {
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+    margin-left: -6px;
+    border: 2px solid #ffffff;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+  
+  .line-height-1 { line-height: 1; }
+}
+
+// Global Attribute-Group Data Structure Subcomponents Definitions
+.info-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  .column-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: -0.1px;
+
+    i {
+      font-size: 1rem;
+      color: #718096;
+    }
+  }
+
+  .data-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    padding: 5.5px 0;
+    border-bottom: 1px dashed #edf2f7;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    span {
+      color: #718096; // Muted label grey variant mapped directly from graphic profile
+      font-weight: 400;
+      padding-right: 12px;
+      white-space: nowrap;
+    }
+
+    strong {
+      color: #1a202c; // Deep charcoal black value visibility
+      font-weight: 600;
+      text-align: right;
+      max-width: 160px;
+    }
+  }
+}
+
+// ================= FIXED MASTER UPPER BLOCK CONFIGURATION =================
+.main-profile-dashboard {
+  background-color: #ffffff;
+  border-radius: 16px !important;
+
+  .profile-layout-grid {
+    display: grid;
+    // Perfect symmetric template map balanced flawlessly around the center portrait segment 
+    grid-template-columns: 2fr 2fr 1.8fr 2fr 2fr;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .center-avatar-block {
+    .main-avatar {
+      width: 110px;
+      height: 110px;
+      object-fit: cover;
+      border: 4px solid #ffffff;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    }
+
+    .profile-display-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #000000;
+      letter-spacing: 0.5px;
+    }
+
+    .profile-display-sub {
+      font-size: 0.85rem;
+      color: #718096;
+    }
+
+    .marital-pill {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #a0aec0;
+      letter-spacing: 0.4px;
+    }
+  }
+}
+
+// ================= CRITICAL ROW-BY-ROW COLUMN CSS ALIGNMENT SYSTEMS =================
+.best-matches-stack {
+  position: relative;
+}
+
+.match-alignment-row {
+  display: grid;
+  // Dynamic 5 column template row setup keeping labels vertically lined up under each header row module
+  grid-template-columns: 1.2fr 2fr 2fr 1.8fr 2.5fr;
+  gap: 24px;
+  align-items: start;
+  position: relative;
+  padding: 20px !important;
+  padding-right: 64px !important; // Keeps spacing clear for the absolute arrow action button anchor
+  background: #ffffff;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04) !important;
+  }
+
+  // Left Identity Metadata Block Widget Panel
+  .identity-segment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #edf2f7;
+    padding-right: 16px;
+    height: 100%;
+
+    .match-thumb {
+      width: 68px;
+      height: 68px;
+      object-fit: cover;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .match-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1a202c;
+    }
+
+    .match-meta {
+      font-size: 0.8rem;
+      color: #718096;
+    }
+
+    .match-status-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #a0aec0;
+      letter-spacing: 0.3px;
+    }
+  }
+}
+
+// Terracotta/Red Floating Action Round Overlay Button Anchor
+.target-career-column {
+  position: relative;
+}
+
+.floating-action-arrow {
+  position: absolute;
+  top: 50%;
+  right: -44px; // Extended precisely into the custom row right-padded margin system track
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  background-color: var(--2nd, #c94a29) !important; // Exact terracotta/orange-red tone match
+  border: none !important;
+  padding: 0;
+  box-shadow: 0 4px 10px rgba(199, 74, 41, 0.22);
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.15s ease;
+
+  i {
+    font-size: 0.95rem;
+    line-height: 1;
+  }
+
+  &:hover {
+    transform: translateY(-50%) scale(1.1);
+    background-color: #b03e20 !important;
+  }
+}
+
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}
+
+// Media viewports optimization layer breakdown for compact screens
+@media (max-width: 1280px) {
+  .main-profile-dashboard .profile-layout-grid,
+  .match-alignment-row {
+    grid-template-columns: 1.4fr 2fr 2fr;
+    gap: 16px;
+  }
+  .match-alignment-row {
+    padding-right: 56px !important;
+  }
+  .identity-segment {
+    border-right: none !important;
+    border-bottom: 1px solid #edf2f7;
+    padding-bottom: 12px;
+  }
+}

@@ -1,0 +1,61 @@
+<main class="container-fluid p-4 bg-5th h-100 scroll-vertical">
+  
+  <!-- Header Title -->
+  <header class="mb-4">
+    <h1 class="fh-3 txt-8th m-0 fw-bold">Account Settings</h1>
+  </header>
+
+  <!-- Section 1: User Profile Meta Cards Information -->
+  <section class="row g-3 mb-4">
+    
+    <!-- Email Card -->
+    <div class="col-12 col-md-4">
+      <div class="card border-0 bg-6th rounded-3 p-3 shadow-sm info-meta-card">
+        <span class="ft-5 txt-7th d-block fw-medium mb-1">Email Address</span>
+        <strong class="ft-3 txt-8th fw-semibold text-truncate d-block">muhammadamad147@gmail.com</strong>
+      </div>
+    </div>
+
+    <!-- Profile Name Card -->
+    <div class="col-12 col-md-4">
+      <div class="card border-0 bg-6th rounded-3 p-3 shadow-sm info-meta-card">
+        <span class="ft-5 txt-7th d-block fw-medium mb-1">Profile Name</span>
+        <strong class="ft-3 txt-8th fw-semibold text-truncate d-block">Ali</strong>
+      </div>
+    </div>
+
+    <!-- Member Since Card -->
+    <div class="col-12 col-md-4">
+      <div class="card border-0 bg-6th rounded-3 p-3 shadow-sm info-meta-card">
+        <span class="ft-5 txt-7th d-block fw-medium mb-1">Member Since</span>
+        <strong class="ft-3 txt-8th fw-semibold text-truncate d-block">April 2026</strong>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Section 2: Account Destruction Danger Warning Banner Container -->
+  <section>
+    <div class="card delete-warning-banner rounded-3 p-4 border-0 position-relative">
+      <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+        
+        <!-- Danger Warning Content Block -->
+        <div class="warning-text-block">
+          <h2 class="ft-3 fw-bold text-danger m-0 mb-1">Delete Account Permanent!</h2>
+          <p class="ft-4 text-danger opacity-75 m-0 fw-medium">
+            This action cannot be undone. All your data including profile, preferences, matches, and payment plan will be permanently deleted.
+          </p>
+        </div>
+
+        <!-- Action Call Control Trigger Button -->
+        <div class="flex-shrink-0 ms-auto pt-2 pt-md-0">
+          <button type="button" class="btn btnPrimary px-4 font-jakarta shadow-sm border-0" (click)="onDeleteAccountClick()">
+            Delete Account
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>

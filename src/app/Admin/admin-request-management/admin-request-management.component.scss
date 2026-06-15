@@ -1,0 +1,75 @@
+// Navigation Tab buttons configuration mapping
+.tab-btn {
+  background: transparent;
+  color: var(--7th);
+  cursor: pointer;
+  outline: none;
+
+  &.active-tab {
+    background-color: var(--primary) !important; // Global Maroon Background variable
+    color: var(--6th) !important;               // Global White text variable
+  }
+}
+
+.profile-avatar {
+  width: 56px;
+  height: 56px;
+}
+
+// Action Button interactive style frames 
+.accept-solid {
+  transition: opacity 0.15s ease-in-out;
+  &:hover {
+    animation: headShake 1s;
+    opacity: 0.9;
+  }
+  &:active {
+    animation: rubberBand 1s;
+  }
+}
+
+.reject-outline {
+  border-color: var(--2nd) !important;
+  color: var(--2nd) !important;
+  transition: background-color 0.15s ease;
+  &:hover {
+    animation: headShake 1s;
+    background-color: rgba(200, 75, 49, 0.05);
+  }
+  &:active {
+    animation: rubberBand 1s;
+  }
+}
+
+// --- New Status Badges Styling System ---
+.badge-status {
+  letter-spacing: 0.2px;
+  user-select: none;
+  border: 1px solid transparent;
+  height: 100%;
+}
+
+// Soft Green "Approved" Badge 
+.badge-approved {
+  background-color: #e6f9f0 !important;
+  color: #10b981 !important; 
+  border-color: rgba(16, 185, 129, 0.15) !important;
+}
+
+// Soft Pink "Rejected" Badge
+.badge-rejected {
+  background-color: #fdf2f4 !important;
+  color: #e03152 !important; 
+  border-color: rgba(224, 49, 82, 0.15) !important;
+}
+
+// Alternative Soft Green "Pending" state Badge found inside your Accepted layout view
+.badge-pending-active {
+  background-color: #eafbf3 !important;
+  color: #34d399 !important;
+  border-color: rgba(52, 211, 153, 0.15) !important;
+}
+
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}

@@ -1,0 +1,111 @@
+.max-w-search {
+  max-width: 320px;
+}
+
+.custom-search-input {
+  height: 44px;
+  color: var(--8th);
+}
+
+.accent-btn {
+  transition: opacity 0.15s ease;
+  &:hover { opacity: 0.9; }
+}
+
+// --- Modified Full Edge-to-Edge Gallery Card System ---
+.gallery-card-full {
+  aspect-ratio: 16 / 10; // Guarantees crisp aspect ratios for the grid rows
+  height: 240px; 
+  position: relative;
+  border-radius: 16px !important; // Soft round container edges matching 
+
+  .design-image-bg {
+    z-index: 0;
+  }
+
+  .gradient-overlay {
+    height: 70%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0) 100%);
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+  }
+
+  .font-title-card {
+    font-weight: 500;
+    font-size: 1.05rem;
+    letter-spacing: 0.1px;
+  }
+}
+
+// Positioning parameters matching Container (7).png precisely
+.top-3 { top: 16px; }
+.end-3 { right: 16px; }
+.z-index-1 { z-index: 1; }
+.z-index-2 { z-index: 2; }
+
+// Compact unified dual floating actions capsule layout matching the screenshot
+.action-badge-container {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  .vertical-divider {
+    width: 1px;
+    background-color: #e2e8f0;
+    align-self: fill;
+    margin: 2px 0;
+  }
+
+  .btn-action-pushed {
+    transition: transform 0.15s ease;
+    cursor: pointer;
+
+    .text-primary-custom { color: #1e6bf2 !important; }
+    .text-danger-custom { color: #e13c5b !important; }
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+// --- MODAL DIALOG RULES remain unchanged ---
+.modal-backdrop-custom {
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1050;
+  backdrop-filter: blur(3px);
+}
+
+.modal-window {
+  width: 100%;
+  max-width: 580px;
+  background-color: #e2e5e9;
+}
+
+.border-white-container { border: 1px solid rgba(255, 255, 255, 0.7); }
+.close-x { cursor: pointer; &:hover { color: var(--2nd); } }
+.tracking-wider { letter-spacing: 0.6px; }
+
+.form-input-custom {
+  background-color: #f4f6f9 !important;
+  color: var(--8th) !important;
+  box-shadow: none !important;
+}
+
+.upload-dropzone {
+  border: 1px dashed #cbd5e1 !important;
+  background-color: #fafbfc;
+  cursor: pointer;
+  .upload-icon-circle {
+    width: 48px;
+    height: 48px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+}
+
+.main-publish-btn {
+  height: 52px;
+  transition: opacity 0.15s ease-in-out;
+  &:hover { animation: headShake 1s; opacity: 0.95; }
+  &:active { animation: rubberBand 1s; }
+}

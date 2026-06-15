@@ -1,0 +1,117 @@
+<div class="container-fluid d-flex flex-column bg-5th min-vh-100 scroll-verticle style-1 pb-4">
+
+  <!-- ── Header ──────────────────────────────────────────────────────────── -->
+  <div class="position-relative d-flex justify-content-center align-items-center pt-4 pb-2 px-4">
+    <div class="text-center">
+      <div class="fh-4">Create Your Preferences</div>
+      <div class="ft-3 pt-1 ls-3 txt-7th">Let's get to know your choice</div>
+    </div>
+    <div class="position-absolute end-0 pe-4">
+      <button class="btnPrimary mat-elevation-z1">Edit Preferences</button>
+    </div>
+  </div>
+
+  <!-- ── Cards ───────────────────────────────────────────────────────────── -->
+  <div class="px-4 mt-2 d-flex flex-column gap-3">
+
+    <!-- Row 1: Personal Info | Appearance | Education+Career & Lifestyle -->
+    <div class="row g-3">
+
+      <!-- Personal Information -->
+      <div class="col-md-4">
+        <div class="bg-white rounded-3 p-3 mat-elevation-z2 h-100">
+          <div class="fh-6 pb-2 d-flex flex-row gap-2 txt-8th fw-bold">
+            <span class="personIcon"></span> Personal Information
+          </div>
+          <div
+            *ngFor="let item of personalInfo"
+            class="d-flex flex-row justify-content-between py-1 "
+          >
+            <div class="ft-4 txt-7th mb-2">{{ item.label }}</div>
+            <div class="ft-4 txt-8th fw-semibold">{{ item.value }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Appearance -->
+      <div class="col-md-4">
+        <div class="bg-white rounded-3 p-3 mat-elevation-z2 h-100">
+          <div class="fh-6 pb-2 d-flex flex-row gap-2 txt-8th fw-bold">
+            <span class="bi bi-eye"></span> Appearance
+          </div>
+          <div
+            *ngFor="let item of appearanceInfo"
+            class="d-flex flex-row justify-content-between py-1"
+          >
+            <div class="ft-4 txt-7th mb-2">{{ item.label }}</div>
+            <div class="ft-4 txt-8th fw-semibold">{{ item.value }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Education & Career + Lifestyle stacked -->
+      <div class="col-md-4 d-flex flex-column gap-3">
+
+        <!-- Education & Career -->
+        <div class="bg-white rounded-3 p-3 mat-elevation-z2">
+          <div class="fh-6 pb-2 d-flex flex-row gap-2 txt-8th fw-bold">
+            <span class="educationIcon"></span> Education & Career
+          </div>
+          <div
+            *ngFor="let item of educationInfo"
+            class="d-flex flex-row justify-content-between py-1"
+          >
+            <div class="ft-4 txt-7th">{{ item.label }}</div>
+            <div class="ft-4 txt-8th fw-semibold">{{ item.value }}</div>
+          </div>
+        </div>
+
+        <!-- Lifestyle -->
+        <div class="bg-white rounded-3 p-3 mat-elevation-z2">
+          <div class="fh-6 pb-2 d-flex flex-row gap-2 txt-8th fw-bold">
+            <span class="lifestyleIcon"></span> Lifestyle
+          </div>
+          <div
+            *ngFor="let item of lifestyleInfo"
+            class="d-flex flex-row justify-content-between py-1"
+          >
+            <div class="ft-4 txt-7th">{{ item.label }}</div>
+            <div class="ft-4 txt-8th fw-semibold">{{ item.value }}</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Row 2: Religion | Additional Information -->
+    <div class="row g-3">
+
+      <!-- Religion -->
+      <div class="col-md-4">
+        <div class="bg-white rounded-3 p-3 mat-elevation-z2 h-100">
+          <div class="fh-6 pb-2 d-flex flex-row gap-2 txt-8th fw-bold">
+            <span class="religionIcon"></span> Religion
+          </div>
+          <div
+            *ngFor="let item of religionInfo"
+            class="d-flex flex-row justify-content-between py-1"
+          >
+            <div class="ft-4 txt-7th">{{ item.label }}</div>
+            <div class="ft-4 txt-8th fw-semibold">{{ item.value }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Information -->
+      <div class="col-md-8">
+        <div class="bg-white rounded-3 p-3 mat-elevation-z2 h-100">
+          <div class="fh-6 pb-2 d-flex flex-row gap-2 txt-8th fw-bold">
+            <span class="bi bi-chat-text"></span> Additional Information
+          </div>
+          <div class="ft-4 txt-7th mt-1">{{ additionalInfo }}</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,60 @@
+// Filter pill interactive states
+.filter-pill {
+  background: transparent;
+  color: var(--7th); // Maps to global gray text code
+  cursor: pointer;
+  outline: none;
+  padding: 6px 16px;
+
+  &:hover {
+    color: var(--primary);
+    background-color: rgba(89, 1, 23, 0.04);
+  }
+
+  &.active-filter {
+    background-color: var(--primary) !important; // Global dark maroon color block 
+    color: var(--6th) !important;               // Global white text code
+  }
+}
+
+// User Profile Avatar size constraints
+.service-avatar {
+  width: 56px;
+  height: 56px;
+}
+
+// Absolute position alignment helpers for card sub-items
+.top-3 { top: 16px; }
+.end-3 { right: 16px; }
+
+// Categorical Type Tag badge layout custom styles
+.badge-category {
+  background-color: #fdf2f4 !important;
+  color: var(--primary) !important; // Deep maroon text formatting color
+  font-size: 11px;
+  border: 1px solid rgba(89, 1, 23, 0.08);
+}
+
+// Text content details display area frame configuration
+.details-box {
+  min-height: 90px;
+  border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+// Full width custom call-to-action button systems
+.main-action-btn {
+  transition: opacity 0.15s ease-in-out;
+
+  &:hover {
+    animation: headShake 1s;
+    opacity: 0.92;
+  }
+  
+  &:active {
+    animation: rubberBand 1s;
+  }
+}
+
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}

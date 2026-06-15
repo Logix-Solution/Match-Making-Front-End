@@ -1,0 +1,61 @@
+<main class="container-fluid p-4 h-100 scroll-verticle">
+  <header class="dashboard-header mb-4">
+    <h1 class="fh-3 txt-8th m-0">User Management</h1>
+    <p class="ft-3 txt-7th mt-1 mb-0">Welcome back, view your recent platform analytics.</p>
+  </header>
+
+  <section class="mb-4 max-w-search">
+    <div class="position-relative">
+      <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 txt-7th ft-3"></i>
+      <input 
+        type="text" 
+        class="form-control ps-5 py-2 ft-3 border bg-6th rounded-3 custom-search-input" 
+        placeholder="Search"
+        [(ngModel)]="searchQuery"
+        (input)="onSearchChange()">
+    </div>
+  </section>
+
+  <section class="row g-4">
+    <div class="col-12 col-md-6 col-xl-4" *ngFor="let user of filteredUsers">
+      <div class="card bg-6th border-6th rounded-3 p-3 shadow-sm h-100 position-relative d-flex flex-column justify-content-between">
+        
+        <div class="d-flex align-items-start gap-3">
+          <img [src]="user.image" [alt]="user.name" class="user-avatar rounded-2 object-fit-cover">
+          <div class="flex-grow-1">
+            <h3 class="fh-6 txt-8th m-0 mb-1 pe-5">{{ user.name }}</h3>
+            <p class="ft-4 txt-7th m-0 d-flex align-items-center gap-1">
+              <i class="bi bi-geo-alt-fill text-muted"></i> 
+              {{ user.location }}
+            </p>
+          </div>
+          
+          <span class="badge-active px-2 py-1 rounded-pill ft-5 fw-semibold position-absolute top-3 end-3">
+            {{ user.status }}
+          </span>
+        </div>
+
+        <div class="d-flex align-items-end justify-content-between pt-3 mt-auto">
+          <div>
+            <span class="text-uppercase tracking-wider ft-6 txt-7th d-block mb-1 fw-bold">Member Since</span>
+            <span class="ft-4 txt-8th fw-semibold">{{ user.memberSince }}</span>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="button" class="btn-action bg-5th txt-8th border-0 px-3 py-2 rounded-2 ft-4 fw-medium" (click)="onViewDetails(user)">
+              View Details
+            </button>
+            <button type="button" class="btn-action bg-6th txt-2nd border-danger-custom px-3 py-2 rounded-2 ft-4 fw-medium block-hover" (click)="onBlockUser(user)">
+              Block
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-12 text-center py-5 border border-dashed rounded-3 bg-5th mt-4" *ngIf="filteredUsers.length === 0">
+      <p class="ft-2 txt-7th m-0">No profile matches found for "{{ searchQuery }}".</p>
+    </div>
+  </section>
+</main>

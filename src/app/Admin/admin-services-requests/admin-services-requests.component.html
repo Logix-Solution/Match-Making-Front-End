@@ -1,0 +1,95 @@
+<main class="container-fluid p-4 h-100 scroll-verticle">
+  <!-- Header Block using global utility variables -->
+  <header class="dashboard-header mb-4">
+    <h1 class="fh-3 txt-8th m-0">Services Request</h1>
+    <p class="ft-3 txt-7th mt-1 mb-0">Manage your services.</p>
+  </header>
+
+  <!-- Filter Pills Bar (Functional Filters) -->
+  <section class="d-inline-flex gap-2 mb-4 flex-wrap" aria-label="Database Filters">
+    <button 
+      type="button"
+      class="filter-pill px-3 py-1.5 border-0 rounded-2 ft-4 fw-medium transition-all"
+      [class.active-filter]="activeFilter === 'All'"
+      (click)="applyFilter('All')">
+      All
+    </button>
+    <button 
+      type="button"
+      class="filter-pill px-3 py-1.5 border-0 rounded-2 ft-4 fw-medium transition-all"
+      [class.active-filter]="activeFilter === 'Matchmaking'"
+      (click)="applyFilter('Matchmaking')">
+      Matchmaking
+    </button>
+    <button 
+      type="button"
+      class="filter-pill px-3 py-1.5 border-0 rounded-2 ft-4 fw-medium transition-all"
+      [class.active-filter]="activeFilter === 'Events'"
+      (click)="applyFilter('Events')">
+      Events
+    </button>
+    <button 
+      type="button"
+      class="filter-pill px-3 py-1.5 border-0 rounded-2 ft-4 fw-medium transition-all"
+      [class.active-filter]="activeFilter === 'Destination Wedding'"
+      (click)="applyFilter('Destination Wedding')">
+      Destination Wedding
+    </button>
+    <button 
+      type="button"
+      class="filter-pill px-3 py-1.5 border-0 rounded-2 ft-4 fw-medium transition-all"
+      [class.active-filter]="activeFilter === 'Honeymoon'"
+      (click)="applyFilter('Honeymoon')">
+      Honeymoon
+    </button>
+  </section>
+
+  <!-- Responsive Services Layout Grid -->
+  <section class="row g-4">
+    <div class="col-12 col-md-6 col-xl-4" *ngFor="let request of filteredRequests">
+      <div class="card bg-6th border-6th rounded-3 p-3 shadow-sm h-100 position-relative d-flex flex-column justify-content-between">
+        
+        <!-- Top Row Profile Information Meta Section -->
+        <div class="d-flex align-items-start gap-3 mb-3">
+          <img [src]="request.image" [alt]="request.name" class="service-avatar rounded-2 object-fit-cover">
+          <div class="flex-grow-1">
+            <h3 class="fh-6 txt-8th m-0 mb-1 pe-5">{{ request.name }}</h3>
+            <p class="ft-4 txt-7th m-0 d-flex align-items-center gap-1">
+              <i class="bi bi-geo-alt-fill text-muted"></i> 
+              {{ request.location }}
+            </p>
+          </div>
+          
+          <!-- Category Pill Tag (Pink Tag Style from image) -->
+          <span class="badge-category px-2 py-1 rounded-pill ft-5 fw-semibold position-absolute top-3 end-3">
+            {{ request.category }}
+          </span>
+        </div>
+
+        <!-- Middle Specific Details Container Block -->
+        <div class="mb-3">
+          <h4 class="fh-6 txt-8th ft-4 fw-bold m-0 mb-2">{{ request.serviceType }} Specifics</h4>
+          <div class="bg-5th p-3 rounded-3 details-box justify-text">
+            <p class="ft-4 txt-8th m-0 lh-28">{{ request.details }}</p>
+          </div>
+        </div>
+
+        <!-- Full Width Main Action Footer Button -->
+        <div class="pt-2 mt-auto">
+          <button 
+            type="button" 
+            class="w-100 py-2.5 rounded-3 border-0 bg-2nd txt-6th ft-3 fw-medium d-flex align-items-center justify-content-center gap-2 main-action-btn"
+            (click)="onContactUser(request)">
+            Contact user
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Empty Layout Fallback state definition logic -->
+    <div class="col-12 text-center py-5 border border-dashed rounded-3 bg-5th mt-4" *ngIf="filteredRequests.length === 0">
+      <p class="ft-2 txt-7th m-0">No open requests found matching the "{{ activeFilter }}" filter criteria.</p>
+    </div>
+  </section>
+</main>

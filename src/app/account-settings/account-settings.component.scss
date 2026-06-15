@@ -1,0 +1,72 @@
+// Layout Configurations for Context Image Frame 2147226266 (1).png
+.font-jakarta {
+  font-family: "Plus Jakarta Sans", sans-serif !important;
+}
+
+// Meta Card Heights & Sizing Structure
+.info-meta-card {
+  min-height: 78px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 10px !important;
+  
+  strong {
+    letter-spacing: -0.1px;
+  }
+}
+
+// Exact Pastel Red/Pink Transparent Alert Banner Background Map
+.delete-warning-banner {
+  background-color: #ffeef0 !important; // Delicate light red overlay tone
+  border-radius: 12px !important;
+  box-shadow: 0 2px 12px rgba(255, 0, 0, 0.02);
+
+  .warning-text-block {
+    h2 {
+      letter-spacing: -0.2px;
+      color: #d9383a !important;
+    }
+    p {
+      color: #e55355 !important;
+      font-size: 13px !important;
+      line-height: 1.5;
+    }
+  }
+}
+
+// Action Button Specifications
+.btnPrimary {
+  background-color: var(--2nd) !important; // Brown-red/terracotta brand token mappings
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  height: 42px !important;
+  min-width: 140px !important;
+  border-radius: 8px !important;
+  transition: opacity 0.15s ease-in-out, transform 0.1s ease;
+
+  &:hover {
+    opacity: 0.95;
+    transform: translateY(-0.5px);
+  }
+
+  &:active {
+    transform: translateY(0.5px);
+  }
+}
+
+// Optimization adjustments for compact mobile layouts
+@media (max-width: 767.98px) {
+  .delete-warning-banner {
+    padding: 20px !important;
+    
+    .ms-auto {
+      margin-left: 0 !important;
+      width: 100%;
+    }
+  }
+  
+  .btnPrimary {
+    width: 100% !important;
+  }
+}

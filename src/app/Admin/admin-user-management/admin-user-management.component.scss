@@ -1,0 +1,64 @@
+// Search layout boundary max constraint mapping
+.max-w-search {
+  max-width: 320px;
+}
+
+// Global scope overriding configuration hooks
+.custom-search-input {
+  height: 44px;
+  color: var(--8th);
+  
+  &::placeholder {
+    color: var(--7th);
+    opacity: 0.7;
+  }
+}
+
+// User Profile Avatar scaling matrix definitions
+.user-avatar {
+  width: 56px;
+  height: 56px;
+}
+
+// Position layout hooks safely handling raw absolute top bounds spacing elements 
+.top-3 { top: 16px; }
+.end-3 { right: 16px; }
+
+// Tracking configurations for micro metadata indicators
+.tracking-wider {
+  letter-spacing: 0.5px;
+}
+
+// Active dynamic indicator badge UI element
+.badge-active {
+  background-color: #eafbf3 !important;
+  color: #10b981 !important;
+  font-size: 11px;
+}
+
+// Utility action button control overrides 
+.btn-action {
+  min-width: 90px;
+  white-space: nowrap;
+  transition: opacity 0.15s ease-in-out;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
+// Border wrapper matching global design specifications
+.border-danger-custom {
+  border: 1px solid var(--2nd) !important; // Maps to your custom brown/red variable color tokens
+}
+
+// Custom animation mapping variables safely matching globally predefined animations
+.block-hover {
+  &:hover {
+    animation: headShake 1s;
+    background-color: rgba(200, 75, 49, 0.05);
+  }
+  &:active {
+    animation: rubberBand 1s;
+  }
+}
