@@ -1,8 +1,8 @@
-<div class="container-xl matching-section py-4">
+<div class="  container  matching-section py-4">
 
   <!-- ── Static grid: 6 or fewer profiles ─────────────────────────────── -->
   <ng-container *ngIf="!useSlider; else sliderMode">
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    <div class="row  g-4">
       <div class="col" *ngFor="let profile of profiles">
         <ng-container *ngTemplateOutlet="profileCard; context: { $implicit: profile }"></ng-container>
       </div>
@@ -37,6 +37,7 @@
 </div>
 
 <!-- ── Reusable card template ─────────────────────────────────────────────── -->
+ &nbsp;  &nbsp;
 <ng-template #profileCard let-profile>
   <div class="profile-card h-100">
 

@@ -4,6 +4,8 @@ import { ClientProfileComponent } from './profile/client-profile/client-profile/
 import { HomePageComponent } from './home-page/home-page.component';
 import { CreateProfileComponent } from './profile/create-profile/create-profile.component';
 import { LoginComponent } from './login/login.component';
+import { PrefencesDetailsComponent } from './Preferences/prefences-details/prefences-details.component';
+import { PreferencesConfigurationComponent } from './Preferences/preferences-configuration/preferences-configuration.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -19,6 +21,19 @@ const routes: Routes = [
     path: 'login',
     component: LoginComponent,
   },
+
+////////////////preferences ///////////////////////
+  
+ {
+    path: 'preferences-details',
+    component: PrefencesDetailsComponent,
+  },
+   
+   {
+    path: 'preferences-configuration',
+    component: PreferencesConfigurationComponent,
+  },
+  
 ];
 
 @NgModule({

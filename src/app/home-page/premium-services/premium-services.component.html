@@ -1,67 +1,182 @@
-<section class="services-section py-5 bg text-center position-relative">
-  <div class="container">
+<section class="services-section py-5 bg text-center position-relative h-100">
+  <div class="container-xl px-4 px-lg-5">
+
+    <!-- Section Header -->
     <h2 class="fw-bold mb-2">Our Premium Services</h2>
-    <p  class="mb-5 txt-primary">
+    <p class="mb-5 txt-primary">
       Beyond matchmaking, we provide end-to-end support for your journey to a happy marriage.
     </p>
 
-    <div class="row g-4 justify-content-center">
-      <div *ngFor="let service of services" class="col-12 col-sm-6 col-md-3">
-        <div 
-          class="service-card position-relative overflow-hidden rounded-4 shadow-sm cursor-pointer"
+    <!-- Overlapping Card Pairs Row -->
+    <div class="d-flex justify-content-center align-items-start gap-5 flex-wrap">
+
+      <!-- LEFT PAIR: Matchmaking + Event Planning -->
+      <div class="card-pair-group">
+
+        <!-- Card 1 back: Matchmaking -->
+        <div
+          class="service-card card-back rounded-4 overflow-hidden cursor-pointer"
           (click)="openOverlay()"
-          [style.backgroundImage]="'url(' + service.imageUrl + ')'"
+          [style.backgroundImage]="'url(' + services[0].imageUrl + ')'"
         >
-          <div class="card-overlay d-flex align-items-end p-4">
-            <h4 class="text-white fw-semibold m-0">{{ service.title }}</h4>
+          <div class="card-overlay d-flex align-items-end p-3">
+            <h4 class="text-white fw-semibold m-0">{{ services[0].title }}</h4>
           </div>
         </div>
+
+        <!-- Card 2 front: Event Planning -->
+        <div
+          class="service-card card-front rounded-4 overflow-hidden cursor-pointer"
+          (click)="openOverlay()"
+          [style.backgroundImage]="'url(' + services[1].imageUrl + ')'"
+        >
+          <div class="card-overlay d-flex align-items-end p-3">
+            <h4 class="text-white fw-semibold m-0">{{ services[1].title }}</h4>
+          </div>
+        </div>
+
       </div>
+
+      <!-- RIGHT PAIR: Destination Wedding + Honeymoon -->
+      <div class="card-pair-group">
+
+        <!-- Card 3 back: Destination Wedding -->
+        <div
+          class="service-card card-back rounded-4 overflow-hidden cursor-pointer"
+          (click)="openOverlay()"
+          [style.backgroundImage]="'url(' + services[2].imageUrl + ')'"
+        >
+          <div class="card-overlay d-flex align-items-end p-3">
+            <h4 class="text-white fw-semibold m-0">{{ services[2].title }}</h4>
+          </div>
+        </div>
+
+        <!-- Card 4 front: Honeymoon -->
+        <div
+          class="service-card card-front rounded-4 overflow-hidden cursor-pointer"
+          (click)="openOverlay()"
+          [style.backgroundImage]="'url(' + services[3].imageUrl + ')'"
+        >
+          <div class="card-overlay d-flex align-items-end p-3">
+            <h4 class="text-white fw-semibold m-0">{{ services[3].title }}</h4>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </div>
 </section>
 
-<div 
-  class="custom-modal-backdrop position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+<!-- ── Modal ──────────────────────────────────────────────────────────────── -->
+<div
+  class="custom-modal-backdrop  position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center "
   [class.show]="isModalOpen"
   *ngIf="isModalOpen"
   (click)="closeOverlay()"
 >
-  <div class="modal-window bg-white rounded-4 shadow-lg overflow-hidden position-relative" (click)="$event.stopPropagation()">
-    
-    <div class="modal-header bg-primary text-white p-4 d-flex justify-content-between align-items-center">
-      <h3 class="m-0 fs-4 fw-bold">Match Making</h3>
-      <button type="button" class="btn-close btn-close-white" (click)="closeOverlay()" aria-label="Close"></button>
-    </div>
+  <div class="modal-window bg-white rounded-4 shadow-lg  position-relative" (click)="$event.stopPropagation()">
 
-    <div class="modal-body p-4 overflow-y-auto" style="max-height: 80vh;">
-      <div class="text-center mb-4">
-        <p class="text-muted"><i class="bi bi-geo-alt-fill me-1"></i> Regions will display here.....</p>
-      </div>
+    <!-- Close btn -->
+    <button
+      type="button"
+      class="btn-close position-absolute top-0 end-0 m-3"
+      style="z-index:10;"
+      (click)="closeOverlay()"
+      aria-label="Close">
+    </button>
 
-      <div class="mb-4">
-        <h5 class="fw-bold text-start mb-3 fs-6 text-uppercase tracking-wider text-muted">Top 5 Previous Events</h5>
-        <div class="row g-2 align-items-center">
-          <div class="col-auto">
-            <button class="btn btn-outline-secondary rounded-circle btn-sm"><i class="bi bi-chevron-left"></i></button>
-          </div>
-          <div class="col"><div class="ratio ratio-21x9 bg-secondary rounded" style="background: url('assets/event1.jpg') center/cover;"></div></div>
-          <div class="col d-none d-sm-block"><div class="ratio ratio-21x9 bg-secondary rounded" style="background: url('assets/event2.jpg') center/cover;"></div></div>
-          <div class="col d-none d-md-block"><div class="ratio ratio-21x9 bg-secondary rounded" style="background: url('assets/event3.jpg') center/cover;"></div></div>
-          <div class="col-auto">
-            <button class="btn btn-outline-secondary rounded-circle btn-sm"><i class="bi bi-chevron-right"></i></button>
-          </div>
+    <div class="modal-body p-4 p-md-5 flex-grow-1 scroll-verticle style-1 " style="max-height: 95vh;">
+
+      <!-- ── Title ─────────────────────────────────────────────────────── -->
+      <div class="text-center mb-3">
+        <h2 class="modal-service-title txt-primary fw-bold letter-spacing-wide mb-3">
+          MATCH MAKING
+        </h2>
+        <!-- Decorative divider -->
+        <div class="modal-divider d-flex align-items-center justify-content-center gap-2">
+          <span class="divider-diamond txt-primary">&#9670;</span>
+          <div class="divider-line"></div>
+          <span class="divider-diamond txt-primary">&#9670;</span>
         </div>
       </div>
 
-      <div class="text-center px-2 mb-4 fs-6 text-secondary">
-        <p><strong>Muslim Matchmaking Services</strong> is a trusted platform dedicated to helping individuals and families find meaningful and compatible life partners. Our matchmaking service combines personalized preferences, smart search technology, and verified profiles to create genuine connections in a safe and respectful environment.</p>
-        <p class="m-0">Whether you are searching for a traditional family-oriented match or a modern compatible partner, <strong>Muslim Matchmaking Services</strong> is committed to guiding you toward a successful and lifelong relationship.</p>
+      <!-- ── Regions ────────────────────────────────────────────────────── -->
+      <div class="text-center mb-4 mt-3">
+        <p class="fs-5 text-dark mb-0">
+          <i class="bi bi-pin-angle-fill me-2 txt-primary"></i>
+          Regions will display here.....
+        </p>
       </div>
 
-      <div class="d-grid gap-2 col-10 mx-auto">
-        <button class="btn btn-danger btn-lg d-flex align-items-center justify-content-center gap-2 py-3 rounded-3 shadow-sm text-white" style="background-color: #c94a30; border: none;">
-          <i class="bi bi-whatsapp"></i> Send Interest
+      <!-- ── Slider ─────────────────────────────────────────────────────── -->
+      <div class="mb-2">
+        <h5 class="fw-bold text-start mb-3 fs-6">Top 5 Previous Events</h5>
+
+        <div class="d-flex align-items-center gap-2">
+          <!-- Prev arrow -->
+          <button
+            class="slider-arrow flex-shrink-0"
+            (click)="prevSlide()"
+            [disabled]="currentSlide === 0">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+
+          <!-- Slides viewport -->
+          <div class="slider-viewport flex-grow-1 overflow-hidden">
+            <div class="slider-track d-flex gap-2"
+                 [style.transform]="'translateX(calc(-' + currentSlide + ' * (100% / 3 + 8px)))'">
+              <div
+                *ngFor="let img of sliderImages"
+                class="slider-slide flex-shrink-0">
+                <div class="ratio ratio-4x3 rounded-3 overflow-hidden">
+                  <img [src]="img" alt="event" class="w-100 h-100 object-fit-cover" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Next arrow -->
+          <button
+            class="slider-arrow flex-shrink-0"
+            (click)="nextSlide()"
+            [disabled]="currentSlide >= sliderImages.length - 3">
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+
+        <!-- Dot indicators -->
+        <div class="d-flex justify-content-center gap-2 mt-3">
+          <span
+            *ngFor="let dot of sliderDots; let i = index"
+            class="slider-dot"
+            [class.active]="i === currentSlide"
+            (click)="currentSlide = i">
+          </span>
+        </div>
+      </div>
+
+      <!-- ── Description ────────────────────────────────────────────────── -->
+      <div class="text-center px-2 mb-4 mt-4 fs-6 text-secondary">
+        <p>
+          <strong>Muslim Matchmaking Services</strong> is a trusted platform dedicated to helping
+          individuals and families find meaningful and compatible life partners. Our matchmaking service
+          combines personalized preferences, smart search technology, and verified profiles to create
+          genuine connections in a safe and respectful environment.
+        </p>
+        <p class="m-0">
+          Whether you are searching for a traditional family-oriented match or a modern compatible
+          partner, <strong>Muslim Matchmaking Services</strong> is committed to guiding you toward a
+          successful and lifelong relationship.
+        </p>
+      </div>
+
+      <!-- ── Send Interest button ───────────────────────────────────────── -->
+      <div class="d-grid col-12 col-md-10 mx-auto">
+        <button
+          class="btn btn-lg d-flex align-items-center justify-content-center gap-2 py-3 rounded-3 text-white fw-semibold"
+          style="background-color: #c94a30; border: none;">
+          <i class="bi bi-whatsapp fs-5"></i> Send Interest
         </button>
       </div>
 

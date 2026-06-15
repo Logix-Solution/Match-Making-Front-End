@@ -2,40 +2,100 @@
 $animation-duration: 300ms;
 $animation-timing: ease-in;
 
-.cursor-pointer {
-  cursor: pointer;
+// ── Card dimensions ───────────────────────────────────────────────────────────
+$card-back-w:  250px;
+$card-back-h:  265px;
+$card-front-w: 235px;
+$card-front-h: 250px;
+$offset-x:     222px;   // back(250) - 222 = 28px overlap at the right end only
+$offset-y:     100px;     // (265 - 250) / 2 = vertically centered on right edge
+
+// ── Pair group container ──────────────────────────────────────────────────────
+.card-pair-group {
+  position: relative;
+  width:  calc(#{$card-back-w} + #{$offset-x});   // 250 + 222 = 472px
+  height: #{$card-back-h};                         // just the back card height
+  flex-shrink: 0;
 }
 
-// Background Card Styling
+// ── Shared card base ──────────────────────────────────────────────────────────
 .service-card {
-  height: 280px;
+  position: absolute;
   background-size: cover;
   background-position: center;
-  transition: transform 0.2s ease;
-
-  &:hover {
-    transform: translateY(-4px);
-  }
+  background-repeat: no-repeat;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 
   .card-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 60%, rgba(0, 0, 0, 0) 100%);
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.75) 0%,
+      rgba(0, 0, 0, 0.15) 55%,
+      rgba(0, 0, 0, 0)    100%
+    );
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3) !important;
   }
 }
 
-// Custom Modal Overlay with Dissolve Animation
+// ── Back card (top-left, full height) ────────────────────────────────────────
+.card-back {
+  top:    0;
+  left:   0;
+  width:  $card-back-w;
+  height: $card-back-h;
+  z-index: 1;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+// ── Front card — right edge, vertically centered ──────────────────────────────
+// left = offset-x = 222px  →  overlaps only last 28px of back card's right side
+// top  = offset-y = 7px    →  (265 - 250) / 2, so it sits centered vertically
+.card-front {
+  top:    $offset-y;
+  left:   $offset-x;
+  width:  $card-front-w;
+  height: $card-front-h;
+  z-index: 2;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+}
+
+// ── Utility ───────────────────────────────────────────────────────────────────
+.cursor-pointer { cursor: pointer; }
+
+// ── Responsive: scale pairs on small screens ──────────────────────────────────
+@media (max-width: 767px) {
+  .card-pair-group {
+    width:  calc((250px + 222px) * 0.72);
+    height: calc(265px * 0.72);
+  }
+
+  .card-back {
+    width:  calc(250px * 0.72);
+    height: calc(265px * 0.72);
+  }
+
+  .card-front {
+    top:    calc(7px  * 0.72);
+    left:   calc(222px * 0.72);
+    width:  calc(235px * 0.72);
+    height: calc(250px * 0.72);
+  }
+}
+
+// ── Modal (unchanged backdrop/window) ─────────────────────────────────────────
 .custom-modal-backdrop {
   z-index: 1050;
   background-color: rgba(0, 0, 0, 0.65);
-  
-  // Dissolve (Fade-in) configurations
   opacity: 0;
   visibility: hidden;
-  transition: opacity #{$animation-duration} #{$animation-timing}, 
+  transition: opacity #{$animation-duration} #{$animation-timing},
               visibility #{$animation-duration} #{$animation-timing};
 
   &.show {
@@ -44,14 +104,89 @@ $animation-timing: ease-in;
   }
 }
 
-// Modal Windows Structure
 .modal-window {
-  width: 90%;
-  max-width: 850px;
+  width: 100%;
+  // height:100%;
+  max-width: 1000px;
+  max-height: 1100vh;
   transform: scale(0.95);
   transition: transform #{$animation-duration} #{$animation-timing};
 }
 
 .custom-modal-backdrop.show .modal-window {
   transform: scale(1);
+}
+
+// ── Modal title ───────────────────────────────────────────────────────────────
+.modal-service-title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  letter-spacing: 0.18em;
+}
+
+// ── Decorative divider ────────────────────────────────────────────────────────
+.divider-line {
+  width: 260px;
+  height: 1.5px;
+  background-color: maroon;
+  opacity: 0.4;
+}
+
+.divider-diamond {
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+// ── Slider ────────────────────────────────────────────────────────────────────
+.slider-viewport {
+  // each slide = calc(100% / 3), track moves by slide width + gap
+  overflow: hidden;
+}
+
+.slider-track {
+  transition: transform 0.4s ease;
+  // Each slide is exactly 1/3 of viewport width
+  .slider-slide {
+    width: calc((100%) / 3 - 6px);   // 3 visible, gap-2 = 8px / gaps between = ~5.3px each
+    min-width: calc((100%) / 3 - 6px);
+  }
+}
+
+.slider-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid #ccc;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: #444;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+
+  &:hover:not(:disabled) {
+    background: #f4f4f4;
+    border-color: #888;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+}
+
+// ── Dot indicators ────────────────────────────────────────────────────────────
+.slider-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ddd;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+
+  &.active {
+    background: #c94a30;
+    transform: scale(1.25);
+  }
 }

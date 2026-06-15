@@ -31,12 +31,33 @@ import { PremiumServicesComponent } from './home-page/premium-services/premium-s
 import { FindYourMatchComponent } from './home-page/find-your-match/find-your-match.component';
 import { MatchingProfileComponent } from './home-page/find-your-match/matching-profile/matching-profile.component';
 import { HeroSectionComponent } from './home-page/hero-section/hero-section.component';
+
 import { ProfilePersonalInfoInputComponent } from './profile/create-profile/profile-personal-info-input/profile-personal-info-input.component';
 import { ProfileCareerInfoInputComponent } from './profile/create-profile/profile-career-info-input/profile-career-info-input.component';
 import { ProfileReligionInfoInputComponent } from './profile/create-profile/profile-religion-info-input/profile-religion-info-input.component';
 import { ProfileFamilyInfoInputComponent } from './profile/create-profile/profile-family-info-input/profile-family-info-input.component';
 import { ProfileAppearanceInfoInputComponent } from './profile/create-profile/profile-appearance-info-input/profile-appearance-info-input.component';
 import { ProfileLifestyleInfoInputComponent } from './profile/create-profile/profile-lifestyle-info-input/profile-lifestyle-info-input.component';
+
+import { PrefencesDetailsComponent } from './Preferences/prefences-details/prefences-details.component';
+import { PreferencesConfigurationComponent } from './Preferences/preferences-configuration/preferences-configuration.component';
+import { PreferencesPersonalComponent } from './Preferences/preferences-configuration/preferences-personal/preferences-personal.component';
+import { PreferencesCareerComponent } from './Preferences/preferences-configuration/preferences-career/preferences-career.component';
+import { PreferencesReligionComponent } from './Preferences/preferences-configuration/preferences-religion/preferences-religion.component';
+import { PreferencesFamilyComponent } from './Preferences/preferences-configuration/preferences-family/preferences-family.component';
+import { PreferencesAppearanceComponent } from './Preferences/preferences-configuration/preferences-appearance/preferences-appearance.component';
+import { PreferencesLifestyleComponent } from './Preferences/preferences-configuration/preferences-lifestyle/preferences-lifestyle.component';
+import { AdminDashboardComponent } from './Admin/admin-dashboard/admin-dashboard.component';
+import { AdminRequestManagementComponent } from './Admin/admin-request-management/admin-request-management.component';
+import { AdminUserManagementComponent } from './Admin/admin-user-management/admin-user-management.component';
+import { AdminServicesRequestsComponent } from './Admin/admin-services-requests/admin-services-requests.component';
+import { AdminEventGalleryComponent } from './Admin/admin-event-gallery/admin-event-gallery.component';
+import { AdminMatchComparisonComponent } from './Admin/admin-match-comparison/admin-match-comparison.component';
+import { AdminBestMatchComponent } from './Admin/admin-best-match/admin-best-match.component';
+import { PricingPlansComponent } from './pricing-plans/pricing-plans.component';
+import { AccountSettingsComponent } from './account-settings/account-settings.component';
+import { AdminDashbordComponent } from './Admin/admin-dashbord/admin-dashbord.component';
+
 
 @NgModule({
   declarations: [
@@ -56,12 +77,33 @@ import { ProfileLifestyleInfoInputComponent } from './profile/create-profile/pro
     FindYourMatchComponent,
     MatchingProfileComponent,
     HeroSectionComponent,
+
     ProfilePersonalInfoInputComponent,
     ProfileCareerInfoInputComponent,
     ProfileReligionInfoInputComponent,
     ProfileFamilyInfoInputComponent,
     ProfileAppearanceInfoInputComponent,
     ProfileLifestyleInfoInputComponent,
+
+    PrefencesDetailsComponent,
+    PreferencesConfigurationComponent,
+    PreferencesPersonalComponent,
+    PreferencesCareerComponent,
+    PreferencesReligionComponent,
+    PreferencesFamilyComponent,
+    PreferencesAppearanceComponent,
+    PreferencesLifestyleComponent,
+    AdminDashboardComponent,
+    AdminRequestManagementComponent,
+    AdminUserManagementComponent,
+    AdminServicesRequestsComponent,
+    AdminEventGalleryComponent,
+    AdminMatchComparisonComponent,
+    AdminBestMatchComponent,
+    PricingPlansComponent,
+    AccountSettingsComponent,
+    AdminDashbordComponent,
+
   ],
   imports: [
     BrowserModule,

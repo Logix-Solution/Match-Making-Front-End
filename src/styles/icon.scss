@@ -1,12 +1,11 @@
 .websiteLogo {
   background: url("../assets/images/websiteLogo.svg");
   background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  // height: 32px;
-  // width: 141px;
+  // background-size: cover;
+  // background-position: center;
+
   width: 276.53515625px;
-  height: 45px;
+  height: 43px;
   // top: 16px;
   // left: 50px;
   opacity: 1;
@@ -26,7 +25,7 @@
 .bgLogin {
   background: url("../assets/images/loginBackground.svg");
   background-repeat: no-repeat;
-  background-size: cover;
+  // background-size: cover;
   background-position: center;
 
   // width: 1445px;
@@ -36,11 +35,11 @@
 .matching-profile-bg {
   background: url("../assets/images/findYourMatch.png");
   background-repeat: no-repeat;
-  // background-size: cover;
+  background-size: auto;
   background-position: center;
 
-  // width: 1445px;
-  // height: 728px;
+  width: auto;
+  height: auto;
 }
 .aboutus {
   background: url("../assets/images/aboutus.svg");
@@ -147,9 +146,15 @@
 
 .uploadIcon {
   background: url("../assets/icons/upload.svg");
+}
+
+.quoteIcon {
+  background: url("../assets/icons/quote.svg");
+
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+
 
   width: 17px;
   height: 17px;
@@ -193,4 +198,7 @@
 
   width: 17px;
   height: 17px;
+
+  width: 40px;
+  height: 40px;
 }

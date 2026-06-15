@@ -117,7 +117,8 @@ p {
 }
 
 .stars span {
-  color: var(--third);
+
+ color: #f59e0b;
   font-size: 18px;
 }
 
@@ -229,9 +230,6 @@ p {
   font-size: 32px !important;
   font-weight: 700 !important;
 }
-.fh-4 {
-  font-size: 24px !important;
-}
 .fh-5 {
   font-size: 18px !important;
 }
@@ -269,11 +267,6 @@ p {
 }
 .lh-15 {
   line-height: 15px !important;
-}
-
-// letter spancing
-.ls-3 {
-  letter-spacing: 3px;
 }
 
 /********************************************************/
@@ -349,12 +342,11 @@ p {
   padding: 0px 15px 0px !important;
   // width: 6em;
   min-width: 8em;
-  background-color: var(--primary) !important;
+  background-color: var(--2nd) !important;
   color: var(--6th) !important;
   border-radius: 8px !important;
   border: 0px solid transparent !important;
   font-size: 1em !important;
-  cursor: pointer !important;
 }
 .btnPrimary:hover {
   animation: headShake;
@@ -444,3 +436,5 @@ p {
   margin-left: -35px !important;
 }
 /************* end borders ******************/
+/******************* end button styles *********************/
+
