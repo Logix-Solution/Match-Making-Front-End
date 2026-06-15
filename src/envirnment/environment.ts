@@ -5,19 +5,18 @@
 export const environment = {
   production: false,
   envName: 'prod',
-  apiUrlauth: 'http://localhost:9000/',
-  // apiUrlauth: 'http://159.69.174.28:9000/',
+  apiUrlauth: 'http://localhost:11011/',
+  // apiUrlauth: 'http://159.69.174.28:11011/',
   
-  apiUrljob:'https://pakistanjobsportal.com:16000/',
 
-   apiUrl: 'http://localhost:9000/',
-  // apiUrl: 'http://159.69.174.28:9000/',
+   apiUrl: 'http://localhost:11011/',
+  // apiUrl: 'http://159.69.174.28:11011/',
 
   imageUrl: 'C:/inetpub/wwwroot/',
 
    apijob:'https://Pakistanmasjidportal.com',
  
-    productUrl: 'http://159.69.174.28:9005/',
+    productUrl: 'http://159.69.174.28:11015/',
      googleClientId: '51129007656-7853v1j76s30u7cnne2b10nlg9r2ku3l.apps.googleusercontent.com'
 };
 
