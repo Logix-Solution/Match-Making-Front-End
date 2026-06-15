@@ -1,61 +1,76 @@
 <div class="">
   <!-- personal info -->
-
   <div class="fh-5 fw-bold mt-3">Personal Information</div>
   <div class="row mt-4">
     <div class="col-md-4">
       <div class="form-group">
-        <label for="exampleInputEmail1" class="txt-7th ft-5"
-          >Full Name (Cannot be changed once approved)<span class="txt-2nd"
-            >&nbsp;*</span
-          ></label
-        >
+        <label class="txt-7th ft-5">
+          Full Name (Cannot be changed once approved)
+          <span class="txt-2nd">&nbsp;*</span>
+        </label>
         <input
           type="text"
           class="form-control form-control-sm mt-2 bg-light"
-          aria-describedby="fullName"
           placeholder="Enter your full name"
         />
       </div>
     </div>
+
+    <!-- GENDER from API typeID=22 -->
     <div class="col-md-2">
       <div class="form-group">
-        <label for="gender" class="txt-7th ft-5"
-          >Gender<span class="txt-2nd">&nbsp;*</span></label
+        <label class="txt-7th ft-5">
+          Gender<span class="txt-2nd">&nbsp;*</span>
+        </label>
+        <select
+          class="form-control form-control-sm mt-2 bg-light"
+          [(ngModel)]="selectedGender"
+          (change)="onFieldChange()"
         >
-        <select class="form-control form-control-sm mt-2 bg-light" id="gender">
-          <option>Male</option>
-          <option>FeMale</option>
+          <option value="">Select Gender</option>
+          <option *ngFor="let item of genderList" [value]="item.subTypeID">
+            {{ item.subTypeTitle }}
+          </option>
         </select>
       </div>
     </div>
+
     <div class="col-md-3">
       <div class="form-group">
-        <label class="txt-7th ft-5"
-          >Date of Birth (Cannot be changed once approved)
-          <span class="txt-2nd">&nbsp;*</span></label
-        >
-
+        <label class="txt-7th ft-5">
+          Date of Birth (Cannot be changed once approved)
+          <span class="txt-2nd">&nbsp;*</span>
+        </label>
         <input type="date" class="form-control form-control-sm mt-2" />
       </div>
     </div>
+
     <div class="col-md-3">
       <div class="form-group">
-        <label for="gender" class="txt-7th ft-5"
-          >Phone Number<span class="txt-2nd">&nbsp;*</span></label
-        >
+        <label class="txt-7th ft-5">
+          Phone Number<span class="txt-2nd">&nbsp;*</span>
+        </label>
         <div class="d-flex flex-row gap-2">
           <div class="w-25">
-            <select class="form-control form-control-sm mt-2 bg-light" id="gender">
-              <option>+92</option>
-              <option>+91</option>
+            <select
+              class="form-control form-control-sm mt-2 bg-light"
+              [(ngModel)]="selectedCountryCode"
+              (change)="onFieldChange()"
+            >
+              <option value="">Code</option>
+              <option
+                *ngFor="let item of countryList"
+                [value]="item.country_code"
+              >
+                {{ item.country_code }}
+              </option>
             </select>
           </div>
+
           <div class="w-50">
             <input
               type="text"
               class="form-control form-control-sm mt-2"
-              aria-describedby="fullName"
               placeholder="Enter your phone number"
             />
           </div>
@@ -63,70 +78,109 @@
       </div>
     </div>
   </div>
+
   <div class="row mt-4">
     <div class="col-md-2">
       <div class="form-group">
-        <label for="gender" class="txt-7th ft-5"
-          >Country<span class="txt-2nd">&nbsp;*</span></label
+        <label class="txt-7th ft-5">
+          Country<span class="txt-2nd">&nbsp;*</span>
+        </label>
+        <select
+          class="form-control form-control-sm mt-2"
+          [(ngModel)]="selectedCountry"
+          (change)="onCountryChange()"
         >
-        <select class="form-control form-control-sm mt-2" id="gender">
-          <option>Pakistan</option>
-          <option>Turkey</option>
+          <option value="">Select Country</option>
+          <option *ngFor="let item of countryList" [value]="item.country_id">
+            {{ item.country_name }}
+          </option>
         </select>
       </div>
     </div>
+
     <div class="col-md-2">
       <div class="form-group">
-        <label for="gender" class="txt-7th ft-5"
-          >City<span class="txt-2nd">&nbsp;*</span></label
+        <label class="txt-7th ft-5">
+          City<span class="txt-2nd">&nbsp;*</span>
+        </label>
+        <select
+          class="form-control form-control-sm mt-2"
+          [(ngModel)]="selectedCity"
+          (change)="onFieldChange()"
         >
-        <select class="form-control form-control-sm mt-2" id="gender">
-          <option>Islamabad</option>
-          <option>Rawalpindi</option>
+          <option value="">Select City</option>
+          <option *ngFor="let item of cityList" [value]="item.city_id">
+            {{ item.city_name }}
+          </option>
         </select>
       </div>
     </div>
+
+    <!-- NATIONALITY from API typeID=2 -->
     <div class="col-md-2">
       <div class="form-group">
-        <label for="gender" class="txt-7th ft-5"
-          >Nationality<span class="txt-2nd">&nbsp;*</span></label
+        <label class="txt-7th ft-5">
+          Nationality<span class="txt-2nd">&nbsp;*</span>
+        </label>
+        <select
+          class="form-control form-control-sm mt-2"
+          [(ngModel)]="selectedNationality"
+          (change)="onFieldChange()"
         >
-        <select class="form-control form-control-sm mt-2" id="gender">
-          <option>Pakistani</option>
-          <option>Turkish</option>
+          <option value="">Select Nationality</option>
+          <option *ngFor="let item of nationalityList" [value]="item.subTypeID">
+            {{ item.subTypeTitle }}
+          </option>
         </select>
       </div>
     </div>
+
+    <!-- CAST from API typeID=1 -->
     <div class="col-md-3">
       <div class="form-group">
-        <label for="gender" class="txt-7th ft-5"
-          >Cast<span class="txt-2nd">&nbsp;*</span></label
+        <label class="txt-7th ft-5">
+          Cast<span class="txt-2nd">&nbsp;*</span>
+        </label>
+        <select
+          class="form-control form-control-sm mt-2"
+          [(ngModel)]="selectedCast"
+          (change)="onFieldChange()"
         >
-        <select class="form-control form-control-sm mt-2" id="gender">
-          <option>Arain</option>
-          <option>Jatt</option>
+          <option value="">Select Cast</option>
+          <option *ngFor="let item of castList" [value]="item.subTypeID">
+            {{ item.subTypeTitle }}
+          </option>
         </select>
       </div>
     </div>
+
+    <!-- ETHNICITY from API typeID=3 -->
     <div class="col-md-3">
       <div class="form-group">
-        <label for="gender" class="txt-7th ft-5"
-          >Ethnicity<span class="txt-2nd">&nbsp;*</span></label
+        <label class="txt-7th ft-5">
+          Ethnicity<span class="txt-2nd">&nbsp;*</span>
+        </label>
+        <select
+          class="form-control form-control-sm mt-2"
+          [(ngModel)]="selectedEthnicity"
+          (change)="onFieldChange()"
         >
-        <select class="form-control form-control-sm mt-2" id="gender">
-          <option>PUnjabi</option>
-          <option>Pashtoon</option>
+          <option value="">Select Ethnicity</option>
+          <option *ngFor="let item of ethnicityList" [value]="item.subTypeID">
+            {{ item.subTypeTitle }}
+          </option>
         </select>
       </div>
     </div>
   </div>
+
+  <!-- rest of your HTML stays exactly the same -->
   <div class="row mt-4">
     <div class="col-md-12">
       <div class="form-group">
-        <label for="gender" class="txt-7th ft-5"
-          >About Me<span class="txt-2nd">&nbsp;*</span></label
-        >
-
+        <label for="gender" class="txt-7th ft-5">
+          About Me<span class="txt-2nd">&nbsp;*</span>
+        </label>
         <textarea
           class="form-control form-control-sm"
           id="message"
@@ -137,6 +191,7 @@
       </div>
     </div>
   </div>
+
   <div class="row mt-2">
     <div class="col-md-3 px-2 d-flex flex-column">
       <div class="txt-7th ft-5">

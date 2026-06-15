@@ -79,43 +79,74 @@
   </div>
 
   <!-- Personal Profile -->
-  <app-profile-personal-info-input
-    *ngIf="stepper === 1"
-    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
-  ></app-profile-personal-info-input>
+<app-profile-personal-info-input
+  *ngIf="stepper === 1"
+  class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+  [castList]="castList"
+  [nationalityList]="nationalityList"
+  [ethnicityList]="ethnicityList"
+  [genderList]="genderList"
+  [countryList]="countryList"
+  [cityList]="cityList"
+  (countrySelected)="getCities($event)"
+  (selectionChange)="onPersonalInfoChange($event)"
+></app-profile-personal-info-input>
 
   <!-- career Profile -->
   <app-profile-career-info-input
-    *ngIf="stepper === 2"
-    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
-  >
-  </app-profile-career-info-input>
+  *ngIf="stepper === 2"
+  class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+  [educationList]="educationList"
+  [occupationList]="occupationList"
+  [monthlyIncomeList]="monthlyIncomeList"
+  (selectionChange)="onCareerInfoChange($event)">
+</app-profile-career-info-input>
 
   <!-- religion Profile -->
   <app-profile-religion-info-input
-    *ngIf="stepper === 3"
-    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
-  >
-  </app-profile-religion-info-input>
+  *ngIf="stepper === 3"
+  class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+  [religionList]="religionList"
+  [sectList]="sectList"
+  [religionImportanceList]="religionImportanceList"
+  (selectionChange)="onReligionInfoChange($event)">
+</app-profile-religion-info-input>
 
   <!-- family & lifestyle Profile -->
-  <app-profile-family-info-input
-    *ngIf="stepper === 4"
-    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
-  >
-  </app-profile-family-info-input>
+ <app-profile-family-info-input
+  *ngIf="stepper === 4"
+  class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+  [maritalStatusList]="maritalStatusList"
+  [housingSituationList]="housingSituationList"
+  [fatherOccupationList]="fatherOccupationList"
+  [motherOccupationList]="motherOccupationList"
+  [noOfSiblingsList]="noOfSiblingsList"
+  [familyInvolvementList]="familyInvolvementList"
+  [countryList]="countryList"
+  (selectionChange)="onFamilyInfoChange($event)">
+</app-profile-family-info-input>
 
   <!-- Appearance Profile -->
-  <app-profile-appearance-info-input
-    *ngIf="stepper === 5"
-    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
-  >
-  </app-profile-appearance-info-input>
+ <app-profile-appearance-info-input
+  *ngIf="stepper === 5"
+  class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+  [heightList]="appearanceHeightList"
+  [bodyTypeList]="bodyTypeList"
+  [skinToneList]="skinToneList"
+  [disabilityList]="disabilityList"
+  (selectionChange)="onAppearanceInfoChange($event)"
+>
+</app-profile-appearance-info-input>
 
-  <!-- Appearance Profile -->
-  <app-profile-lifestyle-info-input
-    *ngIf="stepper === 6"
-    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
-  >
-  </app-profile-lifestyle-info-input>
+  <!-- Lifestyle Profile -->
+ <app-profile-lifestyle-info-input
+  *ngIf="stepper === 6"
+  class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+  [smokeList]="smokeList"
+  [alcoholList]="alcoholList"
+  [wantKidsList]="wantKidsList"
+  [maritalStatusList]="maritalStatusList"
+  (selectionChange)="onLifestyleInfoChange($event)"
+>
+</app-profile-lifestyle-info-input>
 </div>

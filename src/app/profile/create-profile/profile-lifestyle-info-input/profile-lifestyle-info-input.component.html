@@ -1,62 +1,92 @@
 <div class="fh-5 fw-bold mt-3">Lifestyle</div>
 <div class="row mt-4">
+
+  <!-- Smoke typeID=17 -->
   <div class="col-md-3">
     <div class="form-group">
-      <label for="gender" class="txt-7th ft-5"
-        >Do you smoke?<span class="txt-2nd">&nbsp;*</span></label
-      >
-      <select class="form-control form-control-sm mt-2" id="gender">
-        <option>No</option>
-        <option>Yes</option>
+      <label class="txt-7th ft-5">
+        Do you smoke?<span class="txt-2nd">&nbsp;*</span>
+      </label>
+      <select
+        class="form-control form-control-sm mt-2"
+        [(ngModel)]="selectedSmoke"
+        (change)="onFieldChange()">
+        <option value="">Select Option</option>
+        <option *ngFor="let item of smokeList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
       </select>
     </div>
   </div>
+
+  <!-- Alcohol typeID=18 -->
   <div class="col-md-3">
     <div class="form-group">
-      <label for="gender" class="txt-7th ft-5"
-        >Do you drink Alcohol?<span class="txt-2nd">&nbsp;*</span></label
-      >
-      <select class="form-control form-control-sm mt-2" id="gender">
-        <option>No</option>
-        <option>Yes</option>
+      <label class="txt-7th ft-5">
+        Do you drink Alcohol?<span class="txt-2nd">&nbsp;*</span>
+      </label>
+      <select
+        class="form-control form-control-sm mt-2"
+        [(ngModel)]="selectedAlcohol"
+        (change)="onFieldChange()">
+        <option value="">Select Option</option>
+        <option *ngFor="let item of alcoholList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
       </select>
     </div>
   </div>
+
+  <!-- Want Kids typeID=19 -->
   <div class="col-md-3">
     <div class="form-group">
-      <label for="gender" class="txt-7th ft-5"
-        >Do you want Kids?<span class="txt-2nd">&nbsp;*</span></label
-      >
-      <select class="form-control form-control-sm mt-2" id="gender">
-        <option>No</option>
-        <option>Yes</option>
+      <label class="txt-7th ft-5">
+        Do you want Kids?<span class="txt-2nd">&nbsp;*</span>
+      </label>
+      <select
+        class="form-control form-control-sm mt-2"
+        [(ngModel)]="selectedWantKids"
+        (change)="onFieldChange()">
+        <option value="">Select Option</option>
+        <option *ngFor="let item of wantKidsList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
       </select>
     </div>
   </div>
+
+  <!-- Marital Status typeID=10 (Partner Status) -->
   <div class="col-md-3">
     <div class="form-group">
-      <label for="gender" class="txt-7th ft-5"
-        >Partner Status<span class="txt-2nd">&nbsp;*</span></label
-      >
-      <select class="form-control form-control-sm mt-2" id="gender">
-        <option>Window</option>
-        <option>un-married</option>
+      <label class="txt-7th ft-5">
+        Partner Status<span class="txt-2nd">&nbsp;*</span>
+      </label>
+      <select
+        class="form-control form-control-sm mt-2"
+        [(ngModel)]="selectedMaritalStatus"
+        (change)="onFieldChange()">
+        <option value="">Select Status</option>
+        <option *ngFor="let item of maritalStatusList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
       </select>
     </div>
+  </div>
+
+</div>
+
+
+<!-- Social Media Section -->
+<div class="row mt-3">
+  <div class="col-md-12">
+    <label class="txt-7th ft-5">
+      Any Social Media Handler Link (This helps admins verify your profile more
+      quickly. You can share your Instagram, Facebook, or other social media
+      handles. It will only be shared with people you match with)
+    </label>
   </div>
 </div>
 
-<!-- row-02 -->
-<div class="row mt-3">
-  <div class="col-md-12">
-    <label for="gender" class="txt-7th ft-5"
-      >Any Social Media Handler Link (This helps admins verify your profile more
-      quickly. You can share your Instagram, Facebook, or other social media
-      handles. It will only be shared with people you match with)</label
-    >
-  </div>
-</div>
-<!-- row-03 -->
 <div class="row mt-1">
   <div class="col-md-6">
     <div class="social-input">
@@ -65,6 +95,8 @@
         type="text"
         class="form-control form-control-sm"
         placeholder="Facebook Link..........."
+        [(ngModel)]="facebookLink"
+        (ngModelChange)="onFieldChange()"
       />
     </div>
   </div>
@@ -75,12 +107,13 @@
         type="text"
         class="form-control form-control-sm"
         placeholder="Instagram Link..........."
+        [(ngModel)]="instagramLink"
+        (ngModelChange)="onFieldChange()"
       />
     </div>
   </div>
 </div>
 
-<!-- row-04 -->
 <div class="row">
   <div class="col-md-6">
     <div class="social-input">
@@ -89,6 +122,8 @@
         type="text"
         class="form-control form-control-sm"
         placeholder="Tiktok Link..........."
+        [(ngModel)]="tiktokLink"
+        (ngModelChange)="onFieldChange()"
       />
     </div>
   </div>
@@ -99,6 +134,8 @@
         type="text"
         class="form-control form-control-sm"
         placeholder="Snapchat Link..........."
+        [(ngModel)]="snapchatLink"
+        (ngModelChange)="onFieldChange()"
       />
     </div>
   </div>
