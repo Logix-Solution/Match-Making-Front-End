@@ -47,24 +47,31 @@ export class LoginComponent {
 
       this.authService
         .login(this.email, this.password)
+       
         .pipe(first())
+        
         .subscribe(
           (data) => {
+            console.log('Login successful:', data);
             this.isLoading = false;
             this.valid.apiSuccessResponse('Login Successful!');
             
             // Redirect based on role
             const roleId = data.roleId;
-            if (roleId === 3) {
-              this.router.navigate(['core/home']);
-            } else {
-              this.router.navigate(['core/dashboard']);
+            if (roleId === 2) {
+              this.router.navigate(['/']);
+            } else if (roleId === 1){
+              this.router.navigate(['/adminDashboard']);
+            }
+            else {
+              this.router.navigate(['/']);
             }
           },
           (error) => {
             this.isLoading = false;
             console.error('Login error:', error);
             this.valid.apiErrorResponse('Invalid email or password');
+          
           }
         );
     }

@@ -34,9 +34,9 @@ export class SharedAuthService {
  login(email: string, password: string): Observable<UserInterface> {
 
   return this.http
-    .post<UserInterface>(environment.apiUrl + 'auth-api/mobile-auth', { 
-      email: email, 
-      password: password, 
+    .post<UserInterface>(environment.apiUrl + 'auth-api/auth', { 
+     Loginname: email,
+  hashpassword: password,
    
     })
     .pipe(
