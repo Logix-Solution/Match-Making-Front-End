@@ -5,11 +5,15 @@
 export const environment = {
   production: false,
   envName: 'prod',
-  apiUrlauth: 'http://localhost:11011/',
-  // apiUrlauth: 'http://159.69.174.28:11011/',
-  
+  // ////////localhost //////////////
 
    apiUrl: 'http://localhost:11011/',
+  apiUrlauth: 'http://localhost:11011/',
+
+
+  /////for live server api//////////
+
+  // apiUrlauth: 'http://159.69.174.28:11011/',
   // apiUrl: 'http://159.69.174.28:11011/',
 
   imageUrl: 'C:/inetpub/wwwroot/',
