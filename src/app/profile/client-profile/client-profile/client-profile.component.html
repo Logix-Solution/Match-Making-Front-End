@@ -1,94 +1,144 @@
-<div
-  class="container-fluid d-flex flex-column h-100 bg-5th scroll-verticle style-1"
->
-  <!-- main info -->
-  <div class="d-flex flex-row justify-content-center pt-3 gap-5">
-    <div class="d-flex flex-column align-items-center">
-      <img
-        src="../../../../assets/images/client-profile-main.png"
-        alt=""
-        class="client-profile-img"
-      />
-      <div class="text-uppercase txt-8th fh-5 fw-bold mt-2">Salif Saif</div>
-      <div class="ft-3 txt-7th">26 Years</div>
-      <div class="ft-3 txt-7th d-flex flex-row">
-        <div class="locationPinIcon"></div>
-        &nbsp;&nbsp;Islamabad, Pakistan
-      </div>
-    </div>
-    <div class="d-flex flex-column justify-content-center align-items-center">
-      <div class="d-flex flex-row gap-3">
-        <div
-          class="bg-4th mat-elevation-z25 rounded-2 pt-2 pb-2 text-center"
-          style="width: 180px; height: 68px"
-        >
-          <div class="d-flex flex-row gap-2 justify-content-center txt-7th">
-            <span class="occupationIcon txt-7th"></span> OCCUPATION
-          </div>
-          <div class="fh-6 mt-1 txt-8th">Engineer</div>
+<div class="container-fluid bg-5th p-1 p-md-2 d-flex flex-column h-100 scroll-verticle style-1">
+  <div class="row g-3  mx-auto">
+
+    <!-- LEFT SIDEBAR -->
+    <div class="col-12 col-xl-3">
+      <div class="bg-6th rounded-4 p-2 mat-elevation-z2 text-center d-flex flex-column align-items-center gap-2 py-3">
+
+        <!-- Avatar -->
+        <div class="avatar-frame position-relative">
+          <img [src]="profileHeader.avatar" alt="Profile Avatar"
+               class="rounded-circle img-fluid border p-1"
+               style="width: 120px; height: 120px; object-fit: cover;">
         </div>
-        <div
-          class="bg-4th mat-elevation-z25 rounded-2 pt-2 pb-2 text-center"
-          style="width: 180px; height: 68px"
-        >
-          <div class="d-flex flex-row gap-2 justify-content-center txt-7th">
-            <span class="profile-statusIcon txt-7th"></span> STATUS
+
+        <!-- Name & Location -->
+        <div>
+          <h2 class="text-uppercase txt-8th fh-4 fw-bold mb-0 letter-spacing-sm">{{ profileHeader.name }}</h2>
+          <div class="ft-4 txt-7th">{{ profileHeader.age }}</div>
+          <div class="ft-5 txt-7th d-flex align-items-center justify-content-center gap-1 mt-1">
+            <i class="bi bi-geo-alt-fill"></i> {{ profileHeader.location }}
           </div>
-          <div class="fh-6 mt-1 txt-8th">UnMarried</div>
         </div>
+
+        <!-- Occupation & Status Pills -->
+        <div class="w-100 d-flex gap-2 justify-content-center mt-1">
+          <div class="rounded-3 py-1 px-2 text-center bg-4th" style="min-width: 80px;">
+            <div class="ft-6 txt-7th fw-bold text-uppercase">
+              <i class="bi bi-briefcase ft-6"></i> Occupation
+            </div>
+            <div class="ft-5 txt-8th fw-bold mt-1">{{ profileHeader.occupation }}</div>
+          </div>
+          <div class="rounded-3 py-1 px-2 text-center bg-4th" style="min-width: 80px;">
+            <div class="ft-6 txt-7th fw-bold text-uppercase">
+              <i class="bi bi-heart-fill ft-6"></i> Status
+            </div>
+            <div class="ft-5 txt-8th fw-bold mt-1">{{ profileHeader.status }}</div>
+          </div>
+        </div>
+
+        <!-- Edit Button -->
+        <button mat-button class="btnPrimary mat-elevation-z1 w-100 py-2 mt-1">
+          Edit Profile
+        </button>
+
       </div>
-      <button mat-button class="btnPrimary mat-elevation-z1 mt-3 w-100">
-        Edit Profile
-      </button>
     </div>
-  </div>
-  <!-- about info-->
-  <div class="row px-5 mt-3">
-    <div
-      class="col-md-12 rounded-4 bg-white px-3 py-3 mat-elevation-z2 txt-8th"
-    >
-      <div class="fh-6 pb-2 d-flex flex-row gap-2 txt-8th">
-        <span class="personIcon"></span>
-        About Me
+
+    <!-- RIGHT CONTENT -->
+    <div class="col-12 col-xl-9">
+      <div class="d-flex flex-column gap-3">
+
+        <!-- About Me -->
+        <div class="bg-6th rounded-4 p-3 mat-elevation-z2 txt-8th">
+          <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
+            <i class="bi bi-person-circle text-secondary"></i> About Me
+          </div>
+          <p class="txt-7th ft-4 mt-2 mb-0 lh-base">{{ aboutText1 }}</p>
+        </div>
+
+        <!-- Education & Career - Full Width -->
+        <ng-container *ngIf="getSectionByTitle('Education & Career') as eduSection">
+          <div class="bg-6th rounded-4 p-3 mat-elevation-z2 txt-8th">
+            <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
+              <i class="{{ eduSection.iconClass }} text-secondary"></i> {{ eduSection.title }}
+            </div>
+            <div class="row mt-1">
+              <div class="col-6" *ngFor="let item of eduSection.items">
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50">
+                  <span class="ft-4 txt-7th">{{ item.description }}</span>
+                  <span class="ft-4 fw-bold txt-8th">{{ item.value }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+    
+
       </div>
-      <p class="txt-7th ft-4 justify-text mt-2">
-        British Pakistani Sunni Muslim, age 29 , 5ft4, West York's. Language:
-        English and Urdu. Educated at (BGGS). BA in Criminology and Criminal
-        Justice (Hons) and a Master's in Counter-Terrorism. Completed around two
-        years of an Alimah course at Girls College, Burnley. Currently working
-        in a school. Observes hijab and modest dress. Tries to read 5 daily
-        salah, Alhamdulillah. Celebrates khatam and Milaad. Cheerful, friendly
-        and family-oriented with a balanced understanding of deen and dunya.
-        Enjoys spending time with family and friends. Willing to meet initially
-        in the presence of a mehram. Seeking a practicing Muslim (preferably
-        Pakistani), aged 27+, with good character,
-      </p>
-      <p class="txt-7th ft-4">
-        respectful, caring and family-oriented. Looking for someone responsible,
-        independent and understanding of marital duties. Preferably degree
-        educated and non-smoker. British nationals preferred; professionals in
-        medical, engineering, teaching or other fields, including those on UK
-        skilled work visas, may be considered.
-      </p>
     </div>
+
   </div>
 
-  <!-- details -->
-  <div class="row px-4 mt-3">
-    <div class="col-md-3 px-4">
-      <div class="bg-6th rounded-3 p-3 mat-elevation-z2">
-        <div class="fh-6 pb-2 d-flex flex-row gap-2 txt-8th">
-          <span class="personIcon"></span>
-          About Me
+      <!-- Personal Info | Lifestyle | Appearance — 3 columns -->
+        <div class="row g-3 mt-2">
+          <div class="col-12 col-md-4"
+               *ngFor="let sec of [
+                 getSectionByTitle('Personal Information'),
+                 getSectionByTitle('Lifestyle'),
+                 getSectionByTitle('Appearance')
+               ]">
+            <div *ngIf="sec" class="bg-6th rounded-4 p-3 mat-elevation-z2 txt-8th h-100">
+              <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
+                <i class="{{ sec.iconClass }} text-secondary"></i> {{ sec.title }}
+              </div>
+              <div class="mt-1">
+                <div *ngFor="let item of sec.items"
+                     class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50">
+                  <span class="ft-5 txt-7th">{{ item.description }}</span>
+                  <span class="ft-5 fw-bold txt-8th text-end">{{ item.value }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div
-          *ngFor="let item of personalInfoList"
-          class="d-flex flex-row justify-content-between py-1"
-        >
-          <div class="ft-4">{{ item.description }}</div>
-          <div class="ft-4">{{ item.value }}</div>
+
+        <!-- Religion (col-4) | Family (col-8) -->
+        <div class="row g-3 mt-2">
+
+          <!-- Religion -->
+          <div class="col-12 col-md-4" *ngIf="getSectionByTitle('Religion') as relSection">
+            <div class="bg-6th rounded-4 p-3 mat-elevation-z2 txt-8th h-100">
+              <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
+                <i class="{{ relSection.iconClass }} text-secondary"></i> {{ relSection.title }}
+              </div>
+              <div class="mt-1">
+                <div *ngFor="let item of relSection.items"
+                     class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50">
+                  <span class="ft-5 txt-7th">{{ item.description }}</span>
+                  <span class="ft-5 fw-bold txt-8th text-end">{{ item.value }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Family -->
+          <div class="col-12 col-md-8" *ngIf="getSectionByTitle('Family') as famSection">
+            <div class="bg-6th rounded-4 p-3 mat-elevation-z2 txt-8th h-100">
+              <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
+                <i class="{{ famSection.iconClass }} text-secondary"></i> {{ famSection.title }}
+              </div>
+              <div class="row mt-1 row-cols-1 row-cols-sm-2">
+                <div class="col" *ngFor="let item of famSection.items">
+                  <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50">
+                    <span class="ft-5 txt-7th">{{ item.description }}</span>
+                    <span class="ft-5 fw-bold txt-8th text-end">{{ item.value }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
-      </div>
-    </div>
-  </div>
 </div>

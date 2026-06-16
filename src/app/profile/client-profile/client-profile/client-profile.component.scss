@@ -1,0 +1,30 @@
+/* Unique styling hooks for structural parameters */
+.avatar-frame {
+  display: inline-block;
+  padding: 4px;
+  border-radius: 50%;
+  border: 2px dashed var(--2nd); /* Brown dashed frame ring overlay */
+}
+
+.border-light {
+  border-color: #f1f2f4 !important;
+}
+
+/* Ensure text line-height flows comfortably */
+.lh-base {
+  line-height: 1.6 !important;
+}
+
+/* Constrain content alignment boundaries for extremely large viewport displays */
+.max-width-xxl {
+  max-width: 1440px;
+}
+
+/* Clean micro adjustments for material properties overrides */
+:host ::ng-deep {
+  .btnPrimary {
+    border-radius: 8px !important;
+    text-transform: none !important;
+    font-weight: 600;
+  }
+}
