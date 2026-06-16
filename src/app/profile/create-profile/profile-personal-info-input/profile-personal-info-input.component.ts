@@ -31,7 +31,14 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
   selectedCity: any = '';
   selectedCountryCode: string = '';
 
+
+  documentType: 'selection' | 'cnic' | 'passport' = 'selection';
+
   ngOnInit() {}
+
+  setDocumentType(type: 'selection' | 'cnic' | 'passport'): void {
+    this.documentType = type;
+  }
 
 
   onCountryChange() {

@@ -1,0 +1,13 @@
+.cp {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.02) !important;
+    transform: translateY(-2px);
+  }
+}
+
+.z-3 {
+  z-index: 3 !important;
+}
