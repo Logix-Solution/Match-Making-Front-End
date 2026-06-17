@@ -1,34 +1,38 @@
 <div class="">
   <div class="fh-5 fw-bold mt-3">Personal Information</div>
-  
+
+  <!-- ─── Row 1: Name, Gender, DOB, Phone, CNIC ─────── -->
   <div class="row g-2 align-items-end mt-4">
-    
+
+    <!-- Full Name -->
     <div class="col" style="flex: 0 0 24%;">
       <div class="form-group">
-        <label class="txt-7th ft-6 fw-bold text-uppercase tracking-wider small mb-1" style="font-size: 11px;">
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
           Full Name (Cannot be changed once approved)<span class="text-danger">&nbsp;*</span>
         </label>
         <input
           type="text"
-          class="form-control  border-0 px-3 rounded-pill"
+          class="form-control border-0 px-3 rounded-pill"
           placeholder="Enter your full name"
+          [(ngModel)]="firstName"
+          (ngModelChange)="onFieldChange()"
           style="height: 42px; font-size: 13px;"
         />
       </div>
     </div>
 
+    <!-- Gender -->
     <div class="col" style="flex: 0 0 14%;">
       <div class="form-group">
-        <label class="txt-7th ft-6 fw-bold text-uppercase tracking-wider small mb-1" style="font-size: 11px;">
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
           Gender<span class="text-danger">&nbsp;*</span>
         </label>
         <select
-          class="form-select  border-0 px-3 rounded-pill"
+          class="form-select border-0 px-3 rounded-pill"
           [(ngModel)]="selectedGender"
           (change)="onFieldChange()"
-          style="height: 42px; font-size: 13px; appearance: none !important; -webkit-appearance: none !important;"
-        >
-          <option value="">Select gender</option>
+          style="height: 42px; font-size: 13px; appearance: none !important;">
+          <option value="">Select Gender</option>
           <option *ngFor="let item of genderList" [value]="item.subTypeID">
             {{ item.subTypeTitle }}
           </option>
@@ -36,35 +40,38 @@
       </div>
     </div>
 
+    <!-- Date of Birth -->
     <div class="col" style="flex: 0 0 20%;">
       <div class="form-group">
-        <label class="txt-7th  fw-bold text-uppercase tracking-wider small mb-1" style="font-size: 8px;">
+        <label class="txt-7th fw-bold text-uppercase mb-1" style="font-size: 8px;">
           Date of Birth (Cannot be changed once approved)<span class="text-danger">&nbsp;*</span>
         </label>
-        <input 
-          type="text" 
+        <input
+          type="text"
           placeholder="DD/MM/YYYY"
           onfocus="(this.type='date')"
           onblur="(this.value ? this.type='date' : this.type='text')"
-          class="form-control  border-0 px-3 rounded-pill" 
-          style="height: 42px; font-size: 13px;" 
+          class="form-control border-0 px-3 rounded-pill"
+          [(ngModel)]="dob"
+          (ngModelChange)="onFieldChange()"
+          style="height: 42px; font-size: 13px;"
         />
       </div>
     </div>
 
+    <!-- Phone Number -->
     <div class="col" style="flex: 0 0 24%;">
       <div class="form-group">
-        <label class="txt-7th ft-6 fw-bold text-uppercase tracking-wider small mb-1" style="font-size: 11px;">
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
           Phone Number<span class="text-danger">&nbsp;*</span>
         </label>
         <div class="d-flex flex-row gap-1 w-100">
           <div style="width: 32%;">
             <select
-              class="form-select  border-0 text-center rounded-pill ps-2 pe-3"
+              class="form-select border-0 text-center rounded-pill ps-2 pe-3"
               [(ngModel)]="selectedCountryCode"
               (change)="onFieldChange()"
-              style="height: 42px; font-size: 13px; appearance: none !important; -webkit-appearance: none !important;"
-            >
+              style="height: 42px; font-size: 13px; appearance: none !important;">
               <option value="">+92</option>
               <option *ngFor="let item of countryList" [value]="item.country_code">
                 {{ item.country_code }}
@@ -74,8 +81,10 @@
           <div style="width: 68%;">
             <input
               type="text"
-              class="form-control  border-0 px-3 rounded-pill"
+              class="form-control border-0 px-3 rounded-pill"
               placeholder="3001234567"
+              [(ngModel)]="phoneNumber"
+              (ngModelChange)="formatPhone()"
               style="height: 42px; font-size: 13px;"
             />
           </div>
@@ -83,15 +92,18 @@
       </div>
     </div>
 
+    <!-- CNIC -->
     <div class="col" style="flex: 0 0 18%;">
       <div class="form-group">
-        <label class="txt-7th ft-6 fw-bold text-uppercase tracking-wider small mb-1" style="font-size: 11px;">
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
           CNIC Number<span class="text-danger">&nbsp;*</span>
         </label>
         <input
           type="text"
-          class="form-control  border-0 px-3 rounded-pill"
+          class="form-control border-0 px-3 rounded-pill"
           placeholder="xxxxx-xxxxxxx-x"
+          [(ngModel)]="cnic"
+          (ngModelChange)="formatCNIC()"
           style="height: 42px; font-size: 13px;"
         />
       </div>
@@ -99,18 +111,20 @@
 
   </div>
 
+  <!-- ─── Row 2: Country, City, Nationality, Cast, Ethnicity ── -->
   <div class="row g-2 align-items-end mt-4">
+
+    <!-- Country -->
     <div class="col-md-2">
       <div class="form-group">
-        <label class="txt-7th ft-6 fw-bold text-uppercase tracking-wider small mb-1" style="font-size: 11px;">
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
           Country<span class="text-danger">&nbsp;*</span>
         </label>
         <select
-          class="form-select  border-0 px-3 rounded-pill"
+          class="form-select border-0 px-3 rounded-pill"
           [(ngModel)]="selectedCountry"
           (change)="onCountryChange()"
-          style="height: 42px; font-size: 13px; appearance: none !important; -webkit-appearance: none !important;"
-        >
+          style="height: 42px; font-size: 13px; appearance: none !important;">
           <option value="">Select Country</option>
           <option *ngFor="let item of countryList" [value]="item.country_id">
             {{ item.country_name }}
@@ -119,17 +133,17 @@
       </div>
     </div>
 
+    <!-- City -->
     <div class="col-md-2">
       <div class="form-group">
-        <label class="txt-7th ft-6 fw-bold text-uppercase tracking-wider small mb-1" style="font-size: 11px;">
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
           City<span class="text-danger">&nbsp;*</span>
         </label>
         <select
-          class="form-select  border-0 px-3 rounded-pill"
+          class="form-select border-0 px-3 rounded-pill"
           [(ngModel)]="selectedCity"
           (change)="onFieldChange()"
-          style="height: 42px; font-size: 13px; appearance: none !important; -webkit-appearance: none !important;"
-        >
+          style="height: 42px; font-size: 13px; appearance: none !important;">
           <option value="">Select City</option>
           <option *ngFor="let item of cityList" [value]="item.city_id">
             {{ item.city_name }}
@@ -138,17 +152,17 @@
       </div>
     </div>
 
+    <!-- Nationality -->
     <div class="col-md-2">
       <div class="form-group">
-        <label class="txt-7th ft-6 fw-bold text-uppercase tracking-wider small mb-1" style="font-size: 11px;">
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
           Nationality<span class="text-danger">&nbsp;*</span>
         </label>
         <select
-          class="form-select  border-0 px-3 rounded-pill"
+          class="form-select border-0 px-3 rounded-pill"
           [(ngModel)]="selectedNationality"
           (change)="onFieldChange()"
-          style="height: 42px; font-size: 13px; appearance: none !important; -webkit-appearance: none !important;"
-        >
+          style="height: 42px; font-size: 13px; appearance: none !important;">
           <option value="">Select Nationality</option>
           <option *ngFor="let item of nationalityList" [value]="item.subTypeID">
             {{ item.subTypeTitle }}
@@ -157,17 +171,17 @@
       </div>
     </div>
 
+    <!-- Cast -->
     <div class="col-md-3">
       <div class="form-group">
-        <label class="txt-7th ft-6 fw-bold text-uppercase tracking-wider small mb-1" style="font-size: 11px;">
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
           Cast<span class="text-danger">&nbsp;*</span>
         </label>
         <select
-          class="form-select  border-0 px-3 rounded-pill"
+          class="form-select border-0 px-3 rounded-pill"
           [(ngModel)]="selectedCast"
           (change)="onFieldChange()"
-          style="height: 42px; font-size: 13px; appearance: none !important; -webkit-appearance: none !important;"
-        >
+          style="height: 42px; font-size: 13px; appearance: none !important;">
           <option value="">Select Cast</option>
           <option *ngFor="let item of castList" [value]="item.subTypeID">
             {{ item.subTypeTitle }}
@@ -176,17 +190,17 @@
       </div>
     </div>
 
+    <!-- Ethnicity -->
     <div class="col-md-3">
       <div class="form-group">
-        <label class="txt-7th ft-6 fw-bold text-uppercase tracking-wider small mb-1" style="font-size: 11px;">
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
           Ethnicity<span class="text-danger">&nbsp;*</span>
         </label>
         <select
-          class="form-select  border-0 px-3 rounded-pill"
+          class="form-select border-0 px-3 rounded-pill"
           [(ngModel)]="selectedEthnicity"
           (change)="onFieldChange()"
-          style="height: 42px; font-size: 13px; appearance: none !important; -webkit-appearance: none !important;"
-        >
+          style="height: 42px; font-size: 13px; appearance: none !important;">
           <option value="">Select Ethnicity</option>
           <option *ngFor="let item of ethnicityList" [value]="item.subTypeID">
             {{ item.subTypeTitle }}
@@ -194,50 +208,104 @@
         </select>
       </div>
     </div>
+
   </div>
 
+  <!-- ─── About Me ──────────────────────────────────── -->
   <div class="row mt-4">
     <div class="col-md-12">
       <div class="form-group">
-        <label class="txt-7th ft-6 fw-bold text-uppercase tracking-wider small mb-1" style="font-size: 11px;">
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
           About Me<span class="text-danger">&nbsp;*</span>
         </label>
         <textarea
-          class="form-control  border-0 p-3"
-          id="message"
+          class="form-control border-0 p-3"
           rows="4"
           placeholder="Tell Us About Your Self.........."
-          style="border-radius: 16px; font-size: 13px;"
-        ></textarea>
+          [(ngModel)]="aboutMe"
+          (ngModelChange)="onFieldChange()"
+          style="border-radius: 16px; font-size: 13px;">
+        </textarea>
       </div>
     </div>
   </div>
 
+  <!-- ─── Upload Section ────────────────────────────── -->
   <div class="row mt-2">
-    <div class="col-md-3 px-2 d-flex flex-column">
-      <div class="txt-7th ft-5">
-        Profile Picture <span class="txt-2nd">&nbsp;*</span>
-      </div>
-      <div class="bg-6th border-6th rounded-3 mat-elevation-z2 d-flex flex-column align-items-center ft-5 py-3">
-        <div class="bg-6th rounded-circle p-2 mat-elevation-z1 d-flex flex-row justify-content-center align-items-center">
-          <div class="uploadIcon"></div>
-        </div>
-        <div class="fh-6 mt-2">Drag and drop or click to browse</div>
-        <div class="ft-6 mt-3 txt-7th">No file chosen</div>
-      </div>
-    </div>
 
+    <!-- Profile Picture -->
+ <!-- Profile Picture -->
+<div class="col-md-3 px-2 d-flex flex-column">
+  <div class="txt-7th ft-5">
+    Profile Picture <span class="txt-2nd">&nbsp;*</span>
+  </div>
+
+  <!-- Hidden input -->
+  <input
+    type="file"
+    id="profilePicInput"
+    accept="image/*"
+    style="display:none"
+    (change)="onProfilePictureSelected($event)"
+  />
+
+  <!-- Preview -->
+  <div
+    *ngIf="profilePicturePreview; else profileUploadBox"
+    class="bg-6th border-6th rounded-3 mat-elevation-z2 d-flex flex-column align-items-center ft-5 py-2 position-relative"
+    style="cursor:pointer;"
+    (click)="profilePicInput.click()"
+  >
+    <img
+      [src]="profilePicturePreview"
+      alt="Profile"
+      class="rounded-3"
+      style="width:100%; height:120px; object-fit:cover;"
+    />
+    <button
+      class="btn btn-sm btn-danger rounded-circle position-absolute"
+      style="top:4px; right:4px; width:24px; height:24px; padding:0; font-size:11px;"
+      (click)="$event.stopPropagation(); removeProfilePicture()"
+    >x</button>
+  </div>
+
+  <!-- Upload Box -->
+  <ng-template #profileUploadBox>
+    <div
+      class="bg-6th border-6th rounded-3 mat-elevation-z2 d-flex flex-column align-items-center ft-5 py-3"
+      style="cursor:pointer;"
+      (click)="profilePicInput.click()"
+    >
+      <div class="bg-6th rounded-circle p-2 mat-elevation-z1 d-flex flex-row justify-content-center align-items-center">
+        <div class="uploadIcon"></div>
+      </div>
+      <div class="fh-6 mt-2">Drag and drop or click to browse</div>
+      <div class="ft-6 mt-3 txt-7th">No file chosen</div>
+    </div>
+  </ng-template>
+
+  <input #profilePicInput type="file" accept="image/*" style="display:none"
+         (change)="onProfilePictureSelected($event)" />
+</div>
+
+    <!-- Document Upload — CNIC / Passport Switcher -->
     <div class="col-md-3 px-2 d-flex flex-column" [ngSwitch]="documentType">
+
+      <!-- Selection -->
       <div *ngSwitchCase="'selection'" class="w-100 d-flex flex-column">
         <div class="txt-7th ft-5">SELECT YOUR CHOICE <span class="txt-2nd">&nbsp;*</span></div>
         <div class="d-flex flex-row gap-3 mt-1">
-          <div (click)="setDocumentType('cnic')" class="flex-fill bg-6th border-6th rounded-3 mat-elevation-z2 d-flex flex-column align-items-center justify-content-center cp py-4" style="cursor: pointer; transition: transform 0.2s;">
+          <div (click)="setDocumentType('cnic')"
+               class="flex-fill bg-6th border-6th rounded-3 mat-elevation-z2 d-flex flex-column align-items-center justify-content-center py-4"
+               style="cursor: pointer;">
             <div class="bg-6th rounded-circle p-2 mat-elevation-z1 mb-1">
               <i class="bi bi-card-heading text-dark fs-5"></i>
             </div>
             <div class="fw-bold text-dark text-uppercase fh-6">CNIC</div>
           </div>
-          <div (click)="setDocumentType('passport')" class="flex-fill bg-6th border-6th rounded-3 mat-elevation-z2 d-flex flex-column align-items-center justify-content-center cp py-4" style="cursor: pointer; transition: transform 0.2s;">
+          <div (click)="setDocumentType('passport')"
+               class="flex-fill bg-6th border-6th rounded-3 mat-elevation-z2 d-flex flex-column align-items-center justify-content-center py-4"
+               style="cursor: pointer;">
             <div class="bg-6th rounded-circle p-2 mat-elevation-z1 mb-1">
               <i class="bi bi-journal-bookmark text-dark fs-5"></i>
             </div>
@@ -246,79 +314,189 @@
         </div>
       </div>
 
-      <div *ngSwitchCase="'cnic'" class="w-100 d-flex flex-column">
-        <div class="txt-7th ft-5">YOUR CNIC (Front & Back) <span class="txt-2nd">&nbsp;*</span></div>
-        <div class="d-flex flex-row gap-3 mt-1 position-relative">
-          <button (click)="setDocumentType('selection')" class="btn btn-sm btn-light mat-elevation-z1 rounded-circle position-absolute start-0 translate-middle-x top-50 translate-middle-y z-3 border" style="width: 32px; height: 32px; padding: 0; left: -10px !important;">
-            <i class="bi bi-arrow-left"></i>
-          </button>
-          <div class="flex-fill bg-6th border-6th rounded-3 mat-elevation-z2 d-flex flex-column align-items-center justify-content-center ft-5 py-3">
-            <div class="bg-6th rounded-circle p-2 mat-elevation-z1"><div class="uploadIcon"></div></div>
-            <div class="fh-6 mt-1 fw-bold">ID Front</div>
-            <div class="ft-6 mt-1 txt-7th">No file chosen</div>
-          </div>
-          <div class="flex-fill bg-6th border-6th rounded-3 mat-elevation-z2 d-flex flex-column align-items-center justify-content-center ft-5 py-3">
-            <div class="bg-6th rounded-circle p-2 mat-elevation-z1"><div class="uploadIcon"></div></div>
-            <div class="fh-6 mt-1 fw-bold">ID Back</div>
-            <div class="ft-6 mt-1 txt-7th">No file chosen</div>
-          </div>
-        </div>
-      </div>
+      <!-- CNIC Front & Back -->
+    <div *ngSwitchCase="'cnic'" class="w-100 d-flex flex-column">
+  <div class="txt-7th ft-5">YOUR CNIC (Front & Back) <span class="txt-2nd">&nbsp;*</span></div>
+  <div class="d-flex flex-row gap-3 mt-1 position-relative">
+    <button (click)="setDocumentType('selection')"
+            class="btn btn-sm btn-light mat-elevation-z1 rounded-circle position-absolute border z-3"
+            style="width:32px; height:32px; padding:0; left:-10px; top:50%; transform:translateY(-50%);">
+      <i class="bi bi-arrow-left"></i>
+    </button>
 
-      <div *ngSwitchCase="'passport'" class="w-100 d-flex flex-column">
-        <div class="txt-7th ft-5">YOUR PASSPORT <span class="txt-2nd">&nbsp;*</span></div>
-        <div class="w-100 mt-1 position-relative">
-          <button (click)="setDocumentType('selection')" class="btn btn-sm btn-light mat-elevation-z1 rounded-circle position-absolute start-0 translate-middle-x top-50 translate-middle-y z-3 border" style="width: 32px; height: 32px; padding: 0; left: -10px !important;">
-            <i class="bi bi-arrow-left"></i>
-          </button>
-          <div class="bg-6th border-6th rounded-3 mat-elevation-z2 d-flex flex-column align-items-center justify-content-center ft-5 py-3 w-100">
-            <div class="bg-6th rounded-circle p-2 mat-elevation-z1"><div class="uploadIcon"></div></div>
-            <div class="fh-6 mt-2">Drag and drop or click to browse</div>
-            <div class="ft-6 mt-2 txt-7th">No file chosen</div>
-          </div>
+    <!-- CNIC Front -->
+    <input #cnicFrontInput type="file" accept="image/*,application/pdf" style="display:none"
+           (change)="onCnicFrontSelected($event)" />
+    <div
+      class="flex-fill bg-6th border-6th rounded-3 mat-elevation-z2 d-flex flex-column align-items-center justify-content-center ft-5 py-3 position-relative"
+      style="cursor:pointer;"
+      (click)="cnicFrontInput.click()"
+    >
+      <ng-container *ngIf="cnicFrontPreview; else cnicFrontPlaceholder">
+        <img [src]="cnicFrontPreview" alt="CNIC Front"
+             class="rounded-2" style="width:100%; height:90px; object-fit:cover;" />
+        <button class="btn btn-sm btn-danger rounded-circle position-absolute"
+                style="top:4px; right:4px; width:22px; height:22px; padding:0; font-size:10px;"
+                (click)="$event.stopPropagation(); removeCnicFront()">x</button>
+      </ng-container>
+      <ng-template #cnicFrontPlaceholder>
+        <div class="bg-6th rounded-circle p-2 mat-elevation-z1">
+          <div class="uploadIcon"></div>
         </div>
-      </div>
+        <div class="fh-6 mt-1 fw-bold">ID Front</div>
+        <div class="ft-6 mt-1 txt-7th">No file chosen</div>
+      </ng-template>
     </div>
 
+    <!-- CNIC Back -->
+    <input #cnicBackInput type="file" accept="image/*,application/pdf" style="display:none"
+           (change)="onCnicBackSelected($event)" />
+    <div
+      class="flex-fill bg-6th border-6th rounded-3 mat-elevation-z2 d-flex flex-column align-items-center justify-content-center ft-5 py-3 position-relative"
+      style="cursor:pointer;"
+      (click)="cnicBackInput.click()"
+    >
+      <ng-container *ngIf="cnicBackPreview; else cnicBackPlaceholder">
+        <img [src]="cnicBackPreview" alt="CNIC Back"
+             class="rounded-2" style="width:100%; height:90px; object-fit:cover;" />
+        <button class="btn btn-sm btn-danger rounded-circle position-absolute"
+                style="top:4px; right:4px; width:22px; height:22px; padding:0; font-size:10px;"
+                (click)="$event.stopPropagation(); removeCnicBack()">x</button>
+      </ng-container>
+      <ng-template #cnicBackPlaceholder>
+        <div class="bg-6th rounded-circle p-2 mat-elevation-z1">
+          <div class="uploadIcon"></div>
+        </div>
+        <div class="fh-6 mt-1 fw-bold">ID Back</div>
+        <div class="ft-6 mt-1 txt-7th">No file chosen</div>
+      </ng-template>
+    </div>
+
+  </div>
+</div>
+
+    
+      <!-- Passport -->
+<div *ngSwitchCase="'passport'" class="w-100 d-flex flex-column">
+  <div class="txt-7th ft-5">YOUR PASSPORT <span class="txt-2nd">&nbsp;*</span></div>
+  <div class="w-100 mt-1 position-relative">
+    <button (click)="setDocumentType('selection')"
+            class="btn btn-sm btn-light mat-elevation-z1 rounded-circle position-absolute border z-3"
+            style="width:32px; height:32px; padding:0; left:-10px; top:50%; transform:translateY(-50%);">
+      <i class="bi bi-arrow-left"></i>
+    </button>
+
+    <input #passportInput type="file" accept="image/*,application/pdf" style="display:none"
+           (change)="onPassportSelected($event)" />
+    <div
+      class="bg-6th border-6th rounded-3 mat-elevation-z2 d-flex flex-column align-items-center justify-content-center ft-5 py-3 w-100 position-relative"
+      style="cursor:pointer;"
+      (click)="passportInput.click()"
+    >
+      <ng-container *ngIf="passportPreview; else passportPlaceholder">
+        <img [src]="passportPreview" alt="Passport"
+             class="rounded-2" style="width:100%; height:90px; object-fit:cover;" />
+        <button class="btn btn-sm btn-danger rounded-circle position-absolute"
+                style="top:4px; right:4px; width:22px; height:22px; padding:0; font-size:10px;"
+                (click)="$event.stopPropagation(); removePassport()">x</button>
+      </ng-container>
+      <ng-template #passportPlaceholder>
+        <div class="bg-6th rounded-circle p-2 mat-elevation-z1">
+          <div class="uploadIcon"></div>
+        </div>
+        <div class="fh-6 mt-2">Drag and drop or click to browse</div>
+        <div class="ft-6 mt-2 txt-7th">No file chosen</div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+    </div>
+
+    <!-- NOTE -->
     <div class="col-md-3 d-flex flex-column">
       <div class="ft-5"><span class="txt-2nd">&nbsp;</span></div>
-      <div class="bg-6th border-6th rounded-3 d-flex flex-column py-1">
+      <div class="bg-6th border-6th rounded-3 d-flex flex-column py-1 px-2">
         <div class="txt-2nd ft-5 fw-bold">NOTE:</div>
-        <div class="ft-5 mt-1">Your CNIC/ID Card/Passport Picture<span class="txt-2nd">&nbsp;*</span></div>
-        <div class="ft-5 mt-1 txt-7th">This is required for verification purposes. It will only be visible to our admins and will be deleted after verification.</div>
+        <div class="ft-5 mt-1">
+          Your CNIC/ID Card/Passport Picture<span class="txt-2nd">&nbsp;*</span>
+        </div>
+        <div class="ft-5 mt-1 txt-7th">
+          This is required for verification purposes. It will only be visible to
+          our admins and will be deleted after verification.
+        </div>
       </div>
     </div>
 
+    <!-- Hide Photos Checkbox -->
     <div class="col-md-3 d-flex flex-column">
       <div class="ft-5"><span class="txt-2nd">&nbsp;</span></div>
       <div class="d-flex flex-row mt-1">
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+        <input
+          class="form-check-input"
+          type="checkbox"
+          [(ngModel)]="hidePhoto"
+          (ngModelChange)="onFieldChange()"
+        />
         <div class="bg-6th border-6th rounded-3 d-flex flex-column ps-2">
           <div class="ft-4 fw-bold">Hide my Photos from users I haven't matched with</div>
-          <div class="ft-5 mt-1 txt-7th">When enabled, your photos --- including your profile picture ---will remain hidden from other users until a match is made.</div>
+          <div class="ft-5 mt-1 txt-7th">
+            When enabled, your photos --- including your profile picture --- will
+            remain hidden from other users until a match is made.
+          </div>
         </div>
       </div>
     </div>
+
   </div>
 
-  <div class="d-flex flex-row ps-3 py-3 pe-5 bg-6th rounded-3 mat-elevation-z1 justify-content-between mt-3">
-    <div class="d-flex flex-row">
-      <div class="d-flex flex-row">
-        <img src="../../../../assets/images/client-profile-main.png" alt="" class="client-profile-img bg-5th" />
-        <div class="m-35-minus mt-3"><div class="bg-danger ft-5 txt-6th rounded-circle px-2">x</div></div>
-      </div>
-      <div class="m-10-minus d-flex flex-row">
-        <img src="../../../../assets/images/client-profile-main.png" alt="" class="client-profile-img bg-5th" />
-        <div class="m-35-minus mt-3"><div class="bg-danger ft-5 txt-6th rounded-circle px-2">x</div></div>
-      </div>
-      <div class="m-10-minus d-flex flex-row">
-        <img src="../../../../assets/images/client-profile-main.png" alt="" class="client-profile-img bg-5th" />
-        <div class="m-35-minus mt-3"><div class="bg-danger ft-5 txt-6th rounded-circle px-2">x</div></div>
-      </div>
+  <!-- ─── Profile Pictures Strip ───────────────────── -->
+<!-- ─── Profile Pictures Strip ───────────────────── -->
+<input #galleryInput type="file" accept="image/*" multiple style="display:none"
+       (change)="onGallerySelected($event)" />
+
+<div class="d-flex flex-row ps-3 py-3 pe-5 bg-6th rounded-3 mat-elevation-z1 justify-content-between mt-3 flex-wrap gap-2">
+
+  <!-- Thumbnails -->
+  <div class="d-flex flex-row flex-wrap gap-2">
+    <div
+      *ngFor="let img of galleryImages; let i = index"
+      class="position-relative"
+      style="width:60px; height:60px;"
+    >
+      <img
+        [src]="img.preview"
+        alt="gallery"
+        class="rounded-3 bg-5th"
+        style="width:60px; height:60px; object-fit:cover;"
+      />
+      <button
+        class="btn btn-sm btn-danger rounded-circle position-absolute"
+        style="top:-6px; right:-6px; width:20px; height:20px; padding:0; font-size:10px; line-height:1;"
+        (click)="removeGalleryImage(i)"
+      >x</button>
     </div>
-    <div class="btn-6th d-flex flex-row align-items-center mat-elevation-z1" style="cursor: pointer;">
-      <div class="rounded-circle bg-2nd px-2 text-center txt-6th me-2 ft-4">+</div>
-      <div>Add Pictures</div>
-    </div>
+
+    <!-- Placeholder slots when empty -->
+    <ng-container *ngIf="galleryImages.length === 0">
+      <div *ngFor="let x of [1,2,3]"
+           class="rounded-3 bg-5th d-flex align-items-center justify-content-center"
+           style="width:60px; height:60px; opacity:0.4;">
+        <i class="bi bi-image text-secondary fs-5"></i>
+      </div>
+    </ng-container>
   </div>
+
+  <!-- Add Pictures Button -->
+  <div
+    class="btn-6th d-flex flex-row align-items-center mat-elevation-z1"
+    style="cursor:pointer;"
+    (click)="galleryInput.click()"
+  >
+    <div class="rounded-circle bg-2nd px-2 text-center txt-6th me-2 ft-4">+</div>
+    <div>Add Pictures</div>
+  </div>
+
+</div>
+
 </div>

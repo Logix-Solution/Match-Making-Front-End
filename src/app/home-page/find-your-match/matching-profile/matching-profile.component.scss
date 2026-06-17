@@ -50,12 +50,12 @@ $primary-hex: #590117;
 .profile-card {
   background: #ffffff;
   border-radius: 20px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  // box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-
+  // transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.25s ease, ;
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.13);

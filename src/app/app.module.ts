@@ -57,6 +57,9 @@ import { AdminBestMatchComponent } from './Admin/admin-best-match/admin-best-mat
 import { PricingPlansComponent } from './pricing-plans/pricing-plans.component';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
 import { AdminDashbordComponent } from './Admin/admin-dashbord/admin-dashbord.component';
+import { ExploreMatchingComponent } from './User/explore-matching/explore-matching.component';
+import { SignInComponent } from './login/sign-in/sign-in.component';
+import { ForgetPasswordComponent } from './login/forget-password/forget-password.component';
 
 
 @NgModule({
@@ -103,6 +106,9 @@ import { AdminDashbordComponent } from './Admin/admin-dashbord/admin-dashbord.co
     PricingPlansComponent,
     AccountSettingsComponent,
     AdminDashbordComponent,
+    ExploreMatchingComponent,
+    SignInComponent,
+    ForgetPasswordComponent,
 
   ],
   imports: [

@@ -1,24 +1,27 @@
 <nav class="navbar navbar-expand-lg bg-primary py-1 px-3">
   <div class="container-fluid">
-
     <!-- LOGO -->
-    <div class="navbar-brand d-flex align-items-center websiteLogo text-decoration-none cursor-pointer"
-         routerLink="">
-    </div>
+    <div
+      class="navbar-brand d-flex align-items-center websiteLogo text-decoration-none cursor-pointer"
+      routerLink=""
+    ></div>
 
     <!-- TOGGLER -->
-    <button class="navbar-toggler border-0 shadow-none"
-            type="button"
-            (click)="toggleNav()"
-            [attr.aria-expanded]="isNavOpen">
-      <span class="navbar-toggler-icon"
-            style="filter: invert(1) sepia(1) saturate(3) hue-rotate(310deg)">
+    <button
+      class="navbar-toggler border-0 shadow-none"
+      type="button"
+      (click)="toggleNav()"
+      [attr.aria-expanded]="isNavOpen"
+    >
+      <span
+        class="navbar-toggler-icon"
+        style="filter: invert(1) sepia(1) saturate(3) hue-rotate(310deg)"
+      >
       </span>
     </button>
 
     <!-- NAV -->
     <div class="navbar-collapse" [class.collapse]="!isNavOpen">
-
       <!-- CENTER MENU -->
       <ul class="navbar-nav mx-auto mb-1 mb-lg-0 gap-lg-2 gap-xl-3">
         <li class="nav-item">
@@ -33,73 +36,101 @@
         <li class="nav-item">
           <a class="nav-link text-white">Success Stories</a>
         </li>
+        <li class="nav-item" *ngIf="currentUser?.roleId === 2">
+          <a class="nav-link text-white" routerLink="/Explore-Match"
+            >Explore Match</a
+          >
+        </li>
       </ul>
 
       <!-- ===================== -->
       <!-- NOT LOGGED IN -->
       <!-- ===================== -->
       <div *ngIf="!currentUser" class="d-flex gap-2 mt-3 mt-lg-0">
-        <button class="bg-pink rounded-pill px-4 py-1 fw-semibold"
-                routerLink="/login">
+        <button
+          class="bg-pink rounded-pill px-4 py-1 fw-semibold"
+          routerLink="/login"
+        >
           Log In
         </button>
 
-        <button class="bg-pink rounded-pill px-4 py-1 fw-semibold"
-                routerLink="/sign-up">
+        <button
+          class="bg-pink rounded-pill px-4 py-1 fw-semibold"
+          routerLink="/signIn"
+        >
           Sign Up
         </button>
       </div>
 
-<!-- LOGGED IN (ROLE 2 ONLY) -->
-<div *ngIf="currentUser?.roleId === 2"
-     class="user-dropdown-wrapper d-flex align-items-center gap-2 mt-3 mt-lg-0">
+      <!-- LOGGED IN (ROLE 2 ONLY) -->
+      <div
+        *ngIf="currentUser?.roleId === 2"
+        class="user-dropdown-wrapper d-flex align-items-center gap-2 mt-3 mt-lg-0"
+      >
+        <!-- Notification icon -->
+        <i class="bi bi-bell text-white fs-5 cursor-pointer"></i>
 
-  <!-- Notification icon -->
-  <i class="bi bi-bell text-white fs-5 cursor-pointer"></i>
+        <!-- USER DROPDOWN TRIGGER -->
+        <a
+          class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+          href="#"
+          (click)="toggleDropdown($event)"
+        >
+          <img
+            src="../../assets//images/profile1.png"
+            width="32"
+            height="32"
+            class="rounded-circle me-2"
+          />
+          <span>{{
+            currentUser?.fullName || currentUser?.loginName || "User"
+          }}</span>
+        </a>
 
-  <!-- USER DROPDOWN TRIGGER -->
-  <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-     href="#"
-     (click)="toggleDropdown($event)">
-    <img src="../../assets//images/profile1.png"
-         width="32"
-         height="32"
-         class="rounded-circle me-2">
-    <span>{{ currentUser?.fullName || currentUser?.loginName || 'User' }}</span>
-  </a>
-
-  <!-- DROPDOWN MENU -->
-  <ul class="dropdown-menu" [class.show]="isDropdownOpen">
-    <li>
-      <a class="dropdown-item" routerLink="/create-profile" (click)="isDropdownOpen = false">
-        Create Profile
-      </a>
-    </li>
-    <li>
-      <a class="dropdown-item" routerLink="/preferences" (click)="isDropdownOpen = false">
-        Preferences
-      </a>
-    </li>
-    <li>
-      <a class="dropdown-item" routerLink="/profile-details" (click)="isDropdownOpen = false">
-        Profile Details
-      </a>
-    </li>
-    <li>
-      <a class="dropdown-item" routerLink="/preferences-details" (click)="isDropdownOpen = false">
-        Preferences Details
-      </a>
-    </li>
-    <li><hr class="dropdown-divider"></li>
-    <li>
-      <a class="dropdown-item text-danger" (click)="logout()">
-        Logout
-      </a>
-    </li>
-  </ul>
-
-</div>
-
+        <!-- DROPDOWN MENU -->
+        <ul class="dropdown-menu" [class.show]="isDropdownOpen">
+          <li>
+            <a
+              class="dropdown-item"
+              routerLink="/create-profile"
+              (click)="isDropdownOpen = false"
+            >
+              Create Profile
+            </a>
+          </li>
+          <li>
+            <a
+              class="dropdown-item"
+              routerLink="/preferences"
+              (click)="isDropdownOpen = false"
+            >
+              Preferences
+            </a>
+          </li>
+          <li>
+            <a
+              class="dropdown-item"
+              routerLink="/profile-details"
+              (click)="isDropdownOpen = false"
+            >
+              Profile Details
+            </a>
+          </li>
+          <li>
+            <a
+              class="dropdown-item"
+              routerLink="/preferences-details"
+              (click)="isDropdownOpen = false"
+            >
+              Preferences Details
+            </a>
+          </li>
+          <li><hr class="dropdown-divider" /></li>
+          <li>
+            <a class="dropdown-item text-danger" (click)="logout()"> Logout </a>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </nav>

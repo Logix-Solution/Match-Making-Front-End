@@ -15,6 +15,9 @@ import { AdminMatchComparisonComponent } from './Admin/admin-match-comparison/ad
 import { AdminBestMatchComponent } from './Admin/admin-best-match/admin-best-match.component';
 import { PricingPlansComponent } from './pricing-plans/pricing-plans.component';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
+import { ExploreMatchingComponent } from './User/explore-matching/explore-matching.component';
+import { SignInComponent } from './login/sign-in/sign-in.component';
+import { ForgetPasswordComponent } from './login/forget-password/forget-password.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -29,6 +32,14 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+  },
+    {
+    path: 'signIn',
+    component: SignInComponent,
+  },
+    {
+    path: 'Forget-Password',
+    component: ForgetPasswordComponent,
   },
 
 ////////////////preferences ///////////////////////
@@ -89,6 +100,12 @@ const routes: Routes = [
   {
      path: 'Pricing-Plans',
     component: PricingPlansComponent,
+  },
+
+   /////////////////////User/////////////
+ {
+     path: 'Explore-Match',
+    component: ExploreMatchingComponent,
   },
   ];
 @NgModule({

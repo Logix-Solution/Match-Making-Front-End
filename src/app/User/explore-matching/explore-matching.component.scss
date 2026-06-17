@@ -1,0 +1,57 @@
+.slideshow-capsule {
+    position: relative;
+    width: 240px;
+    height: 480px;
+    background-color: #F5F5F5;
+    border-radius: 120px;
+    overflow: hidden;
+  }
+  
+  .slideshow-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    animation: continuousCrossFade 12s infinite ease-in-out;
+  }
+
+  /* Delays to ensure a seamless looping cycle across 3 images */
+  .slideshow-img:nth-child(1) { animation-delay: 0s; }
+  .slideshow-img:nth-child(2) { animation-delay: 4s; }
+  .slideshow-img:nth-child(3) { animation-delay: 8s; }
+
+  @keyframes continuousCrossFade {
+    0%, 100% { opacity: 1; z-index: 2; }
+    28%      { opacity: 1; }
+    33%, 95% { opacity: 0; z-index: 1; }
+  }
+
+  /* Custom styling for the overlapping match score images */
+  .avatar-overlap-group {
+    position: relative;
+    display: inline-block;
+    height: 70px;
+    width: 115px;
+  }
+  .avatar-overlap-1 {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 65px;
+    height: 65px;
+    border: 3px solid #FFF;
+    outline: 2px solid #B84A26;
+    z-index: 2;
+  }
+  .avatar-overlap-2 {
+    position: absolute;
+    left: 45px;
+    top: 5px;
+    width: 60px;
+    height: 60px;
+    border: 2px solid #FFF;
+    outline: 1.5px solid #E29B82;
+    z-index: 1;
+  }

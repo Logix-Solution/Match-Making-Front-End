@@ -22,7 +22,7 @@
 
             <div class=" mb-2" style="height: 80px; display: flex; align-items: center; justify-content: center;">
               <!-- Replace with your logo -->
-              <img src="../../assets/images/loginLogo.svg" 
+              <img src="../../assets/images/websiteLogo.svg" 
               
                    alt="Muslim Matchmaking" 
                    class="img-fluid"
@@ -59,12 +59,12 @@
                    style="font-size: 0.875rem;  color: #1a1a1a;">
               Email Address
             </label>
-            <div class="input-group">
-              <span class="input-group-text bg-light border-end-0" style="border-color: #e5e7eb;">
-                <i class="bi bi-envelope text-muted"></i>
-              </span>
+           <div class="input-group custom-input-group">
+                <span class="input-group-text border-end-0">
+                  <i class="bi bi-person text-muted"></i>
+                </span>
               <input type="email" 
-                     class="form-control border-start-0 ps-0" 
+                     class="form-control border-start-0 ps-1" 
                      placeholder="your@email.com"
                      [(ngModel)]="email"
                      (keyup.enter)="login()"
@@ -78,8 +78,8 @@
                    style="font-size: 0.875rem; color: #1a1a1a;">
               Password
             </label>
-            <div class="input-group">
-              <span class="input-group-text bg-light border-end-0" style="border-color: #e5e7eb;">
+         <div class="input-group custom-input-group">
+                <span class="input-group-text border-end-0">
                 <i class="bi bi-lock text-muted"></i>
               </span>
               <input [type]="hidePassword ? 'password' : 'text'" 
@@ -99,7 +99,7 @@
           <!-- Forgot Password -->
           <div class="text-end mb-2">
             <a class="txt-primary text-decoration-none cursor-pointer" 
-               (click)="goToForgotPassword()"
+              routerLink="/Forget-Password"
                style="font-size: 0.875rem;  cursor: pointer;">
               Forgot Password?
             </a>
@@ -123,7 +123,7 @@
               Don't have an account? 
             </span>
             <a class="txt-primary text-decoration-none fw-semibold cursor-pointer ms-1" 
-               (click)="goToSignUp()"
+              routerLink="/signIn"
                style="font-size: 0.875rem;  cursor: pointer;">
               Create Account
             </a>

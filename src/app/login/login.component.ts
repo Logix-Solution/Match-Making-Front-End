@@ -59,7 +59,7 @@ export class LoginComponent {
             // Redirect based on role
             const roleId = data.roleId;
             if (roleId === 2) {
-              this.router.navigate(['/']);
+              this.router.navigate(['/Explore-Match']);
             } else if (roleId === 1){
               this.router.navigate(['/adminDashboard']);
             }
@@ -90,15 +90,8 @@ export class LoginComponent {
     this.hidePassword = !this.hidePassword;
   }
 
-  // Navigate to Sign Up
-  goToSignUp(): void {
-    this.router.navigate(['auth/sign-up']);
-  }
+ 
 
-  // Navigate to Forgot Password
-  goToForgotPassword(): void {
-    this.router.navigate(['auth/forgot-password']);
-  }
 
   // Close modal (if needed)
   closeModal(): void {
