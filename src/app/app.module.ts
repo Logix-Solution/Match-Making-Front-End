@@ -60,6 +60,7 @@ import { AdminDashbordComponent } from './Admin/admin-dashbord/admin-dashbord.co
 import { ExploreMatchingComponent } from './User/explore-matching/explore-matching.component';
 import { SignInComponent } from './login/sign-in/sign-in.component';
 import { ForgetPasswordComponent } from './login/forget-password/forget-password.component';
+import { SideNavComponent } from './side-nav/side-nav.component';
 
 
 @NgModule({
@@ -109,6 +110,7 @@ import { ForgetPasswordComponent } from './login/forget-password/forget-password
     ExploreMatchingComponent,
     SignInComponent,
     ForgetPasswordComponent,
+    SideNavComponent,
 
   ],
   imports: [

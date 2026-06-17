@@ -1,4 +1,4 @@
-<main class="container-fluid p-4 bg-light-profile   ">
+<main class="container-fluid p-4  ">
 
   <ng-container *ngIf="currentView === 'grid'">
     <header class="mb-4">
@@ -11,7 +11,7 @@
         <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 txt-7th ft-3"></i>
         <input 
           type="text" 
-          class="form-control ps-5 py-2 ft-3 border-6th bg-6th rounded-3 custom-search-input" 
+          class="form-control ps-5 py-2 ft-3 border-6th bg-6th rounded-3 custom-search-input " 
           placeholder="Search"
           [(ngModel)]="searchQuery"
           (input)="onSearchFilter()">

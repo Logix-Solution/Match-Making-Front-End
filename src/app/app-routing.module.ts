@@ -18,6 +18,10 @@ import { AccountSettingsComponent } from './account-settings/account-settings.co
 import { ExploreMatchingComponent } from './User/explore-matching/explore-matching.component';
 import { SignInComponent } from './login/sign-in/sign-in.component';
 import { ForgetPasswordComponent } from './login/forget-password/forget-password.component';
+import { AboutComponent } from './home-page/about/about.component';
+import { HowItsWorksComponent } from './home-page/how-its-works/how-its-works.component';
+import { PremiumServicesComponent } from './home-page/premium-services/premium-services.component';
+import { SucessStoriesComponent } from './home-page/sucess-stories/sucess-stories.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -42,6 +46,23 @@ const routes: Routes = [
     component: ForgetPasswordComponent,
   },
 
+    {
+    path: 'about',
+    component: AboutComponent,
+  },
+   {
+    path: 'how-Works',
+    component: HowItsWorksComponent,
+  },
+
+  {
+    path: 'features',
+    component:  PremiumServicesComponent ,
+  },
+   {
+    path: 'Sucess-Story',
+    component:  SucessStoriesComponent ,
+  },
 ////////////////preferences ///////////////////////
   
  {
@@ -77,7 +98,7 @@ const routes: Routes = [
   },
 
      {
-    path: 'adminEventGallery',
+    path: 'adminEventsGallery',
     component: AdminEventGalleryComponent,
   },
       {
@@ -85,13 +106,10 @@ const routes: Routes = [
     component: AdminMatchComparisonComponent,
   },
 {
-     path: 'adminBestMatch',
+     path: 'adminbestMatch',
     component: AdminBestMatchComponent,
   },
-   {
-     path: 'Admin-Dashboard',
-    component: AdminDashboardComponent,
-  },
+  
   /////////////////////Account setting/////////////
  {
      path: 'Account-Setting',

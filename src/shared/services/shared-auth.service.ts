@@ -6,6 +6,7 @@ import { environment } from '../../envirnment/environment';
 import { UserInterface } from '../interfaces/user-interface';
  import { Subject } from 'rxjs';
  import { tap, switchMap } from 'rxjs/operators';
+import { Router, RouterLink } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -73,6 +74,7 @@ export class SharedAuthService {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('moduleId');
     this.currentUserSubject.next(null); // important!
+    
   }
 
   getCompanyHttp(url: string, params: any): Observable<any> {

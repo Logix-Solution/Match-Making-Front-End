@@ -11,6 +11,19 @@
   opacity: 1;
   //  border-radius: 8px;
 }
+.SideNavLogo {
+  background: url("../assets/images/websiteLogo.svg");
+  background-repeat: no-repeat;
+  // background-size: cover;
+  // background-position: center;
+
+  width: 277px;
+  height: 47px;
+  // top: 16px;
+  // left: 50px;
+  opacity: 1;
+  //  border-radius: 8px;
+}
 
 .bg {
   background: url("../assets/images/bgflower.png");
@@ -203,6 +216,7 @@
   height: 40px;
 }
 
+////////////////////////////ADmin side menus Icons//////////////
 
 .dashboard {
   background: url("../assets/icons/dashboaard.svg");
@@ -240,7 +254,7 @@
   width: 17px;
   height: 17px;
 }
-.eventGallery {
+.eventsGallery {
   background: url("../assets/icons/eventGallery.svg");
   background-repeat: no-repeat;
   background-size: cover;
@@ -249,7 +263,7 @@
   width: 17px;
   height: 17px;
 }
-.serviceRequest {
+.servicesRequests {
   background: url("../assets/icons/serviceRequest.svg");
   background-repeat: no-repeat;
   background-size: cover;
@@ -258,3 +272,27 @@
   width: 17px;
   height: 17px;
 }
+
+.matchComparison {
+  background: url("../assets/icons/matchComparison.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  width: 17px;
+  height: 17px;
+}
+
+
+.pofilePic {
+  background: url("../assets/images/profile\ 2.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  width: 17px;
+  height: 17px;
+}
+
+
+

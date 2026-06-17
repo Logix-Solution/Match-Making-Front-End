@@ -1,3 +1,9 @@
-<app-top-nav></app-top-nav>
-<!-- <app-home-page></app-home-page> -->
-<router-outlet></router-outlet>
+<!-- Top nav: visible on public routes only -->
+<app-top-nav *ngIf="showNav"></app-top-nav>
+ 
+<!-- Side nav (contains router-outlet internally) -->
+<app-side-nav *ngIf="showSideNav"></app-side-nav>
+ 
+<!-- Regular outlet when no side nav -->
+
+<router-outlet *ngIf="!showSideNav"></router-outlet>

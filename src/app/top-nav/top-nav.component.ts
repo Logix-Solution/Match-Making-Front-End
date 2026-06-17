@@ -1,6 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { SharedAuthService } from '../../shared/services/shared-auth.service';
 import { UserInterface } from '../../shared/interfaces/user-interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-top-nav',
@@ -13,7 +14,9 @@ export class TopNavComponent implements OnInit {
   isNavOpen = false;
   isDropdownOpen = false;
 
-  constructor(private authService: SharedAuthService) {}
+  constructor(private authService: SharedAuthService,
+   private router :Router
+  ) {}
 
   toggleNav(): void {
     this.isNavOpen = !this.isNavOpen;
@@ -39,5 +42,7 @@ export class TopNavComponent implements OnInit {
 
   logout(): void {
     this.authService.logout();
+
+     this.router.navigate(['/']);
   }
 }

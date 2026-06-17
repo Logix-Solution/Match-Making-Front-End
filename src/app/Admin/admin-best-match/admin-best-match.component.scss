@@ -1,7 +1,4 @@
-// Layout Variable Palette & Context Base Tokens
-.bg-light-profile {
-  background-color: #fafbfd;
-}
+
 
 .max-w-search {
   max-width: 320px;
@@ -107,14 +104,14 @@
     }
 
     span {
-      color: #718096; // Muted label grey variant mapped directly from graphic profile
+      color: #718096; 
       font-weight: 400;
       padding-right: 12px;
       white-space: nowrap;
     }
 
     strong {
-      color: #1a202c; // Deep charcoal black value visibility
+      color: #1a202c; 
       font-weight: 600;
       text-align: right;
       max-width: 160px;
@@ -122,14 +119,14 @@
   }
 }
 
-// ================= FIXED MASTER UPPER BLOCK CONFIGURATION =================
+
 .main-profile-dashboard {
   background-color: #ffffff;
   border-radius: 16px !important;
 
   .profile-layout-grid {
     display: grid;
-    // Perfect symmetric template map balanced flawlessly around the center portrait segment 
+ 
     grid-template-columns: 2fr 2fr 1.8fr 2fr 2fr;
     gap: 24px;
     align-items: center;
@@ -165,20 +162,20 @@
   }
 }
 
-// ================= CRITICAL ROW-BY-ROW COLUMN CSS ALIGNMENT SYSTEMS =================
+
 .best-matches-stack {
   position: relative;
 }
 
 .match-alignment-row {
   display: grid;
-  // Dynamic 5 column template row setup keeping labels vertically lined up under each header row module
+ 
   grid-template-columns: 1.2fr 2fr 2fr 1.8fr 2.5fr;
   gap: 24px;
   align-items: start;
   position: relative;
   padding: 20px !important;
-  padding-right: 64px !important; // Keeps spacing clear for the absolute arrow action button anchor
+  padding-right: 64px !important; 
   background: #ffffff;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 
