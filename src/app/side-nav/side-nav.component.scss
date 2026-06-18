@@ -51,6 +51,25 @@
   }
 }
 
+
+
+
+
+
+
+
+
+.active-link .dashboard,
+.active-link .eventGallery,
+.active-link .servicesRequests,
+.active-link .userManagement,
+.active-link .bestMatch,
+.active-link .requestManagement,
+.active-link .matchComparison{
+  filter: brightness(0) invert(1);
+  /* This converts black SVG icons to white */
+}
+
 // ─── Sign Out Button ──────────────────────────────────
 .sign-out-btn {
   transition: background 0.2s;
