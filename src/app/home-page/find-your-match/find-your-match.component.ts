@@ -16,13 +16,13 @@ export class FindYourMatchComponent {
   };
  
   genderOptions = [
-    { value: '', label: 'Any' },
+    // { value: '', label: 'Any' },
     { value: 'male', label: 'Male' },
     { value: 'female', label: 'Female' },
   ];
  
   countryOptions = [
-    { value: '', label: 'Any' },
+    // { value: '', label: 'Any' },
     { value: 'pakistan', label: 'Pakistan' },
     { value: 'uk', label: 'United Kingdom' },
     { value: 'usa', label: 'United States' },
@@ -33,7 +33,7 @@ export class FindYourMatchComponent {
   ];
  
   qualificationOptions = [
-    { value: '', label: 'e.g. Bachelors' },
+    // { value: '', label: 'e.g. Bachelors' },
     { value: 'matric', label: 'Matric' },
     { value: 'fsc', label: 'FSc / A-Levels' },
     { value: 'bachelors', label: 'Bachelors' },
@@ -43,7 +43,7 @@ export class FindYourMatchComponent {
   ];
  
   professionOptions = [
-    { value: '', label: 'e.g. Dentist' },
+    // { value: '', label: 'e.g. Dentist' },
     { value: 'doctor', label: 'Doctor' },
     { value: 'dentist', label: 'Dentist' },
     { value: 'engineer', label: 'Engineer' },
