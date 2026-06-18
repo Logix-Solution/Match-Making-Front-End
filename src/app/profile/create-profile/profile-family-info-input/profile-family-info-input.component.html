@@ -1,18 +1,17 @@
-<div class="fh-5 fw-bold mt-3">Family & Lifestyle</div>
+<div class="fh-5 fw-bold mt-3">Family Profile</div>
 
-<!-- row - 01 -->
 <div class="row mt-4">
 
-  <!-- Marital Status typeID=10 -->
-  <div class="col-md-2">
+  <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-5">
-        Marital Status<span class="txt-2nd">&nbsp;*</span>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Marital Status<span class="text-danger">&nbsp;*</span>
       </label>
       <select
-        class="form-control form-control-sm mt-2"
+        class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedMaritalStatus"
-        (change)="onFieldChange()">
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Marital Status</option>
         <option *ngFor="let item of maritalStatusList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
@@ -21,16 +20,16 @@
     </div>
   </div>
 
-  <!-- Housing Situation typeID=11 -->
-  <div class="col-md-2">
+  <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-5">
-        Housing Situation<span class="txt-2nd">&nbsp;*</span>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Housing Situation<span class="text-danger">&nbsp;*</span>
       </label>
       <select
-        class="form-control form-control-sm mt-2"
+        class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedHousingSituation"
-        (change)="onFieldChange()">
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Housing Situation</option>
         <option *ngFor="let item of housingSituationList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
@@ -39,16 +38,16 @@
     </div>
   </div>
 
-  <!-- Father Occupation typeID=12 -->
-  <div class="col-md-4">
+  <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-5">
-        Father's Occupation<span class="txt-2nd">&nbsp;*</span>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Father's Occupation<span class="text-danger">&nbsp;*</span>
       </label>
       <select
-        class="form-control form-control-sm mt-2"
+        class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedFatherOccupation"
-        (change)="onFieldChange()">
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Father's Occupation</option>
         <option *ngFor="let item of fatherOccupationList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
@@ -57,16 +56,16 @@
     </div>
   </div>
 
-  <!-- Mother Occupation typeID=13 -->
-  <div class="col-md-4">
+  <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-5">
-        Mother's Occupation<span class="txt-2nd">&nbsp;*</span>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Mother's Occupation<span class="text-danger">&nbsp;*</span>
       </label>
       <select
-        class="form-control form-control-sm mt-2"
+        class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedMotherOccupation"
-        (change)="onFieldChange()">
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Mother's Occupation</option>
         <option *ngFor="let item of motherOccupationList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
@@ -76,50 +75,54 @@
   </div>
 </div>
 
-<!-- row - 02 -->
 <div class="row mt-4">
 
-  <!-- Parent Phone Number -->
-<div class="col-md-2">
-  <div class="row">
-    <label class="txt-7th ft-5">
-      Parent Phone Number<span class="txt-2nd">&nbsp;*</span>
-    </label>
-    <div class="col-md-4">
-      <div class="form-group">
-        <select
-          class="form-control form-control-sm mt-2"
-          [(ngModel)]="selectedParentCountryCode"
-          (change)="onFieldChange()">
-          <option value="">Code</option>
-          <option *ngFor="let item of countryList" [value]="item.country_code">
-            {{ item.country_code }}
-          </option>
-        </select>
+  <div class="col-md-4">
+    <div class="row">
+      <div class="col-12">
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+          Parent Phone Number<span class="text-danger">&nbsp;*</span>
+        </label>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          <select
+            class="form-select border-0 px-2 rounded-pill"
+            [(ngModel)]="selectedParentCountryCode"
+            (change)="onFieldChange()"
+            style="height: 42px; font-size: 13px; appearance: none !important;">
+            <option value="">Code</option>
+            <option *ngFor="let item of countryList" [value]="item.country_code">
+              {{ item.country_code }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-8">
+        <div class="form-group">
+          <input
+            type="text"
+            class="form-control border-0 px-3 rounded-pill"
+            placeholder="Enter phone number"
+            [(ngModel)]="parentPhoneNumber"
+            (ngModelChange)="onFieldChange()"
+            style="height: 42px; font-size: 13px;"
+          />
+        </div>
       </div>
     </div>
-    <div class="col-md-8">
-      <input
-        type="text"
-        class="form-control form-control-sm mt-2"
-        placeholder="Enter phone number"
-        [(ngModel)]="parentPhoneNumber"
-        (ngModelChange)="onFieldChange()"
-      />
-    </div>
   </div>
-</div>
 
-  <!-- No of Siblings typeID=25 -->
-  <div class="col-md-2">
+  <div class="col-md-4">
     <div class="form-group">
-      <label class="txt-7th ft-5">
-        No. of Siblings<span class="txt-2nd">&nbsp;*</span>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        No. of Siblings<span class="text-danger">&nbsp;*</span>
       </label>
       <select
-        class="form-control form-control-sm mt-2"
+        class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedNoOfSiblings"
-        (change)="onFieldChange()">
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select No. of Siblings</option>
         <option *ngFor="let item of noOfSiblingsList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
@@ -128,16 +131,16 @@
     </div>
   </div>
 
-  <!-- Family Involvement typeID=14 -->
   <div class="col-md-4">
     <div class="form-group">
-      <label class="txt-7th ft-5">
-        Family Involvement Presence<span class="txt-2nd">&nbsp;*</span>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Family Involvement Presence<span class="text-danger">&nbsp;*</span>
       </label>
       <select
-        class="form-control form-control-sm mt-2"
+        class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedFamilyInvolvement"
-        (change)="onFieldChange()">
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Family Involvement</option>
         <option *ngFor="let item of familyInvolvementList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
@@ -147,7 +150,3 @@
   </div>
 
 </div>
-
-
-
-

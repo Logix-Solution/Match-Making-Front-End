@@ -1,4 +1,15 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
+import { SharedDataService } from '../../../../shared/services/shared-data.service';
+import { SharedGlobalService } from '../../../../shared/services/shared-global.service';
+import { SharedFormFieldValidationService } from 'src/shared/services/shared-form-field-validation.service';
+
+// ─── Interface ────────────────────────────────────────────────────────────────
+interface ReligionProfileInterface {
+  userID:       number;  // 0
+  spType:       string;  // 1
+  religionJson: string;  // 2 -> [religionID, sectID, religionImportanceID]
+}
 
 @Component({
   selector: 'app-profile-religion-info-input',
@@ -7,23 +18,113 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 })
 export class ProfileReligionInfoInputComponent implements OnInit {
 
-  @Input() religionList: any[] = [];
-  @Input() sectList: any[] = [];
+  // ─── Inputs from Parent ───────────────────────────────────────────────────
+  @Input() religionList:           any[] = [];
+  @Input() sectList:               any[] = [];
   @Input() religionImportanceList: any[] = [];
 
-  @Output() selectionChange = new EventEmitter<any>();
+  // ─── Output to Parent ─────────────────────────────────────────────────────
+  @Output() saveSuccess = new EventEmitter<void>(); // Tell parent to go stepper = 4
 
-  selectedReligion: any = '';
-  selectedSect: any = '';
+  // ─── Dropdown Selections ──────────────────────────────────────────────────
+  selectedReligion:           any = '';
+  selectedSect:               any = '';
   selectedReligionImportance: any = '';
 
-  ngOnInit() {}
+  // ─── Page Fields (API payload) ────────────────────────────────────────────
+  religionPageFields: ReligionProfileInterface = {
+    userID:       0,
+    spType:       'insert',
+    religionJson: '[]',
+  };
 
-  onFieldChange() {
-    this.selectionChange.emit({
-      religion:           this.selectedReligion,
-      sect:               this.selectedSect,
-      religionImportance: this.selectedReligionImportance,
+  // ─── Form Fields (for dataService validation) ─────────────────────────────
+  religionFormFields: any[] = [
+    { value: 0,        msg: '', type: 'hidden', required: false }, // 0 userID
+    { value: 'insert', msg: '', type: 'hidden', required: false }, // 1 spType
+    { value: '[]',     msg: '', type: 'hidden', required: false }, // 2 religionJson
+  ];
+
+  constructor(
+    private dataService:         SharedDataService,
+    private sharedGlobalService: SharedGlobalService,
+    private toastr:              ToastrService,
+    private valid:               SharedFormFieldValidationService,
+  ) {}
+
+  ngOnInit(): void {}
+
+  // ─── Alias — HTML templates call onFieldChange() ──────────────────────────
+  onFieldChange(): void { 
+    this.syncFormFields(); 
+  }
+
+  // ─── Sync bound fields → formFields[] ────────────────────────────────────
+  syncFormFields(): void {
+    // Collect dropdown values and filter empty/null choices out
+    const religionIds = [
+      this.selectedReligion,
+      this.selectedSect,
+      this.selectedReligionImportance
+    ].filter(v => v !== '' && v !== null && v !== undefined);
+
+    // Formats payload specifically as expected: "[17,18,19]"
+    this.religionFormFields[2].value = 
+      '[' + religionIds.map((v: any) => Number(v)).join(',') + ']';
+  }
+
+  // ─── SAVE ─────────────────────────────────────────────────────────────────
+  save(): void {
+
+    // ─── Manual validations ─────────────────────────────────────────────────
+    if (!this.selectedReligion) {
+      this.toastr.warning('Please select your religion'); return;
+    }
+    if (!this.selectedSect) {
+      this.toastr.warning('Please select your sect'); return;
+    }
+    if (!this.selectedReligionImportance) {
+      this.toastr.warning('Please prioritize your religious importance'); return;
+    }
+
+    // ─── Get userLoginId ──────────────────────────────────────────────────
+    const userID = this.sharedGlobalService.getUserID();
+    if (!userID) {
+      this.toastr.error('User session not found. Please login again.');
+      return;
+    }
+
+    // ─── Sync all fields ──────────────────────────────────────────────────
+    this.syncFormFields();
+    this.religionFormFields[0].value = userID;   
+    this.religionFormFields[1].value = 'insert'; 
+
+    // ─── Sync formFields → pageFields ────────────────────────────────────
+    this.religionPageFields.userID       = this.religionFormFields[0].value;
+    this.religionPageFields.spType       = this.religionFormFields[1].value;
+    this.religionPageFields.religionJson = this.religionFormFields[2].value;
+
+    console.log('Religion PageFields:', this.religionPageFields);
+    console.log('Religion FormFields:', this.religionFormFields);
+
+    // ─── API Call ─────────────────────────────────────────────────────────
+    this.dataService.saveHttp(
+      this.religionPageFields,
+      this.religionFormFields,
+      'core-api/Profile/saveUserReligion'
+    ).subscribe({
+      next: (response: any) => {
+        const apiResponse = Array.isArray(response) ? response[0] : response;
+        if (apiResponse?.includes('Success')) {
+          this.valid.apiInfoResponse('Religious Profile Saved Successfully');
+          this.saveSuccess.emit(); // Fire step transition hook
+        } else {
+          this.valid.apiErrorResponse(apiResponse);
+        }
+      },
+      error: (err: any) => {
+        console.error('Religion Save Error:', err);
+      }
     });
   }
 }

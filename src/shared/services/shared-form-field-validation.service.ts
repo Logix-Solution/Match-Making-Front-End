@@ -151,7 +151,7 @@ export class SharedFormFieldValidationService {
   }
 
   validateMobile(mobile: string): boolean {
-  return mobile.length === 12;
+  return mobile.length === 11;
 }
 
 

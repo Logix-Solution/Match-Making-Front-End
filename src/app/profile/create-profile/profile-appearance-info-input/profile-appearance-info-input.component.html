@@ -1,16 +1,17 @@
 <div class="fh-5 fw-bold mt-3">Appearance</div>
+
 <div class="row mt-4">
 
-  <!-- Height typeID=26 -->
   <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-5">
-        Height<span class="txt-2nd">&nbsp;*</span>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Height<span class="text-danger">&nbsp;*</span>
       </label>
       <select
-        class="form-control form-control-sm mt-2"
+        class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedHeight"
-        (change)="onFieldChange()">
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Height</option>
         <option *ngFor="let item of heightList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
@@ -19,16 +20,16 @@
     </div>
   </div>
 
-  <!-- Body Type typeID=15 -->
   <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-5">
-        Body Type<span class="txt-2nd">&nbsp;*</span>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Body Type<span class="text-danger">&nbsp;*</span>
       </label>
       <select
-        class="form-control form-control-sm mt-2"
+        class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedBodyType"
-        (change)="onFieldChange()">
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Body Type</option>
         <option *ngFor="let item of bodyTypeList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
@@ -37,16 +38,16 @@
     </div>
   </div>
 
-  <!-- Skin Tone typeID=16 -->
   <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-5">
-        Skin Tone<span class="txt-2nd">&nbsp;*</span>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Skin Tone<span class="text-danger">&nbsp;*</span>
       </label>
       <select
-        class="form-control form-control-sm mt-2"
+        class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedSkinTone"
-        (change)="onFieldChange()">
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Skin Tone</option>
         <option *ngFor="let item of skinToneList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
@@ -55,21 +56,16 @@
     </div>
   </div>
 
-</div>
-
-<!-- row-02 -->
-<div class="row mt-4">
-
-  <!-- Disability typeID=30 -->
-  <div class="col-md-12">
+  <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-5">
-        Disability<span class="txt-2nd">&nbsp;*</span>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Disability<span class="text-danger">&nbsp;*</span>
       </label>
       <select
-        class="form-control form-control-sm mt-2"
+        class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedDisability"
-        (change)="onFieldChange()">
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Disability</option>
         <option *ngFor="let item of disabilityList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
@@ -78,4 +74,22 @@
     </div>
   </div>
 
+</div>
+
+<div class="row mt-4" *ngIf="isDisabilityYes()">
+  <div class="col-md-12">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Disabilities (If Yes)<span class="text-danger">&nbsp;*</span>
+      </label>
+      <textarea
+        class="form-control border-0 p-3 bg-white"
+        rows="4"
+        placeholder="Please describe your disabilities.........."
+        [(ngModel)]="disabilityDescription"
+        (ngModelChange)="onFieldChange()"
+        style="border-radius: 16px; font-size: 13px; background-color: #f8f9fa;">
+      </textarea>
+    </div>
+  </div>
 </div>

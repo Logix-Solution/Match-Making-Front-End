@@ -1,16 +1,17 @@
 <div class="fh-5 fw-bold mt-3">Religious Background</div>
+
 <div class="row mt-4">
 
-  <!-- Religion typeID=7 -->
   <div class="col-md-4">
     <div class="form-group">
-      <label class="txt-7th ft-5">
-        Religion<span class="txt-2nd">&nbsp;*</span>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Religion<span class="text-danger">&nbsp;*</span>
       </label>
       <select
-        class="form-control form-control-sm mt-2"
+        class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedReligion"
-        (change)="onFieldChange()">
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Religion</option>
         <option *ngFor="let item of religionList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
@@ -19,16 +20,16 @@
     </div>
   </div>
 
-  <!-- Sect typeID=8 -->
   <div class="col-md-4">
     <div class="form-group">
-      <label class="txt-7th ft-5">
-        SECT<span class="txt-2nd">&nbsp;*</span>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Sect<span class="text-danger">&nbsp;*</span>
       </label>
       <select
-        class="form-control form-control-sm mt-2"
+        class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedSect"
-        (change)="onFieldChange()">
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Sect</option>
         <option *ngFor="let item of sectList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
@@ -37,16 +38,16 @@
     </div>
   </div>
 
-  <!-- Religion Importance typeID=9 -->
   <div class="col-md-4">
     <div class="form-group">
-      <label class="txt-7th ft-5">
-        How Important is Religion to you?<span class="txt-2nd">&nbsp;*</span>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        How Important is Religion to you?<span class="text-danger">&nbsp;*</span>
       </label>
       <select
-        class="form-control form-control-sm mt-2"
+        class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedReligionImportance"
-        (change)="onFieldChange()">
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Importance</option>
         <option *ngFor="let item of religionImportanceList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}

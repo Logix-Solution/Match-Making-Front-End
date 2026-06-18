@@ -1,119 +1,112 @@
 <div class="container-fluid d-flex flex-column h-100 no-scroll bg-light">
-  <!-- heading -->
+
+  <!-- Heading -->
   <div class="d-flex flex-column align-items-center mt-3">
     <div class="fh-4">Create Your Profile</div>
     <div class="ft-3 pt-2 ls-3 txt-7th">Let's get to know you better</div>
   </div>
-  <!-- buttons row -->
+
+  <!-- Step Buttons Row -->
   <div class="row mt-3 align-items-around pe-3">
     <div class="col-md-10 d-flex flex-row gap-3">
-      <div
-        class="d-flex flex-row align-items-center mat-elevation-z1"
-        (click)="stepper = 1"
-        [ngClass]="{ btnPrimary: stepper === 1, 'btn-6th': stepper !== 1 }"
-      >
-        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">
-          1
-        </div>
+
+      <div class="d-flex flex-row align-items-center mat-elevation-z1"
+           (click)="stepper = 1"
+           [ngClass]="{ btnPrimary: stepper === 1, 'btn-6th': stepper !== 1 }">
+        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">1</div>
         <div>Personal</div>
       </div>
-      <div
-        class="btn-6th d-flex flex-row align-items-center mat-elevation-z1"
-        [ngClass]="{ btnPrimary: stepper === 2, 'btn-6th': stepper !== 2 }"
-        (click)="stepper = 2"
-      >
-        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">
-          2
-        </div>
+
+      <div class="d-flex flex-row align-items-center mat-elevation-z1"
+           (click)="stepper = 2"
+           [ngClass]="{ btnPrimary: stepper === 2, 'btn-6th': stepper !== 2 }">
+        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">2</div>
         <div>Career</div>
       </div>
-      <div
-        class="btn-6th d-flex flex-row align-items-center mat-elevation-z1"
-        [ngClass]="{ btnPrimary: stepper === 3, 'btn-6th': stepper !== 3 }"
-        (click)="stepper = 3"
-      >
-        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">
-          3
-        </div>
+
+      <div class="d-flex flex-row align-items-center mat-elevation-z1"
+           (click)="stepper = 3"
+           [ngClass]="{ btnPrimary: stepper === 3, 'btn-6th': stepper !== 3 }">
+        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">3</div>
         <div>Religion</div>
       </div>
-      <div
-        class="btn-6th d-flex flex-row align-items-center mat-elevation-z1"
-        [ngClass]="{ btnPrimary: stepper === 4, 'btn-6th': stepper !== 4 }"
-        (click)="stepper = 4"
-      >
-        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">
-          4
-        </div>
+
+      <div class="d-flex flex-row align-items-center mat-elevation-z1"
+           (click)="stepper = 4"
+           [ngClass]="{ btnPrimary: stepper === 4, 'btn-6th': stepper !== 4 }">
+        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">4</div>
         <div>Family</div>
       </div>
-      <div
-        class="btn-6th d-flex flex-row align-items-center mat-elevation-z1"
-        [ngClass]="{ btnPrimary: stepper === 5, 'btn-6th': stepper !== 5 }"
-        (click)="stepper = 5"
-      >
-        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">
-          5
-        </div>
+
+      <div class="d-flex flex-row align-items-center mat-elevation-z1"
+           (click)="stepper = 5"
+           [ngClass]="{ btnPrimary: stepper === 5, 'btn-6th': stepper !== 5 }">
+        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">5</div>
         <div>Appearance</div>
       </div>
-      <div
-        class="btn-6th d-flex flex-row align-items-center mat-elevation-z1"
-        [ngClass]="{ btnPrimary: stepper === 6, 'btn-6th': stepper !== 6 }"
-        (click)="stepper = 6"
-      >
-        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">
-          6
-        </div>
+
+      <div class="d-flex flex-row align-items-center mat-elevation-z1"
+           (click)="stepper = 6"
+           [ngClass]="{ btnPrimary: stepper === 6, 'btn-6th': stepper !== 6 }">
+        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">6</div>
         <div>Lifestyle</div>
       </div>
+
     </div>
+
+    <!-- Save & Continue Button -->
     <div class="col-md-2 text-end">
       <div class="btn-6th d-flex flex-row align-items-center mat-elevation-z1" (click)="save()">
-        <div class="rounded-circle bg-2nd px-2 text-center txt-6th me-2 ft-4">
-      {{ stepper }}
-        </div>
+        <div class="rounded-circle bg-2nd px-2 text-center txt-6th me-2 ft-4">{{ stepper }}</div>
         <div>Save & Continue</div>
       </div>
     </div>
   </div>
 
-  <!-- Personal Profile -->
-<app-profile-personal-info-input
-  *ngIf="stepper === 1"
-  class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
-  [castList]="castList"
-  [nationalityList]="nationalityList"
-  [ethnicityList]="ethnicityList"
-  [genderList]="genderList"
-  [countryList]="countryList"
-  [cityList]="cityList"
-  (countrySelected)="getCities($event)"
-  (selectionChange)="onPersonalInfoChange($event)"
-></app-profile-personal-info-input>
+  <!-- ─── Step 1: Personal Profile ──────────────────────────────────────── -->
+  <!--
+      saveSuccess output: child emits after successful API call
+      → parent calls onPersonalSaveSuccess() which sets stepper = 2
+  -->
+  <app-profile-personal-info-input
+    *ngIf="stepper === 1"
+    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+    [castList]="castList"
+    [nationalityList]="nationalityList"
+    [ethnicityList]="ethnicityList"
+    [genderList]="genderList"
+    [countryList]="countryList"
+    [cityList]="cityList"
+    (countrySelected)="getCities($event)"
+    (saveSuccess)="onPersonalSaveSuccess()"
+  ></app-profile-personal-info-input>
 
-  <!-- career Profile -->
+  <!-- ─── Step 2: Career Profile ─────────────────────────────────────────── -->
+  <!--
+      saveSuccess output: child emits after successful API call
+      → parent calls onCareerSaveSuccess() which sets stepper = 3
+  -->
   <app-profile-career-info-input
-  *ngIf="stepper === 2"
-  class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
-  [educationList]="educationList"
-  [occupationList]="occupationList"
-  [monthlyIncomeList]="monthlyIncomeList"
-  (selectionChange)="onCareerInfoChange($event)">
-</app-profile-career-info-input>
+    *ngIf="stepper === 2"
+    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+    [educationList]="educationList"
+    [occupationList]="occupationList"
+    [monthlyIncomeList]="monthlyIncomeList"
+    (saveSuccess)="onCareerSaveSuccess()">
+  </app-profile-career-info-input>
 
-  <!-- religion Profile -->
+  <!-- ─── Step 3: Religion Profile ──────────────────────────────────────── -->
   <app-profile-religion-info-input
   *ngIf="stepper === 3"
   class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
   [religionList]="religionList"
   [sectList]="sectList"
   [religionImportanceList]="religionImportanceList"
-  (selectionChange)="onReligionInfoChange($event)">
-</app-profile-religion-info-input>
+  (saveSuccess)="onReligionSaveSuccess()"
+></app-profile-religion-info-input>
 
-  <!-- family & lifestyle Profile -->
- <app-profile-family-info-input
+  <!-- ─── Step 4: Family Profile ────────────────────────────────────────── -->
+<app-profile-family-info-input
   *ngIf="stepper === 4"
   class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
   [maritalStatusList]="maritalStatusList"
@@ -123,30 +116,31 @@
   [noOfSiblingsList]="noOfSiblingsList"
   [familyInvolvementList]="familyInvolvementList"
   [countryList]="countryList"
-  (selectionChange)="onFamilyInfoChange($event)">
-</app-profile-family-info-input>
+  (saveSuccess)="onFamilySaveSuccess()"
+></app-profile-family-info-input>
 
-  <!-- Appearance Profile -->
- <app-profile-appearance-info-input
-  *ngIf="stepper === 5"
-  class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
-  [heightList]="appearanceHeightList"
-  [bodyTypeList]="bodyTypeList"
-  [skinToneList]="skinToneList"
-  [disabilityList]="disabilityList"
-  (selectionChange)="onAppearanceInfoChange($event)"
->
-</app-profile-appearance-info-input>
+  <!-- ─── Step 5: Appearance Profile ───────────────────────────────────── -->
+  <app-profile-appearance-info-input
+    *ngIf="stepper === 5"
+    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+    [heightList]="appearanceHeightList"
+    [bodyTypeList]="bodyTypeList"
+    [skinToneList]="skinToneList"
+    [disabilityList]="disabilityList"
+    (saveSuccess)="onAppearanceSaveSuccess()">
+  </app-profile-appearance-info-input>
 
-  <!-- Lifestyle Profile -->
- <app-profile-lifestyle-info-input
-  *ngIf="stepper === 6"
-  class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
-  [smokeList]="smokeList"
-  [alcoholList]="alcoholList"
-  [wantKidsList]="wantKidsList"
-  [maritalStatusList]="maritalStatusList"
-  (selectionChange)="onLifestyleInfoChange($event)"
->
-</app-profile-lifestyle-info-input>
+ 
+
+  <!-- ─── Step 6: Lifestyle Profile ────────────────────────────────────── -->
+  <app-profile-lifestyle-info-input
+    *ngIf="stepper === 6"
+    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+    [smokeList]="smokeList"
+    [alcoholList]="alcoholList"
+    [wantKidsList]="wantKidsList"
+    [maritalStatusList]="maritalStatusList"
+    (saveSuccess)="onLifestyleSaveSuccess()">
+  </app-profile-lifestyle-info-input>
+
 </div>
