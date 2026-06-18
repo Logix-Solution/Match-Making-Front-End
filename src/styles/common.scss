@@ -238,6 +238,17 @@ p {
   font-weight: 600 !important;
 }
 
+.fh-7 {
+  font-family: "Marcellus" !important ;
+  font-size: clamp(36px, 4.5vw, 4.2rem)!important;
+  color: var(--primary) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0% !important;
+   line-height: 1.25;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
 //normal text
 .ft-1 {
   font-size: 18px !important;

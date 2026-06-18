@@ -38,11 +38,11 @@
 
 // ── Headline ──────────────────────────────────────────────────────────────────
 .hero-title {
-  font-size: clamp(36px, 4.5vw, 4.2rem); // Keeps title scaling balanced and wide
+  font-size: clamp(36px, 4.5vw, 4.2rem); 
   font-weight: 400;
   color: #fff;
   line-height: 1.25;
-  max-width: 100%; // Removes 700px width limit so it spans full line widths
+  max-width: 100%;
   margin: 0 auto;
   font-family: 'Marcellus', serif !important;
 }
