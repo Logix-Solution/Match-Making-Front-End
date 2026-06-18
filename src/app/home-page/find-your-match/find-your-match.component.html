@@ -1,7 +1,7 @@
 <section class="py-4 matching-profile-bg">
   <!-- Heading -->
   <div class="text-center mb-0">
-    <h2 class="heading-find-your-match text-center">Find Your Match</h2>
+    <h2 class=" text-center custom-font" style="color: black !important;">Find Your Match</h2>
     <p class="text-secondary small mb-2 ft-2">
       Use our advanced filters to find profiles that match your preferences.
     </p>
@@ -75,14 +75,13 @@
             <label class="form-label fw-semibold small text-dark">
               Profession
             </label>
-            <ng-select
-              [items]="professionOptions"
-              bindLabel="label"
-              bindValue="value"
-              [(ngModel)]="filters.profession"
-              [placeholder]="!filters.profession ? 'Select Profession' : ''"
-            >
-            </ng-select>
+<ng-select
+  [items]="professionOptions"
+  bindLabel="label"
+  bindValue="value"
+  [(ngModel)]="filters.profession"
+  [placeholder]="!filters.profession ? 'Select Profession' : ''">
+</ng-select>
           </div>
 
           <!-- Search Button -->

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 export interface Profile {
   id: number;
@@ -17,7 +17,7 @@ export interface Profile {
   templateUrl: './matching-profile.component.html',
   styleUrls: ['./matching-profile.component.scss']
 })
-export class MatchingProfileComponent implements OnInit, OnDestroy {
+export class MatchingProfileComponent implements OnInit {
 
   profiles: Profile[] = [
     { id: 1, name: 'Aisha Khizer', gender: 'Female', age: 25, height: "5'5", maritalStatus: 'Unmarried', location: 'London', profession: 'Software Engineer', avatar: 'assets/images/profile1.png' },
@@ -32,9 +32,7 @@ export class MatchingProfileComponent implements OnInit, OnDestroy {
 
   // ── Slider state ──────────────────────────────────────────────────────────
   currentIndex = 0;
-  private slideInterval!: ReturnType<typeof setInterval>;
   private readonly CHUNK_SIZE = 6;    // 3 cols × 2 rows per page
-  private readonly AUTO_PLAY_MS = 3000;
 
   // ── Computed ──────────────────────────────────────────────────────────────
 
@@ -57,44 +55,26 @@ export class MatchingProfileComponent implements OnInit, OnDestroy {
     return this.slideChunks.length;
   }
 
-  /**
-   * CSS transform — each "slide" is 100% of the track width.
-   * Exactly the same approach used in SucessStoriesComponent.
-   */
+  /** CSS transform translation calculation */
   get translateX(): string {
     return `translateX(-${this.currentIndex * 100}%)`;
   }
 
-  // ── Lifecycle ─────────────────────────────────────────────────────────────
+  ngOnInit(): void {}
 
-  ngOnInit(): void {
-    if (this.useSlider) {
-      this.startAutoPlay();
+  // ── Manual Control Operations ─────────────────────────────────────────────
+
+  /** Shifts slide track container window leftwards */
+  prevSlide(): void {
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
     }
   }
 
-  ngOnDestroy(): void {
-    this.stopAutoPlay();
-  }
-
-  // ── Controls ──────────────────────────────────────────────────────────────
-
-  goToSlide(index: number): void {
-    this.currentIndex = index;
-    // Reset timer so dot-clicks don't cause an immediate auto-advance
-    this.stopAutoPlay();
-    this.startAutoPlay();
-  }
-
-  // ── Private ───────────────────────────────────────────────────────────────
-
-  private startAutoPlay(): void {
-    this.slideInterval = setInterval(() => {
-      this.currentIndex = (this.currentIndex + 1) % this.totalSlides;
-    }, this.AUTO_PLAY_MS);
-  }
-
-  private stopAutoPlay(): void {
-    clearInterval(this.slideInterval);
+  /** Shifts slide track container window rightwards */
+  nextSlide(): void {
+    if (this.currentIndex < this.totalSlides - 1) {
+      this.currentIndex++;
+    }
   }
 }

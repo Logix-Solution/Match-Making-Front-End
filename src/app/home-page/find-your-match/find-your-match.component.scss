@@ -1,67 +1,192 @@
-.heading-find-your-match {
-  font-family: 'Marcellus'!important;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 36px;
-  letter-spacing: 0%;
-  line-height: 40px;
-  // Vertical centering context helper
-  display: inline-flex;
+$primary-hex: #590117;
 
+// ─── Slider Outer Wrapper & Viewport ──────────────────────────────────────────
+.slider-container {
+  /* Gives breathing room on left/right edges for absolute button overlays */
+  padding-left: 55px;
+  padding-right: 55px;
 }
 
-.sub-heading-find-your-match{
-  font-family: 'Marcellus'!important;
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 28px;
-  text-align: center;
-  
-  // Handles vertical alignment for inline/inline-block elements
-  vertical-align: middle; 
-}
-
-
-
-::ng-deep .ng-select .ng-select-container {
-  min-height: 50px !important;
-  border-radius: 14px !important;
-  border: 1px solid #dee2e6 !important;
-  background: #f8f9fa !important;
-  box-shadow: none !important;
-  padding: 6px 10px;
-  font-size: 14px;
-}
-
-::ng-deep .ng-select.ng-select-focused .ng-select-container {
-  border-color: var(--primary) !important;
-  box-shadow: 0 0 0 0.15rem rgba(139, 30, 30, 0.15) !important;
-}
-
-::ng-deep .ng-select .ng-placeholder {
-  color: #9ca3af !important;
-}
-
-::ng-deep .ng-select .ng-arrow-wrapper .ng-arrow {
-  border-color: #6b7280 transparent transparent !important;
-}
-
-::ng-deep .ng-dropdown-panel {
-  border-radius: 14px !important;
-  border: 1px solid #e5e7eb !important;
+.slider-viewport {
   overflow: hidden;
+  width: 100%;
 }
 
-::ng-deep .ng-option {
-  padding: 10px 14px !important;
+.slider-track {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.slider-page {
+  min-width: 100%;
+  max-width: 100%;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding: 4px 0 8px;
+}
+
+// ─── Absolute Position Side Navigation Arrows ─────────────────────────────────
+.slider-nav-btn {
+  width: 44px;
+  height: 44px;
+  color: #495057;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+
+  &.prev-btn {
+    left: 0;
+  }
+
+  &.next-btn {
+    right: 0;
+  }
+
+  &:hover:not([disabled]) {
+    background-color: #f8f9fa !important;
+    color: $primary-hex;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  &[disabled] {
+    opacity: 0.3;
+    cursor: not-allowed;
+    background-color: #e9ecef !important;
+    box-shadow: none !important;
+  }
+
+  .nav-arrow-icon {
+    font-size: 18px;
+    font-weight: 700;
+    display: inline-block;
+    line-height: 1;
+  }
+}
+
+.slider-page-counter {
   font-size: 14px;
+  letter-spacing: 0.5px;
 }
 
-::ng-deep .ng-option.ng-option-marked {
-  background: #f3f4f6 !important;
+// ─── Card ─────────────────────────────────────────────────────────────────────
+.profile-card {
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.13);
+  }
 }
 
-::ng-deep .ng-option.ng-option-selected {
-  background: var(--primary) !important;
-  color: white !important;
+// ─── Avatar ───────────────────────────────────────────────────────────────────
+.avatar-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem 1.5rem 0;
+
+  .avatar-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: top;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+    background: #e4e4e4;
+  }
+}
+
+// ─── Card body ────────────────────────────────────────────────────────────────
+.card-body-content {
+  padding: 1.25rem 1.25rem 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.1rem;
+}
+
+.profile-gender {
+  font-size: 0.82rem;
+  color: #888;
+  margin-bottom: 0.75rem;
+}
+
+// ─── Meta row: Age | Height | Marital Status ──────────────────────────────────
+.profile-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.82rem;
+    color: #444;
+    white-space: nowrap;
+  }
+}
+
+// ─── Detail rows: Location | Profession ──────────────────────────────────────
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 0.25rem;
+}
+
+.profile-detail {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: #444;
+}
+
+// ─── Icon base ────────────────────────────────────────────────────────────────
+.meta-icon,
+.detail-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+  font-size: 0.9rem;
+  color: var(--primary); 
+}
+
+// ─── Button ───────────────────────────────────────────────────────────────────
+.view-btn {
+  background-color: var(--primary);  
+  border-color: var(--primary);
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.55rem 1rem;
+  margin-top: auto;
+
+  &:hover,
+  &:focus {
+    background-color: darken($primary-hex, 8%);
+    border-color: darken($primary-hex, 8%);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba($primary-hex, 0.35);
+  }
 }

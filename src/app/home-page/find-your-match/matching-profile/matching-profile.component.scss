@@ -1,6 +1,3 @@
-
-
-
 $primary-hex: #590117;
 
 // ─── Slider ───────────────────────────────────────────────────────────────────
@@ -22,27 +19,38 @@ $primary-hex: #590117;
   padding: 4px 0 8px;
 }
 
-// ─── Dots ─────────────────────────────────────────────────────────────────────
-.slider-dots {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
+// ─── Navigation Panel (Arrows & Counter) ──────────────────────────────────────
+.slider-navigation-panel {
+  user-select: none;
 
-  .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: #ccc;
-    border: none;
-    padding: 0;
+  .slider-nav-btn {
+    width: 40px;
+    height: 40px;
+    color: #495057;
+    transition: all 0.2s ease-in-out;
     cursor: pointer;
-    transition: background-color 0.3s, width 0.3s;
 
-    &.active {
-      background-color: var(--primary);
-      width: 28px;
-      border-radius: 5px;
+    &:hover:not([disabled]) {
+      background-color: #f8f9fa !important;
+      color: $primary-hex; // Highlights arrow with your theme color on hover
+      transform: scale(1.05);
     }
+
+    &[disabled] {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background-color: #e9ecef !important;
+    }
+
+    .nav-arrow-icon {
+      font-size: 16px;
+      font-weight: 700;
+    }
+  }
+
+  .slider-page-counter {
+    font-size: 14px;
+    letter-spacing: 0.5px;
   }
 }
 
@@ -50,12 +58,11 @@ $primary-hex: #590117;
 .profile-card {
   background: #ffffff;
   border-radius: 20px;
-  // box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  // transition: transform 0.25s ease, box-shadow 0.25s ease;
-  transition: transform 0.25s ease, ;
+  transition: transform 0.25s ease, box-shadow 0.25s ease; // Fixed trailing dangling comma syntax error here
+
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.13);
@@ -136,8 +143,6 @@ $primary-hex: #590117;
 }
 
 // ─── Icon base ────────────────────────────────────────────────────────────────
-// Ensures ::before pseudo-element sits in its own flex box and never
-// overlaps the adjacent text regardless of icon class implementation.
 .meta-icon,
 .detail-icon {
   display: inline-flex;
@@ -146,12 +151,12 @@ $primary-hex: #590117;
   flex-shrink: 0;
   line-height: 1;
   font-size: 0.9rem;
-  color: var(--primary); // uses your global CSS variable
+  color: var(--primary); 
 }
 
 // ─── Button ───────────────────────────────────────────────────────────────────
 .view-btn {
-  background-color: var(--primary);   // CSS variable — stays in sync with theme
+  background-color: var(--primary);  
   border-color: var(--primary);
   color: #fff;
   border-radius: 10px;
@@ -162,7 +167,6 @@ $primary-hex: #590117;
 
   &:hover,
   &:focus {
-    // darken() needs a static value — use the SCSS copy, not var()
     background-color: darken($primary-hex, 8%);
     border-color: darken($primary-hex, 8%);
     color: #fff;

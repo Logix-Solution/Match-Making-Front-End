@@ -1,15 +1,13 @@
-<div class="  container  matching-section py-4">
+<div class="container matching-section py-4">
 
-  <!-- ── Static grid: 6 or fewer profiles ─────────────────────────────── -->
   <ng-container *ngIf="!useSlider; else sliderMode">
-    <div class="row  g-4">
+    <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3">
       <div class="col" *ngFor="let profile of profiles">
         <ng-container *ngTemplateOutlet="profileCard; context: { $implicit: profile }"></ng-container>
       </div>
     </div>
   </ng-container>
 
-  <!-- ── Pure Angular slider: more than 6 profiles ─────────────────────── -->
   <ng-template #sliderMode>
     <div class="slider-viewport">
       <div class="slider-track" [style.transform]="translateX">
@@ -23,35 +21,43 @@
       </div>
     </div>
 
-    <!-- Dots -->
-    <div class="slider-dots mt-4">
-      <button
-        *ngFor="let chunk of slideChunks; let i = index"
-        class="dot"
-        [class.active]="i === currentIndex"
-        (click)="goToSlide(i)"
-        [attr.aria-label]="'Go to slide ' + (i + 1)"
-      ></button>
+    <div class="slider-navigation-panel d-flex justify-content-center align-items-center mt-4 gap-4">
+      
+      <button 
+        class="slider-nav-btn prev-btn border-0 d-flex align-items-center justify-content-center bg-white shadow-sm rounded-circle"
+        [disabled]="currentIndex === 0"
+        (click)="prevSlide()"
+        aria-label="Previous Slide">
+        <i class="bi bi-chevron-left nav-arrow-icon"></i>
+      </button>
+
+      <span class="slider-page-counter fw-bold text-muted">
+        Page {{ currentIndex + 1 }} of {{ totalSlides }}
+      </span>
+
+      <button 
+        class="slider-nav-btn next-btn border-0 d-flex align-items-center justify-content-center bg-white shadow-sm rounded-circle"
+        [disabled]="currentIndex === totalSlides - 1"
+        (click)="nextSlide()"
+        aria-label="Next Slide">
+        <i class="bi bi-chevron-right nav-arrow-icon"></i>
+      </button>
+
     </div>
   </ng-template>
 </div>
 
-<!-- ── Reusable card template ─────────────────────────────────────────────── -->
- &nbsp;  &nbsp;
 <ng-template #profileCard let-profile>
   <div class="profile-card h-100">
 
-    <!-- Avatar -->
     <div class="avatar-wrapper">
       <img [src]="profile.avatar" [alt]="profile.name" class="avatar-img" />
     </div>
 
-    <!-- Body -->
     <div class="card-body-content">
       <h5 class="profile-name">{{ profile.name }}</h5>
       <p class="profile-gender">{{ profile.gender }}</p>
 
-      <!-- Age | Height | Marital Status -->
       <div class="profile-meta">
         <span class="meta-item">
           <i class="ageIcon meta-icon"></i>
@@ -67,7 +73,6 @@
         </span>
       </div>
 
-      <!-- Location & Profession -->
       <div class="profile-details">
         <div class="profile-detail">
           <i class="locationPinIcon detail-icon"></i>
