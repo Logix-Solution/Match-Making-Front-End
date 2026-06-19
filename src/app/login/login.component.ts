@@ -70,11 +70,15 @@ export class LoginComponent {
             this.getMenu(roleId);
             // Redirect based on role
             // const roleId = data.roleId;
-            if (roleId === 2) {
+            if (roleId === 3) {
               this.router.navigate(['/Explore-Match']);
-            } else if (roleId === 1){
+            } else if (roleId === 2){
               this.router.navigate(['/adminDashboard']);
             }
+               else if (roleId === 1){
+              this.router.navigate(['/adminDashboard']);
+            }
+
             else {
               this.router.navigate(['/']);
             }
@@ -82,8 +86,8 @@ export class LoginComponent {
           (error) => {
             this.isLoading = false;
             console.error('Login error:', error);
-            this.valid.apiErrorResponse('Invalid email or password');
-          
+            this.valid.apiErrorResponse(error,);
+              this.valid.apiErrorResponse('incorrect Email and Password');
           }
         );
     }
@@ -149,9 +153,12 @@ export class LoginComponent {
     // Role-based redirect
     setTimeout(() => {
   
-            if (roleId === 2) {
+            if (roleId === 3) {
               this.router.navigate(['/Explore-Match']);
-            } else if (roleId === 1){
+            } else if (roleId === 2){
+              this.router.navigate(['/adminDashboard']);
+            }
+            else if (roleId === 1){
               this.router.navigate(['/adminDashboard']);
             }
             else {

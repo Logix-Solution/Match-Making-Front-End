@@ -36,7 +36,7 @@
         <li class="nav-item">
           <a class="nav-link text-white">Success Stories</a>
         </li>
-        <li class="nav-item" *ngIf="currentUser?.roleId === 2">
+        <li class="nav-item" *ngIf="currentUser?.roleId === 3">
           <a class="nav-link text-white" routerLink="/Explore-Match"
             >Explore Match</a
           >
@@ -62,9 +62,9 @@
         </button>
       </div>
 
-      <!-- LOGGED IN (ROLE 2 ONLY) -->
+      <!-- LOGGED IN (ROLE 3 ONLY) -->
       <div
-        *ngIf="currentUser?.roleId === 2"
+        *ngIf="currentUser?.roleId === 3"
         class="user-dropdown-wrapper d-flex align-items-center gap-2 mt-3 mt-lg-0"
       >
         <!-- Notification icon -->

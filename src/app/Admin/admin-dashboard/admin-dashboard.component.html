@@ -4,66 +4,68 @@
     <p class="ft-3 txt-7th">Overview of your platform's performance.</p>
   </div>
  <div class="flex-grow-1 scroll-verticle style-1">
-  <div class="row g-4 mb-4">
+ <div class="row g-4 mb-4">
+    
     <div class="col-12 col-sm-6 col-xl-3">
-      <div class="dashboard-card d-flex align-items-center justify-content-between">
-        <div>
-          <span class="ft-3 txt-7th">Total Users</span>
-          <div class="d-flex align-items-center gap-2 mt-1">
-            <span class="fh-3 txt-8th">1,248</span>
-            <span class="badge bg-success bg-opacity-10 text-success ft-5 rounded-pill">+12%</span>
-          </div>
-        </div>
+      <div class="dashboard-card d-flex flex-column align-items-start gap-3">
         <div class="icon-shape bg-4th txt-2nd">
           <i class="bi bi-people-fill fs-5"></i>
         </div>
+        <div>
+          <span class="ft-3 txt-7th d-block text-muted">Total Users</span>
+          <div class="d-flex align-items-center gap-2 mt-1">
+            <span class="fh-3 txt-8th fw-bold fs-2">1,248</span>
+            <span class="badge bg-success bg-opacity-10 text-success ft-5 rounded-pill px-2 py-1">+12%</span>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="col-12 col-sm-6 col-xl-3">
-      <div class="dashboard-card d-flex align-items-center justify-content-between">
-        <div>
-          <span class="ft-3 txt-7th">Pending Approval</span>
-          <div class="d-flex align-items-center gap-2 mt-1">
-            <span class="fh-3 txt-8th">24</span>
-            <span class="badge bg-danger bg-opacity-10 text-danger ft-5 rounded-pill">-3%</span>
-          </div>
-        </div>
+      <div class="dashboard-card d-flex flex-column align-items-start gap-3">
         <div class="icon-shape bg-4th txt-2nd">
           <i class="bi bi-hourglass-split fs-5"></i>
         </div>
+        <div>
+          <span class="ft-3 txt-7th d-block text-muted">Pending Approval</span>
+          <div class="d-flex align-items-center gap-2 mt-1">
+            <span class="fh-3 txt-8th fw-bold fs-2">24</span>
+            <span class="badge bg-danger bg-opacity-10 text-danger ft-5 rounded-pill px-2 py-1">-3%</span>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="col-12 col-sm-6 col-xl-3">
-      <div class="dashboard-card d-flex align-items-center justify-content-between">
-        <div>
-          <span class="ft-3 txt-7th">Active Matches</span>
-          <div class="d-flex align-items-center gap-2 mt-1">
-            <span class="fh-3 txt-8th">842</span>
-            <span class="badge bg-success bg-opacity-10 text-success ft-5 rounded-pill">+5%</span>
-          </div>
-        </div>
+      <div class="dashboard-card d-flex flex-column align-items-start gap-3">
         <div class="icon-shape bg-4th txt-2nd">
           <i class="bi bi-box-seam fs-5"></i>
         </div>
+        <div>
+          <span class="ft-3 txt-7th d-block text-muted">Active Matches</span>
+          <div class="d-flex align-items-center gap-2 mt-1">
+            <span class="fh-3 txt-8th fw-bold fs-2">842</span>
+            <span class="badge bg-success bg-opacity-10 text-success ft-5 rounded-pill px-2 py-1">+5%</span>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="col-12 col-sm-6 col-xl-3">
-      <div class="dashboard-card d-flex align-items-center justify-content-between">
-        <div>
-          <span class="ft-3 txt-7th">Interested Clients</span>
-          <div class="d-flex align-items-center gap-2 mt-1">
-            <span class="fh-3 txt-8th">156</span>
-            <span class="badge bg-success bg-opacity-10 text-success ft-5 rounded-pill">+21%</span>
-          </div>
-        </div>
+      <div class="dashboard-card d-flex flex-column align-items-start gap-3">
         <div class="icon-shape bg-4th txt-2nd">
           <i class="bi bi-envelope-heart fs-5"></i>
         </div>
+        <div>
+          <span class="ft-3 txt-7th d-block text-muted">Interested Clients</span>
+          <div class="d-flex align-items-center gap-2 mt-1">
+            <span class="fh-3 txt-8th fw-bold fs-2">156</span>
+            <span class="badge bg-success bg-opacity-10 text-success ft-5 rounded-pill px-2 py-1">+21%</span>
+          </div>
+        </div>
       </div>
     </div>
+
   </div>
 
   <div class="row g-4 mb-4">
@@ -98,46 +100,69 @@
       </div>
     </div>
 
-    <div class="col-12 col-lg-4">
-      <div class="dashboard-card h-100">
-        <h3 class="fh-6 txt-8th mb-0">Country Wise Profiles</h3>
-        <span class="ft-4 txt-7th d-block mb-3">Current active interests</span>
+ <div class="col-12 col-lg-4">
+  <div class="dashboard-card h-100">
+    <h3 class="fh-6 txt-8th mb-0">Country Wise Profiles</h3>
+    <span class="ft-4 txt-7th d-block mb-3">Current active interests</span>
 
-        <div class="donut-container my-3">
-          <svg class="donut-svg" width="100%" height="100%" viewBox="0 0 42 42">
-            <circle class="donut-hole" cx="21" cy="21" r="15.915" fill="#fff"></circle>
-            <circle class="donut-ring" cx="21" cy="21" r="15.915" fill="transparent" stroke="#ebebeb" stroke-width="4"></circle>
-            
-            <circle class="donut-segment" cx="21" cy="21" r="15.915" fill="transparent" stroke="#dc3545" 
-                    stroke-dasharray="45 55" stroke-dashoffset="100" style="cursor:pointer;"
-                    (click)="openModalWithFilter('Pakistan')"></circle>
-            <circle class="donut-segment" cx="21" cy="21" r="15.915" fill="transparent" stroke="#fd7e14" stroke-dasharray="25 75" stroke-dashoffset="55"></circle>
-            <circle class="donut-segment" cx="21" cy="21" r="15.915" fill="transparent" stroke="#0dcaf0" stroke-dasharray="15 85" stroke-dashoffset="30"></circle>
-            <circle class="donut-segment" cx="21" cy="21" r="15.915" fill="transparent" stroke="#198754" stroke-dasharray="15 85" stroke-dashoffset="15"></circle>
-          </svg>
-        </div>
+    <div class="donut-container my-3">
+      <svg class="donut-svg" width="100%" height="100%" viewBox="0 0 42 42">
+        <circle class="donut-hole" cx="21" cy="21" r="15.91549430918954" fill="#fff"></circle>
+        <circle class="donut-ring" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#ebebeb" stroke-width="4"></circle>
+        
+        <circle class="donut-segment segment-green" cx="21" cy="21" r="15.91549430918954" fill="transparent" 
+                stroke="#198754" stroke-width="4" stroke-dasharray="13.5 86.5" stroke-dashoffset="100">
+        </circle>
 
-        <div class="mt-2 ft-4">
-          <div class="d-flex align-items-center justify-content-between py-1 px-2 rounded country-legend-item" 
-               style="cursor: pointer;" (click)="openModalWithFilter('Pakistan')">
-            <span class="txt-8th"><span class="d-inline-block rounded-circle bg-danger me-2" style="width:8px; height:8px;"></span>Pakistan</span>
-            <span class="fw-bold txt-8th">45%</span>
-          </div>
-          <div class="d-flex align-items-center justify-content-between py-1 px-2">
-            <span class="txt-7th"><span class="d-inline-block rounded-circle bg-warning me-2" style="width:8px; height:8px;"></span>Turkey</span>
-            <span class="fw-bold txt-7th">25%</span>
-          </div>
-          <div class="d-flex align-items-center justify-content-between py-1 px-2">
-            <span class="txt-7th"><span class="d-inline-block rounded-circle bg-info me-2" style="width:8px; height:8px;"></span>Dubai</span>
-            <span class="fw-bold txt-7th">15%</span>
-          </div>
-          <div class="d-flex align-items-center justify-content-between py-1 px-2">
-            <span class="txt-7th"><span class="d-inline-block rounded-circle bg-success me-2" style="width:8px; height:8px;"></span>New York</span>
-            <span class="fw-bold txt-7th">15%</span>
-          </div>
-        </div>
+        <circle class="donut-segment segment-red" cx="21" cy="21" r="15.91549430918954" fill="transparent" 
+                stroke="#dc3545" stroke-width="4" stroke-dasharray="43.5 56.5" stroke-dashoffset="85" 
+                style="cursor: pointer;" (click)="openModalWithFilter('Pakistan')">
+        </circle>
+
+        <circle class="donut-segment segment-orange" cx="21" cy="21" r="15.91549430918954" fill="transparent" 
+                stroke="#fd7e14" stroke-width="4" stroke-dasharray="23.5 76.5" stroke-dashoffset="40">
+        </circle>
+
+        <circle class="donut-segment segment-blue" cx="21" cy="21" r="15.91549430918954" fill="transparent" 
+                stroke="#0dcaf0" stroke-width="4" stroke-dasharray="13.5 86.5" stroke-dashoffset="15">
+        </circle>
+      </svg>
+    </div>
+
+    <div class="mt-2 ft-4">
+      <div class="d-flex align-items-center justify-content-between py-1 px-2 rounded country-legend-item" 
+           style="cursor: pointer;" (click)="openModalWithFilter('Pakistan')">
+        <span class="txt-8th">
+          <span class="d-inline-block rounded-circle bg-danger me-2" style="width:8px; height:8px;"></span>
+          Pakistan
+        </span>
+        <span class="fw-bold txt-8th">45%</span>
+      </div>
+      <div class="d-flex align-items-center justify-content-between py-1 px-2">
+        <span class="txt-7th">
+          <span class="d-inline-block rounded-circle bg-warning me-2" style="width:8px; height:8px;"></span>
+          Turkey
+        </span>
+        <span class="fw-bold txt-7th">25%</span>
+      </div>
+      <div class="d-flex align-items-center justify-content-between py-1 px-2">
+        <span class="txt-7th">
+          <span class="d-inline-block rounded-circle bg-info me-2" style="width:8px; height:8px;"></span>
+          Dubai
+        </span>
+        <span class="fw-bold txt-7th">15%</span>
+      </div>
+      <div class="d-flex align-items-center justify-content-between py-1 px-2">
+        <span class="txt-7th">
+          <span class="d-inline-block rounded-circle bg-success me-2" style="width:8px; height:8px;"></span>
+          New York
+        </span>
+        <span class="fw-bold txt-7th">15%</span>
       </div>
     </div>
+
+  </div>
+</div>
   </div>
 
   <div class="row g-4">
