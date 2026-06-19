@@ -249,6 +249,17 @@ p {
   margin: 0 auto;
 }
 
+
+.fh-8 {
+  font-family: "Codec Pro" !important ;
+  font-size: clamp(24px, 3vw, 3rem)!important;
+  color: var( --8th) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0% !important;
+   line-height: 32px;
+  max-width: 100%;
+  margin: 0 auto;
+}
 //normal text
 .ft-1 {
   font-size: 18px !important;
