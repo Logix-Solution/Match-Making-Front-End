@@ -1,121 +1,129 @@
 <div class="container-fluid d-flex flex-column h-100 no-scroll">
-  <!-- heading -->
+
+  <!-- Heading -->
   <div class="d-flex flex-column align-items-center mt-3">
     <div class="fh-4">Create Your Profile</div>
     <div class="ft-3 pt-2 ls-3 txt-7th">Let's get to know you better</div>
   </div>
-  <!-- buttons row -->
+
+  <!-- Step Buttons Row -->
   <div class="row mt-3 align-items-around pe-3">
     <div class="col-md-10 d-flex flex-row gap-3">
-      <div
-        class="d-flex flex-row align-items-center mat-elevation-z1"
-        (click)="stepper = 1"
-        [ngClass]="{ btnPrimary: stepper === 1, 'btn-6th': stepper !== 1 }"
-      >
-        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">
-          1
-        </div>
+
+      <div class="d-flex flex-row align-items-center mat-elevation-z1"
+           (click)="stepper = 1"
+           [ngClass]="{ btnPrimary: stepper === 1, 'btn-6th': stepper !== 1 }">
+        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">1</div>
         <div>Personal</div>
       </div>
-      <div
-        class="btn-6th d-flex flex-row align-items-center mat-elevation-z1"
-        [ngClass]="{ btnPrimary: stepper === 2, 'btn-6th': stepper !== 2 }"
-        (click)="stepper = 2"
-      >
-        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">
-          2
-        </div>
+
+      <div class="d-flex flex-row align-items-center mat-elevation-z1"
+           (click)="stepper = 2"
+           [ngClass]="{ btnPrimary: stepper === 2, 'btn-6th': stepper !== 2 }">
+        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">2</div>
         <div>Career</div>
       </div>
-      <div
-        class="btn-6th d-flex flex-row align-items-center mat-elevation-z1"
-        [ngClass]="{ btnPrimary: stepper === 3, 'btn-6th': stepper !== 3 }"
-        (click)="stepper = 3"
-      >
-        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">
-          3
-        </div>
+
+      <div class="d-flex flex-row align-items-center mat-elevation-z1"
+           (click)="stepper = 3"
+           [ngClass]="{ btnPrimary: stepper === 3, 'btn-6th': stepper !== 3 }">
+        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">3</div>
         <div>Religion</div>
       </div>
-      <div
-        class="btn-6th d-flex flex-row align-items-center mat-elevation-z1"
-        [ngClass]="{ btnPrimary: stepper === 4, 'btn-6th': stepper !== 4 }"
-        (click)="stepper = 4"
-      >
-        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">
-          4
-        </div>
+
+      <div class="d-flex flex-row align-items-center mat-elevation-z1"
+           (click)="stepper = 4"
+           [ngClass]="{ btnPrimary: stepper === 4, 'btn-6th': stepper !== 4 }">
+        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">4</div>
         <div>Family</div>
       </div>
-      <div
-        class="btn-6th d-flex flex-row align-items-center mat-elevation-z1"
-        [ngClass]="{ btnPrimary: stepper === 5, 'btn-6th': stepper !== 5 }"
-        (click)="stepper = 5"
-      >
-        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">
-          5
-        </div>
+
+      <div class="d-flex flex-row align-items-center mat-elevation-z1"
+           (click)="stepper = 5"
+           [ngClass]="{ btnPrimary: stepper === 5, 'btn-6th': stepper !== 5 }">
+        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">5</div>
         <div>Appearance</div>
       </div>
-      <div
-        class="btn-6th d-flex flex-row align-items-center mat-elevation-z1"
-        [ngClass]="{ btnPrimary: stepper === 6, 'btn-6th': stepper !== 6 }"
-        (click)="stepper = 6"
-      >
-        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">
-          6
-        </div>
+
+      <div class="d-flex flex-row align-items-center mat-elevation-z1"
+           (click)="stepper = 6"
+           [ngClass]="{ btnPrimary: stepper === 6, 'btn-6th': stepper !== 6 }">
+        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">6</div>
         <div>Lifestyle</div>
       </div>
+
     </div>
+
+    <!-- Save & Continue Button -->
     <div class="col-md-2 text-end">
-      <div class="btn-6th d-flex flex-row align-items-center mat-elevation-z1">
-        <div class="rounded-circle bg-2nd px-2 text-center txt-6th me-2 ft-4">
-          2
-        </div>
+      <div class="btn-6th d-flex flex-row align-items-center mat-elevation-z1" (click)="save()">
+        <div class="rounded-circle bg-2nd px-2 text-center txt-6th me-2 ft-4">{{ stepper }}</div>
         <div>Save & Continue</div>
       </div>
     </div>
   </div>
 
-  <!--  Preferences Personal  -->
+  <!-- ─── Step 1: Personal Preferences ─────────────────────────────────── -->
+  <!--
+      Passes dropdown lists down to child.
+      countrySelected → parent loads cities and passes back via [cityList].
+      saveSuccess     → parent advances stepper to 2.
+  -->
   <app-preferences-personal
     *ngIf="stepper === 1"
     class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+    [countryList]="countryList"
+    [cityList]="cityList"
+    [minAgeList]="minAgeList"
+    [maxAgeList]="maxAgeList"
+    [nationalityList]="nationalityList"
+    [castList]="castList"
+    [ethnicityList]="ethnicityList"
+    (countrySelected)="getCities($event)"
+    (saveSuccess)="onPersonalPrefSaveSuccess()"
   ></app-preferences-personal>
 
-  <!--    Preferences career  -->
+  <!-- ─── Step 2: Career Preferences ───────────────────────────────────── -->
   <app-preferences-career
     *ngIf="stepper === 2"
-    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
-  >
+    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2">
   </app-preferences-career>
 
-  <!--    Preferences religion  -->
-  <app-preferences-religion
-    *ngIf="stepper === 3"
-    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
-  >
-  </app-preferences-religion>
+  <!-- ─── Step 3: Religion Preferences ─────────────────────────────────── -->
+<app-preferences-religion
+  *ngIf="stepper === 3"
+  class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+  [religionList]="religionList"
+  [sectList]="sectList"
+  [religionImportanceList]="religionImportanceList"
+  (saveSuccess)="onReligionPrefSaveSuccess()">
+</app-preferences-religion>
 
-  <!--  Preferences family & lifestyle  -->
+  <!-- ─── Step 4: Family Preferences ───────────────────────────────────── -->
   <app-preferences-family
     *ngIf="stepper === 4"
-    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
-  >
+    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2">
   </app-preferences-family>
 
-  <!--  Preferences appearance  -->
-  <app-preferences-appearance
+  <!-- ─── Step 5: Appearance Preferences ───────────────────────────────── -->
+   <app-preferences-appearance
     *ngIf="stepper === 5"
     class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
-  >
+    [appearanceHeightList]="appearanceHeightList"
+    [bodyTypeList]="bodyTypeList"
+    [skinToneList]="skinToneList"
+    [disabilityList]="disabilityList"
+    (saveSuccess)="onAppearancePrefSaveSuccess()">
   </app-preferences-appearance>
 
-  <!-- Preferences Lifestyle  -->
-  <app-preferences-lifestyle
+  <!-- ─── Step 6: Lifestyle Preferences ────────────────────────────────── -->
+ <app-preferences-lifestyle
     *ngIf="stepper === 6"
     class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
-  >
+    [smokeList]="smokeList"
+    [alcoholList]="alcoholList"
+    [wantKidsList]="wantKidsList"
+    (saveSuccess)="onLifestylePrefSaveSuccess()">
   </app-preferences-lifestyle>
+
 </div>

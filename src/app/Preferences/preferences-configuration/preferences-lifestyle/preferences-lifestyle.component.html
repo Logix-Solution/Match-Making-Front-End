@@ -1,31 +1,63 @@
 <div class="fh-5 fw-bold mt-3">Lifestyle</div>
 
-<!-- row-01 -->
-<div class="row mt-4">
+<!-- Row 1: Smoking, Alcohol, Want Kids -->
+<div class="row g-2 align-items-end mt-4">
+
+  <!-- Is Smoking Acceptable (typeID=17) -->
   <div class="col-md-4">
     <div class="form-group">
-      <label for="smokingAcceptable" class="txt-7th ft-5">Is Smoking Acceptable?<span class="txt-2nd">&nbsp;*</span></label>
-      <select class="form-control form-control-sm mt-2" id="smokingAcceptable">
-        <option value="" disabled selected>Select preference</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Is Smoking Acceptable?<span class="text-danger">&nbsp;*</span>
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedSmoke"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select preference</option>
+        <option *ngFor="let item of smokeList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
       </select>
     </div>
   </div>
-  
+
+  <!-- Is Drink Alcohol Acceptable (typeID=18) -->
   <div class="col-md-4">
     <div class="form-group">
-      <label for="alcoholAcceptable" class="txt-7th ft-5">Is Drink Alcohol Acceptable?<span class="txt-2nd">&nbsp;*</span></label>
-      <select class="form-control form-control-sm mt-2" id="alcoholAcceptable">
-        <option value="" disabled selected>Select preference</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Is Drink Alcohol Acceptable?<span class="text-danger">&nbsp;*</span>
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedAlcohol"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select preference</option>
+        <option *ngFor="let item of alcoholList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
       </select>
     </div>
   </div>
-  
+
+  <!-- Partner Want Kids (typeID=19) -->
   <div class="col-md-4">
     <div class="form-group">
-      <label for="partnerWantKids" class="txt-7th ft-5">Partner Want Kids?<span class="txt-2nd">&nbsp;*</span></label>
-      <select class="form-control form-control-sm mt-2" id="partnerWantKids">
-        <option value="" disabled selected>Select preference</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Partner Want Kids?<span class="text-danger">&nbsp;*</span>
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedWantKids"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select preference</option>
+        <option *ngFor="let item of wantKidsList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
       </select>
     </div>
   </div>
+
 </div>

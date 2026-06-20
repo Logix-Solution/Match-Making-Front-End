@@ -1,10 +1,166 @@
-import { Component } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
+import { SharedDataService } from '../../../../shared/services/shared-data.service';
+import { SharedGlobalService } from '../../../../shared/services/shared-global.service';
+import { SharedFormFieldValidationService } from 'src/shared/services/shared-form-field-validation.service';
+
+// ─── Interface ────────────────────────────────────────────────────────────────
+interface PersonalPreferenceInterface {
+  userID:            number;  // 0
+  spType:            string;  // 1
+  nationalityID:     number;  // 2  → 0 (not used directly, goes into JSON)
+  personalPrefrence: string;  // 3  → [{typeID,subTypeID}, ...]
+    cityID:            number;  // 4
+
+}
 
 @Component({
   selector: 'app-preferences-personal',
   templateUrl: './preferences-personal.component.html',
   styleUrls: ['./preferences-personal.component.scss']
 })
-export class PreferencesPersonalComponent {
+export class PreferencesPersonalComponent implements OnInit {
 
+  // ─── Inputs from Parent ───────────────────────────────────────────────────
+  @Input() countryList:     any[] = [];
+  @Input() cityList:        any[] = [];
+  @Input() minAgeList:      any[] = [];  
+  @Input() maxAgeList:      any[] = [];  
+  @Input() nationalityList: any[] = [];
+  @Input() castList:        any[] = [];
+  @Input() ethnicityList:   any[] = [];
+
+  // ─── Outputs to Parent ────────────────────────────────────────────────────
+  @Output() saveSuccess     = new EventEmitter<void>();    // advance stepper
+  @Output() countrySelected = new EventEmitter<number>();  // load cities
+
+  // ─── Bound Fields ─────────────────────────────────────────────────────────
+  selectedCountry:     any = '';
+  selectedCity:        any = '';
+  selectedMinAge:      any = '';  // subTypeID from typeID=31
+  selectedMaxAge:      any = '';  // subTypeID from typeID=32
+  selectedNationality: any = '';  // → personalPrefrence JSON only
+  selectedCast:        any = '';  // → personalPrefrence JSON only
+  selectedEthnicity:   any = '';  // → personalPrefrence JSON only
+
+  // ─── Page Fields (API payload) ────────────────────────────────────────────
+  pageFields: PersonalPreferenceInterface = {
+    userID:            0,
+      spType:            'INSERT',
+    nationalityID:     0,
+    personalPrefrence: '[]',
+     cityID:            0,
+  
+  };
+
+  // ─── Form Fields ──────────────────────────────────────────────────────────
+  formFields: any[] = [
+    { value: 0,        msg: '',                                    type: 'hidden',    required: false }, // 0 userID
+     { value: 'INSERT', msg: '',                                    type: 'hidden',    required: false }, // 1 spType
+  
+    { value: 0,        msg: '',                                    type: 'hidden',    required: false }, // 2 nationalityID (always 0)
+    { value: '[]',     msg: '',                                    type: 'hidden',    required: false }, // 3 personalPrefrence
+     { value: 0,        msg: 'Please select your preferred city',   type: 'selectbox', required: true  }, // 4 cityID
+  ];
+
+  constructor(
+    private dataService:         SharedDataService,
+    private sharedGlobalService: SharedGlobalService,
+    private toastr:              ToastrService,
+    private valid:               SharedFormFieldValidationService,
+  ) {}
+
+  ngOnInit(): void {}
+
+  // ─── Alias — HTML calls onFieldChange() ──────────────────────────────────
+  onFieldChange(): void { this.syncFormFields(); }
+
+  // ─── Country change → emit for city load ─────────────────────────────────
+  onCountryChange(): void {
+    this.selectedCity = '';
+    this.countrySelected.emit(this.selectedCountry);
+    this.syncFormFields();
+  }
+
+  // ─── Sync bound fields → formFields[] ────────────────────────────────────
+  syncFormFields(): void {
+    this.formFields[4].value = this.selectedCity || 0;  // cityID
+
+    // personalPrefrence: build JSON from all selections
+    // typeID=31 → minAge, typeID=32 → maxAge
+    // typeID=2  → nationality, typeID=1 → cast, typeID=3 → ethnicity
+    const prefArray: { typeID: number; subTypeID: number }[] = [];
+
+    if (this.selectedMinAge)      prefArray.push({ typeID: 31, subTypeID: Number(this.selectedMinAge)      });
+    if (this.selectedMaxAge)      prefArray.push({ typeID: 32, subTypeID: Number(this.selectedMaxAge)      });
+    if (this.selectedNationality) prefArray.push({ typeID: 2,  subTypeID: Number(this.selectedNationality) });
+    if (this.selectedCast)        prefArray.push({ typeID: 1,  subTypeID: Number(this.selectedCast)        });
+    if (this.selectedEthnicity)   prefArray.push({ typeID: 3,  subTypeID: Number(this.selectedEthnicity)   });
+
+    this.formFields[3].value = JSON.stringify(prefArray);
+  }
+
+  // ─── SAVE ─────────────────────────────────────────────────────────────────
+  save(): void {
+
+    // ─── Manual validations ───────────────────────────────────────────────
+    if (!this.selectedCountry) {
+      this.toastr.warning('Please select preferred country'); return;
+    }
+    if (!this.selectedCity) {
+      this.toastr.warning('Please select preferred city'); return;
+    }
+    if (!this.selectedMinAge) {
+      this.toastr.warning('Please select preferred minimum age'); return;
+    }
+    if (!this.selectedMaxAge) {
+      this.toastr.warning('Please select preferred maximum age'); return;
+    }
+    if (Number(this.selectedMinAge) >= Number(this.selectedMaxAge)) {
+      this.toastr.warning('Minimum age must be less than maximum age'); return;
+    }
+
+    // ─── Get userLoginId ──────────────────────────────────────────────────
+    const userID = this.sharedGlobalService.getUserID();
+    if (!userID) {
+      this.toastr.error('User session not found. Please login again.');
+      return;
+    }
+
+    // ─── Sync all fields ──────────────────────────────────────────────────
+    this.syncFormFields();
+    this.formFields[0].value = userID;
+
+    // ─── Sync formFields → pageFields ────────────────────────────────────
+    this.pageFields.userID            = this.formFields[0].value;
+    this.pageFields.spType            = this.formFields[1].value;
+   
+    this.pageFields.nationalityID     = this.formFields[2].value;  // always 0
+    this.pageFields.personalPrefrence = this.formFields[3].value;
+     this.pageFields.cityID            = this.formFields[4].value;
+ 
+
+    console.log('Personal Preference PageFields:', this.pageFields);
+    console.log('Personal Preference FormFields:', this.formFields);
+
+    // ─── API Call ─────────────────────────────────────────────────────────
+    this.dataService.saveHttp(
+      this.pageFields,
+      this.formFields,
+      'core-api/Preferences/saveUserPsersonalPreference'
+    ).subscribe({
+      next: (response: any) => {
+        const apiResponse = Array.isArray(response) ? response[0] : response;
+        if (apiResponse?.includes('Success')) {
+          this.valid.apiInfoResponse('Personal Preferences Saved Successfully');
+          this.saveSuccess.emit();
+        } else {
+          this.valid.apiErrorResponse(apiResponse);
+        }
+      },
+      error: (err: any) => {
+        console.log('Personal Preference Save Error:', err);
+      }
+    });
+  }
 }

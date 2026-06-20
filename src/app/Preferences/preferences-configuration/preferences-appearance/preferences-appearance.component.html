@@ -1,126 +1,213 @@
 <div class="fh-5 fw-bold mt-3">Appearance</div>
 
 <!-- row-01 -->
-<div class="row mt-4">
+<div class="row g-2 align-items-end mt-4">
+
+  <!-- Preferred Min Height (typeID=26) -->
   <div class="col-md-4">
     <div class="form-group">
-      <label for="prefMinHeight" class="txt-7th ft-5">Preferred Min Height<span class="txt-2nd">&nbsp;*</span></label>
-      <select class="form-control form-control-sm mt-2" id="prefMinHeight">
-        <option value="" disabled selected>Select height</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Preferred Min Height<span class="text-danger">&nbsp;*</span>
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedMinHeight"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select height</option>
+        <option *ngFor="let item of appearanceHeightList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
       </select>
     </div>
   </div>
-  
+
+  <!-- Preferred Max Height (typeID=26) -->
   <div class="col-md-4">
     <div class="form-group">
-      <label for="prefMaxHeight" class="txt-7th ft-5">Preferred Max Height<span class="txt-2nd">&nbsp;*</span></label>
-      <select class="form-control form-control-sm mt-2" id="prefMaxHeight">
-        <option value="" disabled selected>Select height</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Preferred Max Height<span class="text-danger">&nbsp;*</span>
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedMaxHeight"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select height</option>
+        <option *ngFor="let item of appearanceHeightList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
       </select>
     </div>
   </div>
-  
+
+  <!-- Open to Partner with Disabilities (typeID=30) -->
   <div class="col-md-4">
     <div class="form-group">
-      <label for="openDisabilities" class="txt-7th ft-5">Open to Partner with Disabilities<span class="txt-2nd">&nbsp;*</span></label>
-      <select class="form-control form-control-sm mt-2" id="openDisabilities">
-        <option value="" disabled selected>Select option</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Open to Partner with Disabilities<span class="text-danger">&nbsp;*</span>
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedDisability"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select option</option>
+        <option *ngFor="let item of disabilityList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
       </select>
     </div>
   </div>
+
 </div>
 
 <!-- row-02 (Preferred Body Type Tags Selection) -->
 <div class="row mt-4">
   <div class="col-md-12">
     <div class="form-group">
-      <label class="txt-7th ft-5">Preferred Body Type<span class="txt-2nd">&nbsp;*</span></label>
-      
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Preferred Body Type<span class="text-danger">&nbsp;*</span>
+        <span class="ft-6 txt-7th text-lowercase">&nbsp;(select up to 3, in priority order)</span>
+      </label>
+
       <div class="d-flex flex-wrap gap-2 mt-3">
-        <span class="badge bg-light text-dark p-2 border">Slim</span>
-        <span class="badge bg-light text-dark p-2 border">Athletic</span>
-        <span class="badge bg-light text-dark p-2 border">Average</span>
-        <span class="badge bg-light text-dark p-2 border">Plus size</span>
-        <!-- Active/Selected option state style placeholder -->
-        <span class="badge bg-light text-danger p-2 border border-danger">Preferred not to say</span>
+        <span
+          *ngFor="let item of bodyTypeList"
+          class="badge p-2 border rounded-pill"
+          [ngClass]="isBodyTypeSelected(item.subTypeID)
+            ? 'bg-light text-danger border-danger'
+            : 'bg-light text-dark'"
+          style="cursor: pointer; font-size: 13px;"
+          (click)="toggleBodyType(item.subTypeID)">
+          {{ item.subTypeTitle }}
+          <span *ngIf="isBodyTypeSelected(item.subTypeID)">
+            &nbsp;({{ getBodyTypePriority(item.subTypeID) }})
+          </span>
+        </span>
       </div>
     </div>
   </div>
 </div>
 
-<!-- row-03 (Body Type Priority Selectors) -->
-<div class="row mt-4">
+<!-- row-03 (Body Type Priority Selectors — auto-filled from pill selection order) -->
+<div class="row g-2 align-items-end mt-4">
+
   <div class="col-md-4">
     <div class="form-group">
-      <label for="bodyFirstPriority" class="txt-7th ft-5">First Priority</label>
-      <select class="form-control form-control-sm mt-2" id="bodyFirstPriority">
-        <option>Preferred not to say</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        First Priority
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        disabled
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option>{{ getBodyTypeTitle(selectedBodyTypes[0]) || 'Not selected yet' }}</option>
       </select>
     </div>
   </div>
 
   <div class="col-md-4">
     <div class="form-group">
-      <label for="bodySecondPriority" class="txt-7th ft-5">Second Priority</label>
-      <select class="form-control form-control-sm mt-2" id="bodySecondPriority">
-        <option value="" disabled selected>Select profession</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Second Priority
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        disabled
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option>{{ getBodyTypeTitle(selectedBodyTypes[1]) || 'Not selected yet' }}</option>
       </select>
     </div>
   </div>
 
   <div class="col-md-4">
     <div class="form-group">
-      <label for="bodyThirdPriority" class="txt-7th ft-5">Third Priority</label>
-      <select class="form-control form-control-sm mt-2" id="bodyThirdPriority">
-        <option value="" disabled selected>Select profession</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Third Priority
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        disabled
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option>{{ getBodyTypeTitle(selectedBodyTypes[2]) || 'Not selected yet' }}</option>
       </select>
     </div>
   </div>
+
 </div>
 
 <!-- row-04 (Preferred Skin Tone Tags Selection) -->
 <div class="row mt-4">
   <div class="col-md-12">
     <div class="form-group">
-      <label class="txt-7th ft-5">Preferred Skin Tone<span class="txt-2nd">&nbsp;*</span></label>
-      
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Preferred Skin Tone<span class="text-danger">&nbsp;*</span>
+        <span class="ft-6 txt-7th text-lowercase">&nbsp;(select up to 3, in priority order)</span>
+      </label>
+
       <div class="d-flex flex-wrap gap-2 mt-3">
-        <span class="badge bg-light text-dark p-2 border">Fair</span>
-        <span class="badge bg-light text-dark p-2 border">medium</span>
-        <span class="badge bg-light text-dark p-2 border">Dark</span>
-        <!-- Active/Selected option state style placeholder -->
-        <span class="badge bg-light text-danger p-2 border border-danger">Preferred not to say</span>
+        <span
+          *ngFor="let item of skinToneList"
+          class="badge p-2 border rounded-pill"
+          [ngClass]="isSkinToneSelected(item.subTypeID)
+            ? 'bg-light text-danger border-danger'
+            : 'bg-light text-dark'"
+          style="cursor: pointer; font-size: 13px;"
+          (click)="toggleSkinTone(item.subTypeID)">
+          {{ item.subTypeTitle }}
+          <span *ngIf="isSkinToneSelected(item.subTypeID)">
+            &nbsp;({{ getSkinTonePriority(item.subTypeID) }})
+          </span>
+        </span>
       </div>
     </div>
   </div>
 </div>
 
-<!-- row-05 (Skin Tone Priority Selectors) -->
-<div class="row mt-4">
+<!-- row-05 (Skin Tone Priority Selectors — auto-filled from pill selection order) -->
+<div class="row g-2 align-items-end mt-4">
+
   <div class="col-md-4">
     <div class="form-group">
-      <label for="skinFirstPriority" class="txt-7th ft-5">First Priority</label>
-      <select class="form-control form-control-sm mt-2" id="skinFirstPriority">
-        <option>Preferred not to say</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        First Priority
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        disabled
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option>{{ getSkinToneTitle(selectedSkinTones[0]) || 'Not selected yet' }}</option>
       </select>
     </div>
   </div>
 
   <div class="col-md-4">
     <div class="form-group">
-      <label for="skinSecondPriority" class="txt-7th ft-5">Second Priority</label>
-      <select class="form-control form-control-sm mt-2" id="skinSecondPriority">
-        <option value="" disabled selected>Select profession</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Second Priority
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        disabled
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option>{{ getSkinToneTitle(selectedSkinTones[1]) || 'Not selected yet' }}</option>
       </select>
     </div>
   </div>
 
   <div class="col-md-4">
     <div class="form-group">
-      <label for="skinThirdPriority" class="txt-7th ft-5">Third Priority</label>
-      <select class="form-control form-control-sm mt-2" id="skinThirdPriority">
-        <option value="" disabled selected>Select profession</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Third Priority
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        disabled
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option>{{ getSkinToneTitle(selectedSkinTones[2]) || 'Not selected yet' }}</option>
       </select>
     </div>
   </div>
+
 </div>

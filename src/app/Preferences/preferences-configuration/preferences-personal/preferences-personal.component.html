@@ -1,64 +1,144 @@
 <div class="fh-5 fw-bold mt-3">Personal preference</div>
 
-<div class="row mt-4">
+<!-- Row 1: Country, City, Min Age, Max Age -->
+<div class="row g-2 align-items-end mt-4">
+
+  <!-- Preferred Country -->
   <div class="col-md-3">
     <div class="form-group">
-      <label for="minAge" class="txt-7th ft-5">Preferred Min Age<span class="txt-2nd">&nbsp;*</span></label>
-      <input type="number" class="form-control form-control-sm mt-2" id="minAge" placeholder="Enter preferred min age">
-    </div>
-  </div>
-  
-  <div class="col-md-3">
-    <div class="form-group">
-      <label for="maxAge" class="txt-7th ft-5">Preferred Max Age<span class="txt-2nd">&nbsp;*</span></label>
-      <input type="number" class="form-control form-control-sm mt-2" id="maxAge" placeholder="Enter preferred max age">
-    </div>
-  </div>
-  
-  <div class="col-md-3">
-    <div class="form-group">
-      <label for="city" class="txt-7th ft-5">Preferred City<span class="txt-2nd">&nbsp;*</span></label>
-      <select class="form-control form-control-sm mt-2" id="city">
-        <option value="" disabled selected>Select City</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Preferred Country<span class="text-danger">&nbsp;*</span>
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedCountry"
+        (change)="onCountryChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select Country</option>
+        <option *ngFor="let item of countryList" [value]="item.country_id">
+          {{ item.country_name }}
+        </option>
       </select>
     </div>
   </div>
 
+  <!-- Preferred City -->
   <div class="col-md-3">
     <div class="form-group">
-      <label for="country" class="txt-7th ft-5">Preferred Country<span class="txt-2nd">&nbsp;*</span></label>
-      <select class="form-control form-control-sm mt-2" id="country">
-        <option value="" disabled selected>Select Country</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Preferred City<span class="text-danger">&nbsp;*</span>
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedCity"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select City</option>
+        <option *ngFor="let item of cityList" [value]="item.city_id">
+          {{ item.city_name }}
+        </option>
       </select>
     </div>
   </div>
+
+  <!-- Preferred Min Age (typeID=31) -->
+  <div class="col-md-3">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Preferred Min Age<span class="text-danger">&nbsp;*</span>
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedMinAge"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select Min Age</option>
+        <option *ngFor="let item of minAgeList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Preferred Max Age (typeID=32) -->
+  <div class="col-md-3">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Preferred Max Age<span class="text-danger">&nbsp;*</span>
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedMaxAge"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select Max Age</option>
+        <option *ngFor="let item of maxAgeList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
+      </select>
+    </div>
+  </div>
+
 </div>
 
-<div class="row mt-4">
+<!-- Row 2: Nationality, Caste, Ethnicity -->
+<div class="row g-2 align-items-end mt-4">
+
+  <!-- Preferred Nationality (→ personalPrefrence JSON only) -->
   <div class="col-md-4">
     <div class="form-group">
-      <label for="nationality" class="txt-7th ft-5">Preferred Nationality<span class="txt-2nd">&nbsp;*</span></label>
-      <select class="form-control form-control-sm mt-2" id="nationality">
-        <option value="" disabled selected>Select a nationality</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Preferred Nationality
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedNationality"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select a nationality</option>
+        <option *ngFor="let item of nationalityList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
       </select>
     </div>
   </div>
 
+  <!-- Preferred Caste (→ personalPrefrence JSON only) -->
   <div class="col-md-4">
     <div class="form-group">
-      <label for="caste" class="txt-7th ft-5">Preferred Caste</label>
-      <select class="form-control form-control-sm mt-2" id="caste">
-        <option value="" disabled selected>Select a caste</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Preferred Caste
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedCast"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select a caste</option>
+        <option *ngFor="let item of castList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
       </select>
     </div>
   </div>
 
+  <!-- Preferred Ethnicity (→ personalPrefrence JSON only) -->
   <div class="col-md-4">
     <div class="form-group">
-      <label for="ethnicity" class="txt-7th ft-5">Preferred Ethnicity</label>
-      <select class="form-control form-control-sm mt-2" id="ethnicity">
-        <option value="" disabled selected>Select an ethnicity</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Preferred Ethnicity
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedEthnicity"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select an ethnicity</option>
+        <option *ngFor="let item of ethnicityList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
       </select>
     </div>
   </div>
+
 </div>

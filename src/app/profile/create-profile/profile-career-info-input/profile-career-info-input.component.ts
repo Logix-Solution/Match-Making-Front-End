@@ -9,7 +9,7 @@ interface CareerProfileInterface {
   userID:        number;  // 0
   spType:        string;  // 1
   instituteName: string;  // 2
-  careerJson:    string;  // 3  → [educationID, occupationID, monthlyIncomeID]
+  careerJson:    string;  // 3 
 }
 
 @Component({
