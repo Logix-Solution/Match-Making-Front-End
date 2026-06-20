@@ -68,44 +68,99 @@
   }
 }
 
-// --- MODAL DIALOG RULES remain unchanged ---
+// --- MODAL DIALOG ENGINE (ZERO SCROLL IMPLEMENTATION) ---
 .modal-backdrop-custom {
   background-color: rgba(0, 0, 0, 0.4);
   z-index: 1050;
   backdrop-filter: blur(3px);
+  padding: clamp(10px, 2vh, 24px); // Shrinks outter bounding space on low-height screens
 }
 
 .modal-window {
   width: 100%;
-  max-width: 580px;
+  max-width: 540px; // Slightly narrowed to match the elegant 80% look cleanly
   background-color: #e2e5e9;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  
+  // Condense structural padding relative to display scaling
+  padding: clamp(16px, 2.5vh, 24px) !important; 
+  
+  // Prevents scroll leakage
+  overflow: hidden; 
 }
 
-.border-white-container { border: 1px solid rgba(255, 255, 255, 0.7); }
-.close-x { cursor: pointer; &:hover { color: var(--2nd); } }
-.tracking-wider { letter-spacing: 0.6px; }
-
-.form-input-custom {
-  background-color: #f4f6f9 !important;
-  color: var(--8th) !important;
-  box-shadow: none !important;
+// Ensure the form content card responds elastically without generating overflow
+.border-white-container {
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  padding: clamp(14px, 2.2vh, 24px) !important;
+  margin-bottom: clamp(12px, 2vh, 20px) !important;
 }
 
+// Compress form fields dynamically to maximize workspace efficiency
+.mb-4 {
+  margin-bottom: clamp(10px, 1.8vh, 1.5rem) !important;
+}
+
+// --- FLUID COMPRESSION FOR FORM ELEMENTS ---
 .upload-dropzone {
   border: 1px dashed #cbd5e1 !important;
   background-color: #fafbfc;
   cursor: pointer;
+  // Scalable layout padding means no locked pixel blocks
+  padding: clamp(12px, 2vh, 24px) !important; 
+
   .upload-icon-circle {
-    width: 48px;
-    height: 48px;
+    width: clamp(36px, 5vh, 48px);
+    height: clamp(36px, 5vh, 48px);
     background-color: #ffffff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    margin-bottom: 6px !important;
+    
+    i {
+      font-size: clamp(1.1rem, 2vh, 1.5rem);
+    }
+  }
+
+  h5 {
+    font-size: clamp(0.9rem, 1.6vh, 1.05rem) !important;
+    margin-bottom: 2px !important;
+  }
+  
+  p {
+    font-size: clamp(0.75rem, 1.3vh, 0.85rem) !important;
   }
 }
 
+// Input and Select element structural compression
+.form-input-custom {
+  background-color: #f4f6f9 !important;
+  color: var(--8th) !important;
+  box-shadow: none !important;
+  // Dynamic inner height based on structural view bounds
+  padding-top: clamp(6px, 1.1vh, 10px) !important;
+  padding-bottom: clamp(6px, 1.1vh, 10px) !important;
+  font-size: clamp(0.82rem, 1.5vh, 0.92rem) !important;
+}
+
+// Label font system scales smoothly
+label.text-uppercase {
+  font-size: clamp(0.7rem, 1.3vh, 0.78rem) !important;
+  margin-bottom: 4px !important;
+}
+
+// Keep headers tight
+.fh-4 {
+  font-size: clamp(1.2rem, 2.5vh, 1.5rem) !important;
+}
+.ft-4 {
+  font-size: clamp(0.8rem, 1.4vh, 0.9rem) !important;
+}
+
+// Lower profile action button block
 .main-publish-btn {
-  height: 52px;
+  height: clamp(42px, 5.5vh, 52px) !important;
+  font-size: clamp(0.85rem, 1.6vh, 0.95rem) !important;
   transition: opacity 0.15s ease-in-out;
-  &:hover { animation: headShake 1s; opacity: 0.95; }
-  &:active { animation: rubberBand 1s; }
+  
+  &:hover { opacity: 0.95; }
 }

@@ -1,4 +1,29 @@
+/* ==========================================================================
+   GLOBAL UTILITIES AND DEFAULTS
+   ========================================================================== */
+.no-scroll {
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
 
+/* Tight Spacing Framework */
+.dashboard-header-spacing {
+  margin-bottom: 1.25rem !important; 
+}
+
+.dashboard-row-margin {
+  margin-bottom: 0.5rem !important; 
+}
+
+/* Inner Profile Modal Grid Compression */
+.modal-card-gap {
+  gap: 0.75rem !important; 
+}
+
+/* ==========================================================================
+   DASHBOARD CARDS & INTERFACES
+   ========================================================================== */
 .dashboard-card {
   border: none;
   border-radius: 20px; 
@@ -21,7 +46,7 @@
 }
 
 .action-panel-dark {
-  background-color: #510313; /* Derived contextual deep primary */
+  background-color: #510313; 
   color: var(--6th);
   border-radius: 16px;
   padding: 24px;
@@ -41,6 +66,21 @@
   &:hover { transform: translateY(-2px); }
 }
 
+.action-arrow-btn {
+  background-color: var(--2nd);
+  color: var(--6th);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+/* ==========================================================================
+   DATA GRAPHICS (DONUT CHART)
+   ========================================================================== */
 .donut-container {
   position: relative;
   width: 180px;
@@ -49,7 +89,6 @@
 }
 
 .donut-svg {
-  /* Counter-clockwise rotation converts top offset start parameters */
   transform: rotate(-90deg);
   overflow: visible;
 }
@@ -57,7 +96,6 @@
 .donut-segment {
   fill: none;
   stroke-width: 4;
-  /* Smoothly scales segments outward uniformly when hovered */
   transition: stroke-width 0.2s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.2s ease;
   transform-origin: center;
 
@@ -66,6 +104,13 @@
   }
 }
 
+.country-legend-item:hover {
+  background-color: var(--5th);
+}
+
+/* ==========================================================================
+   PROFILES SUB-MATRIX AND DATA BLOCKS
+   ========================================================================== */
 .avatar-img {
   width: 70px;
   height: 70px;
@@ -94,18 +139,6 @@
   color: var(--8th);
 }
 
-.action-arrow-btn {
-  background-color: var(--2nd);
-  color: var(--6th);
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-}
-
 .filter-indicator-badge {
   background-color: var(--4th);
   color: var(--primary);
@@ -115,13 +148,81 @@
   font-weight: 700;
 }
 
-.country-legend-item:hover {
-  background-color: var(--5th);
-}
-
 @media (min-width: 768px) {
   .border-end-md {
-    border-end: none;
+    border-bottom: none;
     border-right: 1px solid var(--5th) !important;
+  }
+}
+
+/* ==========================================================================
+   SCROLL ENGINE CONFIGURATION
+   ========================================================================== */
+.scroll-verticle {
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  scrollbar-gutter: stable both-edges !important;
+  
+  &:hover {
+    overflow-y: scroll !important;
+  }
+}
+
+.style-1::-webkit-scrollbar {
+  width: 6px;
+}
+.style-1::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--primary), var(--primary));
+  border-radius: 6px;
+}
+
+/* ==========================================================================
+   RESPONSIVE COMPRESSION RUNTIME (LOCKS SCREEN BOUNDS WITH NO EXTRA GAPS)
+   ========================================================================== */
+@media (min-width: 1201px) and (max-width: 1399px) {
+  .max-width-xl {
+    transform: none !important;
+    height: 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  .max-width-xl .scroll-verticle > .row {
+    transform: scale(0.88) !important;
+    transform-origin: top left !important;
+    width: 113.6% !important; 
+    
+    &.dashboard-row-margin {
+      margin-bottom: 1rem !important; 
+    }
+  }
+
+  .max-width-xl .scroll-verticle {
+    padding-bottom: 2rem !important;
+  }
+}
+
+@media (min-width: 1400px) {
+  .max-width-xl {
+    transform: none !important;
+    height: 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    // margin: 0 auto !important;
+  }
+
+  .max-width-xl .scroll-verticle > .row {
+    transform: scale(0.82) !important;
+    transform-origin: top left !important;
+    width: 122% !important; 
+
+    &.dashboard-row-margin {
+      margin-bottom: 1rem !important; 
+    }
+  }
+
+  .max-width-xl .scroll-verticle {
+    padding-bottom: 4rem !important;
   }
 }

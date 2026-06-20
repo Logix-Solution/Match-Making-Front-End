@@ -1,35 +1,35 @@
-<main class="container-fluid p-4  ">
+<main class="container-fluid ps-3 d-flex flex-column h-100 no-scroll">
 
   <ng-container *ngIf="currentView === 'grid'">
-    <header class="mb-4">
-      <h1 class="fh-8  m-0 ">Best Match</h1>
-      <p class="ft-3 txt-7th mt-1 mb-0">Select 2-3 profiles to compare side-by-side.</p>
+    <header class="mb-3">
+      <h1 class="ft-7 m-0">Best Match</h1>
+      <p class="mt-1 mb-0" style="font-weight: 400; color: #6C727A;">Select 2-3 profiles to compare side-by-side.</p>
     </header>
 
-    <section class="mb-4 max-w-search">
+    <section class="mb-3 col-md-3">
       <div class="position-relative">
         <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 txt-7th ft-3"></i>
         <input 
           type="text" 
-          class="form-control ps-5 py-2 ft-3 border-6th bg-6th rounded-3 custom-search-input " 
+          class="form-control ps-5 py-2 ft-3 border-6th bg-6th rounded-3 custom-search-input" 
           placeholder="Search"
           [(ngModel)]="searchQuery"
           (input)="onSearchFilter()">
       </div>
     </section>
 
-    <section class="row g-4">
+    <section class="row g-2 flex-grow-1 scroll-verticle style-1">
       <div class="col-12 col-md-6 col-xl-4" *ngFor="let profile of filteredProfiles">
         <div class="card bg-6th rounded-3 p-3 position-relative match-grid-card border-0 transition-all shadow-sm" (click)="viewProfileDetails(profile)">
           
           <div class="d-flex align-items-start gap-3 mb-3">
             <img [src]="profile.image" [alt]="profile.name" class="profile-avatar rounded-2 object-fit-cover">
-            <div class="flex-grow-1">
-              <h3 class="fh-6 txt-8th m-0 mb-1 fw-bold">{{ profile.name }}</h3>
-              <p class="ft-4 txt-7th m-0 mb-1">
+            <div class="flex-grow-1 min-w-0">
+              <h3 class="fh-6 txt-8th m-0 mb-1 fw-bold text-truncate">{{ profile.name }}</h3>
+              <p class="ft-4 txt-7th m-0 mb-1 text-truncate">
                 <span class="txt-maroon-accent fw-semibold">{{ profile.gender }}</span> &bull; {{ profile.occupation }} &bull; {{ profile.age }}
               </p>
-              <p class="ft-4 txt-7th m-0 d-flex align-items-center gap-1">
+              <p class="ft-4 txt-7th m-0 d-flex align-items-center gap-1 text-truncate">
                 <i class="bi bi-geo-alt-fill text-muted"></i> {{ profile.location }}
               </p>
             </div>
@@ -58,7 +58,7 @@
   </ng-container>
 
   <ng-container *ngIf="currentView === 'detail'">
-    <header class="mb-4 d-flex align-items-center gap-3">
+    <header class="mb-3 d-flex align-items-center gap-3">
       <button type="button" class="btn bg-white rounded-circle shadow-sm d-flex align-items-center justify-content-center back-circle-btn" (click)="backToGridView()">
         <i class="bi bi-arrow-left fs-5 text-dark"></i>
       </button>
@@ -67,7 +67,7 @@
       </div>
     </header>
 
-    <section class="bg-white rounded-4 p-4 shadow-sm border border-light-subtle mb-5 main-profile-dashboard">
+    <section class="bg-white rounded-4 p-3 p-xl-4 shadow-sm border border-light-subtle mb-4 main-profile-dashboard">
       <div class="profile-layout-grid">
         
         <div class="info-column">
@@ -87,12 +87,12 @@
         </div>
 
         <div class="center-avatar-block text-center">
-          <div class="avatar-wrapper position-relative mx-auto mb-3">
+          <div class="avatar-wrapper position-relative mx-auto mb-2">
             <img [src]="selectedProfile?.image || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150'" alt="Active Profile Portrait" class="rounded-circle main-avatar">
           </div>
           <h2 class="profile-display-name font-marcellus text-uppercase m-0">{{ selectedProfile?.name }}</h2>
           <p class="profile-display-sub m-0 mt-1">{{ selectedProfile?.age }} years</p>
-          <div class="marital-pill mt-2 d-inline-flex align-items-center gap-1">
+          <div class="marital-pill mt-1 d-inline-flex align-items-center gap-1">
             <i class="bi bi-gender-female"></i> UN MARRIED
           </div>
         </div>
@@ -110,35 +110,35 @@
           <div class="data-row"><span>Education Level</span><strong class="text-truncate">Bachelor's</strong></div>
           <div class="data-row"><span>University</span><strong class="text-truncate">Comsats University</strong></div>
           <div class="data-row"><span>Occupation</span><strong class="text-truncate">Engineer</strong></div>
-          <div class="data-row"><span>Monthly Income</span><strong class="text-truncate">PKR 50,000/ - 100,000/month</strong></div>
+          <div class="data-row"><span>Monthly Income</span><strong class="text-truncate">PKR 50k-100k</strong></div>
         </div>
 
       </div>
     </section>
 
-    <div class="mb-4">
+    <div class="mb-3">
       <h3 class="fh-4 txt-8th fw-bold m-0 section-main-heading">Best Matches</h3>
     </div>
 
-    <section class="d-flex flex-column gap-3 best-matches-stack">
+    <section class="d-flex flex-column gap-3 best-matches-stack pb-4">
       <div class="match-alignment-row bg-white rounded-3 p-3 shadow-sm border border-light-subtle" *ngFor="let match of bestMatchesList">
         
         <div class="identity-segment text-center">
           <img [src]="match.image" [alt]="match.name" class="rounded-circle match-thumb mb-2">
-          <h4 class="match-name m-0">{{ match.name }}</h4>
+          <h4 class="match-name m-0 text-truncate">{{ match.name }}</h4>
           <p class="match-meta m-0">{{ match.age }} years</p>
           <span class="match-status-badge mt-1"><i class="bi bi-ring"></i> UN MARRIED</span>
         </div>
 
-        <div class="info-column px-2">
+        <div class="info-column">
           <h5 class="column-title"><i class="bi bi-person"></i> Personal Information</h5>
           <div class="data-row"><span>City</span><strong>{{ match.city }}</strong></div>
-          <div class="data-row"><span>Phone Number</span><strong>{{ match.phone }}</strong></div>
-          <div class="data-row"><span>Nationality</span><strong>{{ match.nationality }}</strong></div>
+          <div class="data-row"><span>Phone</span><strong>{{ match.phone }}</strong></div>
+          <div class="data-row"><span>Nationality</span><strong class="text-truncate">{{ match.nationality }}</strong></div>
           <div class="data-row"><span>Caste</span><strong>{{ match.caste }}</strong></div>
         </div>
 
-        <div class="info-column px-2">
+        <div class="info-column">
           <h5 class="column-title"><i class="bi bi-moon-stars"></i> Religion / Appearance</h5>
           <div class="data-row"><span>Religion</span><strong>{{ match.religion }}</strong></div>
           <div class="data-row"><span>Sect</span><strong>{{ match.sect }}</strong></div>
@@ -146,20 +146,20 @@
           <div class="data-row"><span>Disabilities</span><strong>{{ match.disabilities }}</strong></div>
         </div>
 
-        <div class="info-column px-2">
+        <div class="info-column">
           <h5 class="column-title"><i class="bi bi-heart"></i> Lifestyle</h5>
           <div class="data-row"><span>Smoke</span><strong>{{ match.smoke }}</strong></div>
-          <div class="data-row"><span>Drink Alcohol</span><strong>{{ match.drink }}</strong></div>
+          <div class="data-row"><span>Drink</span><strong>{{ match.drink }}</strong></div>
           <div class="data-row"><span>Want Kids</span><strong>{{ match.wantKids }}</strong></div>
-          <div class="data-row"><span>Kids from previous marriage</span><strong>{{ match.kidsFromPrev }}</strong></div>
+          <div class="data-row"><span>Previous Mar.</span><strong>{{ match.kidsFromPrev }}</strong></div>
         </div>
 
-        <div class="info-column px-2 position-relative target-career-column">
+        <div class="info-column position-relative target-career-column">
           <h5 class="column-title"><i class="bi bi-mortarboard"></i> Education & Career</h5>
-          <div class="data-row"><span>Education Level</span><strong class="text-truncate" [title]="match.education">{{ match.education }}</strong></div>
+          <div class="data-row"><span>Education</span><strong class="text-truncate" [title]="match.education">{{ match.education }}</strong></div>
           <div class="data-row"><span>University</span><strong class="text-truncate" [title]="match.university">{{ match.university }}</strong></div>
           <div class="data-row"><span>Occupation</span><strong class="text-truncate" [title]="match.occupation">{{ match.occupation }}</strong></div>
-          <div class="data-row"><span>Monthly Income</span><strong class="text-truncate" [title]="match.income">{{ match.income }}</strong></div>
+          <div class="data-row"><span>Income</span><strong class="text-truncate" [title]="match.income">{{ match.income }}</strong></div>
           
           <button type="button" class="btn floating-action-arrow rounded-circle d-flex align-items-center justify-content-center" (click)="onRedirectToFullProfile(match)">
             <i class="bi bi-arrow-up-right text-white"></i>

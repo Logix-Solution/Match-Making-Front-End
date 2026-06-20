@@ -1,175 +1,163 @@
-<main class="container-fluid p-4 no-scroll d-flex flex-column h-100 ">
+<div class="container-fluid ps-md-4 py-3 match-comparison-wrapper">
 
-  <!-- VIEW 1: Profiles Selection Grid Screen -->
   <ng-container *ngIf="currentStep === 'selection'">
-    <header class="d-flex justify-content-between align-items-start mb-4">
+    <header class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
       <div>
-        <h1 class="fh-8 m-0">Match Comparison</h1>
-        <p class="ft-3 txt-7th mt-1 mb-0">Select 2-3 profiles to compare side-by-side.</p>
+        <h1 class="heading-marcellus m-0">Match Comparison</h1>
+        <p class=" mt-1 mb-0"  style="font-weight: 400; color: #6C727A;">Select 2-3 profiles to compare side-by-side.</p>
       </div>
-      <!-- State Driven Action Button -->
       <button 
         type="button" 
-        class="btn bg-2nd txt-6th px-4 py-2.5 rounded-2 ft-3 fw-medium compare-action-btn transition-all"
+        class="btn bg-2nd txt-6th px-4 py-2 rounded-2 ft-3 fw-medium compare-action-btn"
         [disabled]="getSelectedCount() < 2"
         (click)="navigateToComparePage()">
         Selected compare ({{ getSelectedCount() }})
       </button>
     </header>
 
-    <!-- Search Input Filter -->
-    <section class="mb-4 max-w-search">
+    <section class="mb-4 col-md-3">
       <div class="position-relative">
-        <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 txt-7th ft-3"></i>
+        <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
         <input 
           type="text" 
-          class="form-control ps-5 py-2 ft-3 border bg-6th rounded-3 custom-search-input" 
+          class="form-control ps-5 py-2 custom-search-input" 
           placeholder="Search profiles..."
           [(ngModel)]="searchQuery">
       </div>
     </section>
 
-    <!-- Selection Grid Cards Layout -->
-    <section class="row g-4 flex-grow-1 scroll-verticle style-1">
+    <section class="row g-3" *ngIf="profiles && profiles.length > 0; else noProfilesBlock">
       <div class="col-12 col-md-6 col-xl-4" *ngFor="let profile of profiles">
         <div 
-          class="card bg-6th rounded-3 p-3 position-relative selection-card transition-all"
+          class="card bg-6th rounded-3 p-3 position-relative selection-card transition-all h-100"
           [class.card-selected]="profile.selected"
           (click)="toggleProfileSelection(profile)">
           
-          <!-- Card Header Info -->
           <div class="d-flex align-items-start gap-3 mb-3">
             <img [src]="profile.image" [alt]="profile.name" class="profile-avatar rounded-2 object-fit-cover">
-            <div class="flex-grow-1">
-              <h3 class="fh-6 txt-8th m-0 mb-1 fw-bold">{{ profile.name }}</h3>
-              <p class="ft-4 txt-7th m-0 mb-1">
+            <div class="flex-grow-1 min-w-0">
+              <h3 class="profile-card-name m-0 mb-1 fw-bold text-truncate">{{ profile.name }}</h3>
+              <p class="ft-4 text-muted m-0 mb-1 text-truncate">
                 <span class="txt-primary fw-semibold">{{ profile.gender }}</span> &bull; {{ profile.occupation }} &bull; {{ profile.age }}
               </p>
-              <p class="ft-4 txt-7th m-0 d-flex align-items-center gap-1">
+              <p class="ft-4 text-muted m-0 d-flex align-items-center gap-1 text-truncate">
                 <i class="bi bi-geo-alt-fill text-muted"></i> {{ profile.location }}
               </p>
             </div>
 
-            <!-- Custom Built Structural Checkbox -->
-            <div class="custom-checkbox-marker d-flex align-items-center justify-content-center rounded-1" [class.checked]="profile.selected">
+            <div class="custom-checkbox-marker d-flex align-items-center justify-content-center rounded-1 flex-shrink-0" [class.checked]="profile.selected">
               <i class="bi bi-check-lg text-white" *ngIf="profile.selected"></i>
             </div>
           </div>
 
           <hr class="border-light-subtle my-2">
 
-          <!-- Card Bottom Sub-Metrics Row -->
           <div class="d-flex justify-content-between align-items-center mt-2">
             <div>
-              <span class="ft-5 txt-7th d-block text-muted">Matched Profile</span>
+              <span class="small-label d-block text-muted">Matched Profile</span>
               <span class="ft-3 text-success fw-bold">{{ profile.matchPercentage }}%</span>
             </div>
-            <!-- Stacked Avatar Thumbnails Layout -->
             <div class="avatar-stack d-flex align-items-center">
               <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=40&h=40" class="stack-thumb rounded-circle border border-white">
               <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=40&h=40" class="stack-thumb rounded-circle border border-white">
-              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=40&h=40" class="stack-thumb rounded-circle border border-white">
             </div>
           </div>
 
         </div>
       </div>
     </section>
+
+    <ng-template #noProfilesBlock>
+      <div class="text-center p-5 text-muted">No profiles loaded.</div>
+    </ng-template>
   </ng-container>
 
-
-  <!-- VIEW 2: Side-by-Side Granular Match Comparison View Grid Screen -->
-  <ng-container *ngIf="currentStep === 'compare' "  class="no-scroll d-flex flex-column h-100">
-    <header class="mb-4   ">
-      <button type="button" class="btn btn-sm btn-outline-secondary mb-2 d-flex align-items-center gap-1 ft-4" (click)="backToSelection()">
+  <ng-container *ngIf="currentStep === 'compare'">
+    <header class="mb-4">
+      <button type="button" class="btn btn-sm btn-outline-secondary mb-3 d-flex align-items-center gap-1 ft-4" (click)="backToSelection()">
         <i class="bi bi-arrow-left"></i> Back to selection
       </button>
-      <h1 class="fh-3 txt-8th m-0">Match Comparison</h1>
-      <p class="ft-3 txt-7th mt-1 mb-0">Select 2-3 profiles to compare side-by-side.</p>
+      <h1 class="heading-marcellus m-0">Match Comparison</h1>
+      <p class="text-muted mt-1 mb-0">Select 2-3 profiles to compare side-by-side.</p>
     </header>
 
-    <!-- Comparison Flex Horizontal Grid Matrix -->
-    <section class="d-flex gap-3  pb-3 comparison-matrix-row  flex-grow-1 scroll-verticle style-1  ">
-      
-      <!-- Generated Columns for Selected Profile Metrics -->
-      <div class="comparison-column flex-grow-1" *ngFor="let target of selectedProfiles">
-        <div class="bg-white rounded-3 p-3 shadow-sm border border-light h-100">
-          
-          <!-- Column Profile Main Identity Block Card info -->
-          <div class="d-flex align-items-center gap-3 mb-3 p-2 bg-light-subtle rounded-3">
-            <img [src]="target.image" [alt]="target.name" class="profile-avatar rounded-2 object-fit-cover">
-            <div>
-              <h3 class="fh-6 txt-8th m-0 fw-bold">{{ target.name }}</h3>
-              <p class="ft-4 txt-7th m-0">{{ target.age }} years &bull; {{ target.location }}</p>
-            </div>
-          </div>
-
-          <!-- Highlight Attribute Tags Structure Row -->
-          <div class="row g-2 mb-4">
-            <div class="col-6">
-              <div class="pill-attribute p-2 rounded-2 text-center">
-                <span class="ft-4 fw-bold d-block text-dark">{{ target.occupation }}</span>
-                <span class="ft-6 txt-7th text-uppercase font-scale-sub">Occupation</span>
+    <div class="comparison-overall-scroll-container ">
+      <section class="d-flex gap-3 align-items-start pb-2">
+        
+        <div class="comparison-column" *ngFor="let target of selectedProfiles">
+          <div class="bg-white rounded-3 p-3 shadow-sm border border-light-subtle h-100">
+            
+            <div class="d-flex align-items-center gap-3 mb-3 p-2 bg-light-subtle rounded-3">
+              <img [src]="target.image" [alt]="target.name" class="profile-avatar rounded-2 object-fit-cover">
+              <div class="min-w-0">
+                <h3 class="profile-card-name m-0 fw-bold text-truncate">{{ target.name }}</h3>
+                <p class="ft-4 text-muted m-0 text-truncate">{{ target.age }} years &bull; {{ target.location }}</p>
               </div>
             </div>
-            <div class="col-6">
-              <div class="pill-attribute p-2 rounded-2 text-center">
-                <span class="ft-4 fw-bold d-block text-dark text-truncate">Single</span>
-                <span class="ft-6 txt-7th text-uppercase font-scale-sub">Status</span>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <div class="pill-attribute p-2 rounded-2 text-center d-flex flex-column justify-content-center">
+                  <span class="ft-4 fw-bold d-block text-dark text-truncate" [title]="target.occupation">{{ target.occupation }}</span>
+                  <span class="attribute-sub-text text-uppercase">Occupation</span>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="pill-attribute p-2 rounded-2 text-center d-flex flex-column justify-content-center">
+                  <span class="ft-4 fw-bold d-block text-dark text-truncate">Single</span>
+                  <span class="attribute-sub-text text-uppercase">Status</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Block Section Metric Module 1: Personal Preferences -->
-          <div class="attribute-group-box border border-light-subtle rounded-3 p-3 mb-3">
-            <h4 class="ft-4 fw-bold txt-8th mb-3 d-flex align-items-center gap-2">
-              <i class="bi bi-person txt-primary"></i> Personal Preferences
-            </h4>
-            <div class="d-flex justify-content-between py-1.5 border-bottom border-light-subtle ft-4">
-              <span class="txt-7th">Age Range</span>
-              <span class="fw-semibold text-dark">Ages 19 to 28</span>
+            <div class="attribute-group-box border border-light-subtle rounded-3 p-3 mb-3">
+              <h4 class="ft-4 fw-bold txt-8th mb-2 d-flex align-items-center gap-2">
+                <i class="bi bi-person txt-primary"></i> Personal Preferences
+              </h4>
+              <div class="d-flex justify-content-between py-2 border-bottom border-light-subtle ft-4">
+                <span class="text-muted me-2">Age Range</span>
+                <span class="fw-semibold text-dark text-end text-truncate">Ages 19 to 28</span>
+              </div>
+              <div class="d-flex justify-content-between py-2 border-bottom border-light-subtle ft-4">
+                <span class="text-muted me-2">City</span>
+                <span class="fw-semibold text-dark text-end text-truncate">Lahore</span>
+              </div>
+              <div class="d-flex justify-content-between py-2 border-bottom border-light-subtle ft-4">
+                <span class="text-muted me-2">Countries</span>
+                <span class="fw-semibold text-dark text-end text-truncate">Pakistan</span>
+              </div>
+              <div class="d-flex justify-content-between py-2 ft-4">
+                <span class="text-muted me-2">Castes</span>
+                <span class="fw-semibold text-dark text-end text-truncate">Arain</span>
+              </div>
             </div>
-            <div class="d-flex justify-content-between py-1.5 border-bottom border-light-subtle ft-4">
-              <span class="txt-7th">City</span>
-              <span class="fw-semibold text-dark">Lahore</span>
-            </div>
-            <div class="d-flex justify-content-between py-1.5 border-bottom border-light-subtle ft-4">
-              <span class="txt-7th">Countries</span>
-              <span class="fw-semibold text-dark">Pakistan</span>
-            </div>
-            <div class="d-flex justify-content-between py-1.5 border-bottom border-light-subtle ft-4">
-              <span class="txt-7th">Castes</span>
-              <span class="fw-semibold text-dark">Arain</span>
-            </div>
-          </div>
 
-          <!-- Block Section Metric Module 2: Education & Career -->
-          <div class="attribute-group-box border border-light-subtle rounded-3 p-3 mb-3">
-            <h4 class="ft-4 fw-bold txt-8th mb-3 d-flex align-items-center gap-2">
-              <i class="bi bi-backpack txt-primary"></i> Education & Career
-            </h4>
-            <div class="d-flex justify-content-between py-1.5 border-bottom border-light-subtle ft-4">
-              <span class="txt-7th">Education</span>
-              <span class="fw-semibold text-dark">Bachelor's</span>
+            <div class="attribute-group-box border border-light-subtle rounded-3 p-3">
+              <h4 class="ft-4 fw-bold txt-8th mb-2 d-flex align-items-center gap-2">
+                <i class="bi bi-backpack txt-primary"></i> Education & Career
+              </h4>
+              <div class="d-flex justify-content-between py-2 border-bottom border-light-subtle ft-4">
+                <span class="text-muted me-2">Education</span>
+                <span class="fw-semibold text-dark text-end text-truncate">Bachelor's</span>
+              </div>
+              <div class="d-flex justify-content-between py-2 ft-4">
+                <span class="text-muted me-2">Income</span>
+                <span class="fw-semibold text-dark text-end text-truncate">&lt; 50,000/mo</span>
+              </div>
             </div>
-            <div class="d-flex justify-content-between py-1.5 ft-4">
-              <span class="txt-7th">Income</span>
-              <span class="fw-semibold text-dark">&lt; 50,000/mo</span>
-            </div>
-          </div>
 
+          </div>
         </div>
-      </div>
 
-      <!-- Variable Add Slot Placeholder Block Field to maintain consistency -->
-      <div class="comparison-column column-placeholder d-flex flex-column align-items-center justify-content-center p-4 rounded-3 text-center" *ngIf="selectedProfiles.length < 3">
-        <button type="button" class="btn btn-light rounded-circle shadow-sm mb-2 add-slot-btn" (click)="backToSelection()">
-          <i class="bi bi-plus-lg fs-4 txt-primary"></i>
-        </button>
-        <p class="ft-4 text-muted m-0">Add profile to compare</p>
-      </div>
+        <div class="comparison-column column-placeholder d-flex flex-column align-items-center justify-content-center p-4 rounded-3 text-center" *ngIf="selectedProfiles.length < 3">
+          <button type="button" class="btn btn-light rounded-circle shadow-sm mb-2 add-slot-btn" (click)="backToSelection()">
+            <i class="bi bi-plus-lg fs-4 txt-primary"></i>
+          </button>
+          <p class="ft-4 text-muted m-0">Add profile to compare</p>
+        </div>
 
-    </section>
+      </section>
+    </div>
   </ng-container>
 
-</main>
+</div>

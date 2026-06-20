@@ -1,10 +1,10 @@
-<main class="container-fluid p-4 h-100 scroll-verticle">
-  <header class="dashboard-header mb-4">
-    <h1 class="fh-8  m-0">Request Management</h1>
-    <p class="ft-3 txt-7th mt-1 mb-0">Welcome back, view your recent platform analytics.</p>
+<main class="container-fluid ps-3  d-flex flex-column h-100 no-scroll">
+  <header class="dashboard-header mb-4 ">
+    <h1 class=" ft-7 m-0" >Request Management</h1>
+    <p class=" mt-1 mb-0" style="font-weight: 100px !important; color: #6C727A ;">Welcome back, view your recent platform analytics.</p>
   </header>
 
-  <nav class="d-inline-flex bg-6th border-6th p-2 rounded-3 mb-4">
+  <nav class="d-inline-flex bg-6th border-6th p-2 rounded-3 mb-4  col-md-4 col-lg-5  col-sm-3">
     <button 
       type="button"
       class="tab-btn px-4 py-2 border-0 rounded-2 ft-3 fw-semibold transition-all"
@@ -28,7 +28,7 @@
     </button>
   </nav>
 
-  <section class="row g-4">
+  <section class="row g-3 flex-grow-1 scroll-verticle style-1">
     
     <div class="col-12 col-md-6 col-xl-4" *ngFor="let request of filteredRequests">
       <div class="card bg-6th border-6th rounded-3 p-3 shadow-sm h-100 d-flex flex-column justify-content-between">

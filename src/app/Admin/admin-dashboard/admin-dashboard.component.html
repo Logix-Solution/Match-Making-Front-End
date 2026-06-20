@@ -1,218 +1,207 @@
-<div class="container-fluid max-width-xl mx-auto   d-flex  flex-column h-100 no-scroll">
-  <div class="mb-4">
-    <h1 class="fh-8  mb-1">Dashboard</h1>
-    <p class="ft-3 txt-7th">Overview of your platform's performance.</p>
+<div class="container-fluid max-width-xl d-flex flex-column h-100 no-scroll ps-4">
+  <div class="dashboard-header-spacing">
+    <h1 class="ft-7 mb-2">Dashboard</h1>
+    <p class=" mb-0 " style="font-weight: 100px !important; color: #6C727A ;">Overview of your platform's performance.</p>
   </div>
- <div class="flex-grow-1 scroll-verticle style-1">
- <div class="row g-4 mb-4">
+
+  <div class="flex-grow-1 scroll-verticle style-1">
     
-    <div class="col-12 col-sm-6 col-xl-3">
-      <div class="dashboard-card d-flex flex-column align-items-start gap-3">
-        <div class="icon-shape bg-4th txt-2nd">
-          <i class="bi bi-people-fill fs-5"></i>
-        </div>
-        <div>
-          <span class="ft-3 txt-7th d-block text-muted">Total Users</span>
-          <div class="d-flex align-items-center gap-2 mt-1">
-            <span class="fh-3 txt-8th fw-bold fs-2">1,248</span>
-            <span class="badge bg-success bg-opacity-10 text-success ft-5 rounded-pill px-2 py-1">+12%</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-12 col-sm-6 col-xl-3">
-      <div class="dashboard-card d-flex flex-column align-items-start gap-3">
-        <div class="icon-shape bg-4th txt-2nd">
-          <i class="bi bi-hourglass-split fs-5"></i>
-        </div>
-        <div>
-          <span class="ft-3 txt-7th d-block text-muted">Pending Approval</span>
-          <div class="d-flex align-items-center gap-2 mt-1">
-            <span class="fh-3 txt-8th fw-bold fs-2">24</span>
-            <span class="badge bg-danger bg-opacity-10 text-danger ft-5 rounded-pill px-2 py-1">-3%</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-12 col-sm-6 col-xl-3">
-      <div class="dashboard-card d-flex flex-column align-items-start gap-3">
-        <div class="icon-shape bg-4th txt-2nd">
-          <i class="bi bi-box-seam fs-5"></i>
-        </div>
-        <div>
-          <span class="ft-3 txt-7th d-block text-muted">Active Matches</span>
-          <div class="d-flex align-items-center gap-2 mt-1">
-            <span class="fh-3 txt-8th fw-bold fs-2">842</span>
-            <span class="badge bg-success bg-opacity-10 text-success ft-5 rounded-pill px-2 py-1">+5%</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-12 col-sm-6 col-xl-3">
-      <div class="dashboard-card d-flex flex-column align-items-start gap-3">
-        <div class="icon-shape bg-4th txt-2nd">
-          <i class="bi bi-envelope-heart fs-5"></i>
-        </div>
-        <div>
-          <span class="ft-3 txt-7th d-block text-muted">Interested Clients</span>
-          <div class="d-flex align-items-center gap-2 mt-1">
-            <span class="fh-3 txt-8th fw-bold fs-2">156</span>
-            <span class="badge bg-success bg-opacity-10 text-success ft-5 rounded-pill px-2 py-1">+21%</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="row g-4 mb-4">
-    <div class="col-12 col-lg-8">
-      <div class="dashboard-card h-100">
-        <div class="d-flex justify-content-between align-items-start mb-4">
-          <div>
-            <h3 class="fh-6 txt-8th mb-0">User Signups Growth</h3>
-            <span class="ft-4 txt-7th">Trailing 6 months perspective</span>
-          </div>
-          <button class="btn btn-light border btn-sm ft-4">Last 6 Months</button>
-        </div>
-        
-        <div style="height: 220px; position: relative;" class="mt-4">
-          <svg class="w-100 h-100" viewBox="0 0 600 200" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#2c2c2c" stop-opacity="0.1"/>
-                <stop offset="100%" stop-color="#2c2c2c" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
-            <path d="M 0 170 Q 120 150 240 120 T 480 50 L 600 20" fill="none" stroke="#2c2c2c" stroke-width="3"></path>
-            <path d="M 0 170 Q 120 150 240 120 T 480 50 L 600 20 L 600 200 L 0 200 Z" fill="url(#chartGrad)"></path>
-            <line x1="0" y1="50" x2="600" y2="50" stroke="#ebebeb" stroke-dasharray="4"></line>
-            <line x1="0" y1="100" x2="600" y2="100" stroke="#ebebeb" stroke-dasharray="4"></line>
-            <line x1="0" y1="150" x2="600" y2="150" stroke="#ebebeb" stroke-dasharray="4"></line>
-          </svg>
-          <div class="d-flex justify-content-between position-absolute bottom-0 w-100 ft-5 txt-7th pt-2">
-            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
- <div class="col-12 col-lg-4">
-  <div class="dashboard-card h-100">
-    <h3 class="fh-6 txt-8th mb-0">Country Wise Profiles</h3>
-    <span class="ft-4 txt-7th d-block mb-3">Current active interests</span>
-
-    <div class="donut-container my-3">
-      <svg class="donut-svg" width="100%" height="100%" viewBox="0 0 42 42">
-        <circle class="donut-hole" cx="21" cy="21" r="15.91549430918954" fill="#fff"></circle>
-        <circle class="donut-ring" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#ebebeb" stroke-width="4"></circle>
-        
-        <circle class="donut-segment segment-green" cx="21" cy="21" r="15.91549430918954" fill="transparent" 
-                stroke="#198754" stroke-width="4" stroke-dasharray="13.5 86.5" stroke-dashoffset="100">
-        </circle>
-
-        <circle class="donut-segment segment-red" cx="21" cy="21" r="15.91549430918954" fill="transparent" 
-                stroke="#dc3545" stroke-width="4" stroke-dasharray="43.5 56.5" stroke-dashoffset="85" 
-                style="cursor: pointer;" (click)="openModalWithFilter('Pakistan')">
-        </circle>
-
-        <circle class="donut-segment segment-orange" cx="21" cy="21" r="15.91549430918954" fill="transparent" 
-                stroke="#fd7e14" stroke-width="4" stroke-dasharray="23.5 76.5" stroke-dashoffset="40">
-        </circle>
-
-        <circle class="donut-segment segment-blue" cx="21" cy="21" r="15.91549430918954" fill="transparent" 
-                stroke="#0dcaf0" stroke-width="4" stroke-dasharray="13.5 86.5" stroke-dashoffset="15">
-        </circle>
-      </svg>
-    </div>
-
-    <div class="mt-2 ft-4">
-      <div class="d-flex align-items-center justify-content-between py-1 px-2 rounded country-legend-item" 
-           style="cursor: pointer;" (click)="openModalWithFilter('Pakistan')">
-        <span class="txt-8th">
-          <span class="d-inline-block rounded-circle bg-danger me-2" style="width:8px; height:8px;"></span>
-          Pakistan
-        </span>
-        <span class="fw-bold txt-8th">45%</span>
-      </div>
-      <div class="d-flex align-items-center justify-content-between py-1 px-2">
-        <span class="txt-7th">
-          <span class="d-inline-block rounded-circle bg-warning me-2" style="width:8px; height:8px;"></span>
-          Turkey
-        </span>
-        <span class="fw-bold txt-7th">25%</span>
-      </div>
-      <div class="d-flex align-items-center justify-content-between py-1 px-2">
-        <span class="txt-7th">
-          <span class="d-inline-block rounded-circle bg-info me-2" style="width:8px; height:8px;"></span>
-          Dubai
-        </span>
-        <span class="fw-bold txt-7th">15%</span>
-      </div>
-      <div class="d-flex align-items-center justify-content-between py-1 px-2">
-        <span class="txt-7th">
-          <span class="d-inline-block rounded-circle bg-success me-2" style="width:8px; height:8px;"></span>
-          New York
-        </span>
-        <span class="fw-bold txt-7th">15%</span>
-      </div>
-    </div>
-
-  </div>
-</div>
-  </div>
-
-  <div class="row g-4">
-    <div class="col-12 col-md-6">
-      <h4 class="fh-6 txt-8th mb-3">Quick Management</h4>
+    <div class="row g-1 dashboard-row-margin">
       
-      <div class="action-panel-dark d-flex align-items-center justify-content-between mb-3" (click)="openModalWithFilter('All')">
-        <div>
-          <h5 class="ft-2 fw-bold txt-6th mb-1">Review Pending Profiles</h5>
-          <p class="ft-4 txt-4th mb-0">You have 24 new applications</p>
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="dashboard-card d-flex flex-column align-items-start gap-1">
+          <div class="icon-shape bg-4th txt-2nd">
+            <i class="bi bi-people-fill fs-5 mb-2 "></i>
+          </div>
+          <div>
+            <span class="ft-3 txt-7th d-block text-muted">Total Users</span>
+            <div class="d-flex align-items-center gap-2 mt-1 mb-1">
+              <span class="fh-3 txt-8th fw-bold fs-2 mt-2">1,248</span>
+              <span class="badge bg-success bg-opacity-10 text-success ft-5 rounded-pill px-2 py-1 mt-2">+12%</span>
+            </div>
+          </div>
         </div>
-        <div class="action-arrow-btn bg-6th txt-primary"><i class="bi bi-chevron-right"></i></div>
       </div>
 
-      <div class="action-panel-light d-flex align-items-center justify-content-between" (click)="openModalWithFilter('All')">
-        <div>
-          <h5 class="ft-2 fw-bold txt-8th mb-1">Manage Service Requests</h5>
-          <p class="ft-4 txt-7th mb-0">156 pending custom requests</p>
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="dashboard-card d-flex flex-column align-items-start gap-1">
+          <div class="icon-shape mt-1 bg-4th txt-2nd">
+            <i class="bi bi-hourglass-split fs-5 mb-2"></i>
+          </div>
+          <div>
+            <span class="ft-3 txt-7th d-block text-muted">Pending Approval</span>
+            <div class="d-flex align-items-center gap-2 mt-1 mb-1">
+              <span class="fh-3 txt-8th fw-bold fs-2 mt-2">24</span> 
+              <span class="badge bg-danger bg-opacity-10 text-danger ft-5 rounded-pill px-2 py-1 mt-2">-3%</span>
+            </div>
+          </div>
         </div>
-        <div class="action-arrow-btn"><i class="bi bi-chevron-right"></i></div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="dashboard-card d-flex flex-column align-items-start gap-2">
+          <div class="icon-shape bg-4th txt-2nd">
+            <i class="bi bi-box-seam fs-5 mb-2"></i>
+          </div>
+          <div>
+            <span class="ft-3 txt-7th d-block text-muted">Active Matches</span>
+            <div class="d-flex align-items-center gap-2 mt-1 mb-1">
+              <span class="fh-3 txt-8th fw-bold fs-2 mt-2">842</span>
+              <span class="badge bg-success bg-opacity-10 text-success ft-5 rounded-pill px-2 py-1 mt-2">+5%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="dashboard-card d-flex flex-column align-items-start gap-2">
+          <div class="icon-shape bg-4th txt-2nd">
+            <i class="bi bi-envelope-heart fs-5 mb-2"></i>
+          </div>
+          <div>
+            <span class="ft-3 txt-7th d-block text-muted">Interested Clients</span>
+            <div class="d-flex align-items-center gap-2 mt-1 mb-1">
+              <span class="fh-3 txt-8th fw-bold fs-2 mt-2">156</span>
+              <span class="badge bg-success bg-opacity-10 text-success ft-5 rounded-pill px-2 py-1 mt-2">+21%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row g-1 ">
+      <div class="col-12 col-lg-8">
+        <div class="dashboard-card h-100">
+          <div class="d-flex justify-content-between align-items-start mb-1">
+            <div>
+              <h3 class=" mb-0">User Signups Growth</h3>
+              <span class="ft-4 txt-7th">Trailing 6 months perspective</span>
+            </div>
+            <button class="btn btn-light border btn-sm ft-4">Last 6 Months</button>
+          </div>
+          
+          <div style="height: 220px; position: relative;" class="mt-4">
+            <svg class="w-100 h-100" viewBox="0 0 600 200" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#2c2c2c" stop-opacity="0.1"/>
+                  <stop offset="100%" stop-color="#2c2c2c" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M 0 170 Q 120 150 240 120 T 480 50 L 600 20" fill="none" stroke="#2c2c2c" stroke-width="3"></path>
+              <path d="M 0 170 Q 120 150 240 120 T 480 50 L 600 20 L 600 200 L 0 200 Z" fill="url(#chartGrad)"></path>
+              <line x1="0" y1="50" x2="600" y2="50" stroke="#ebebeb" stroke-dasharray="4"></line>
+              <line x1="0" y1="100" x2="600" y2="100" stroke="#ebebeb" stroke-dasharray="4"></line>
+              <line x1="0" y1="150" x2="600" y2="150" stroke="#ebebeb" stroke-dasharray="4"></line>
+            </svg>
+            <div class="d-flex justify-content-between position-absolute bottom-0 w-100 ft-5 txt-7th pt-2">
+              <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-4">
+        <div class="dashboard-card h-100">
+          <h3 class="mb-0">Country Wise Profiles</h3>
+          <span class="ft-4 txt-7th d-block mb-3">Current active interests</span>
+
+          <div class="donut-container my-3">
+            <svg class="donut-svg" width="100%" height="100%" viewBox="0 0 42 42">
+              <circle class="donut-hole" cx="21" cy="21" r="15.91549430918954" fill="#fff"></circle>
+              <circle class="donut-ring" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#ebebeb" stroke-width="4"></circle>
+              <circle class="donut-segment segment-green" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#198754" stroke-width="4" stroke-dasharray="13.5 86.5" stroke-dashoffset="100"></circle>
+              <circle class="donut-segment segment-red" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#dc3545" stroke-width="4" stroke-dasharray="43.5 56.5" stroke-dashoffset="85" style="cursor: pointer;" (click)="openModalWithFilter('Pakistan')"></circle>
+              <circle class="donut-segment segment-orange" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#fd7e14" stroke-width="4" stroke-dasharray="23.5 76.5" stroke-dashoffset="40"></circle>
+              <circle class="donut-segment segment-blue" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#0dcaf0" stroke-width="4" stroke-dasharray="13.5 86.5" stroke-dashoffset="15"></circle>
+            </svg>
+          </div>
+
+          <div class="mt-2 ft-4">
+            <div class="d-flex align-items-center justify-content-between py-1 px-2 rounded country-legend-item" style="cursor: pointer;" (click)="openModalWithFilter('Pakistan')">
+              <span class="txt-8th">
+                <span class="d-inline-block rounded-circle bg-danger me-2" style="width:8px; height:8px;"></span>
+                Pakistan
+              </span>
+              <span class="fw-bold txt-8th">45%</span>
+            </div>
+            <div class="d-flex align-items-center justify-content-between py-1 px-2">
+              <span class="txt-7th">
+                <span class="d-inline-block rounded-circle bg-warning me-2" style="width:8px; height:8px;"></span>
+                Turkey
+              </span>
+              <span class="fw-bold txt-7th">25%</span>
+            </div>
+            <div class="d-flex align-items-center justify-content-between py-1 px-2">
+              <span class="txt-7th">
+                <span class="d-inline-block rounded-circle bg-info me-2" style="width:8px; height:8px;"></span>
+                Dubai
+              </span>
+              <span class="fw-bold txt-7th">15%</span>
+            </div>
+            <div class="d-flex align-items-center justify-content-between py-1 px-2">
+              <span class="txt-7th">
+                <span class="d-inline-block rounded-circle bg-success me-2" style="width:8px; height:8px;"></span>
+                New York
+              </span>
+              <span class="fw-bold txt-7th">15%</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="col-12 col-md-6">
-      <h4 class="fh-6 txt-8th mb-3">Recent Activity Logs</h4>
-      <div class="dashboard-card d-flex flex-column gap-3">
-        <div class="d-flex gap-3 align-items-start border-bottom pb-2">
-          <div class="icon-shape bg-5th txt-7th rounded-circle"><i class="bi bi-person-fill"></i></div>
+    <div class="row g-1">
+      <div class="col-12 col-md-6">
+        <h4 class=" txt-8th mb-3">Quick Management</h4>
+        
+        <div class="action-panel-dark d-flex align-items-center justify-content-between mb-3" (click)="openModalWithFilter('All')">
           <div>
-            <p class="ft-3 txt-8th mb-0">Sarah submitted a new profile for review.</p>
-            <span class="ft-5 txt-7th">2 hours ago</span>
+            <h5 class="ft-2  txt-6th mb-1">Review Pending Profiles</h5>
+            <p class="ft-4 txt-4th mb-0">You have 24 new applications</p>
           </div>
+          <div class="action-arrow-btn bg-6th txt-primary"><i class="bi bi-chevron-right"></i></div>
         </div>
-        <div class="d-flex gap-3 align-items-start">
-          <div class="icon-shape bg-5th txt-7th rounded-circle"><i class="bi bi-shield-check"></i></div>
+
+        <div class="action-panel-light d-flex align-items-center justify-content-between" (click)="openModalWithFilter('All')">
           <div>
-            <p class="ft-3 txt-8th mb-0">System generated weekly matching report.</p>
-            <span class="ft-5 txt-7th">5 hours ago</span>
+            <h5 class="ft-2 txt-8th mb-1">Manage Service Requests</h5>
+            <p class="ft-4 txt-7th mb-0">156 pending custom requests</p>
           </div>
+          <div class="action-arrow-btn"><i class="bi bi-chevron-right"></i></div>
         </div>
-        <button class="btn btn-outline-secondary w-100 ft-3 mt-2 border-0 txt-7th">View All Activity</button>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <h4 class=" mb-3">Recent Activity Logs</h4>
+        <div class="dashboard-card d-flex flex-column gap-3">
+          <div class="d-flex gap-3 align-items-start border-bottom pb-2">
+            <div class="icon-shape bg-5th txt-7th rounded-circle"><i class="bi bi-person-fill"></i></div>
+            <div>
+              <p class="ft-3 txt-8th mb-0">Sarah submitted a new profile for review.</p>
+              <span class="ft-5 txt-7th">2 hours ago</span>
+            </div>
+          </div>
+          <div class="d-flex gap-3 align-items-start">
+            <div class="icon-shape bg-5th txt-7th rounded-circle"><i class="bi bi-shield-check"></i></div>
+            <div>
+              <p class="ft-3 txt-8th mb-0">System generated weekly matching report.</p>
+              <span class="ft-5 txt-7th">5 hours ago</span>
+            </div>
+          </div>
+          <button class="btn btn-outline-secondary w-100 ft-3 mt-2 border-0 txt-7th">View All Activity</button>
+        </div>
       </div>
     </div>
+
   </div>
 </div>
 
 <div class="modal fade" [class.show]="isModalOpen" [style.display]="isModalOpen ? 'block' : 'none'" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-fullscreen-md-down modal-xl modal-dialog-centered">
     <div class="modal-content border-0 rounded-4" style="background-color: #f8f9fa;">
-      <div class="modal-header border-0 px-4 pt-4 pb-0 d-flex justify-content-between align-items-center">
+      <div class="modal-header border-0 px-4 pt-3 pb-0 d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center gap-3">
           <h2 class="fh-5 fw-bold txt-8th m-0">Profiles in Platform</h2>
           <span *ngIf="selectedCountryFilter !== 'All'" class="filter-indicator-badge">
@@ -223,10 +212,9 @@
       </div>
       
       <div class="modal-body p-4 style-1" style="max-height: 75vh; overflow-y: auto;">
-        <div class="d-flex flex-column gap-4">
-          
+        <div class="d-flex flex-column modal-card-gap">
           <ng-container *ngFor="let profile of filteredProfiles">
-            <div class="bg-6th p-4 rounded-4 shadow-sm border position-relative row align-items-center g-3 m-0">
+            <div class="bg-6th p-3 rounded-4 shadow-sm border position-relative row align-items-center g-3 m-0">
               <div class="col-12 col-md-2 text-center border-end-md">
                 <img [src]="profile.avatarUrl" alt="Avatar" class="avatar-img mb-2">
                 <h6 class="ft-2 fw-bold txt-8th mb-0">{{ profile.name }}</h6>
@@ -265,18 +253,15 @@
                     <div class="d-flex justify-content-between mb-1"><span class="info-label">University</span><span class="info-value text-truncate" style="max-width: 100px;">{{ profile.university }}</span></div>
                     <div class="d-flex justify-content-between mb-1"><span class="info-label">Occupation</span><span class="info-value">{{ profile.occupation }}</span></div>
                     <div class="d-flex justify-content-between"><span class="info-label">Income</span><span class="info-value text-truncate">{{ profile.income }}</span></div>
-                    
                     <button class="action-arrow-btn position-absolute top-0 end-0 mt-n1"><i class="bi bi-arrow-up-right"></i></button>
                   </div>
                 </div>
               </div>
             </div>
           </ng-container>
-
         </div>
       </div>
     </div>
-  </div>
   </div>
 </div>
 

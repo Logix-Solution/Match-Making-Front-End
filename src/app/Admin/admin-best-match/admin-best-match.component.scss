@@ -1,18 +1,12 @@
-
-
-.max-w-search {
-  max-width: 320px;
-}
+/* Search Utilities */
 
 .custom-search-input {
-  height: 44px;
+  height: 2.75rem;
 }
 
-
-
 .back-circle-btn {
-  width: 42px;
-  height: 42px;
+  width: 2.6rem;
+  height: 2.6rem;
   border: 1px solid #e2e8f0;
   background-color: #ffffff;
   transition: background-color 0.15s ease;
@@ -20,16 +14,19 @@
 }
 
 .section-main-heading {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   letter-spacing: -0.3px;
   color: #1a202c;
 }
 
-// --- VIEW 1: Grid Cards Styles Configuration Layout Rules ---
+/* ==========================================================================
+   VIEW 1: GRID CARDS LAYOUT
+   ========================================================================== */
 .match-grid-card {
   cursor: pointer;
   border: 1px solid transparent;
   background-color: #f8fafc;
+  max-width: 100%; // Blocks scaling overflow containers when zoomed out
 
   &:hover {
     transform: translateY(-2px);
@@ -39,8 +36,8 @@
 }
 
 .profile-avatar {
-  width: 54px;
-  height: 54px;
+  width: 3.375rem;
+  height: 3.375rem;
 }
 
 .txt-maroon-accent {
@@ -55,38 +52,41 @@
   }
 
   .stack-thumb {
-    width: 24px;
-    height: 24px;
+    width: 1.5rem;
+    height: 1.5rem;
     object-fit: cover;
-    margin-left: -6px;
+    margin-left: -0.375rem;
     border: 2px solid #ffffff;
 
     &:first-child {
       margin-left: 0;
     }
   }
-  
   .line-height-1 { line-height: 1; }
 }
 
-// Global Attribute-Group Data Structure Subcomponents Definitions
+/* ==========================================================================
+   REUSABLE INFO COLUMN ARCHITECTURE
+   ========================================================================== */
 .info-column {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  min-w: 0; // Guardrail against text truncation grid distortion
 
   .column-title {
-    font-size: 0.85rem;
+    font-size: 0.825rem;
     font-weight: 700;
     color: #1a202c;
-    margin-bottom: 12px;
+    margin-bottom: 0.5rem;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 0.375rem;
     letter-spacing: -0.1px;
+    white-space: nowrap;
 
     i {
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: #718096;
     }
   }
@@ -95,8 +95,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.8rem;
-    padding: 5.5px 0;
+    font-size: 0.775rem;
+    padding: 0.3rem 0;
     border-bottom: 1px dashed #edf2f7;
 
     &:last-child {
@@ -106,7 +106,7 @@
     span {
       color: #718096; 
       font-weight: 400;
-      padding-right: 12px;
+      padding-right: 0.5rem;
       white-space: nowrap;
     }
 
@@ -114,47 +114,49 @@
       color: #1a202c; 
       font-weight: 600;
       text-align: right;
-      max-width: 160px;
+      min-w: 0;
     }
   }
 }
 
-
+/* ==========================================================================
+   VIEW 2: PROFILE DASHBOARD & ALIGNMENT ROW GRID MATRICES
+   ========================================================================== */
 .main-profile-dashboard {
   background-color: #ffffff;
   border-radius: 16px !important;
 
   .profile-layout-grid {
     display: grid;
- 
-    grid-template-columns: 2fr 2fr 1.8fr 2fr 2fr;
-    gap: 24px;
+    // Uses fluid minimum bounds combined with fractional columns to stay consistent at 80% or 100% zoom
+    grid-template-columns: repeat(2, minmax(140px, 1fr)) minmax(160px, 1.2fr) repeat(2, minmax(140px, 1fr));
+    gap: 1.25rem;
     align-items: center;
   }
 
   .center-avatar-block {
     .main-avatar {
-      width: 110px;
-      height: 110px;
+      width: 6.5rem;
+      height: 6.5rem;
       object-fit: cover;
       border: 4px solid #ffffff;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
     }
 
     .profile-display-name {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 700;
       color: #000000;
       letter-spacing: 0.5px;
     }
 
     .profile-display-sub {
-      font-size: 0.85rem;
+      font-size: 0.825rem;
       color: #718096;
     }
 
     .marital-pill {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: 700;
       color: #a0aec0;
       letter-spacing: 0.4px;
@@ -162,20 +164,13 @@
   }
 }
 
-
-.best-matches-stack {
-  position: relative;
-}
-
 .match-alignment-row {
   display: grid;
- 
-  grid-template-columns: 1.2fr 2fr 2fr 1.8fr 2.5fr;
-  gap: 24px;
+  grid-template-columns: minmax(120px, 1fr) repeat(4, minmax(140px, 1.5fr));
+  gap: 1.25rem;
   align-items: start;
   position: relative;
-  padding: 20px !important;
-  padding-right: 64px !important; 
+  padding: 1rem 3.5rem 1rem 1rem !important; // Padded to elegantly absorb floating button space
   background: #ffffff;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 
@@ -184,44 +179,45 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04) !important;
   }
 
-  // Left Identity Metadata Block Widget Panel
   .identity-segment {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     border-right: 1px solid #edf2f7;
-    padding-right: 16px;
+    padding-right: 0.75rem;
     height: 100%;
 
     .match-thumb {
-      width: 68px;
-      height: 68px;
+      width: 4rem;
+      height: 4rem;
       object-fit: cover;
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
 
     .match-name {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 700;
       color: #1a202c;
+      width: 100%;
     }
 
     .match-meta {
-      font-size: 0.8rem;
+      font-size: 0.775rem;
       color: #718096;
     }
 
     .match-status-badge {
-      font-size: 0.65rem;
+      font-size: 0.625rem;
       font-weight: 700;
       color: #a0aec0;
       letter-spacing: 0.3px;
+      white-space: nowrap;
     }
   }
 }
 
-// Terracotta/Red Floating Action Round Overlay Button Anchor
+/* Floating Red Link Call To Action */
 .target-career-column {
   position: relative;
 }
@@ -229,23 +225,23 @@
 .floating-action-arrow {
   position: absolute;
   top: 50%;
-  right: -44px; // Extended precisely into the custom row right-padded margin system track
+  right: -2.75rem; 
   transform: translateY(-50%);
-  width: 36px;
-  height: 36px;
-  background-color: var(--2nd, #c94a29) !important; // Exact terracotta/orange-red tone match
+  width: 2.15rem;
+  height: 2.15rem;
+  background-color: var(--2nd, #c94a29) !important; 
   border: none !important;
   padding: 0;
   box-shadow: 0 4px 10px rgba(199, 74, 41, 0.22);
-  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.15s ease;
+  transition: transform 0.2s ease, background-color 0.15s ease;
 
   i {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     line-height: 1;
   }
 
   &:hover {
-    transform: translateY(-50%) scale(1.1);
+    transform: translateY(-50%) scale(1.08);
     background-color: #b03e20 !important;
   }
 }
@@ -254,19 +250,41 @@
   transition: all 0.2s ease-in-out;
 }
 
-// Media viewports optimization layer breakdown for compact screens
-@media (max-width: 1280px) {
+/* ==========================================================================
+   ZOOM ENGINE & SCREEN VIEWPORT RE-FLOW BREAKPOINTS
+   ========================================================================== */
+@media (max-width: 1400px) {
   .main-profile-dashboard .profile-layout-grid,
   .match-alignment-row {
-    grid-template-columns: 1.4fr 2fr 2fr;
-    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
   }
-  .match-alignment-row {
-    padding-right: 56px !important;
-  }
-  .identity-segment {
-    border-right: none !important;
+  
+  .main-profile-dashboard .center-avatar-block,
+  .match-alignment-row .identity-segment {
+    grid-column: 1 / -1; // Snaps to horizontal dashboard header card banner when space collapses
+    border-right: none;
     border-bottom: 1px solid #edf2f7;
-    padding-bottom: 12px;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .match-alignment-row {
+    padding-right: 1rem !important;
+  }
+
+  .floating-action-arrow {
+    position: relative;
+    top: 0;
+    right: 0;
+    transform: none;
+    margin-top: 0.75rem;
+    width: 100%;
+    border-radius: 6px !important;
+    height: 2.25rem;
+
+    &:hover {
+      transform: scale(1.01);
+    }
   }
 }

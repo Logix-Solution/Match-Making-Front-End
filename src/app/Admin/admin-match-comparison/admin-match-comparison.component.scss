@@ -1,124 +1,79 @@
-// Search View Constraint Wrapper Mapping
-.max-w-search {
-  max-width: 320px;
-}
-
-.custom-search-input {
-  height: 44px;
-}
-
-// Selection Action Header CTA Configuration Button Systems
-.compare-action-btn {
-  background-color: var(--2nd) !important; // Global dark red/brown design token
-  border: none;
+// Global Custom Scrollbar Implementation Layout Context
+.comparison-overall-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 12px; // Clear track spacing
   
-  &:disabled {
-    background-color: #cbd5e1 !important;
-    color: #94a3b8 !important;
-    cursor: not-allowed;
-    opacity: 0.7;
-  }
-}
-
-// --- Dynamic Selection Matrix Grid Card Components Styles ---
-.selection-card {
-  border: 1px solid var(--6th);
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  &::-webkit-scrollbar {
+    height: 6px; 
   }
 
-  // Active highlighted card boundary state rules configuration logic
-  &.card-selected {
-    border: 1px solid var(--primary) !important; // Deep maroon accent selection ring frame
-    background-color: #fdfafb !important;
+  &::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
   }
-}
 
-.profile-avatar {
-  width: 52px;
-  height: 52px;
-}
-
-// Built custom operational markup checkboxes mapping screenshot layout elements
-.custom-checkbox-marker {
-  width: 22px;
-  height: 22px;
-  border: 2px solid #cbd5e1;
-  background-color: #ffffff;
-  transition: all 0.15s ease;
-
-  &.checked {
-    background-color: var(--primary) !important; // Primary maroon color check fill
-    border-color: var(--primary) !important;
-  }
-}
-
-// Multi Layer Avatar Stack Component Framework Styling
-.avatar-stack {
-  .stack-thumb {
-    width: 28px;
-    height: 28px;
-    object-fit: cover;
-    margin-left: -8px;
-    box-shadow: 0 0 0 2px #ffffff;
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--primary) !important;
+    border-radius: 10px;
+    transition: background-color 0.2s ease;
     
-    &:first-child {
-      margin-left: 0;
+    &:hover {
+      filter: brightness(0.9);
     }
   }
 }
 
-// --- Dynamic Side-by-Side Matrix Screen Layout Styles ---
-.comparison-matrix-row {
-  min-height: 500px;
-}
-
+// Fluid, Self-Adjusting Professional Columns
 .comparison-column {
-  min-width: 300px;
-  max-width: 400px;
-  transition: all 0.25s ease-in-out;
+  // Uses a fluid calculation: comfortable on 100% zoom, expands naturally on 80% zoom
+  flex: 1 1 calc(28vw - 16px); 
+  min-width: 290px;  // Guarantees it won't squash text fields on tight zooms
+  max-width: 360px;  // Prevents it from becoming too wide on huge ultra-wide monitors
+  display: flex;
+  flex-direction: column;
 }
 
-// Empty Placeholder Column layout map mapping graphic file specifications
+// Card structure alignment
+.comparison-column > .bg-white {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: flex-start;
+}
+
 .column-placeholder {
-  background-color: #edeae9 !important; // Tinted gray/beige background palette fill
+  background-color: #f8fafc !important;
   border: 2px dashed #cbd5e1 !important;
-  min-width: 300px;
+  min-height: 495px; // Matches the active data card vertical profile height
+  align-self: stretch;
 
   .add-slot-btn {
     width: 50px;
     height: 50px;
-    background-color: #fbe6dc !important; // Highlighted color tag fill parameters
+    background-color: #fbe6dc !important;
     border: none;
     transition: transform 0.2s ease;
     
     &:hover {
-      transform: scale(1.1);
+      transform: scale(1.05);
     }
   }
 }
 
-// Nested inner column content blocks system customization
-.pill-attribute {
-  background-color: #f6d8c7 !important; // Sand color block parameters mapping Container (6).jpg 
-  border: 1px solid rgba(0, 0, 0, 0.02);
+// Inner typography stabilization for clean rows across zoom scales
+.attribute-group-box {
+  background-color: #fafbfc;
   
-  .font-scale-sub {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.4px;
-    opacity: 0.7;
+  .d-flex {
+    min-height: 38px; // Keeps row baselines strictly aligned across cards
+    align-items: center;
   }
 }
 
-.attribute-group-box {
-  background-color: #fafbfc;
-}
-
-.transition-all {
-  transition: all 0.2s ease-in-out;
+.pill-attribute {
+  background-color: #fbe6dc !important;
+  border: 1px solid rgba(0, 0, 0, 0.01);
+  height: 54px;
 }

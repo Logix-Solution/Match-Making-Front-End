@@ -1,75 +1,159 @@
-// Navigation Tab buttons configuration mapping
-.tab-btn {
-  background: transparent;
-  color: var(--7th);
-  cursor: pointer;
-  outline: none;
+// Search View Constraint Wrapper Mapping
+.max-w-search {
+  max-width: 20rem;
+}
 
-  &.active-tab {
-    background-color: var(--primary) !important; // Global Maroon Background variable
-    color: var(--6th) !important;               // Global White text variable
+.custom-search-input {
+  height: 2.75rem;
+}
+
+// Selection Action Header CTA Configuration Button Systems
+.compare-action-btn {
+  background-color: var(--2nd) !important;
+  border: none;
+  height: 2.75rem;
+  
+  &:disabled {
+    background-color: #cbd5e1 !important;
+    color: #94a3b8 !important;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+}
+
+// --- Dynamic Selection Matrix Grid Card Components Styles ---
+.selection-card {
+  border: 1px solid var(--6th);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  &.card-selected {
+    border: 1px solid var(--primary) !important;
+    background-color: #fdfafb !important;
   }
 }
 
 .profile-avatar {
-  width: 56px;
-  height: 56px;
+  width: 3.25rem;
+  height: 3.25rem;
+  flex-shrink: 0;
 }
 
-// Action Button interactive style frames 
-.accept-solid {
-  transition: opacity 0.15s ease-in-out;
-  &:hover {
-    animation: headShake 1s;
-    opacity: 0.9;
-  }
-  &:active {
-    animation: rubberBand 1s;
-  }
-}
+// Built custom operational markup checkboxes
+.custom-checkbox-marker {
+  width: 1.375rem;
+  height: 1.375rem;
+  border: 2px solid #cbd5e1;
+  background-color: #ffffff;
+  transition: all 0.15s ease;
 
-.reject-outline {
-  border-color: var(--2nd) !important;
-  color: var(--2nd) !important;
-  transition: background-color 0.15s ease;
-  &:hover {
-    animation: headShake 1s;
-    background-color: rgba(200, 75, 49, 0.05);
-  }
-  &:active {
-    animation: rubberBand 1s;
+  &.checked {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
   }
 }
 
-// --- New Status Badges Styling System ---
-.badge-status {
-  letter-spacing: 0.2px;
-  user-select: none;
-  border: 1px solid transparent;
+// Multi Layer Avatar Stack Component Framework Styling
+.avatar-stack {
+  .stack-thumb {
+    width: 1.75rem;
+    height: 1.75rem;
+    object-fit: cover;
+    margin-left: -0.5rem;
+    box-shadow: 0 0 0 2px #ffffff;
+    
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}
+
+// --- Side-by-Side Matrix Layout Fixes ---
+.comparison-matrix-row {
+  width: 100%;
+  overflow-x: auto !important;   // Enforces fluid sideways scrolling across browser zoom variations
+  overflow-y: hidden !important;  // Prevents internal breaking scroll loops
+  white-space: nowrap;
+}
+
+.comparison-column {
+  flex: 0 0 calc(33.333% - 11px); // Maintains perfect 3-column architecture at 100% zoom scale
+  min-width: 18.75rem;           // Keeps elements from shrinking excessively at 80% zoom scale
+  max-width: 25rem;
+  display: inline-block;
+  vertical-align: top;
+  white-space: normal;           // Restores native stacking framework behavior for text fields inside elements
+  transition: all 0.25s ease-in-out;
+}
+
+// Empty Placeholder Column layout map
+.column-placeholder {
+  background-color: #edeae9 !important;
+  border: 2px dashed #cbd5e1 !important;
   height: 100%;
+
+  .add-slot-btn {
+    width: 3.125rem;
+    height: 3.125rem;
+    background-color: #fbe6dc !important;
+    border: none;
+    transition: transform 0.2s ease;
+    
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
 }
 
-// Soft Green "Approved" Badge 
-.badge-approved {
-  background-color: #e6f9f0 !important;
-  color: #10b981 !important; 
-  border-color: rgba(16, 185, 129, 0.15) !important;
+// Nested inner column content blocks system customization
+.pill-attribute {
+  background-color: #f6d8c7 !important;
+  border: 1px solid rgba(0, 0, 0, 0.02);
+  min-height: 3.5rem;
+  
+  .font-scale-sub {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    opacity: 0.7;
+  }
 }
 
-// Soft Pink "Rejected" Badge
-.badge-rejected {
-  background-color: #fdf2f4 !important;
-  color: #e03152 !important; 
-  border-color: rgba(224, 49, 82, 0.15) !important;
-}
-
-// Alternative Soft Green "Pending" state Badge found inside your Accepted layout view
-.badge-pending-active {
-  background-color: #eafbf3 !important;
-  color: #34d399 !important;
-  border-color: rgba(52, 211, 153, 0.15) !important;
+.attribute-group-box {
+  background-color: #fafbfc;
+  
+  .style-max-width {
+    max-width: 9.5rem;
+  }
 }
 
 .transition-all {
   transition: all 0.2s ease-in-out;
+}
+
+.normal-layout {
+  display: block !important;
+  flex: none !important;
+}
+
+/* Scrollbar Customization */
+.style-1::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.style-1::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+.style-1::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+.style-1::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
