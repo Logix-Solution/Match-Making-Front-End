@@ -79,14 +79,15 @@ export class ProfileAppearanceInfoInputComponent implements OnInit {
     }
 
     // Build absolute lookups array
-    const appearanceIds = [
-      this.selectedHeight,
-      this.selectedBodyType,
-      this.selectedSkinTone,
-      this.selectedDisability
-    ].filter(v => v !== '' && v !== null && v !== undefined);
+  const appearanceEntries = [
+  { typeID: 26, subTypeID: this.selectedHeight     },
+  { typeID: 15, subTypeID: this.selectedBodyType   },
+  { typeID: 16, subTypeID: this.selectedSkinTone   },
+  { typeID: 30, subTypeID: this.selectedDisability },
+].filter(item => item.subTypeID !== '' && item.subTypeID !== null && item.subTypeID !== undefined)
+ .map(item    => ({ typeID: item.typeID, subTypeID: Number(item.subTypeID) }));
 
-    this.appearanceFormFields[3].value = '[' + appearanceIds.map((v: any) => Number(v)).join(',') + ']';
+this.appearanceFormFields[3].value = JSON.stringify(appearanceEntries);
   }
 
   // ─── Save Implementation Method ───────────────────────────────────────────

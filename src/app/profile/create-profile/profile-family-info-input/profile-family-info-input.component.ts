@@ -79,16 +79,17 @@ export class ProfileFamilyInfoInputComponent implements OnInit {
     }
 
     // 2. Collate clean database dropdown IDs strictly into familyJson array
-    const familyIds = [
-      this.selectedMaritalStatus,
-      this.selectedHousingSituation,
-      this.selectedFatherOccupation,
-      this.selectedMotherOccupation,
-      this.selectedNoOfSiblings,
-      this.selectedFamilyInvolvement
-    ].filter(v => v !== '' && v !== null && v !== undefined);
+  const familyEntries = [
+  { typeID: 10, subTypeID: this.selectedMaritalStatus     },
+  { typeID: 11, subTypeID: this.selectedHousingSituation  },
+  { typeID: 12, subTypeID: this.selectedFatherOccupation  },
+  { typeID: 13, subTypeID: this.selectedMotherOccupation  },
+  { typeID: 25, subTypeID: this.selectedNoOfSiblings      },
+  { typeID: 14, subTypeID: this.selectedFamilyInvolvement },
+].filter(item => item.subTypeID !== '' && item.subTypeID !== null && item.subTypeID !== undefined)
+ .map(item    => ({ typeID: item.typeID, subTypeID: Number(item.subTypeID) }));
 
-    this.familyFormFields[3].value = '[' + familyIds.map((v: any) => Number(v)).join(',') + ']';
+this.familyFormFields[3].value = JSON.stringify(familyEntries);
   }
 
   // ─── Save Action ──────────────────────────────────────────────────────────

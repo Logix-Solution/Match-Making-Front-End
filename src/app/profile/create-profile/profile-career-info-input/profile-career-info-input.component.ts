@@ -68,14 +68,14 @@ export class ProfileCareerInfoInputComponent implements OnInit {
     this.careerFormFields[2].value = this.instituteName;
 
     // careerJson: [educationID, occupationID, monthlyIncomeID]
-    const careerIds = [
-      this.selectedEducation,
-      this.selectedOccupation,
-      this.selectedMonthlyIncome
-    ].filter(v => v !== '' && v !== null && v !== undefined);
+   const careerEntries = [
+  { typeID: 4, subTypeID: this.selectedEducation     },
+  { typeID: 5, subTypeID: this.selectedOccupation    },
+  { typeID: 6, subTypeID: this.selectedMonthlyIncome },
+].filter(item => item.subTypeID !== '' && item.subTypeID !== null && item.subTypeID !== undefined)
+ .map(item    => ({ typeID: item.typeID, subTypeID: Number(item.subTypeID) }));
 
-    this.careerFormFields[3].value =
-      '[' + careerIds.map((v: any) => Number(v)).join(',') + ']';
+this.careerFormFields[3].value = JSON.stringify(careerEntries);
   }
 
   // ─── SAVE ─────────────────────────────────────────────────────────────────

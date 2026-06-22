@@ -83,14 +83,15 @@ export class ProfileLifestyleInfoInputComponent implements OnInit {
     this.lifestyleFormFields[4].value = this.tiktokLink ? this.tiktokLink.trim() : '';
     this.lifestyleFormFields[5].value = this.snapchatLink ? this.snapchatLink.trim() : '';
 
-    const lifestyleIds = [
-      this.selectedSmoke,
-      this.selectedAlcohol,
-      this.selectedWantKids,
-      this.selectedMaritalStatus
-    ].filter(v => v !== '' && v !== null && v !== undefined);
+    const lifestyleEntries = [
+  { typeID: 17, subTypeID: this.selectedSmoke         },
+  { typeID: 18, subTypeID: this.selectedAlcohol       },
+  { typeID: 19, subTypeID: this.selectedWantKids      },
+  { typeID: 10, subTypeID: this.selectedMaritalStatus },
+].filter(item => item.subTypeID !== '' && item.subTypeID !== null && item.subTypeID !== undefined)
+ .map(item    => ({ typeID: item.typeID, subTypeID: Number(item.subTypeID) }));
 
-    this.lifestyleFormFields[6].value = '[' + lifestyleIds.map((v: any) => Number(v)).join(',') + ']';
+this.lifestyleFormFields[6].value = JSON.stringify(lifestyleEntries);
   }
 
   // ─── Save Implementation Method ───────────────────────────────────────────

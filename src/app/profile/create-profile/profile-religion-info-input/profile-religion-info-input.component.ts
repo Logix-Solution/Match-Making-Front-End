@@ -62,15 +62,14 @@ export class ProfileReligionInfoInputComponent implements OnInit {
   // ─── Sync bound fields → formFields[] ────────────────────────────────────
   syncFormFields(): void {
     // Collect dropdown values and filter empty/null choices out
-    const religionIds = [
-      this.selectedReligion,
-      this.selectedSect,
-      this.selectedReligionImportance
-    ].filter(v => v !== '' && v !== null && v !== undefined);
+   const religionEntries = [
+  { typeID: 7, subTypeID: this.selectedReligion            },
+  { typeID: 8, subTypeID: this.selectedSect                },
+  { typeID: 9, subTypeID: this.selectedReligionImportance  },
+].filter(item => item.subTypeID !== '' && item.subTypeID !== null && item.subTypeID !== undefined)
+ .map(item    => ({ typeID: item.typeID, subTypeID: Number(item.subTypeID) }));
 
-    // Formats payload specifically as expected: "[17,18,19]"
-    this.religionFormFields[2].value = 
-      '[' + religionIds.map((v: any) => Number(v)).join(',') + ']';
+this.religionFormFields[2].value = JSON.stringify(religionEntries);
   }
 
   // ─── SAVE ─────────────────────────────────────────────────────────────────
