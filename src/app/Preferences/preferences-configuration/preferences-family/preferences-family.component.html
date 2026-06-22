@@ -1,102 +1,179 @@
 <div class="fh-5 fw-bold mt-3">Family</div>
 
 <!-- row-01 -->
-<div class="row mt-4">
+<div class="row g-2 align-items-end mt-4">
+
+  <!-- Accept Partner with Kids? — TODO: typeID -->
   <div class="col-md-4">
     <div class="form-group">
-      <label for="acceptKids" class="txt-7th ft-5">Accept Partner with Kids?<span class="txt-2nd">&nbsp;*</span></label>
-      <select class="form-control form-control-sm mt-2" id="acceptKids">
-        <option value="" disabled selected>Select option</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Accept Partner with Kids?<span class="text-danger">&nbsp;*</span>
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedAcceptKids"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select option</option>
+        <option *ngFor="let item of acceptKidsList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
       </select>
     </div>
   </div>
-  
+
+  <!-- Willing to Relocate — TODO: typeID -->
   <div class="col-md-4">
     <div class="form-group">
-      <label for="relocate" class="txt-7th ft-5">Willing to Relocate<span class="txt-2nd">&nbsp;*</span></label>
-      <select class="form-control form-control-sm mt-2" id="relocate">
-        <option value="" disabled selected>Select option</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Willing to Relocate<span class="text-danger">&nbsp;*</span>
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedRelocate"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select option</option>
+        <option *ngFor="let item of relocateList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
       </select>
     </div>
   </div>
-  
+
+  <!-- Timeline for a Marriage — TODO: typeID -->
   <div class="col-md-4">
     <div class="form-group">
-      <label for="timeline" class="txt-7th ft-5">Timeline for a Marriage<span class="txt-2nd">&nbsp;*</span></label>
-      <select class="form-control form-control-sm mt-2" id="timeline">
-        <option value="" disabled selected>Select timeline</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Timeline for a Marriage<span class="text-danger">&nbsp;*</span>
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedTimeline"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select timeline</option>
+        <option *ngFor="let item of marriageTimelineList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
       </select>
     </div>
   </div>
+
 </div>
 
 <!-- row-02 (Preferred Marital Status Tags Selection) -->
 <div class="row mt-4">
   <div class="col-md-12">
     <div class="form-group">
-      <label class="txt-7th ft-5">Preferred Marital Status<span class="txt-2nd">&nbsp;*</span></label>
-      <small class="text-muted d-block mt-1">Select all marital statuses that are important to you (you've selected 1/3)</small>
-      
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Preferred Marital Status<span class="text-danger">&nbsp;*</span>
+        <span class="ft-6 txt-7th text-lowercase">&nbsp;(select up to 3, in priority order)</span>
+      </label>
+
       <div class="d-flex flex-wrap gap-2 mt-3">
-        <!-- Active/Selected option state style placeholder -->
-        <span class="badge bg-light text-danger p-2 border border-danger">Single, Never Married</span>
-        <span class="badge bg-light text-dark p-2 border">Divorced</span>
-        <span class="badge bg-light text-dark p-2 border">Separated</span>
-        <span class="badge bg-light text-dark p-2 border">Widowed</span>
-        <span class="badge bg-light text-dark p-2 border">Married</span>
-        <span class="badge bg-light text-dark p-2 border">Nikkah without Rukhsati</span>
+        <span
+          *ngFor="let item of maritalStatusList"
+          class="badge p-2 border rounded-pill"
+          [ngClass]="isMaritalStatusSelected(item.subTypeID)
+            ? 'bg-light text-danger border-danger'
+            : 'bg-light text-dark'"
+          style="cursor: pointer; font-size: 13px;"
+          (click)="toggleMaritalStatus(item.subTypeID)">
+          {{ item.subTypeTitle }}
+          <span *ngIf="isMaritalStatusSelected(item.subTypeID)">
+            &nbsp;({{ getMaritalStatusPriority(item.subTypeID) }})
+          </span>
+        </span>
       </div>
     </div>
   </div>
 </div>
 
-<!-- row-03 (Priority Selectors) -->
-<div class="row mt-4">
+<!-- row-03 (Marital Status Priority Selectors — auto-filled from pill selection order) -->
+<div class="row g-2 align-items-end mt-4">
+
   <div class="col-md-4">
     <div class="form-group">
-      <label for="firstPriorityMarital" class="txt-7th ft-5">First Priority</label>
-      <select class="form-control form-control-sm mt-2" id="firstPriorityMarital">
-        <option>Single, Never Married</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        First Priority
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        disabled
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option>{{ getMaritalStatusTitle(selectedMaritalStatuses[0]) || 'Not selected yet' }}</option>
       </select>
     </div>
   </div>
 
   <div class="col-md-4">
     <div class="form-group">
-      <label for="secondPriorityMarital" class="txt-7th ft-5">Second Priority</label>
-      <select class="form-control form-control-sm mt-2" id="secondPriorityMarital">
-        <option value="" disabled selected>Select profession</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Second Priority
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        disabled
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option>{{ getMaritalStatusTitle(selectedMaritalStatuses[1]) || 'Not selected yet' }}</option>
       </select>
     </div>
   </div>
 
   <div class="col-md-4">
     <div class="form-group">
-      <label for="thirdPriorityMarital" class="txt-7th ft-5">Third Priority</label>
-      <select class="form-control form-control-sm mt-2" id="thirdPriorityMarital">
-        <option value="" disabled selected>Select profession</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Third Priority
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        disabled
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option>{{ getMaritalStatusTitle(selectedMaritalStatuses[2]) || 'Not selected yet' }}</option>
       </select>
     </div>
   </div>
+
 </div>
 
 <!-- row-04 -->
-<div class="row mt-4">
+<div class="row g-2 align-items-end mt-4">
+
   <div class="col-md-6">
     <div class="form-group">
-      <label for="housingStatus" class="txt-7th ft-5">Housing Status Preference<span class="txt-2nd">&nbsp;*</span></label>
-      <select class="form-control form-control-sm mt-2" id="housingStatus">
-        <option value="" disabled selected>Select status</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Housing Status Preference<span class="text-danger">&nbsp;*</span>
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedHousingSituation"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select status</option>
+        <option *ngFor="let item of housingSituationList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
       </select>
     </div>
   </div>
 
   <div class="col-md-6">
     <div class="form-group">
-      <label for="familyInvolvement" class="txt-7th ft-5">Family Involvement Preference<span class="txt-2nd">&nbsp;*</span></label>
-      <select class="form-control form-control-sm mt-2" id="familyInvolvement">
-        <option value="" disabled selected>Select family involvement</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Family Involvement Preference<span class="text-danger">&nbsp;*</span>
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedFamilyInvolvement"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select family involvement</option>
+        <option *ngFor="let item of familyInvolvementList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
       </select>
     </div>
   </div>
+
 </div>

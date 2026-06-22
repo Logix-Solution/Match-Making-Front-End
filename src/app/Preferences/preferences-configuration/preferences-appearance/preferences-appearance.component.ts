@@ -178,7 +178,7 @@ export class PreferencesAppearanceComponent implements OnInit {
     this.syncFormFields();
     this.formFields[0].value = userID;
 
-    // ─── Sync formFields → pageFields ────────────────────────────────────
+    // ─── Sync formFields → pageFields ─────────────────────────A───────────
     this.pageFields.userID              = this.formFields[0].value;
     this.pageFields.spType              = this.formFields[1].value;
     this.pageFields.appearancePrefrence = this.formFields[2].value;

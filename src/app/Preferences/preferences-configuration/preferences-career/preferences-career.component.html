@@ -1,82 +1,119 @@
 <div class="fh-5 fw-bold mt-3">Education & Career</div>
 
 <!-- row-01 -->
-<div class="row mt-4">
+<div class="row g-2 align-items-end mt-4">
+
+  <!-- Minimum Education Level (typeID=4) -->
   <div class="col-md-6">
     <div class="form-group">
-      <label for="minEducation" class="txt-7th ft-5">Minimum Education Level<span class="txt-2nd">&nbsp;*</span></label>
-      <input type="text" class="form-control form-control-sm mt-2" id="minEducation" placeholder="Enter proffered min age">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Minimum Education Level<span class="text-danger">&nbsp;*</span>
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedMinEducation"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select education level</option>
+        <option *ngFor="let item of educationList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
+      </select>
     </div>
   </div>
-  
+
+  <!-- Minimum Monthly Income (typeID=6) -->
   <div class="col-md-6">
     <div class="form-group">
-      <label for="minIncome" class="txt-7th ft-5">Minimum Monthly Income<span class="txt-2nd">&nbsp;*</span></label>
-      <input type="text" class="form-control form-control-sm mt-2" id="minIncome" placeholder="Enter proffered max age">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Minimum Monthly Income<span class="text-danger">&nbsp;*</span>
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedMinIncome"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select income range</option>
+        <option *ngFor="let item of monthlyIncomeList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
+      </select>
     </div>
   </div>
+
 </div>
 
-<!-- row-02 (Preferred Occupations Selection) -->
+<!-- row-02 (Preferred Occupations Tags Selection) -->
 <div class="row mt-4">
   <div class="col-md-12">
     <div class="form-group">
-      <label class="txt-7th ft-5">Preferred Occupations<span class="txt-2nd">&nbsp;*</span></label>
-      <small class="text-muted d-block mt-1">What professions would you prefer your partner to be in? (you've selected 1/3)</small>
-      
-      <!-- Option Tags Wrapper -->
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Preferred Occupations<span class="text-danger">&nbsp;*</span>
+        <span class="ft-6 txt-7th text-lowercase">&nbsp;(select up to 3, in priority order)</span>
+      </label>
+
       <div class="d-flex flex-wrap gap-2 mt-3">
-        <span class="badge bg-light text-dark p-2 border">Student</span>
-        <!-- Active/Selected option state style placeholder -->
-        <span class="badge bg-light text-danger p-2 border border-danger">Doctor</span>
-        <span class="badge bg-light text-dark p-2 border">Nurse</span>
-        <span class="badge bg-light text-dark p-2 border">Engineer</span>
-        <span class="badge bg-light text-dark p-2 border">Teacher</span>
-        <span class="badge bg-light text-dark p-2 border">Professor</span>
-        <span class="badge bg-light text-dark p-2 border">Business Owner</span>
-        <span class="badge bg-light text-dark p-2 border">Entrepreneur</span>
-        <span class="badge bg-light text-dark p-2 border">Consultant</span>
-        <span class="badge bg-light text-dark p-2 border">Banker</span>
-        <span class="badge bg-light text-dark p-2 border">Accountant</span>
-        <span class="badge bg-light text-dark p-2 border">Government Employee</span>
-        <span class="badge bg-light text-dark p-2 border">Lawyer</span>
-        <span class="badge bg-light text-dark p-2 border">Generalist</span>
-        <span class="badge bg-light text-dark p-2 border">IT Professor</span>
-        <span class="badge bg-light text-dark p-2 border">Farmer</span>
-        <span class="badge bg-light text-dark p-2 border">Freelancer</span>
-        <span class="badge bg-light text-dark p-2 border">Artist</span>
-        <span class="badge bg-light text-dark p-2 border">Self-made</span>
+        <span
+          *ngFor="let item of occupationList"
+          class="badge p-2 border rounded-pill"
+          [ngClass]="isOccupationSelected(item.subTypeID)
+            ? 'bg-light text-danger border-danger'
+            : 'bg-light text-dark'"
+          style="cursor: pointer; font-size: 13px;"
+          (click)="toggleOccupation(item.subTypeID)">
+          {{ item.subTypeTitle }}
+          <span *ngIf="isOccupationSelected(item.subTypeID)">
+            &nbsp;({{ getOccupationPriority(item.subTypeID) }})
+          </span>
+        </span>
       </div>
     </div>
   </div>
 </div>
 
-<!-- row-03 (Priority Selectors) -->
-<div class="row mt-4">
+<!-- row-03 (Occupation Priority Selectors — auto-filled from pill selection order) -->
+<div class="row g-2 align-items-end mt-4">
+
   <div class="col-md-4">
     <div class="form-group">
-      <label for="firstPriority" class="txt-7th ft-5">First Priority</label>
-      <select class="form-control form-control-sm mt-2" id="firstPriority">
-        <option>Doctor</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        First Priority
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        disabled
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option>{{ getOccupationTitle(selectedOccupations[0]) || 'Not selected yet' }}</option>
       </select>
     </div>
   </div>
 
   <div class="col-md-4">
     <div class="form-group">
-      <label for="secondPriority" class="txt-7th ft-5">Second Priority</label>
-      <select class="form-control form-control-sm mt-2" id="secondPriority">
-        <option value="" disabled selected>Select profession</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Second Priority
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        disabled
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option>{{ getOccupationTitle(selectedOccupations[1]) || 'Not selected yet' }}</option>
       </select>
     </div>
   </div>
 
   <div class="col-md-4">
     <div class="form-group">
-      <label for="thirdPriority" class="txt-7th ft-5">Third Priority</label>
-      <select class="form-control form-control-sm mt-2" id="thirdPriority">
-        <option value="" disabled selected>Select profession</option>
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Third Priority
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        disabled
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option>{{ getOccupationTitle(selectedOccupations[2]) || 'Not selected yet' }}</option>
       </select>
     </div>
   </div>
+
 </div>

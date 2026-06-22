@@ -86,7 +86,11 @@
   <!-- ─── Step 2: Career Preferences ───────────────────────────────────── -->
   <app-preferences-career
     *ngIf="stepper === 2"
-    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2">
+    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+    [educationList]="educationList"
+    [monthlyIncomeList]="monthlyIncomeList"
+    [occupationList]="occupationList"
+    (saveSuccess)="onCareerPrefSaveSuccess()">
   </app-preferences-career>
 
   <!-- ─── Step 3: Religion Preferences ─────────────────────────────────── -->
@@ -100,9 +104,16 @@
 </app-preferences-religion>
 
   <!-- ─── Step 4: Family Preferences ───────────────────────────────────── -->
-  <app-preferences-family
+   <app-preferences-family
     *ngIf="stepper === 4"
-    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2">
+    class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+    [acceptKidsList]="acceptKidsList"
+    [relocateList]="relocateList"
+    [marriageTimelineList]="marriageTimelineList"
+    [maritalStatusList]="maritalStatusList"
+    [housingSituationList]="housingSituationList"
+    [familyInvolvementList]="familyInvolvementList"
+    (saveSuccess)="onFamilyPrefSaveSuccess()">
   </app-preferences-family>
 
   <!-- ─── Step 5: Appearance Preferences ───────────────────────────────── -->
