@@ -236,82 +236,79 @@
      [class.d-none]="!isProfileModalOpen"
      tabindex="-1" 
      role="dialog"
-     style="background: rgba(0, 0, 0, 0.55); overflow-y: auto;" 
+     style="background: rgba(0, 0, 0, 0.65);" 
      *ngIf="isProfileModalOpen">
      
-  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-    <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+  <div class="modal-dialog modal-dialog-centered profile-detail-modal-dialog" role="document">
+    <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden position-relative">
       
-      <div class="modal-body p-4 position-relative bg-white">
-        
-        <button type="button" class="btn-close position-absolute top-0 end-0 m-4 shadow-none z-3" (click)="closeProfileDetails()" aria-label="Close"></button>
-        
+      <button type="button" class="btn-close-custom" (click)="closeProfileDetails()" aria-label="Close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+      <div class="modal-body p-4 bg-white">
         <div class="row g-4 pt-2">
           
-          <div class="col-md-4 d-flex flex-column align-items-center justify-content-between border-end pe-md-4">
-            
-            <div class="slideshow-capsule shadow-sm my-2">
-              <img src="../../../assets/images/profile1.png" alt="Aisha View Alpha" class="slideshow-img" />
-              <img src="../../../assets/images/profile2.png" alt="Aisha View Beta" class="slideshow-img" />
-              <img src="../../../assets/images/profile3.png" alt="Aisha View Gamma" class="slideshow-img" />
+          <div class="col-md-5 d-flex flex-column align-items-center justify-content-start border-end-divider pe-md-4">
+            <div class="slideshow-capsule shadow-sm">
+              <img src="../../../assets/images/profile1.png" alt="Aisha View Alpha" class="slideshow-img img-1" />
+              <img src="../../../assets/images/profile2.png" alt="Aisha View Beta" class="slideshow-img img-2" />
+              <img src="../../../assets/images/profile3.png" alt="Aisha View Gamma" class="slideshow-img img-3" />
             </div>
 
-            <button class="btn btn-md text-white px-4 py-2.5 rounded-3 w-100 mt-3 d-flex align-items-center justify-content-center gap-2 shadow-sm" 
-                    style="background-color: #B84A26; font-size: 14px; font-weight: 500;">
+            <button class="btn btn-send-interest text-white px-4 py-2.5 rounded-3 w-100 d-flex align-items-center justify-content-center gap-2 mt-3" 
+                    style="background-color: #B84A26;">
               <i class="bi bi-whatsapp"></i>
               Send Interest
             </button>
           </div>
 
-          <div class="col-md-8 ps-md-4 d-flex flex-column justify-content-between">
-            
-            <div class="border-bottom pb-3 mb-3">
-              <div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
+          <div class="col-md-7 ps-md-4 d-flex flex-column justify-content-between">
+            <div>
+              <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
                 <div>
-                  <h3 class="fw-bold text-dark mb-0" style="font-family: 'Marcellus', serif; font-size: 28px;">
+                  <h3 class="fw-bold text-dark mb-0 heading-marcellus-modal">
                     {{ selectedProfile?.name }}
                   </h3>
-                  <span class="text-muted fw-medium fs-6">{{ selectedProfile?.gender }}</span>
+                  <span class="text-muted fw-medium fs-6 ft-gender">{{ selectedProfile?.gender }}</span>
                 </div>
-                
-                <div class="d-flex align-items-center gap-2 bg-light px-3 py-2 rounded-4 border mt-3">
-                  <div class="avatar-overlap-group ">
+
+                <div class="d-flex align-items-center gap-2 p-2 ">
+                  <div class="avatar-overlap-group">
                     <img src="../../../assets/images/profile 2.png" alt="Salif" class="rounded-circle avatar-overlap-1" />
                     <img src="../../../assets/images/profile1.png" alt="Candidate" class="rounded-circle avatar-overlap-2" />
                   </div>
                   <div>
-                    <h5 class="fw-bold mb-0" style="color: #B84A26; font-size: 18px;">{{ selectedProfile?.matchScore }}%</h5>
-                    <p class="text-secondary mb-0 line-height-1" style="font-size: 11px; width: 110px;">Your profile matches her preferences</p>
+                    <h5 class="fw-bold mb-0 txt-match-percentage">{{ selectedProfile?.matchScore }}%</h5>
+                    <p class="text-secondary mb-0 label-match-sub text-wrap">Your profile matches her preferences</p>
                   </div>
                 </div>
               </div>
 
-              <div class="row g-3 text-secondary mt-2" style="font-size: 14px;">
-                <div class="col-sm-4 d-flex align-items-center gap-2"><i class="bi bi-cake2 text-muted"></i> {{ selectedProfile?.age }} Years Old</div>
-                <div class="col-sm-4 d-flex align-items-center gap-2"><i class="bi bi-rulers text-muted"></i> {{ selectedProfile?.height }} Height</div>
-                <div class="col-sm-4 d-flex align-items-center gap-2"><i class="bi bi-heart text-muted"></i> {{ selectedProfile?.status }} Status</div>
-                <div class="col-sm-4 d-flex align-items-center gap-2"><i class="bi bi-geo-alt text-muted"></i> {{ selectedProfile?.location }}</div>
-                <div class="col-sm-8 d-flex align-items-center gap-2"><i class="bi bi-briefcase text-muted"></i> {{ selectedProfile?.job }}</div>
+              <div class="row g-3 text-secondary profile-attributes-grid mb-4">
+                <div class="col-6 d-flex align-items-center gap-2"><i class="bi bi-cake2 txt-primary"></i> {{ selectedProfile?.age }} Years Old</div>
+                <div class="col-6 d-flex align-items-center gap-2"><i class="bi bi-rulers txt-primary"></i> {{ selectedProfile?.height }} Height</div>
+                <div class="col-6 d-flex align-items-center gap-2"><i class="bi bi-heart txt-primary"></i> {{ selectedProfile?.status }} Status</div>
+                <div class="col-6 d-flex align-items-center gap-2"><i class="bi bi-geo-alt txt-primary"></i> {{ selectedProfile?.location }}</div>
+                <div class="col-12 d-flex align-items-center gap-2 mt-1"><i class="bi bi-briefcase txt-primary"></i> {{ selectedProfile?.job }}</div>
               </div>
-            </div>
 
-            <div class="mb-2">
-              <div class="d-flex align-items-center gap-2 mb-2">
-                <span class="rounded-circle d-inline-block" style="width: 10px; height: 10px; background-color: #B84A26;"></span>
-                <h6 class="fw-bold mb-0 text-dark" style="font-size: 16px;">About Me</h6>
+              <div class="about-me-section pt-3 border-top">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <span class="rounded-circle d-inline-block identity-dot"></span>
+                  <h6 class="fw-bold mb-0 text-dark label-about-title">About Me</h6>
+                </div>
+                <p class="text-secondary lh-base paragraph-about">
+                  Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. 
+                  Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, 
+                  ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
+                </p>
               </div>
-              <p class="text-secondary lh-base mb-0" style="font-size: 13.5px; text-align: justify;">
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. 
-                Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, 
-                ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, 
-                fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
-              </p>
             </div>
 
           </div>
 
         </div>
-
       </div>
 
     </div>
