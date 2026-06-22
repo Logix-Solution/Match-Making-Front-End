@@ -374,22 +374,35 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
       return;
     }
 
-    const hasCnic = this.cnicFrontDoc && this.cnicBackDoc;
-    const hasPassport = this.passportDoc;
+    // const hasCnic = this.cnicFrontDoc && this.cnicBackDoc;
+    // const hasPassport = this.passportDoc;
 
-    if (!hasCnic && !hasPassport) {
-      this.toastr.warning('Please upload your CNIC (front & back) or Passport');
-      return;
-    }
-    if (this.documentType === 'cnic' && !this.cnicFrontDoc) {
+    // if (!hasCnic && !hasPassport) {
+    //   this.toastr.warning('Please upload your CNIC (front & back) or Passport');
+    //   return;
+    // }
+
+    const hasCnic     = (this.cnicFrontDoc && this.cnicBackDoc) || 
+                    (this.cnicFrontPreview && this.cnicBackPreview);
+const hasPassport = this.passportDoc || this.passportPreview;
+
+if (!hasCnic && !hasPassport) {
+  this.toastr.warning('Please upload your CNIC (front & back) or Passport');
+  return;
+}
+
+
+
+
+  if (this.documentType === 'cnic' && !this.cnicFrontDoc && !this.cnicFrontPreview) {
       this.toastr.warning('Please upload the front side of your CNIC');
       return;
     }
-    if (this.documentType === 'cnic' && !this.cnicBackDoc) {
+  if (this.documentType === 'cnic' && !this.cnicBackDoc  && !this.cnicBackPreview) {
       this.toastr.warning('Please upload the back side of your CNIC');
       return;
     }
-    if (this.documentType === 'passport' && !this.passportDoc) {
+  if (this.documentType === 'passport' && !this.passportDoc && !this.passportPreview){
       this.toastr.warning('Please upload your passport');
       return;
     }
@@ -649,6 +662,22 @@ if (user.passportEDoc && user.passportEDoc.trim() !== ''
   this.passportDoc     = '';
   this.passportDocPath = '';
   this.passportDocExt  = '';
+}
+
+if (user.galleryImages) {
+  try {
+    const serverGallery = JSON.parse(user.galleryImages);
+    this.galleryImages = serverGallery
+      .filter((img: any) => img.galleryeDoc && img.galleryeDoc.trim() !== '')
+      .map((img: any) => ({
+        galleryEdoc: '',           // empty — already on server
+        galleryEdocPath: '',
+        galleryEdocExt: '',
+        preview: img.galleryeDoc   // use URL as preview
+      }));
+  } catch (e) {
+    this.galleryImages = [];
+  }
 }
 
       // Parse userProfile JSON for subtype dropdowns
