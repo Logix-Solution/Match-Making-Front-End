@@ -70,7 +70,9 @@ export class ProfileLifestyleInfoInputComponent implements OnInit {
     private valid:               SharedFormFieldValidationService,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadUserDetails();
+  }
 
   onFieldChange(): void {
     this.syncFormFields();
@@ -152,4 +154,38 @@ this.lifestyleFormFields[6].value = JSON.stringify(lifestyleEntries);
       }
     });
   }
+
+  loadUserDetails(): void {
+  const userID = this.sharedGlobalService.getUserID();
+  if (!userID) return;
+
+  this.dataService.getHttp(`user-api/User/getUserDetails?UserID=${userID}`).subscribe({
+    next: (response: any) => {
+      const user = Array.isArray(response) ? response[0] : response;
+      if (!user) return;
+
+      this.lifestyleFormFields[0].value = userID;
+      this.lifestyleFormFields[1].value = 'insert';
+
+      let profileItems: any[] = [];
+      try { profileItems = JSON.parse(user.userProfile || '[]'); } catch { profileItems = []; }
+
+      const get = (typeID: number) =>
+        profileItems.find((p: any) => p.typeID === typeID && p.isPreference === 0)?.subTypeID;
+
+      this.selectedSmoke     = get(17) || '';
+      this.selectedAlcohol   = get(18) || '';
+      this.selectedWantKids  = get(19) || '';
+      this.selectedMaritalStatus = get(10) || '';
+
+this.instagramLink     = user.instaLink    || '';
+this.facebookLink = user.facebookLink || '';
+this.tiktokLink   = user.tiktokLink   || '';
+this.snapchatLink = user.snapchatLink || '';
+
+      this.syncFormFields();
+    },
+    error: (err) => console.log('Lifestyle load error:', err)
+  });
+}
 }

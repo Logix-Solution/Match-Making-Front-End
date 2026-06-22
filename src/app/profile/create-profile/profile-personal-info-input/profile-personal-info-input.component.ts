@@ -240,23 +240,23 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
     this.loadUserDetails();
   }
 
-  loadUserDetails(): void {
-    const userID = this.sharedGlobalService.getUserID();
-    if (!userID) return;
+  // loadUserDetails(): void {
+  //   const userID = this.sharedGlobalService.getUserID();
+  //   if (!userID) return;
 
-    this.dataService
-      .getHttp(`user-api/User/getUserDetails?UserID=${userID}`)
-      .subscribe({
-        next: (response: any) => {
-          const apiResponse = Array.isArray(response) ? response[0] : response;
-          this.profileID = apiResponse?.profileID ?? 0;
-          this.personalFormFields[30].value = this.profileID;
-        },
-        error: (err: any) => {
-          console.log('Get User Details Error:', err);
-        },
-      });
-  }
+  //   this.dataService
+  //     .getHttp(`user-api/User/getUserDetails?UserID=${userID}`)
+  //     .subscribe({
+  //       next: (response: any) => {
+  //         const apiResponse = Array.isArray(response) ? response[0] : response;
+  //         this.profileID = apiResponse?.profileID ?? 0;
+  //         this.personalFormFields[30].value = this.profileID;
+  //       },
+  //       error: (err: any) => {
+  //         console.log('Get User Details Error:', err);
+  //       },
+  //     });
+  // }
 
   // ─── Document Type Switcher ───────────────────────────────────────────────
   setDocumentType(type: 'selection' | 'cnic' | 'passport'): void {
@@ -592,4 +592,93 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
     this.galleryImages.splice(index, 1);
     this.syncFormFields();
   }
+
+  loadUserDetails(): void {
+  const userID = this.sharedGlobalService.getUserID();
+  if (!userID) return;
+
+  this.dataService.getHttp(`user-api/User/getUserDetails?UserID=${userID}`).subscribe({
+    next: (response: any) => {
+      const user = Array.isArray(response) ? response[0] : response;
+      if (!user) return;
+
+      this.profileID = user.profileID ?? 0;
+      this.personalFormFields[30].value = this.profileID;
+      this.personalFormFields[1].value  = 'insert';  
+      this.personalPageFields.spType    = 'insert';
+
+      // Text fields
+      this.fullName    = user.fullname   || '';
+      this.email       = user.email      || '';
+      this.dob         = user.dob        ? user.dob.split('T')[0] : '';
+      this.cnic        = user.userCNIC   || '';
+      this.aboutMe     = user.aboutme    || '';
+      this.hidePhoto   = user.hidePhotos === 1;
+      this.phoneNumber = user.phoneNo    || user.phoneNumber || '';
+
+      // Profile picture preview
+      if (user.eDoc) {
+        this.profilePicturePreview = user.eDoc;
+        this.eDoc     = '';   
+        this.eDocPath = '';
+        this.eDocExt  = '';
+      }
+
+      // CNIC / Passport documents
+if (user.cnicFrontEDoc && user.cnicFrontEDoc.trim() !== '') {
+  this.cnicFrontPreview = user.cnicFrontEDoc;
+  this.documentType     = 'cnic';
+  // already on server, no re-upload needed unless changed
+  this.cnicFrontDoc     = '';
+  this.cnicFrontDocPath = '';
+  this.cnicFrontDocExt  = '';
+}
+
+if (user.cnicBackEDoc && user.cnicBackEDoc.trim() !== '') {
+  this.cnicBackPreview = user.cnicBackEDoc;
+  this.documentType    = 'cnic';
+  this.cnicBackDoc     = '';
+  this.cnicBackDocPath = '';
+  this.cnicBackDocExt  = '';
+}
+
+if (user.passportEDoc && user.passportEDoc.trim() !== '' 
+    && !user.passportEDoc.endsWith('/')) {   // API returns empty path ending in /
+  this.passportPreview = user.passportEDoc;
+  this.documentType    = 'passport';
+  this.passportDoc     = '';
+  this.passportDocPath = '';
+  this.passportDocExt  = '';
+}
+
+      // Parse userProfile JSON for subtype dropdowns
+      let profileItems: any[] = [];
+      try { profileItems = JSON.parse(user.userProfile || '[]'); } catch { profileItems = []; }
+
+      const getSubTypeID = (typeID: number) =>
+        profileItems.find((p: any) => p.typeID === typeID && p.isPreference === 0)?.subTypeID;
+
+      this.selectedGender      = getSubTypeID(22) || '';
+      this.selectedCast        = getSubTypeID(1)  || '';
+      this.selectedEthnicity   = getSubTypeID(3)  || '';
+      this.selectedNationality = getSubTypeID(2)  || '';
+
+      // country/city — from user object directly if available
+      // adjust field names to match your API response
+    const locationItem = profileItems.find((p: any) => p.cityID !== undefined && p.isPreference === 0);
+if (locationItem) {
+  this.selectedCountry = locationItem.countryCodeID || '';
+  this.selectedCity    = locationItem.cityID        || '';
+  if (this.selectedCountry) {
+    this.countrySelected.emit(this.selectedCountry);  // loads city dropdown
+  }
+}
+
+      this.syncFormFields();
+    },
+    error: (err: any) => console.log('Get User Details Error:', err)
+  });
+}
+
+
 }

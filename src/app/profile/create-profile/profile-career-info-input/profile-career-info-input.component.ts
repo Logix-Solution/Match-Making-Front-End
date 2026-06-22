@@ -58,7 +58,9 @@ export class ProfileCareerInfoInputComponent implements OnInit {
     private valid:               SharedFormFieldValidationService,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadUserDetails();
+  }
 
   // ─── Alias — HTML templates call onFieldChange() ──────────────────────────
   onFieldChange(): void { this.syncFormFields(); }
@@ -133,4 +135,38 @@ this.careerFormFields[3].value = JSON.stringify(careerEntries);
       }
     });
   }
+
+  loadUserDetails(): void {
+  const userID = this.sharedGlobalService.getUserID();
+  if (!userID) return;
+
+  this.dataService.getHttp(`user-api/User/getUserDetails?UserID=${userID}`).subscribe({
+    next: (response: any) => {
+      const user = Array.isArray(response) ? response[0] : response;
+      if (!user) return;
+
+      // this.profileID = user.profileID ?? 0;
+      // set spType to Insert
+      this.careerFormFields[0].value = userID;
+      this.careerFormFields[1].value = 'Insert';
+
+      let profileItems: any[] = [];
+      try { profileItems = JSON.parse(user.userProfile || '[]'); } catch { profileItems = []; }
+
+      const getSubTypeID = (typeID: number) =>
+        profileItems.find((p: any) => p.typeID === typeID && p.isPreference === 0)?.subTypeID;
+
+      const getInstName = (typeID: number) =>
+        profileItems.find((p: any) => p.typeID === typeID && p.isPreference === 0)?.instituteName;
+
+      this.selectedEducation    = getSubTypeID(4)  || '';
+      this.selectedOccupation   = getSubTypeID(5)  || '';
+      this.selectedMonthlyIncome= getSubTypeID(6)  || '';
+      this.instituteName        = getInstName(4)   || '';
+
+      this.syncFormFields();
+    },
+    error: (err) => console.log('Career load error:', err)
+  });
+}
 }

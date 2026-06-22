@@ -63,7 +63,9 @@ export class ProfileFamilyInfoInputComponent implements OnInit {
     private valid:               SharedFormFieldValidationService,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadUserDetails();
+  }
 
   onFieldChange(): void {
     this.syncFormFields();
@@ -159,4 +161,36 @@ this.familyFormFields[3].value = JSON.stringify(familyEntries);
       }
     });
   }
+
+  loadUserDetails(): void {
+  const userID = this.sharedGlobalService.getUserID();
+  if (!userID) return;
+
+  this.dataService.getHttp(`user-api/User/getUserDetails?UserID=${userID}`).subscribe({
+    next: (response: any) => {
+      const user = Array.isArray(response) ? response[0] : response;
+      if (!user) return;
+
+      this.familyFormFields[0].value = userID;
+      this.familyFormFields[1].value = 'Insert';
+
+      let profileItems: any[] = [];
+      try { profileItems = JSON.parse(user.userProfile || '[]'); } catch { profileItems = []; }
+
+      const get = (typeID: number) =>
+        profileItems.find((p: any) => p.typeID === typeID && p.isPreference === 0)?.subTypeID;
+      this.parentPhoneNumber = user.parentPhoneNO || '';
+
+      this.selectedMaritalStatus    = get(10) || '';
+      this.selectedHousingSituation = get(11) || '';
+      this.selectedFatherOccupation = get(12) || '';
+      this.selectedMotherOccupation = get(13) || '';
+      this.selectedNoOfSiblings     = get(25) || '';
+      this.selectedFamilyInvolvement= get(14) || '';
+
+      this.syncFormFields();
+    },
+    error: (err) => console.log('Family load error:', err)
+  });
+}
 }

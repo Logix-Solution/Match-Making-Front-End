@@ -57,7 +57,11 @@ export class ProfileAppearanceInfoInputComponent implements OnInit {
     private valid:               SharedFormFieldValidationService,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    
+    this.loadUserDetails();
+
+  }
 
   onFieldChange(): void {
     this.syncFormFields();
@@ -148,4 +152,33 @@ this.appearanceFormFields[3].value = JSON.stringify(appearanceEntries);
       }
     });
   }
+
+  loadUserDetails(): void {
+  const userID = this.sharedGlobalService.getUserID();
+  if (!userID) return;
+
+  this.dataService.getHttp(`user-api/User/getUserDetails?UserID=${userID}`).subscribe({
+    next: (response: any) => {
+      const user = Array.isArray(response) ? response[0] : response;
+      if (!user) return;
+
+      this.appearanceFormFields[0].value = userID;
+      this.appearanceFormFields[1].value = 'Insert';
+
+      let profileItems: any[] = [];
+      try { profileItems = JSON.parse(user.userProfile || '[]'); } catch { profileItems = []; }
+
+      const get = (typeID: number) =>
+        profileItems.find((p: any) => p.typeID === typeID && p.isPreference === 0)?.subTypeID;
+
+      this.selectedHeight     = get(26) || '';
+      this.selectedBodyType   = get(15) || '';
+      this.selectedSkinTone   = get(16) || '';
+      this.selectedDisability = get(30) || '';
+
+      this.syncFormFields();
+    },
+    error: (err) => console.log('Appearance load error:', err)
+  });
+}
 }

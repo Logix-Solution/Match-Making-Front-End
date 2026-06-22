@@ -52,7 +52,9 @@ export class ProfileReligionInfoInputComponent implements OnInit {
     private valid:               SharedFormFieldValidationService,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadUserDetails();
+  }
 
   // ─── Alias — HTML templates call onFieldChange() ──────────────────────────
   onFieldChange(): void { 
@@ -126,4 +128,32 @@ this.religionFormFields[2].value = JSON.stringify(religionEntries);
       }
     });
   }
+
+  loadUserDetails(): void {
+  const userID = this.sharedGlobalService.getUserID();
+  if (!userID) return;
+
+  this.dataService.getHttp(`user-api/User/getUserDetails?UserID=${userID}`).subscribe({
+    next: (response: any) => {
+      const user = Array.isArray(response) ? response[0] : response;
+      if (!user) return;
+
+      this.religionFormFields[0].value = userID;
+      this.religionFormFields[1].value = 'update';
+
+      let profileItems: any[] = [];
+      try { profileItems = JSON.parse(user.userProfile || '[]'); } catch { profileItems = []; }
+
+      const get = (typeID: number) =>
+        profileItems.find((p: any) => p.typeID === typeID && p.isPreference === 0)?.subTypeID;
+
+      this.selectedReligion           = get(7)  || '';
+      this.selectedSect               = get(8)  || '';
+      this.selectedReligionImportance = get(9)  || '';
+
+      this.syncFormFields();
+    },
+    error: (err) => console.log('Religion load error:', err)
+  });
+}
 }

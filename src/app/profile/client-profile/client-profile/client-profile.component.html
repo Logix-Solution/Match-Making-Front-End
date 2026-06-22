@@ -1,18 +1,18 @@
 <div class="container-fluid bg-5th p-1 p-md-2 d-flex flex-column h-100 scroll-verticle style-1">
-  <div class="row g-3  mx-auto">
+
+  <!-- TOP ROW: Sidebar + About/Education -->
+  <div class="row g-3 mx-auto w-100">
 
     <!-- LEFT SIDEBAR -->
     <div class="col-12 col-xl-3">
       <div class="bg-6th rounded-4 p-2 mat-elevation-z2 text-center d-flex flex-column align-items-center gap-2 py-3">
 
-        <!-- Avatar -->
         <div class="avatar-frame position-relative">
           <img [src]="profileHeader.avatar" alt="Profile Avatar"
                class="rounded-circle img-fluid border p-1"
-               style="width: 120px; height: 120px; object-fit: cover;">
+               style="width: 120px; height: 120px; object-fit: cover" />
         </div>
 
-        <!-- Name & Location -->
         <div>
           <h2 class="text-uppercase txt-8th fh-4 fw-bold mb-0 letter-spacing-sm">{{ profileHeader.name }}</h2>
           <div class="ft-4 txt-7th">{{ profileHeader.age }}</div>
@@ -21,15 +21,14 @@
           </div>
         </div>
 
-        <!-- Occupation & Status Pills -->
         <div class="w-100 d-flex gap-2 justify-content-center mt-1">
-          <div class="rounded-3 py-1 px-2 text-center bg-4th" style="min-width: 80px;">
+          <div class="rounded-3 py-1 px-2 text-center bg-4th" style="min-width: 80px">
             <div class="ft-6 txt-7th fw-bold text-uppercase">
               <i class="bi bi-briefcase ft-6"></i> Occupation
             </div>
             <div class="ft-5 txt-8th fw-bold mt-1">{{ profileHeader.occupation }}</div>
           </div>
-          <div class="rounded-3 py-1 px-2 text-center bg-4th" style="min-width: 80px;">
+          <div class="rounded-3 py-1 px-2 text-center bg-4th" style="min-width: 80px">
             <div class="ft-6 txt-7th fw-bold text-uppercase">
               <i class="bi bi-heart-fill ft-6"></i> Status
             </div>
@@ -37,15 +36,14 @@
           </div>
         </div>
 
-        <!-- Edit Button -->
-        <button mat-button class="btnPrimary mat-elevation-z1 w-100 py-2 mt-1">
+        <button mat-button class="btnPrimary mat-elevation-z1 w-100 py-2 mt-1" (click)="goToEditProfile()">
           Edit Profile
         </button>
 
       </div>
     </div>
 
-    <!-- RIGHT CONTENT -->
+    <!-- RIGHT: About Me + Education & Career only -->
     <div class="col-12 col-xl-9">
       <div class="d-flex flex-column gap-3">
 
@@ -54,10 +52,19 @@
           <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
             <i class="bi bi-person-circle text-secondary"></i> About Me
           </div>
-          <p class="txt-7th ft-4 mt-2 mb-0 lh-base">{{ aboutText1 }}</p>
+          <p class="txt-7th ft-4 mt-2 mb-0 lh-base"
+             style="max-height: 72px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">
+            {{ aboutText1 }}
+          </p>
+          <span *ngIf="aboutText1.length > 200"
+                class="ft-5 fw-bold mt-1 d-inline-block"
+                style="cursor: pointer; color: var(--2nd)"
+                (click)="openAboutModal()">
+            ...see more
+          </span>
         </div>
 
-        <!-- Education & Career - Full Width -->
+        <!-- Education & Career -->
         <ng-container *ngIf="getSectionByTitle('Education & Career') as eduSection">
           <div class="bg-6th rounded-4 p-3 mat-elevation-z2 txt-8th">
             <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
@@ -74,71 +81,85 @@
           </div>
         </ng-container>
 
-    
+      </div>
+    </div>
 
+  </div>
+  <!-- END TOP ROW -->
+
+  <!-- BOTTOM ROW: Personal Info | Lifestyle | Appearance — full width -->
+  <div class="row g-3 mt-3 mx-auto w-100">
+    <div class="col-12 col-md-4"
+         *ngFor="let sec of [
+           getSectionByTitle('Personal Information'),
+           getSectionByTitle('Lifestyle'),
+           getSectionByTitle('Appearance')
+         ]">
+      <div *ngIf="sec" class="bg-6th rounded-4 p-3 mat-elevation-z2 txt-8th h-100">
+        <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
+          <i class="{{ sec.iconClass }} text-secondary"></i> {{ sec.title }}
+        </div>
+        <div class="mt-1">
+          <div *ngFor="let item of sec.items"
+               class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50">
+            <span class="ft-5 txt-7th">{{ item.description }}</span>
+            <span class="ft-5 fw-bold txt-8th text-end">{{ item.value }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Religion (col-4) | Family (col-8) — full width -->
+  <div class="row g-3 mt-3 mx-auto w-100">
+
+    <div class="col-12 col-md-4" *ngIf="getSectionByTitle('Religion') as relSection">
+      <div class="bg-6th rounded-4 p-3 mat-elevation-z2 txt-8th h-100">
+        <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
+          <i class="{{ relSection.iconClass }} text-secondary"></i> {{ relSection.title }}
+        </div>
+        <div class="mt-1">
+          <div *ngFor="let item of relSection.items"
+               class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50">
+            <span class="ft-5 txt-7th">{{ item.description }}</span>
+            <span class="ft-5 fw-bold txt-8th text-end">{{ item.value }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-8" *ngIf="getSectionByTitle('Family') as famSection">
+      <div class="bg-6th rounded-4 p-3 mat-elevation-z2 txt-8th h-100">
+        <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
+          <i class="{{ famSection.iconClass }} text-secondary"></i> {{ famSection.title }}
+        </div>
+        <div class="row mt-1 row-cols-1 row-cols-sm-2">
+          <div class="col" *ngFor="let item of famSection.items">
+            <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50">
+              <span class="ft-5 txt-7th">{{ item.description }}</span>
+              <span class="ft-5 fw-bold txt-8th text-end">{{ item.value }}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
   </div>
 
-      <!-- Personal Info | Lifestyle | Appearance — 3 columns -->
-        <div class="row g-3 mt-2">
-          <div class="col-12 col-md-4"
-               *ngFor="let sec of [
-                 getSectionByTitle('Personal Information'),
-                 getSectionByTitle('Lifestyle'),
-                 getSectionByTitle('Appearance')
-               ]">
-            <div *ngIf="sec" class="bg-6th rounded-4 p-3 mat-elevation-z2 txt-8th h-100">
-              <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
-                <i class="{{ sec.iconClass }} text-secondary"></i> {{ sec.title }}
-              </div>
-              <div class="mt-1">
-                <div *ngFor="let item of sec.items"
-                     class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50">
-                  <span class="ft-5 txt-7th">{{ item.description }}</span>
-                  <span class="ft-5 fw-bold txt-8th text-end">{{ item.value }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+  <!-- About Modal -->
+  <div *ngIf="showAboutModal"
+       class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+       style="z-index: 1055; background: rgba(0,0,0,0.5)"
+       (click)="closeAboutModal()">
+    <div class="bg-6th rounded-4 p-4 mat-elevation-z8"
+         style="max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto"
+         (click)="$event.stopPropagation()">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <span class="ft-4 fw-bold txt-8th">About Me</span>
+        <i class="bi bi-x-lg txt-7th" style="cursor: pointer" (click)="closeAboutModal()"></i>
+      </div>
+      <p class="txt-7th ft-4 lh-base mb-0">{{ aboutText1 }}</p>
+    </div>
+  </div>
 
-        <!-- Religion (col-4) | Family (col-8) -->
-        <div class="row g-3 mt-2">
-
-          <!-- Religion -->
-          <div class="col-12 col-md-4" *ngIf="getSectionByTitle('Religion') as relSection">
-            <div class="bg-6th rounded-4 p-3 mat-elevation-z2 txt-8th h-100">
-              <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
-                <i class="{{ relSection.iconClass }} text-secondary"></i> {{ relSection.title }}
-              </div>
-              <div class="mt-1">
-                <div *ngFor="let item of relSection.items"
-                     class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50">
-                  <span class="ft-5 txt-7th">{{ item.description }}</span>
-                  <span class="ft-5 fw-bold txt-8th text-end">{{ item.value }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Family -->
-          <div class="col-12 col-md-8" *ngIf="getSectionByTitle('Family') as famSection">
-            <div class="bg-6th rounded-4 p-3 mat-elevation-z2 txt-8th h-100">
-              <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
-                <i class="{{ famSection.iconClass }} text-secondary"></i> {{ famSection.title }}
-              </div>
-              <div class="row mt-1 row-cols-1 row-cols-sm-2">
-                <div class="col" *ngFor="let item of famSection.items">
-                  <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50">
-                    <span class="ft-5 txt-7th">{{ item.description }}</span>
-                    <span class="ft-5 fw-bold txt-8th text-end">{{ item.value }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
 </div>
