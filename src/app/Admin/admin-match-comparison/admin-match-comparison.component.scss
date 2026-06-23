@@ -77,3 +77,39 @@
   border: 1px solid rgba(0, 0, 0, 0.01);
   height: 54px;
 }
+
+.selection-card {
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+
+  &.card-selected {
+    background-color: #fdf0f2 !important;   /* light pink fill */
+    border-color: var(--2nd) !important;    /* primary red/maroon border */
+  }
+
+  &:hover:not(.card-selected) {
+    border-color: #e8c4cc;
+    background-color: #fdf8f9 !important;
+  }
+}
+
+// ─── Checkbox Marker ──────────────────────────────────────────────────────
+.custom-checkbox-marker {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #d1d5db;
+  background-color: #ffffff;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  flex-shrink: 0;
+
+  &.checked {
+    background-color: var(--2nd) !important;   /* filled maroon when selected */
+    border-color: var(--2nd) !important;
+  }
+
+  i {
+    font-size: 13px;
+    font-weight: 700;
+  }
+}
