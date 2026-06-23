@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedDataService } from '../../../shared/services/shared-data.service';
 import { SharedGlobalService } from '../../../shared/services/shared-global.service';
+import { SharedFormFieldValidationService } from 'src/shared/services/shared-form-field-validation.service';
 
 interface UserRequest {
   id: number;
@@ -28,7 +29,8 @@ export class AdminRequestManagementComponent implements OnInit {
 
   constructor(
     private dataService: SharedDataService,
-    private sharedGlobalService: SharedGlobalService
+    private sharedGlobalService: SharedGlobalService,
+    private valid: SharedFormFieldValidationService,
   ) {}
 
   ngOnInit(): void {
@@ -36,35 +38,36 @@ export class AdminRequestManagementComponent implements OnInit {
   }
 
   loadRequests(): void {
-    this.dataService.getHttp('core-api/Admin/getRequestManagement', {}).subscribe({
-      next: (res: any) => {
-        console.log('API raw data:', res);
-        const data = Array.isArray(res) ? res : [];
-        this.allRequests = data.map((u: any) => ({
-          id:       u.profileID,
-          userID:   u.userID,
-          name:     u.fullname || u.firstName || 'Unknown',
-          age:      this.calculateAge(u.dob),
-          location: u.address || u.phoneNumber || 'N/A',
-          image:    u.eDoc || 'assets/images/default-avatar.png',
-          status:   this.mapStatus(u.statusTitle),
-          statusID: u.statusID,
-          email:    u.email,
-          phone:    u.phoneNumber
-        }));
-        this.filterRequestsByActiveTab();
-      },
-      error: (err) => console.error('Request Management load error:', err)
-    });
-  }
+  this.dataService.getHttp('core-api/Admin/getRequestManagement', {}).subscribe({
+    next: (res: any) => {
+      console.log('API raw data:', res);
+      const data = Array.isArray(res) ? res : [];
+      this.allRequests = data.map((u: any) => ({
+        id:       u.profileID,
+        userID:   u.userID,
+        name:     u.fullname || u.firstName || 'Unknown',
+        age:      this.calculateAge(u.dob),
+        location: u.address || 'N/A',          // ← no phoneNumber fallback
+        image:    u.eDoc || 'assets/images/default-avatar.png',
+        status:   this.mapStatus(u.statusID),  // ← statusID not statusTitle
+        statusID: u.statusID,
+        email:    u.email,
+        phone:    u.phoneNumber
+      }));
+      this.filterRequestsByActiveTab();
+    },
+    error: (err) => console.error('Request Management load error:', err)
+  });
+}
 
-  mapStatus(statusTitle: string): 'pending' | 'accepted' | 'rejected' {
-    if (!statusTitle) return 'pending';
-    const s = statusTitle.toLowerCase().trim();
-    if (s === 'accepted' || s === 'approved') return 'accepted';
-    if (s === 'rejected')                     return 'rejected';
-    return 'pending';
+ mapStatus(statusID: number): 'pending' | 'accepted' | 'rejected' {
+  switch (statusID) {
+    case 2:  return 'accepted';   // Approved
+    case 3:  return 'rejected';   // Reject
+    default: return 'pending';    // 1 = Pending
   }
+}
+
 
   calculateAge(dob: string): number {
     if (!dob) return 0;
@@ -85,13 +88,52 @@ export class AdminRequestManagementComponent implements OnInit {
     console.log('View Details:', item);
   }
 
-  onAccept(item: UserRequest): void {
-    item.status = 'accepted';
-    this.filterRequestsByActiveTab();
-  }
+onAccept(item: UserRequest): void {
+  const adminID = this.sharedGlobalService.getUserID();
+  const payload = { userID: item.userID, statusID: 2, adminID: adminID, spType: 'update' };
 
-  onReject(item: UserRequest): void {
-    item.status = 'rejected';
-    this.filterRequestsByActiveTab();
-  }
+  this.dataService.postDirect('user-api/User/saveUserRequest', payload).subscribe({
+    next: (res: any) => {
+      const response = Array.isArray(res) ? res[0] : res;
+      if (response?.includes('Success')) {
+        this.valid.apiInfoResponse('Request Accepted Successfully');   // ← success toast
+        item.status   = 'accepted';
+        item.statusID = 2;
+        this.filterRequestsByActiveTab();
+      } else {
+        this.valid.apiErrorResponse(response);                         // ← error toast
+      }
+    },
+    error: (err) => {
+      this.valid.apiErrorResponse('Something went wrong. Please try again.');
+      console.error('Accept error:', err);
+    }
+  });
+}
+
+onReject(item: UserRequest): void {
+  const adminID = this.sharedGlobalService.getUserID();
+  const payload = { userID: item.userID, statusID: 3, adminID: adminID, spType: 'update' };
+
+  this.dataService.postDirect('user-api/User/saveUserRequest', payload).subscribe({
+    next: (res: any) => {
+      const response = Array.isArray(res) ? res[0] : res;
+      if (response?.includes('Success')) {
+        this.valid.apiInfoResponse('Request Rejected Successfully');   // ← success toast
+        item.status   = 'rejected';
+        item.statusID = 3;
+        this.filterRequestsByActiveTab();
+      } else {
+        this.valid.apiErrorResponse(response);                         // ← error toast
+      }
+    },
+    error: (err) => {
+      this.valid.apiErrorResponse('Something went wrong. Please try again.');
+      console.error('Reject error:', err);
+    }
+  });
+}
+
+
+
 }
