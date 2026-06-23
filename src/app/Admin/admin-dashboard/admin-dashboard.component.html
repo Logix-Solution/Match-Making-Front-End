@@ -16,7 +16,7 @@
           <div>
             <span class="ft-3 txt-7th d-block text-muted">Total Users</span>
             <div class="d-flex align-items-center gap-2 mt-1 mb-1">
-              <span class="fh-3 txt-8th fw-bold fs-2 mt-2">1,248</span>
+             <span class="fh-3 txt-8th fw-bold fs-2 mt-2">{{ totalUser }}</span>
               <span class="badge bg-success bg-opacity-10 text-success ft-5 rounded-pill px-2 py-1 mt-2">+12%</span>
             </div>
           </div>
@@ -31,7 +31,7 @@
           <div>
             <span class="ft-3 txt-7th d-block text-muted">Pending Approval</span>
             <div class="d-flex align-items-center gap-2 mt-1 mb-1">
-              <span class="fh-3 txt-8th fw-bold fs-2 mt-2">24</span> 
+           <span class="fh-3 txt-8th fw-bold fs-2 mt-2">{{ pendingApproval }}</span>
               <span class="badge bg-danger bg-opacity-10 text-danger ft-5 rounded-pill px-2 py-1 mt-2">-3%</span>
             </div>
           </div>
@@ -46,7 +46,7 @@
           <div>
             <span class="ft-3 txt-7th d-block text-muted">Active Matches</span>
             <div class="d-flex align-items-center gap-2 mt-1 mb-1">
-              <span class="fh-3 txt-8th fw-bold fs-2 mt-2">842</span>
+              <span class="fh-3 txt-8th fw-bold fs-2 mt-2">{{ activeMatches }}</span>
               <span class="badge bg-success bg-opacity-10 text-success ft-5 rounded-pill px-2 py-1 mt-2">+5%</span>
             </div>
           </div>
@@ -61,7 +61,7 @@
           <div>
             <span class="ft-3 txt-7th d-block text-muted">Interested Clients</span>
             <div class="d-flex align-items-center gap-2 mt-1 mb-1">
-              <span class="fh-3 txt-8th fw-bold fs-2 mt-2">156</span>
+              <span class="fh-3 txt-8th fw-bold fs-2 mt-2">{{ interestedClients }}</span>
               <span class="badge bg-success bg-opacity-10 text-success ft-5 rounded-pill px-2 py-1 mt-2">+21%</span>
             </div>
           </div>
@@ -107,45 +107,38 @@
           <h3 class="mb-0">Country Wise Profiles</h3>
           <span class="ft-4 txt-7th d-block mb-3">Current active interests</span>
 
-          <div class="donut-container my-3">
+         <div class="donut-container my-3">
             <svg class="donut-svg" width="100%" height="100%" viewBox="0 0 42 42">
               <circle class="donut-hole" cx="21" cy="21" r="15.91549430918954" fill="#fff"></circle>
               <circle class="donut-ring" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#ebebeb" stroke-width="4"></circle>
-              <circle class="donut-segment segment-green" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#198754" stroke-width="4" stroke-dasharray="13.5 86.5" stroke-dashoffset="100"></circle>
-              <circle class="donut-segment segment-red" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#dc3545" stroke-width="4" stroke-dasharray="43.5 56.5" stroke-dashoffset="85" style="cursor: pointer;" (click)="openModalWithFilter('Pakistan')"></circle>
-              <circle class="donut-segment segment-orange" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#fd7e14" stroke-width="4" stroke-dasharray="23.5 76.5" stroke-dashoffset="40"></circle>
-              <circle class="donut-segment segment-blue" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#0dcaf0" stroke-width="4" stroke-dasharray="13.5 86.5" stroke-dashoffset="15"></circle>
+              <circle
+                *ngFor="let seg of donutSegments"
+                cx="21" cy="21"
+                r="15.91549430918954"
+                fill="transparent"
+                [attr.stroke]="seg.color"
+                stroke-width="4"
+                [attr.stroke-dasharray]="seg.dasharray"
+                [attr.stroke-dashoffset]="seg.dashoffset"
+                style="cursor: pointer;"
+                (click)="openModalWithFilter(seg.country)">
+              </circle>
             </svg>
           </div>
 
           <div class="mt-2 ft-4">
-            <div class="d-flex align-items-center justify-content-between py-1 px-2 rounded country-legend-item" style="cursor: pointer;" (click)="openModalWithFilter('Pakistan')">
+            <div
+              *ngFor="let item of countryProfiles; let i = index"
+              class="d-flex align-items-center justify-content-between py-1 px-2 rounded country-legend-item"
+              style="cursor: pointer;"
+              (click)="openModalWithFilter(item.country_name)">
               <span class="txt-8th">
-                <span class="d-inline-block rounded-circle bg-danger me-2" style="width:8px; height:8px;"></span>
-                Pakistan
+                <span class="d-inline-block rounded-circle me-2"
+                  [style.background-color]="donutColors[i % donutColors.length]"
+                  style="width:8px; height:8px;"></span>
+                {{ item.country_name }}
               </span>
-              <span class="fw-bold txt-8th">45%</span>
-            </div>
-            <div class="d-flex align-items-center justify-content-between py-1 px-2">
-              <span class="txt-7th">
-                <span class="d-inline-block rounded-circle bg-warning me-2" style="width:8px; height:8px;"></span>
-                Turkey
-              </span>
-              <span class="fw-bold txt-7th">25%</span>
-            </div>
-            <div class="d-flex align-items-center justify-content-between py-1 px-2">
-              <span class="txt-7th">
-                <span class="d-inline-block rounded-circle bg-info me-2" style="width:8px; height:8px;"></span>
-                Dubai
-              </span>
-              <span class="fw-bold txt-7th">15%</span>
-            </div>
-            <div class="d-flex align-items-center justify-content-between py-1 px-2">
-              <span class="txt-7th">
-                <span class="d-inline-block rounded-circle bg-success me-2" style="width:8px; height:8px;"></span>
-                New York
-              </span>
-              <span class="fw-bold txt-7th">15%</span>
+              <span class="fw-bold txt-8th">{{ item.profilePercentage }}%</span>
             </div>
           </div>
         </div>

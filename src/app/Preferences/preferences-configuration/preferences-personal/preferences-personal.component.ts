@@ -70,7 +70,10 @@ export class PreferencesPersonalComponent implements OnInit {
     private valid:               SharedFormFieldValidationService,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void { 
+    this.loadUserDetails();
+    
+  }
 
   // ─── Alias — HTML calls onFieldChange() ──────────────────────────────────
   onFieldChange(): void { this.syncFormFields(); }
@@ -163,4 +166,55 @@ export class PreferencesPersonalComponent implements OnInit {
       }
     });
   }
+
+ loadUserDetails(): void {
+    debugger;
+  const userID = this.sharedGlobalService.getUserID();
+
+
+  if (!userID) return;
+
+  this.dataService.getHttp(`user-api/User/getUserDetails?UserID=${userID}`).subscribe({
+    next: (response: any) => {
+      const user = Array.isArray(response) ? response[0] : response;
+      if (!user) return;
+
+      this.formFields[1].value = 'INSERT';
+      this.pageFields.spType   = 'INSERT';
+
+      let prefItems: any[] = [];
+      try { prefItems = JSON.parse(user.userPreference || '[]'); } catch { prefItems = []; }
+
+      const get = (typeID: number) =>
+        prefItems.find((p: any) => p.typeID === typeID && p.isPreference === 1)?.subTypeID;
+
+   this.selectedMinAge      = get(31) ? String(get(31)) : '';
+this.selectedMaxAge      = get(32) ? String(get(32)) : '';
+this.selectedNationality = get(2)  ? String(get(2))  : '';
+this.selectedCast        = get(1)  ? String(get(1))  : '';
+this.selectedEthnicity   = get(3)  ? String(get(3))  : '';
+
+console.log('Loaded Preferences', {
+  minAge: this.selectedMinAge,
+  maxAge: this.selectedMaxAge,
+  nationality: this.selectedNationality,
+  cast: this.selectedCast,
+  ethnicity: this.selectedEthnicity
+});
+
+      // city/country — now in userPreference with nationalityID key
+const locationItem = prefItems.find((p: any) => p.cityID !== undefined && p.isPreference === 1);
+if (locationItem) {
+  this.selectedCountry = String(locationItem.countryCodeID || '');
+  this.selectedCity    = String(locationItem.cityID        || '');
+  if (this.selectedCountry) {
+    this.countrySelected.emit(Number(this.selectedCountry));
+  }
+}
+      this.syncFormFields();
+
+    },
+    error: (err: any) => console.log('Personal Preference Load Error:', err)
+  });
+}
 }

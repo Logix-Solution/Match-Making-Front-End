@@ -54,7 +54,9 @@ export class PreferencesCareerComponent implements OnInit {
     private valid:               SharedFormFieldValidationService,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadUserDetails();
+  }
 
   // ─── Pill Toggle Handler (Occupation) ──────────────────────────────────────
   toggleOccupation(subTypeID: number): void {
@@ -161,4 +163,37 @@ export class PreferencesCareerComponent implements OnInit {
       error: (err: any) => console.log('Career Preference Save Error:', err)
     });
   }
+  loadUserDetails(): void {
+  const userID = this.sharedGlobalService.getUserID();
+  if (!userID) return;
+
+  this.dataService.getHttp(`user-api/User/getUserDetails?UserID=${userID}`).subscribe({
+    next: (response: any) => {
+      const user = Array.isArray(response) ? response[0] : response;
+      if (!user) return;
+
+      this.formFields[1].value = 'INSERT';
+      this.pageFields.spType   = 'INSERT';
+
+      let prefItems: any[] = [];
+      try { prefItems = JSON.parse(user.userPreference || '[]'); } catch { prefItems = []; }
+
+      const get = (typeID: number) =>
+        prefItems.find((p: any) => p.typeID === typeID && p.isPreference === 1)?.subTypeID;
+
+      // String() to match [value]="item.subTypeID" in template
+      this.selectedMinEducation = get(4) ? String(get(4)) : '';
+      this.selectedMinIncome    = get(6) ? String(get(6)) : '';
+
+      // Occupations — multi priority, sorted, stored as numbers (toggleOccupation uses indexOf)
+      this.selectedOccupations = prefItems
+        .filter((p: any) => p.typeID === 5 && p.isPreference === 1)
+        .sort((a: any, b: any) => (a.priority || 0) - (b.priority || 0))
+        .map((p: any) => Number(p.subTypeID));
+
+      this.syncFormFields();
+    },
+    error: (err: any) => console.log('Career Preference Load Error:', err)
+  });
+}
 }
