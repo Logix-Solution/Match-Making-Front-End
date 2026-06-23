@@ -52,7 +52,9 @@ export class PreferencesLifestyleComponent implements OnInit {
     private valid:               SharedFormFieldValidationService,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadUserDetails();
+  }
 
   // ─── Alias ────────────────────────────────────────────────────────────────
   onFieldChange(): void { this.syncFormFields(); }
@@ -118,4 +120,33 @@ export class PreferencesLifestyleComponent implements OnInit {
       error: (err: any) => console.log('Lifestyle Preference Save Error:', err)
     });
   }
+
+  loadUserDetails(): void {
+  const userID = this.sharedGlobalService.getUserID();
+  if (!userID) return;
+
+  this.dataService.getHttp(`user-api/User/getUserDetails?UserID=${userID}`).subscribe({
+    next: (response: any) => {
+      const user = Array.isArray(response) ? response[0] : response;
+      if (!user) return;
+
+      this.formFields[1].value = 'insert';
+      this.pageFields.spType   = 'insert';
+
+      let prefItems: any[] = [];
+      try { prefItems = JSON.parse(user.userPreference || '[]'); } catch { prefItems = []; }
+
+      const get = (typeID: number) =>
+        prefItems.find((p: any) => p.typeID === typeID && p.isPreference === 1)?.subTypeID;
+
+      // String() to match [value]="item.subTypeID" in template
+      this.selectedSmoke    = get(17) ? String(get(17)) : '';
+      this.selectedAlcohol  = get(18) ? String(get(18)) : '';
+      this.selectedWantKids = get(19) ? String(get(19)) : '';
+
+      this.syncFormFields();
+    },
+    error: (err: any) => console.log('Lifestyle Preference Load Error:', err)
+  });
+}
 }

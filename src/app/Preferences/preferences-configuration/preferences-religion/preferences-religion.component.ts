@@ -55,7 +55,9 @@ export class PreferencesReligionComponent implements OnInit {
     private valid:               SharedFormFieldValidationService,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadUserDetails();
+  }
 
   // ─── Alias ────────────────────────────────────────────────────────────────
   onFieldChange(): void { this.syncFormFields(); }
@@ -121,4 +123,33 @@ export class PreferencesReligionComponent implements OnInit {
       error: (err: any) => console.log('Religion Preference Save Error:', err)
     });
   }
+
+  loadUserDetails(): void {
+  const userID = this.sharedGlobalService.getUserID();
+  if (!userID) return;
+
+  this.dataService.getHttp(`user-api/User/getUserDetails?UserID=${userID}`).subscribe({
+    next: (response: any) => {
+      const user = Array.isArray(response) ? response[0] : response;
+      if (!user) return;
+
+      this.formFields[1].value = 'insert';
+      this.pageFields.spType   = 'insert';
+
+      let prefItems: any[] = [];
+      try { prefItems = JSON.parse(user.userPreference || '[]'); } catch { prefItems = []; }
+
+      const get = (typeID: number) =>
+        prefItems.find((p: any) => p.typeID === typeID && p.isPreference === 1)?.subTypeID;
+
+      // String() to match [value]="item.subTypeID" in template
+      this.selectedReligion           = get(7) ? String(get(7)) : '';
+      this.selectedSect               = get(8) ? String(get(8)) : '';
+      this.selectedReligionImportance = get(9) ? String(get(9)) : '';
+
+      this.syncFormFields();
+    },
+    error: (err: any) => console.log('Religion Preference Load Error:', err)
+  });
+}
 }

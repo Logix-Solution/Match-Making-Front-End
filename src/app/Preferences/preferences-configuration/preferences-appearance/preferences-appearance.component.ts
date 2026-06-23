@@ -60,7 +60,9 @@ export class PreferencesAppearanceComponent implements OnInit {
     private valid:               SharedFormFieldValidationService,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadUserDetails();
+  }
 
   // ─── Pill Toggle Handlers ──────────────────────────────────────────────────
   toggleBodyType(subTypeID: number): void {
@@ -205,4 +207,45 @@ export class PreferencesAppearanceComponent implements OnInit {
       error: (err: any) => console.log('Appearance Preference Save Error:', err)
     });
   }
+
+
+loadUserDetails(): void {
+  const userID = this.sharedGlobalService.getUserID();
+  if (!userID) return;
+
+  this.dataService.getHttp(`user-api/User/getUserDetails?UserID=${userID}`).subscribe({
+    next: (response: any) => {
+      const user = Array.isArray(response) ? response[0] : response;
+      if (!user) return;
+
+      this.formFields[1].value = 'INSERT';
+      this.pageFields.spType   = 'INSERT';
+
+      let prefItems: any[] = [];
+      try { prefItems = JSON.parse(user.userPreference || '[]'); } catch { prefItems = []; }
+
+      const get = (typeID: number) =>
+        prefItems.find((p: any) => p.typeID === typeID && p.isPreference === 1)?.subTypeID;
+
+      // Single selects — String() to match [value]="item.subTypeID" in template
+      this.selectedMinHeight  = get(26) ? String(get(26)) : '';
+      this.selectedDisability = get(30) ? String(get(30)) : '';
+
+      // Body Type — multi priority typeID=15, stays Number[] for toggleBodyType()
+      this.selectedBodyTypes = prefItems
+        .filter((p: any) => p.typeID === 15 && p.isPreference === 1)
+        .sort((a: any, b: any) => (a.priority || 0) - (b.priority || 0))
+        .map((p: any) => Number(p.subTypeID));
+
+      // Skin Tone — multi priority typeID=16, stays Number[] for toggleSkinTone()
+      this.selectedSkinTones = prefItems
+        .filter((p: any) => p.typeID === 16 && p.isPreference === 1)
+        .sort((a: any, b: any) => (a.priority || 0) - (b.priority || 0))
+        .map((p: any) => Number(p.subTypeID));
+
+      this.syncFormFields();
+    },
+    error: (err: any) => console.log('Appearance Preference Load Error:', err)
+  });
+}
 }

@@ -63,7 +63,9 @@ export class PreferencesFamilyComponent implements OnInit {
     private valid:               SharedFormFieldValidationService,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadUserDetails();
+  }
 
   // ─── Pill Toggle Handler (Marital Status) ──────────────────────────────────
   toggleMaritalStatus(subTypeID: number): void {
@@ -210,4 +212,41 @@ export class PreferencesFamilyComponent implements OnInit {
       error: (err: any) => console.log('Family Preference Save Error:', err)
     });
   }
+
+  loadUserDetails(): void {
+  const userID = this.sharedGlobalService.getUserID();
+  if (!userID) return;
+
+  this.dataService.getHttp(`user-api/User/getUserDetails?UserID=${userID}`).subscribe({
+    next: (response: any) => {
+      const user = Array.isArray(response) ? response[0] : response;
+      if (!user) return;
+
+      this.formFields[1].value = 'INSERT';
+      this.pageFields.spType   = 'INSERT';
+
+      let prefItems: any[] = [];
+      try { prefItems = JSON.parse(user.userPreference || '[]'); } catch { prefItems = []; }
+
+      const get = (typeID: number) =>
+        prefItems.find((p: any) => p.typeID === typeID && p.isPreference === 1)?.subTypeID;
+
+      // Single select — String() to match [value]="item.subTypeID" in template
+      this.selectedAcceptKids        = get(27) ? String(get(27)) : '';
+      this.selectedRelocate          = get(20) ? String(get(20)) : '';
+      this.selectedTimeline          = get(21) ? String(get(21)) : '';
+      this.selectedHousingSituation  = get(11) ? String(get(11)) : '';
+      this.selectedFamilyInvolvement = get(14) ? String(get(14)) : '';
+
+      // Marital Status — multi priority typeID=10, stays as Number[] for toggleMaritalStatus()
+      this.selectedMaritalStatuses = prefItems
+        .filter((p: any) => p.typeID === 10 && p.isPreference === 1)
+        .sort((a: any, b: any) => (a.priority || 0) - (b.priority || 0))
+        .map((p: any) => Number(p.subTypeID));
+
+      this.syncFormFields();
+    },
+    error: (err: any) => console.log('Family Preference Load Error:', err)
+  });
+}
 }
