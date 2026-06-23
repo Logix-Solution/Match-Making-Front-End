@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { SharedDataService } from '../../../shared/services/shared-data.service';
+import { SharedGlobalService } from '../../../shared/services/shared-global.service';
+import { SharedFormFieldValidationService } from 'src/shared/services/shared-form-field-validation.service';
 
 interface UserProfile {
-  id: number;
-  name: string;
-  location: string;
-  image: string;
-  status: 'Active' | 'Blocked';
+  id:          number;
+  userID:      number;
+  name:        string;
+  location:    string;
+  image:       string;
+  status:      'Active' | 'Blocked';
   memberSince: string;
 }
 
@@ -16,49 +20,98 @@ interface UserProfile {
 })
 export class AdminUserManagementComponent implements OnInit {
 
-  searchQuery: string = '';
-  allUsers: UserProfile[] = [];
+  searchQuery:   string        = '';
+  allUsers:      UserProfile[] = [];
   filteredUsers: UserProfile[] = [];
 
+  constructor(
+    private dataService:         SharedDataService,
+    private sharedGlobalService: SharedGlobalService,
+    private valid:               SharedFormFieldValidationService,
+  ) {}
+
   ngOnInit(): void {
-    this.generateMockUserDataset();
-    this.filteredUsers = [...this.allUsers];
+    this.loadUsers();
   }
 
-  // Live filter computation system execution
-  onSearchChange(): void {
-    const cleanQuery = this.searchQuery.trim().toLowerCase();
-    if (!cleanQuery) {
-      this.filteredUsers = [...this.allUsers];
-      return;
-    }
+  // ── Load all users from API ──────────────────────────────────────────────
+  loadUsers(): void {
+    this.dataService.getHttp('core-api/Admin/getRequestManagement', {}).subscribe({
+      next: (res: any) => {
+        const data = Array.isArray(res) ? res : [];
+        this.allUsers = data.map((u: any) => ({
+          id:          u.profileID,
+          userID:      u.userID,
+          name:        u.fullname || u.firstName || 'Unknown',
+          location:    u.address || 'N/A',
+          image:       u.eDoc   || 'assets/images/default-avatar.png',
+          status:      this.mapStatus(u.statusID),
+          memberSince: this.formatDate(u.dob),
+        }));
+        this.filteredUsers = [...this.allUsers];
+      },
+      error: (err) => console.error('User Management load error:', err)
+    });
+  }
 
-    this.filteredUsers = this.allUsers.filter(user => 
-      user.name.toLowerCase().includes(cleanQuery) || 
-      user.location.toLowerCase().includes(cleanQuery)
-    );
+  // ── Status mapping by statusID ───────────────────────────────────────────
+  mapStatus(statusID: number): 'Active' | 'Blocked' {
+    return statusID === 2 ? 'Active' : 'Blocked';
+  }
+
+  // ── Format dob as readable date ──────────────────────────────────────────
+  formatDate(dob: string): string {
+    if (!dob) return 'N/A';
+    return new Date(dob).toLocaleDateString('en-US', {
+      year: 'numeric', month: 'short', day: 'numeric'
+    });
+  }
+
+  // ── Search filter ────────────────────────────────────────────────────────
+  onSearchChange(): void {
+    const q = this.searchQuery.trim().toLowerCase();
+    this.filteredUsers = !q
+      ? [...this.allUsers]
+      : this.allUsers.filter(u =>
+          u.name.toLowerCase().includes(q) ||
+          u.location.toLowerCase().includes(q)
+        );
   }
 
   onViewDetails(user: UserProfile): void {
-    console.log('Displaying record system logs metadata profile instance for user ID:', user.id);
+    console.log('View Details:', user);
   }
 
+  // ── Block / Active toggle ────────────────────────────────────────────────
   onBlockUser(user: UserProfile): void {
-    user.status = 'Blocked';
-    console.log(`Disabling active operational access privileges for user identity: ${user.name}`);
-  }
+    const isCurrentlyActive  = user.status === 'Active';
+    const spType             = isCurrentlyActive ? 'Deactive' : 'Active';
+    const adminID            = this.sharedGlobalService.getUserID();
 
-  private generateMockUserDataset(): void {
-    const sampleProfilePic = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=80&h=80';
-    
-    // Seed exactly 15 records matching the image mockup matrix grid output pattern
-    this.allUsers = Array.from({ length: 15 }, (_, idx) => ({
-      id: idx + 1,
-      name: 'Fatima Noor',
-      location: 'Islamabad, PK',
-      image: sampleProfilePic,
-      status: 'Active' as const,
-      memberSince: 'Jan 12, 2026'
-    }));
+    const payload = {
+      adminID: adminID,
+      userID:  user.userID,
+      spType:  spType
+    };
+   console.log(payload, 'active deactive');
+    this.dataService.postDirect('core-api/Admin/SaveUserDeactive', payload).subscribe({
+      next: (res: any) => {
+        const response = Array.isArray(res) ? res[0] : res;
+        if (response?.includes('Success')) {
+          user.status = isCurrentlyActive ? 'Blocked' : 'Active';
+          this.valid.apiInfoResponse(
+            isCurrentlyActive
+              ? `${user.name} has been blocked`
+              : `${user.name} has been activated`
+          );
+        } else {
+          this.valid.apiErrorResponse(response);
+        }
+      },
+      error: (err) => {
+        this.valid.apiErrorResponse('Something went wrong. Please try again.');
+        console.error('Block/Active error:', err);
+      }
+    });
   }
 }

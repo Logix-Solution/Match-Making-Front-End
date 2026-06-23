@@ -62,3 +62,17 @@
     animation: rubberBand 1s;
   }
 }
+
+
+ 
+// ─── Blocked badge — red tone ─────────────────────────────────────────────
+.badge-blocked {
+  background-color: #fef2f2 !important;
+  color: #ef4444 !important;
+  font-size: 11px;
+}
+ 
+// ─── Activate button border ───────────────────────────────────────────────
+.border-success-custom {
+  border: 1px solid #10b981 !important;
+}

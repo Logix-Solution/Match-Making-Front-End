@@ -1,15 +1,17 @@
 <main class="container-fluid ps-3 d-flex flex-column h-100 no-scroll">
   <header class="dashboard-header mb-4">
-    <h1 class=" ft-7  m-0">User Management</h1>
-    <p class="mt-1 mb-0" style="font-weight: 100px !important; color: #6C727A ;">Welcome back, view your recent platform analytics.</p>
+    <h1 class="ft-7 m-0">User Management</h1>
+    <p class="mt-1 mb-0" style="font-weight: 100px !important; color: #6C727A;">
+      Welcome back, view your recent platform analytics.
+    </p>
   </header>
 
   <section class="mb-4 max-w-search">
     <div class="position-relative">
       <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 txt-7th ft-3"></i>
-      <input 
-        type="text" 
-        class="form-control ps-5 py-2 ft-3 border bg-6th rounded-3 custom-search-input" 
+      <input
+        type="text"
+        class="form-control ps-5 py-2 ft-3 border bg-6th rounded-3 custom-search-input"
         placeholder="Search"
         [(ngModel)]="searchQuery"
         (input)="onSearchChange()">
@@ -17,20 +19,28 @@
   </section>
 
   <section class="row g-3 flex-grow-1 scroll-verticle style-1">
+
     <div class="col-12 col-md-6 col-xl-4" *ngFor="let user of filteredUsers">
-      <div class="card bg-6th border-6th rounded-3 p-3 shadow-sm h-100 position-relative d-flex flex-column justify-content-between">
-        
+      <div class="card bg-6th border-6th rounded-3 p-3 shadow-sm  position-relative d-flex flex-column ">
+
         <div class="d-flex align-items-start gap-3">
-          <img [src]="user.image" [alt]="user.name" class="user-avatar rounded-2 object-fit-cover">
+          <img [src]="user.image" [alt]="user.name"
+               class="user-avatar rounded-2 object-fit-cover"
+               onerror="this.src='assets/images/default-avatar.png'">
           <div class="flex-grow-1">
             <h3 class="fh-6 txt-8th m-0 mb-1 pe-5">{{ user.name }}</h3>
             <p class="ft-4 txt-7th m-0 d-flex align-items-center gap-1">
-              <i class="bi bi-geo-alt-fill text-muted"></i> 
+              <i class="bi bi-geo-alt-fill text-muted"></i>
               {{ user.location }}
             </p>
           </div>
-          
-          <span class="badge-active px-2 py-1 rounded-pill ft-5 fw-semibold position-absolute top-3 end-3">
+
+          <!-- ── Status Badge — green = Active, red = Blocked ── -->
+          <span class="px-2 py-1 rounded-pill ft-5 fw-semibold position-absolute top-3 end-3"
+                [ngClass]="{
+                  'badge-active':  user.status === 'Active',
+                  'badge-blocked': user.status === 'Blocked'
+                }">
             {{ user.status }}
           </span>
         </div>
@@ -42,11 +52,21 @@
           </div>
 
           <div class="d-flex gap-2">
-            <button type="button" class="btn-action bg-5th txt-8th border-0 px-3 py-2 rounded-2 ft-4 fw-medium" (click)="onViewDetails(user)">
+            <button type="button"
+                    class="btn-action bg-5th txt-8th border-0 px-3 py-2 rounded-2 ft-4 fw-medium"
+                    (click)="onViewDetails(user)">
               View Details
             </button>
-            <button type="button" class="btn-action bg-6th txt-2nd border-danger-custom px-3 py-2 rounded-2 ft-4 fw-medium block-hover" (click)="onBlockUser(user)">
-              Block
+
+            <!-- ── Block / Activate toggle button ── -->
+            <button type="button"
+                    class="btn-action px-3 py-2 rounded-2 ft-4 fw-medium block-hover"
+                    [ngClass]="{
+                      'bg-6th txt-2nd border-danger-custom': user.status === 'Active',
+                      'bg-success-subtle text-success border-success-custom': user.status === 'Blocked'
+                    }"
+                    (click)="onBlockUser(user)">
+              {{ user.status === 'Active' ? 'Block' : 'Activate' }}
             </button>
           </div>
         </div>
@@ -54,8 +74,10 @@
       </div>
     </div>
 
-    <div class="col-12 text-center py-5 border border-dashed rounded-3 bg-5th mt-4" *ngIf="filteredUsers.length === 0">
+    <div class="col-12 text-center py-5 border border-dashed rounded-3 bg-5th mt-4"
+         *ngIf="filteredUsers.length === 0">
       <p class="ft-2 txt-7th m-0">No profile matches found for "{{ searchQuery }}".</p>
     </div>
+
   </section>
 </main>
