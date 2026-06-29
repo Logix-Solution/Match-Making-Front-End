@@ -44,6 +44,7 @@
 // Full width custom call-to-action button systems
 .main-action-btn {
   transition: opacity 0.15s ease-in-out;
+  height: 50px;
 
   &:hover {
     animation: headShake 1s;

@@ -13,29 +13,85 @@
 }
 
 // --- Modified Full Edge-to-Edge Gallery Card System ---
-.gallery-card-full {
-  aspect-ratio: 16 / 10; // Guarantees crisp aspect ratios for the grid rows
-  height: 240px; 
-  position: relative;
-  border-radius: 16px !important; // Soft round container edges matching 
 
-  .design-image-bg {
-    z-index: 0;
+// ── Card — fixed smaller size, no overlap ─────────────────────────────────
+.gallery-card-full {
+  height: 190px;          // ← reduced from 240px — matches design at 100% zoom
+  display: block;
+  border-radius: 16px !important;
+
+  .gallery-img {
+    object-fit: cover;
+    object-position: center;
   }
 
   .gradient-overlay {
-    height: 70%;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0) 100%);
+    height: 65%;
+    background: linear-gradient(
+      to top,
+      rgba(0,0,0,0.85) 0%,
+      rgba(0,0,0,0.35) 55%,
+      rgba(0,0,0,0)    100%
+    );
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
   }
 
   .font-title-card {
     font-weight: 500;
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     letter-spacing: 0.1px;
   }
 }
+
+// Action badge pill ─────────────────────────────────────────────────────────
+.action-badge-container {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  background: #fff;
+  border-radius: 8px;
+  padding: 4px 6px;
+
+  .vertical-divider {
+    width: 1px;
+    background-color: #e2e8f0;
+    align-self: stretch;
+    margin: 2px 0;
+  }
+
+  .btn-action-pushed {
+    transition: transform 0.15s ease;
+    cursor: pointer;
+    border-radius: 6px !important;
+
+    .text-primary-custom { color: #1e6bf2 !important; }
+    .text-danger-custom  { color: #e13c5b !important; }
+
+    &:hover { transform: scale(1.1); }
+  }
+}
+// .gallery-card-full {
+//   aspect-ratio: 16 / 10; // Guarantees crisp aspect ratios for the grid rows
+//   height: 240px; 
+//   position: relative;
+//   border-radius: 16px !important; // Soft round container edges matching 
+
+//   .design-image-bg {
+//     z-index: 0;
+//   }
+
+//   .gradient-overlay {
+//     height: 70%;
+//     background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0) 100%);
+//     border-bottom-left-radius: 16px;
+//     border-bottom-right-radius: 16px;
+//   }
+
+//   .font-title-card {
+//     font-weight: 500;
+//     font-size: 1.05rem;
+//     letter-spacing: 0.1px;
+//   }
+// }
 
 // Positioning parameters matching Container (7).png precisely
 .top-3 { top: 16px; }
@@ -68,99 +124,120 @@
   }
 }
 
-// --- MODAL DIALOG ENGINE (ZERO SCROLL IMPLEMENTATION) ---
+/// --- MODAL DIALOG ENGINE (TRUE ZERO-SCROLL AUTO-FIT) ---
 .modal-backdrop-custom {
   background-color: rgba(0, 0, 0, 0.4);
   z-index: 1050;
   backdrop-filter: blur(3px);
-  padding: clamp(10px, 2vh, 24px); // Shrinks outter bounding space on low-height screens
+  padding: clamp(8px, 1.5vh, 24px); 
+  height: 100vh;
+  width: 100vw;
 }
 
 .modal-window {
   width: 100%;
-  max-width: 540px; // Slightly narrowed to match the elegant 80% look cleanly
+  max-width: 520px; // Slightly pulled in for structural stability
+  max-height: calc(100vh - 2 * clamp(8px, 1.5vh, 24px)); // Strict layout ceiling
   background-color: #e2e5e9;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-  
-  // Condense structural padding relative to display scaling
-  padding: clamp(16px, 2.5vh, 24px) !important; 
-  
-  // Prevents scroll leakage
+  padding: clamp(12px, 2vh, 20px) !important; 
   overflow: hidden; 
+  display: flex;
+  flex-direction: column;
 }
 
-// Ensure the form content card responds elastically without generating overflow
-.border-white-container {
+// Inner body wrapper that absorbs the scale pressure cleanly
+.modal-body-scroll {
+  background-color: #ffffff;
+  border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.7);
-  padding: clamp(14px, 2.2vh, 24px) !important;
-  margin-bottom: clamp(12px, 2vh, 20px) !important;
+  padding: clamp(12px, 2.2vh, 20px) !important;
+  margin-bottom: clamp(10px, 1.8vh, 16px) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  
+  // Flex layout rules force child content blocks to contract dynamically
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+  min-height: 0; // Essential CSS fix to allow flex items to shrink below minimum content size
+  overflow: hidden !important; 
 }
 
-// Compress form fields dynamically to maximize workspace efficiency
-.mb-4 {
-  margin-bottom: clamp(10px, 1.8vh, 1.5rem) !important;
+// Dynamic form groups compression layout
+.form-group-compressed {
+  margin-bottom: clamp(8px, 1.4vh, 16px) !important;
+  
+  &:last-of-type {
+    margin-bottom: 0 !important;
+  }
 }
 
-// --- FLUID COMPRESSION FOR FORM ELEMENTS ---
+// --- HYPER-FLUID COMPRESSION FOR INTERIOR ELEMENTS ---
 .upload-dropzone {
   border: 1px dashed #cbd5e1 !important;
   background-color: #fafbfc;
   cursor: pointer;
-  // Scalable layout padding means no locked pixel blocks
-  padding: clamp(12px, 2vh, 24px) !important; 
+  padding: clamp(8px, 1.5vh, 16px) !important; 
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   .upload-icon-circle {
-    width: clamp(36px, 5vh, 48px);
-    height: clamp(36px, 5vh, 48px);
+    width: clamp(32px, 4vh, 44px);
+    height: clamp(32px, 4vh, 44px);
     background-color: #ffffff;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-    margin-bottom: 6px !important;
+    margin-bottom: clamp(4px, 0.8vh, 8px) !important;
     
     i {
-      font-size: clamp(1.1rem, 2vh, 1.5rem);
+      font-size: clamp(1rem, 1.8vh, 1.3rem);
     }
   }
 
   h5 {
-    font-size: clamp(0.9rem, 1.6vh, 1.05rem) !important;
+    font-size: clamp(0.85rem, 1.5vh, 0.95rem) !important;
     margin-bottom: 2px !important;
   }
   
   p {
-    font-size: clamp(0.75rem, 1.3vh, 0.85rem) !important;
+    font-size: clamp(0.7rem, 1.2vh, 0.8rem) !important;
   }
 }
 
-// Input and Select element structural compression
+// Form Controls (Inputs, Selects, Textareas)
 .form-input-custom {
   background-color: #f4f6f9 !important;
   color: var(--8th) !important;
   box-shadow: none !important;
-  // Dynamic inner height based on structural view bounds
-  padding-top: clamp(6px, 1.1vh, 10px) !important;
-  padding-bottom: clamp(6px, 1.1vh, 10px) !important;
-  font-size: clamp(0.82rem, 1.5vh, 0.92rem) !important;
-}
-
-// Label font system scales smoothly
-label.text-uppercase {
-  font-size: clamp(0.7rem, 1.3vh, 0.78rem) !important;
-  margin-bottom: 4px !important;
-}
-
-// Keep headers tight
-.fh-4 {
-  font-size: clamp(1.2rem, 2.5vh, 1.5rem) !important;
-}
-.ft-4 {
+  padding-top: clamp(4px, 0.9vh, 8px) !important;
+  padding-bottom: clamp(4px, 0.9vh, 8px) !important;
   font-size: clamp(0.8rem, 1.4vh, 0.9rem) !important;
 }
 
-// Lower profile action button block
+textarea.form-input-custom {
+  min-height: clamp(45px, 7vh, 65px) !important;
+  resize: none;
+}
+
+// Labels
+label.text-uppercase {
+  font-size: clamp(0.65rem, 1.2vh, 0.75rem) !important;
+  margin-bottom: clamp(2px, 0.5vh, 4px) !important;
+}
+
+// Typography Headers
+.fh-4 {
+  font-size: clamp(1.15rem, 2.2vh, 1.35rem) !important;
+}
+.ft-4 {
+  font-size: clamp(0.78rem, 1.3vh, 0.85rem) !important;
+}
+
+// Low-profile responsive primary button
 .main-publish-btn {
-  height: clamp(42px, 5.5vh, 52px) !important;
-  font-size: clamp(0.85rem, 1.6vh, 0.95rem) !important;
-  transition: opacity 0.15s ease-in-out;
-  
-  &:hover { opacity: 0.95; }
+  height: clamp(38px, 5vh, 46px) !important;
+  font-size: clamp(0.82rem, 1.5vh, 0.92rem) !important;
 }

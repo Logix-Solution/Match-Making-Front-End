@@ -1,67 +1,55 @@
-<div class="container-fluid p-0" style="height: 100vh;">
+<div class="container-fluid p-0" style="height: 100vh; overflow: hidden;">
 
-  <!-- ─── TOP HEADER ─────────────────────────────────── -->
   <div class="top-header d-flex align-items-center justify-content-between px-4"
-       style="height: 64px; background-color: #6B1A2A; position: fixed; top: 0; left: 0; right: 0; z-index: 1100;">
+       style="height: 52px; background-color: #6B1A2A; position: fixed; top: 0; left: 0; right: 0; z-index: 1100;">
 
-    <!-- Logo -->
-    <div class="SideNavLogo" >
+    <div class="websiteLogo">
     
     </div>
 
-    <!-- Right Side: Bell + Avatar + Name + Menu -->
     <div class="d-flex align-items-center gap-3">
 
-      <!-- Notification Bell -->
       <div class="position-relative">
-        <i class="bi bi-bell-fill text-white fs-5" style="cursor: pointer;"></i>
+        <i class="bi bi-bell-fill text-white fs-6" style="cursor: pointer;"></i>
         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-              style="font-size: 9px; padding: 3px 5px;">
+              style="font-size: 9px; padding: 2px 4px;">
           3
         </span>
       </div>
 
-      <!-- Divider -->
-      <div style="width: 1px; height: 32px; background: rgba(255,255,255,0.3);"></div>
+      <div style="width: 1px; height: 24px; background: rgba(255,255,255,0.3);"></div>
 
-      <!-- Avatar + Name -->
       <div class="d-flex align-items-center gap-2" style="cursor: pointer;">
         <div class="pofilePic rounded-circle overflow-hidden"
-             style="width: 36px; height: 36px; border: 2px solid rgba(255,255,255,0.4);">
+             style="width: 32px; height: 32px; border: 2px solid rgba(255,255,255,0.4);">
         </div>
-        <span class="text-white fw-semibold" style="font-size: 14px;">{{ roleTitle}}</span>
+        <span class="text-white fw-semibold" style="font-size: 13px;">{{ roleTitle }}</span>
       </div>
 
-      <!-- Hamburger -->
-      <i class="bi bi-list text-white fs-4" style="cursor: pointer;"></i>
+      <i class="bi bi-list text-white fs-5" style="cursor: pointer;"></i>
 
     </div>
   </div>
 
-  <!-- ─── BODY (Sidebar + Content) ──────────────────── -->
-  <div class="d-flex" style="height: 100vh; padding-top: 64px;">
+  <div class="d-flex" style="height: 100vh; padding-top: 52px;">
 
-    <!-- ─── SIDEBAR ──────────────────────────────────── -->
     <div class="sidebar d-flex flex-column"
-         style="width: 260px; min-width: 230px; height: calc(100vh - 64px);
-                position: fixed; top: 64px; left: 0; z-index: 1000;
+         style="width: 260px; min-width: 240px; height: calc(100vh - 52px);
+                position: fixed; top: 52px; left: 0; z-index: 1000;
                 background: #fff; border-right: 1px solid #ebebeb; overflow-y: auto;">
 
-      <!-- Menu Items -->
-      <div class="flex-grow-1 px-3 py-3">
+      <div class="flex-grow-1 px-3 py-2">
         <div class="mb-1" *ngFor="let item of menuList">
 
-          <!-- Clickable item with icon -->
           <a *ngIf="item.menuIcon && item.routeTitle"
              class="d-flex align-items-center text-decoration-none px-3 py-2 rounded-3 menu-item"
              [routerLink]="['/' + item.routeTitle]"
              routerLinkActive="active-link"
              [routerLinkActiveOptions]="{ exact: false }">
             <i [class]="item.menuIcon + ' menu-icon'"></i>
-            <span class="ms-3 menu-label">{{ item.menuTitle }}</span>
+            <span class="ms-3 menu-label" style="font-size: 13.5px;">{{ item.menuTitle }}</span>
           </a>
 
-          <!-- Section title only -->
           <span *ngIf="!item.menuIcon || !item.routeTitle"
                 class="d-block px-3 py-1 text-muted"
                 style="font-size: 10px; text-transform: uppercase;
@@ -72,35 +60,32 @@
         </div>
       </div>
 
-      <!-- ─── BOTTOM: User Profile + Sign Out ────────── -->
       <div class="px-3 pb-3">
 
-        <!-- Privacy & Settings -->
         <div class="mb-2">
-          <a class="d-flex align-items-center text-decoration-none px-3 py-2 rounded-3 menu-item"
+          <a class="d-flex align-items-center text-decoration-none px-3 py-1.5 rounded-3 menu-item"
              routerLink="/privacy"
              routerLinkActive="active-link">
             <i class="bi bi-shield-check menu-icon"></i>
-            <span class="ms-3 menu-label">Privacy Policy</span>
+            <span class="ms-3 menu-label" style="font-size: 13px;">Privacy Policy</span>
           </a>
           <a *ngIf="roleId === 1"
-             class="d-flex align-items-center text-decoration-none px-3 py-2 rounded-3 menu-item"
+             class="d-flex align-items-center text-decoration-none px-3 py-1.5 rounded-3 menu-item"
              routerLink="/setting"
              routerLinkActive="active-link">
             <i class="bi bi-gear menu-icon"></i>
-            <span class="ms-3 menu-label">Settings</span>
+            <span class="ms-3 menu-label" style="font-size: 13px;">Settings</span>
           </a>
         </div>
 
-        <!-- User Card -->
-        <div class="user-card rounded-3 p-3 mb-2"
+        <div class="user-card rounded-3 p-2.5 mb-2"
              style="background: #fdf4f4; border: 1px solid #f0e0e0;">
           <div class="d-flex align-items-center gap-2">
             <div class="pofilePic rounded-circle overflow-hidden"
-                 style="width: 36px; height: 36px; background: #ddd; flex-shrink: 0;">
+                 style="width: 32px; height: 32px; background: #ddd; flex-shrink: 0;">
             </div>
             <div style="overflow: hidden;">
-              <div class="fw-semibold text-dark" style="font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              <div class="fw-semibold text-dark" style="font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ loginName }}
               </div>
               <div class="text-muted" style="font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
@@ -109,17 +94,15 @@
             </div>
           </div>
 
-          <!-- Sign Out Button -->
           <button class="btn w-100 mt-2 d-flex align-items-center justify-content-center gap-2 sign-out-btn"
                   (click)="logout()"
-                  style="font-size: 13px; border: 1px solid #e0c0c0;
-                         background: #fff; color: #C84B31; border-radius: 8px; padding: 6px;">
+                  style="font-size: 12.5px; border: 1px solid #e0c0c0;
+                         background: #fff; color: #C84B31; border-radius: 6px; padding: 5px;">
             <i class="bi bi-box-arrow-right"></i>
             Sign Out
           </button>
         </div>
 
-        <!-- Version -->
         <div class="text-center text-muted" style="font-size: 10px;">
           Version 2.4.0 · Soulmate Admin
         </div>
@@ -127,9 +110,8 @@
       </div>
     </div>
 
-    <!-- ─── MAIN CONTENT ──────────────────────────────── -->
     <div class="flex-grow-1 bg-light"
-         style="margin-left: 230px; height: calc(100vh - 64px); overflow-y: auto; padding: 24px;">
+         style="margin-left: 240px; height: calc(100vh - 52px); overflow-y: auto; padding: 20px;">
       <router-outlet />
     </div>
 
