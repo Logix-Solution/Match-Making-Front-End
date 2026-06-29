@@ -16,7 +16,7 @@ export const environment = {
   apiUrlauth: 'http://159.69.174.28:11011/',
   apiUrl: 'http://159.69.174.28:11011/',
 
-  imageUrl: 'C:/inetpub/wwwroot/',
+  imageUrl: 'C:\\inetpub\\wwwroot\\Matchmaking\\Matchmaking-app\\matchmaking\\assets\\user-images\\',
 
    apijob:'https://Pakistanmasjidportal.com',
  
