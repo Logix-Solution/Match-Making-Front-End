@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { SharedDataService } from '../../../shared/services/shared-data.service';
+import { SharedGlobalService } from '../../../shared/services/shared-global.service';
 
 interface ServiceRequest {
-  id: number;
-  name: string;
-  location: string;
-  image: string;
-  category: 'Matchmaking' | 'Events' | 'Destination Wedding' | 'Honeymoon';
+  id:          number;
+  name:        string;
+  location:    string;
+  image:       string;
+  phone:       string;                    
+  category:    string;
   serviceType: string;
-  details: string;
 }
 
 @Component({
@@ -17,47 +19,71 @@ interface ServiceRequest {
 })
 export class AdminServicesRequestsComponent implements OnInit {
 
-  // Tracking the currently selected criteria filter
-  activeFilter: string = 'All';
-  
-  allRequests: ServiceRequest[] = [];
+  activeFilter:     string           = 'All';
+  allRequests:      ServiceRequest[] = [];
   filteredRequests: ServiceRequest[] = [];
 
+  constructor(
+    private dataService:         SharedDataService,
+    private sharedGlobalService: SharedGlobalService
+  ) {}
+
   ngOnInit(): void {
-    this.generateMockServiceRequests();
-    this.applyFilter('All');
+    this.loadServices();
   }
 
-  // Update selection variable and perform client-side filtering mutation
+  // ── Load from API ─────────────────────────────────────────────────────────
+  loadServices(): void {
+    this.dataService.getHttp('core-api/Admin/getServices', {}).subscribe({
+      next: (res: any) => {
+        const data = Array.isArray(res) ? res : [];
+        this.allRequests = data.map((s: any) => ({
+          id:          s.serviceID,
+          name:        s.firstName || 'Unknown',
+          location:    [s.cityName, s.countryName].filter(Boolean).join(', ') || 'N/A',
+          image:       s.eDoc || 'assets/images/default-avatar.png',
+          phone:       s.phoneNumber || '',
+          category:    s.eventTypeTitle || 'Other',
+          serviceType: s.eventTypeTitle || 'Other',
+        }));
+        this.applyFilter(this.activeFilter);
+      },
+      error: (err) => console.error('Services load error:', err)
+    });
+  }
+
+  // ── Filter ────────────────────────────────────────────────────────────────
   applyFilter(filterCriteria: string): void {
     this.activeFilter = filterCriteria;
-    
-    if (this.activeFilter === 'All') {
-      this.filteredRequests = [...this.allRequests];
-    } else {
-      this.filteredRequests = this.allRequests.filter(
-        req => req.category === this.activeFilter
-      );
-    }
+    this.filteredRequests = this.activeFilter === 'All'
+      ? [...this.allRequests]
+      : this.allRequests.filter(req => req.category === this.activeFilter);
   }
 
-  onContactUser(request: ServiceRequest): void {
-    console.log(`Contacting user profile under request assignment ID: ${request.id}`);
+  // ── WhatsApp Contact ──────────────────────────────────────────────────────
+onContactUser(request: ServiceRequest): void {
+  if (!request.phone) {
+    console.warn('No phone number available for this user.');
+    return;
   }
 
-  private generateMockServiceRequests(): void {
-    const sampleProfilePic = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=80&h=80';
-    const sampleDetailsText = 'Looking for Male, 25-30, Lahore. Sunn Muslim.';
+  // Remove all non-digit characters except leading +
+  let cleaned = request.phone.replace(/[^\d+]/g, '');
 
-    // Generates structural mock database records mirroring your view distribution layout
-    this.allRequests = Array.from({ length: 9 }, (_, idx) => ({
-      id: idx + 1,
-      name: 'Fatima Noor',
-      location: 'Islamabad, PK',
-      image: sampleProfilePic,
-      category: 'Matchmaking' as const,
-      serviceType: 'Matchmakin', // Retained the specific text spelling from the mockup
-      details: sampleDetailsText
-    }));
+  // If number starts with 0, replace with Pakistan code +92
+  if (cleaned.startsWith('0')) {
+    cleaned = '+92' + cleaned.slice(1);
   }
+
+  // If no + prefix at all, add +92 as default
+  if (!cleaned.startsWith('+')) {
+    cleaned = '+92' + cleaned;
+  }
+
+  // Remove the + for wa.me URL (wa.me expects digits only)
+  const waNumber = cleaned.replace('+', '');
+
+  // Opens WhatsApp direct message chat with that number
+  window.open(`https://wa.me/${waNumber}`, '_blank');
+}
 }
