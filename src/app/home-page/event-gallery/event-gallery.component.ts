@@ -1,8 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { SharedDataService } from '../../../shared/services/shared-data.service';
 
 interface GalleryImage {
   src: string;
   alt: string;
+  eventTypeTitle: string;
 }
 
 @Component({
@@ -12,18 +14,31 @@ interface GalleryImage {
 })
 export class EventGalleryComponent implements OnInit, OnDestroy {
 
-  images: GalleryImage[] = [
-    { src: 'assets/images/aboutus.svg', alt: 'Couple by the lake' },
-    { src: 'assets/images/aboutus.svg', alt: 'Wedding venue' },
-    { src: 'assets/images/aboutus.svg', alt: 'Bridal bouquet' },
-    { src: 'assets/images/aboutus.svg', alt: 'Happy couple' },
-    { src: 'assets/images/aboutus.svg', alt: 'Holding hands' },
-  ];
-
+  images: GalleryImage[] = [];
   activeIndex: number = 0;
+  lightboxImage: GalleryImage | null = null;
   private galleryInterval!: ReturnType<typeof setInterval>;
 
+  constructor(private dataService: SharedDataService) {}
+
   ngOnInit(): void {
+    this.loadGallery();
+  }
+
+  loadGallery(): void {
+    (this.dataService.getHttp('user-api/getEventsGallery?eventID=0', {}) as any)
+      .subscribe((res: any) => {
+        const data = Array.isArray(res) ? res : [];
+        this.images = data.map((event: any) => ({
+          src:            event.eDoc,
+          alt:            event.eventTitle      || 'Event Image',
+          eventTypeTitle: event.eventTypeTitle  || ''
+        }));
+        this.startAutoPlay();
+      });
+  }
+
+  startAutoPlay(): void {
     this.galleryInterval = setInterval(() => {
       this.activeIndex = (this.activeIndex + 1) % this.images.length;
     }, 3000);
@@ -31,6 +46,16 @@ export class EventGalleryComponent implements OnInit, OnDestroy {
 
   setActive(i: number): void {
     this.activeIndex = i;
+  }
+
+  openLightbox(img: GalleryImage): void {
+    this.lightboxImage = img;
+    clearInterval(this.galleryInterval);
+  }
+
+  closeLightbox(): void {
+    this.lightboxImage = null;
+    this.startAutoPlay();
   }
 
   ngOnDestroy(): void {

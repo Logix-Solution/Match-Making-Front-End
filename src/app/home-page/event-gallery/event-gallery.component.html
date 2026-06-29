@@ -1,9 +1,10 @@
 <section class="py-5 bg-white">
   <div class="container-fluid px-0">
+
     <!-- Header -->
     <div class="text-center mb-4 pb-2">
       <h2 class="fw-bold mb-2 custom-font" style="color: black !important;">Event Gallery</h2>
-      <div class="ft-9"  style="color: #45556C ; font-weight: 400px !important;">
+      <div class="ft-9" style="color: #45556C; font-weight: 400px !important;">
         Memorable clicks that makes your Life Perfect.
       </div>
     </div>
@@ -15,9 +16,24 @@
         class="gallery-item"
         [class.active]="activeIndex === i"
         (mouseenter)="setActive(i)"
+        (click)="openLightbox(img)"
+        style="cursor: pointer;"
       >
         <img [src]="img.src" [alt]="img.alt" />
+
+        <!-- Event Type Label -->
+        <div class="gallery-label">{{ img.eventTypeTitle }}</div>
       </div>
     </div>
+
   </div>
 </section>
+
+<!-- Lightbox Overlay -->
+<div class="lightbox-overlay" *ngIf="lightboxImage" (click)="closeLightbox()">
+  <div class="lightbox-box" (click)="$event.stopPropagation()">
+    <button class="lightbox-close" (click)="closeLightbox()">&#10005;</button>
+    <img [src]="lightboxImage.src" [alt]="lightboxImage.alt" />
+    <div class="lightbox-label">{{ lightboxImage.eventTypeTitle }}</div>
+  </div>
+</div>
