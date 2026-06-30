@@ -37,6 +37,8 @@ export class AppComponent implements OnInit {
     '/adminEventsGallery',
     '/adminbestMatch',
     '/adminMatchComparison',
+    '/testimonials',
+   
  
   ];
 

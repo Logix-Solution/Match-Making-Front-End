@@ -22,6 +22,7 @@ import { AboutComponent } from './home-page/about/about.component';
 import { HowItsWorksComponent } from './home-page/how-its-works/how-its-works.component';
 import { PremiumServicesComponent } from './home-page/premium-services/premium-services.component';
 import { SucessStoriesComponent } from './home-page/sucess-stories/sucess-stories.component';
+import { TestimonialsComponent } from './Admin/testimonials/testimonials.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -108,6 +109,11 @@ const routes: Routes = [
 {
      path: 'adminbestMatch',
     component: AdminBestMatchComponent,
+  },
+
+  {
+     path: 'testimonials',
+    component: TestimonialsComponent,
   },
   
   /////////////////////Account setting/////////////

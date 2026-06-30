@@ -61,6 +61,7 @@ import { ExploreMatchingComponent } from './User/explore-matching/explore-matchi
 import { SignInComponent } from './login/sign-in/sign-in.component';
 import { ForgetPasswordComponent } from './login/forget-password/forget-password.component';
 import { SideNavComponent } from './side-nav/side-nav.component';
+import { TestimonialsComponent } from './Admin/testimonials/testimonials.component';
 
 
 @NgModule({
@@ -111,6 +112,7 @@ import { SideNavComponent } from './side-nav/side-nav.component';
     SignInComponent,
     ForgetPasswordComponent,
     SideNavComponent,
+    TestimonialsComponent,
 
   ],
   imports: [

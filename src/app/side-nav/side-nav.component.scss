@@ -65,7 +65,8 @@
 .active-link .userManagement,
 .active-link .bestMatch,
 .active-link .requestManagement,
-.active-link .matchComparison{
+.active-link .matchComparison,
+.active-link .testimonials{
   filter: brightness(0) invert(1);
   /* This converts black SVG icons to white */
 }

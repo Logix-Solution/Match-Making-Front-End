@@ -1,0 +1,191 @@
+<main class="container-fluid ps-3 d-flex flex-column h-100 no-scroll position-relative">
+
+  <!-- Header -->
+  <header class="d-flex justify-content-between align-items-start mb-4">
+    <div class="dashboard-header">
+      <h1 class="ft-7 m-0">Upload Testimonials</h1>
+      <p class="mt-1 mb-0" style="font-weight: 400; color: #6C727A;">Manage your feedbacks.</p>
+    </div>
+
+    <!-- Upload Feedback Dropdown Button -->
+    <div class="position-relative">
+      <button type="button"
+              class="btn bg-2nd txt-6th px-4 py-2 rounded-2 ft-3 fw-medium d-flex align-items-center gap-2 accent-btn"
+              (click)="toggleDropdown()">
+        <i class="bi bi-cloud-arrow-up"></i> Upload Feedback
+        <i class="bi" [ngClass]="isDropdownOpen ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+      </button>
+
+      <!-- Dropdown Menu -->
+      <div class="upload-dropdown-menu position-absolute end-0 mt-2 rounded-3 shadow-sm"
+           *ngIf="isDropdownOpen">
+        <button type="button" class="dropdown-option d-flex align-items-center gap-2 w-100 border-0 bg-transparent"
+                (click)="openUploadModal('image')">
+          <i class="bi bi-image"></i> Upload Image
+        </button>
+        <button type="button" class="dropdown-option d-flex align-items-center gap-2 w-100 border-0 bg-transparent"
+                (click)="openUploadModal('video')">
+          <i class="bi bi-camera-video"></i> Upload Video
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Two Columns: Images | Videos -->
+  <section class="row g-4 flex-grow-1 scroll-verticle style-1">
+
+    <!-- Images Column -->
+    <div class="col-12 col-lg-6">
+      <h3 class="fh-6 txt-8th mb-3">Images</h3>
+      <div class="row g-2">
+        <div class="col-12 col-md-6" *ngFor="let item of imageList">
+          <div class="feedback-row d-flex align-items-center justify-content-between rounded-2 px-3 py-2">
+            <div class="d-flex align-items-center gap-2 min-w-0 cursor-pointer flex-grow-1"
+                 (click)="openImagePreview(item)">
+              <img [src]="item.imageUrl" class="feedback-thumb rounded-2 object-fit-cover"
+                   onerror="this.src='assets/images/default-avatar.png'">
+              <span class="ft-4 txt-8th text-truncate">{{ item.personName }}</span>
+            </div>
+            <button type="button" class="btn-delete border-0 bg-transparent" (click)="onDeleteFeedback(item)">
+              <i class="bi bi-trash3"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="col-12 text-center py-4 text-muted ft-4" *ngIf="imageList.length === 0">
+          No images uploaded yet.
+        </div>
+      </div>
+    </div>
+
+    <!-- Videos Column -->
+    <div class="col-12 col-lg-6">
+      <h3 class="fh-6 txt-8th mb-3">Videos</h3>
+      <div class="row g-2">
+        <div class="col-12 col-md-6" *ngFor="let item of videoList">
+          <div class="feedback-row d-flex align-items-center justify-content-between rounded-2 px-3 py-2">
+            <div class="d-flex align-items-center gap-2 min-w-0 cursor-pointer flex-grow-1"
+                 (click)="openVideoLink(item)">
+              <i class="bi bi-camera-video-fill video-icon"></i>
+              <span class="ft-4 txt-8th text-truncate">{{ item.personName }}</span>
+            </div>
+            <button type="button" class="btn-delete border-0 bg-transparent" (click)="onDeleteFeedback(item)">
+              <i class="bi bi-trash3"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="col-12 text-center py-4 text-muted ft-4" *ngIf="videoList.length === 0">
+          No videos uploaded yet.
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Backdrop to close dropdown on outside click -->
+  <div class="position-fixed top-0 start-0 w-100 h-100" style="z-index: 5;"
+       *ngIf="isDropdownOpen" (click)="closeDropdown()"></div>
+
+  <!-- ─── Upload Modal ─────────────────────────────────────────────────────── -->
+  <div class="modal-backdrop-custom position-fixed top-0 start-0 end-0 bottom-0
+              d-flex align-items-center justify-content-center"
+       *ngIf="isModalOpen" style="padding-top: 64px;">
+    <div class="modal-window rounded-3 position-relative">
+
+      <!-- Modal Header -->
+      <div class="d-flex justify-content-between align-items-start mb-2 flex-shrink-0">
+        <div>
+          <h2 class="fh-4 txt-8th m-0 fw-bold">
+            {{ uploadType === 'image' ? 'Upload feedback Image' : 'Upload feedback Video' }}
+          </h2>
+          <p class="ft-4 txt-7th m-0">Add a new {{ uploadType }} of feedback</p>
+        </div>
+        <button type="button" class="border-0 bg-transparent close-x txt-7th fs-4 p-0" (click)="closeUploadModal()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body-scroll style-1">
+
+        <!-- IMAGE UPLOAD -->
+        <ng-container *ngIf="uploadType === 'image'">
+          <div class="form-group-compressed">
+            <label class="text-uppercase tracking-wider txt-7th d-block fw-bold">Feedback Image</label>
+            <div class="upload-dropzone border-dashed rounded-3 text-center position-relative"
+                 (click)="triggerFileInput()">
+              <div class="upload-icon-circle bg-light rounded-circle d-flex align-items-center justify-content-center">
+                <i class="bi bi-cloud-arrow-up"></i>
+              </div>
+              <h5 class="txt-8th fw-bold m-0">
+                {{ selectedFileName ? selectedFileName : 'Tap to Upload Image' }}
+              </h5>
+              <p class="txt-7th m-0">JPEG, PNG up to 10MB</p>
+              <input type="file" #fileInput class="d-none"
+                     (change)="onFileSelected($event)" accept="image/jpeg, image/png">
+            </div>
+          </div>
+
+          <div class="form-group-compressed">
+            <label class="text-uppercase tracking-wider txt-7th d-block fw-bold">Person Name</label>
+            <input type="text" class="form-control form-input-custom px-3 rounded-3"
+                   placeholder="e.g Salif Saif"
+                   [(ngModel)]="newFeedback.personName">
+          </div>
+        </ng-container>
+
+        <!-- VIDEO UPLOAD -->
+        <ng-container *ngIf="uploadType === 'video'">
+          <div class="form-group-compressed">
+            <label class="text-uppercase tracking-wider txt-7th d-block fw-bold">Video Link</label>
+            <input type="text" class="form-control form-input-custom px-3 rounded-3"
+                   placeholder="Paste Link Here............"
+                   [(ngModel)]="newFeedback.videoLink">
+          </div>
+
+          <div class="row g-2 form-group-compressed">
+            <div class="col-6">
+              <label class="text-uppercase tracking-wider txt-7th d-block fw-bold">Person Name</label>
+              <input type="text" class="form-control form-input-custom px-3 rounded-3"
+                     placeholder="e.g Salif Saif"
+                     [(ngModel)]="newFeedback.personName">
+            </div>
+            <div class="col-6">
+              <label class="text-uppercase tracking-wider txt-7th d-block fw-bold">Date</label>
+              <input type="date" class="form-control form-input-custom px-3 rounded-3"
+                     [(ngModel)]="newFeedback.date">
+            </div>
+          </div>
+        </ng-container>
+
+      </div>
+
+      <!-- Publish Button -->
+      <div class="flex-shrink-0">
+        <button type="button"
+                class="w-100 rounded-3 border-0 bg-2nd txt-6th fw-medium d-flex align-items-center justify-content-center gap-2 main-publish-btn"
+                (click)="onPublishFeedback()">
+          <i class="bi bi-cloud-arrow-up"></i> Upload to Website
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── Image Preview Modal ──────────────────────────────────────────────── -->
+  <div class="modal-backdrop-custom position-fixed top-0 start-0 end-0 bottom-0
+              d-flex align-items-center justify-content-center"
+       *ngIf="isImagePreviewOpen" (click)="closeImagePreview()">
+    <div class="image-preview-window position-relative" (click)="$event.stopPropagation()">
+      <button type="button"
+              class="border-0 bg-white close-x-preview rounded-circle position-absolute"
+              (click)="closeImagePreview()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+      <img [src]="previewImageUrl" class="preview-img rounded-3"
+           onerror="this.src='assets/images/default-avatar.png'">
+    </div>
+  </div>
+
+</main>
