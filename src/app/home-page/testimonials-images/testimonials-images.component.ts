@@ -46,7 +46,7 @@ export class TestimonialsImagesComponent implements OnInit, OnDestroy {
 
   // ── Load only mediaTypeID = 1 (images) ────────────────────────────────────
   loadImages(): void {
-    this.dataService.getHttp('core-api/Admin/getFeedback', {}).subscribe({
+    this.dataService.getHttp('user-api/getFeedback', {}).subscribe({
       next: (res: any) => {
         const data = Array.isArray(res) ? res : [];
         this.images = data
