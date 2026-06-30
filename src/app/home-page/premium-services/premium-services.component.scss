@@ -120,12 +120,15 @@ $offset-y:     100px;     // (265 - 250) / 2 = vertically centered on right edge
 // ── Modal title ───────────────────────────────────────────────────────────────
 .modal-service-title {
   font-size: clamp(1.5rem, 3vw, 2rem);
-  letter-spacing: 0.18em;
+  letter-spacing: 0px !important;
+  font-family: 'Marcellus'!important;
+  font-weight: 400px !important;
+
 }
 
 // ── Decorative divider ────────────────────────────────────────────────────────
 .divider-line {
-  width: 260px;
+  width: 400px;
   height: 1.5px;
   background-color: maroon;
   opacity: 0.4;

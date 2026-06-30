@@ -1,15 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { SharedDataService } from '../../../../shared/services/shared-data.service';
 
 export interface Profile {
-  id: number;
-  name: string;
-  gender: string;
-  age: number;
-  height: string;
+  id:            number;
+  name:          string;
+  gender:        string;
+  age:           number;
+  height:        string;
   maritalStatus: string;
-  location: string;
-  profession: string;
-  avatar: string;
+  location:      string;
+  profession:    string;
+  education:     string;
+  country:       string;
+  religion:      string;
+  avatar:        string;
 }
 
 @Component({
@@ -17,31 +21,92 @@ export interface Profile {
   templateUrl: './matching-profile.component.html',
   styleUrls: ['./matching-profile.component.scss']
 })
-export class MatchingProfileComponent implements OnInit {
+export class MatchingProfileComponent implements OnInit, OnChanges {
 
-  profiles: Profile[] = [
-    { id: 1, name: 'Aisha Khizer', gender: 'Female', age: 25, height: "5'5", maritalStatus: 'Unmarried', location: 'London', profession: 'Software Engineer', avatar: 'assets/images/profile1.png' },
-    { id: 2, name: 'Aisha Khizer', gender: 'Female', age: 25, height: "5'5", maritalStatus: 'Unmarried', location: 'London', profession: 'Software Engineer', avatar: 'assets/images/profile1.png' },
-    { id: 3, name: 'Aisha Khizer', gender: 'Female', age: 25, height: "5'5", maritalStatus: 'Unmarried', location: 'London', profession: 'Software Engineer', avatar: 'assets/images/profile1.png' },
-    { id: 4, name: 'Aisha Khizer', gender: 'Female', age: 25, height: "5'5", maritalStatus: 'Unmarried', location: 'London', profession: 'Software Engineer', avatar: 'assets/images/profile1.png' },
-    { id: 5, name: 'Aisha Khizer', gender: 'Female', age: 25, height: "5'5", maritalStatus: 'Unmarried', location: 'London', profession: 'Software Engineer', avatar: 'assets/images/profile1.png' },
-    { id: 6, name: 'Aisha Khizer', gender: 'Female', age: 25, height: "5'5", maritalStatus: 'Unmarried', location: 'London', profession: 'Software Engineer', avatar: 'assets/images/profile1.png' },
-    { id: 7, name: 'Aisha Khizer', gender: 'Female', age: 25, height: "5'5", maritalStatus: 'Unmarried', location: 'London', profession: 'Software Engineer', avatar: 'assets/images/profile1.png' },
-    { id: 8, name: 'Aisha Khizer', gender: 'Female', age: 25, height: "5'5", maritalStatus: 'Unmarried', location: 'London', profession: 'Software Engineer', avatar: 'assets/images/profile1.png' },
-  ];
+  // ── Filters passed from parent ────────────────────────────────────────────
+  @Input() filters: any = null;
+
+  allProfiles:     Profile[] = [];
+  profiles:        Profile[] = [];
 
   // ── Slider state ──────────────────────────────────────────────────────────
   currentIndex = 0;
-  private readonly CHUNK_SIZE = 6;    // 3 cols × 2 rows per page
+  private readonly CHUNK_SIZE = 6;
 
-  // ── Computed ──────────────────────────────────────────────────────────────
+  constructor(private dataService: SharedDataService) {}
 
-  /** Whether to show the slider at all */
+  ngOnInit(): void {
+    this.loadProfiles();
+  }
+
+  // ── Re-filter when parent changes filters ─────────────────────────────────
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['filters']) {
+      this.applyFilters();
+    }
+  }
+
+  // ── Load profiles from API ────────────────────────────────────────────────
+  loadProfiles(): void {
+    (this.dataService.getHttp('user-api/FindOutMatch', {}) as any)
+      .subscribe((res: any) => {
+        const data = Array.isArray(res) ? res : [];
+        this.allProfiles = data.map((p: any) => ({
+          id:            p.profileID,
+          name:          p.fullName || 'Unknown',
+          gender:        p.gender   || '---',
+          age:           this.calculateAge(p.dateOfBirth),
+          height:        p.height   || '---',
+          maritalStatus: p.marital_Status || '---',
+          location:      [p.city_Name, p.country_Name].filter(Boolean).join(', ') || '---',
+          profession:    p.occupation      || '---',
+          education:     p.education_Level || '---',
+          country:       p.country_Name    || '',
+          religion:      p.religion        || '---',
+          avatar:        p.eDoc            || 'assets/images/profile1.png',
+        }));
+        this.applyFilters();
+      });
+  }
+
+  // ── Apply filters from parent ─────────────────────────────────────────────
+  applyFilters(): void {
+    const f = this.filters;
+
+    if (!f || (!f.gender && !f.country && !f.qualification && !f.profession)) {
+      // No active filters — show all
+      this.profiles = [...this.allProfiles];
+    } else {
+      this.profiles = this.allProfiles.filter(p => {
+        const genderMatch        = !f.gender        || p.gender.toLowerCase()    === f.gender.toLowerCase();
+        const countryMatch       = !f.country       || p.country.toLowerCase()   === f.country.toLowerCase();
+        const qualificationMatch = !f.qualification || p.education.toLowerCase() === f.qualification.toLowerCase();
+        const professionMatch    = !f.profession    || p.profession.toLowerCase()=== f.profession.toLowerCase();
+        return genderMatch && countryMatch && qualificationMatch && professionMatch;
+      });
+    }
+
+    // Reset slider to first page on new filter result
+    this.currentIndex = 0;
+  }
+
+  // ── Age Calculator ────────────────────────────────────────────────────────
+  calculateAge(dob: string): number {
+    if (!dob) return 0;
+    const birth = new Date(dob);
+    if (isNaN(birth.getTime())) return 0;
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+    return age;
+  }
+
+  // ── Slider ────────────────────────────────────────────────────────────────
   get useSlider(): boolean {
     return this.profiles.length > this.CHUNK_SIZE;
   }
 
-  /** Profiles split into pages of 6 */
   get slideChunks(): Profile[][] {
     const chunks: Profile[][] = [];
     for (let i = 0; i < this.profiles.length; i += this.CHUNK_SIZE) {
@@ -50,31 +115,19 @@ export class MatchingProfileComponent implements OnInit {
     return chunks;
   }
 
-  /** Total number of pages */
   get totalSlides(): number {
     return this.slideChunks.length;
   }
 
-  /** CSS transform translation calculation */
   get translateX(): string {
     return `translateX(-${this.currentIndex * 100}%)`;
   }
 
-  ngOnInit(): void {}
-
-  // ── Manual Control Operations ─────────────────────────────────────────────
-
-  /** Shifts slide track container window leftwards */
   prevSlide(): void {
-    if (this.currentIndex > 0) {
-      this.currentIndex--;
-    }
+    if (this.currentIndex > 0) this.currentIndex--;
   }
 
-  /** Shifts slide track container window rightwards */
   nextSlide(): void {
-    if (this.currentIndex < this.totalSlides - 1) {
-      this.currentIndex++;
-    }
+    if (this.currentIndex < this.totalSlides - 1) this.currentIndex++;
   }
 }

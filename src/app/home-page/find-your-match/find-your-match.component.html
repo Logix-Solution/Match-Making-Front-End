@@ -1,105 +1,84 @@
 <section class="py-4 matching-profile-bg">
+
   <!-- Heading -->
   <div class="text-center mb-0">
-    <h2 class=" text-center custom-font mt-4" style="color: black !important;">Find Your Match</h2>
-    <div class=" ft-9 mb-3" style="color: #45556C ; font-weight: 400px !important;">
+    <h2 class="text-center custom-font mt-4" style="color: black !important;">Find Your Match</h2>
+    <div class="ft-9 mb-3" style="color: #45556C; font-weight: 400px !important;">
       Use our advanced filters to find profiles that match your preferences.
     </div>
   </div>
+
   <div class="row">
     <div class="col-1"></div>
     <div class="col-10 justify-content-center">
-      <div class="bg-white border rounded-5 shadow-sm p-3 p-lg-">
+      <div class="bg-white border rounded-5 shadow-sm p-3">
         <div class="row g-2 align-items-end">
+
           <!-- Gender -->
           <div class="col-12 col-md-6 col-lg">
-            <label class="form-label fw-semibold small text-dark">
-              Gender
-            </label>
-
-            <!-- <ng-select
-          [items]="genderOptions"
-          bindLabel="label"
-          bindValue="value"
-          [(ngModel)]="filters.gender"
-          [searchable]="false"
-          [clearable]="true"
-          placeholder="Any">
-        </ng-select> -->
+            <label class="form-label fw-semibold small text-dark">Gender</label>
             <ng-select
-              [items]="genderOptions"
-              bindLabel="label"
-              bindValue="value"
+              [items]="genderList"
+              bindLabel="subTypeTitle"
+              bindValue="subTypeTitle"
               [(ngModel)]="filters.gender"
-              [placeholder]="!filters.gender ? 'Select Gender' : ''"
-            >
+               [placeholder]="filters.gender ? '' : 'Select Gender'">
             </ng-select>
           </div>
 
           <!-- Country -->
           <div class="col-12 col-md-6 col-lg">
-            <label class="form-label fw-semibold small text-dark">
-              Country
-            </label>
-
+            <label class="form-label fw-semibold small text-dark">Country</label>
             <ng-select
-              [items]="countryOptions"
-              bindLabel="label"
-              bindValue="value"
+              [items]="countryList"
+              bindLabel="country_name"
+              bindValue="country_name"
               [(ngModel)]="filters.country"
-              [placeholder]="!filters.country ? 'Select Country' : ''"
-            >
+            [placeholder]="filters.country ? '' : 'Select Country'">
             </ng-select>
           </div>
 
           <!-- Qualification -->
           <div class="col-12 col-md-6 col-lg">
-            <label class="form-label fw-semibold small text-dark">
-              Qualification
-            </label>
-
+            <label class="form-label fw-semibold small text-dark">Qualification</label>
             <ng-select
-              [items]="qualificationOptions"
-              bindLabel="label"
-              bindValue="value"
+              [items]="qualificationList"
+              bindLabel="subTypeTitle"
+              bindValue="subTypeTitle"
               [(ngModel)]="filters.qualification"
-              [placeholder]="
-                !filters.qualification ? 'Select Qualification' : ''
-              "
-            >
+             [placeholder]="filters.qualification ? '' : 'Select Qualification'">>
             </ng-select>
           </div>
 
           <!-- Profession -->
           <div class="col-12 col-md-6 col-lg">
-            <label class="form-label fw-semibold small text-dark">
-              Profession
-            </label>
-<ng-select
-  [items]="professionOptions"
-  bindLabel="label"
-  bindValue="value"
-  [(ngModel)]="filters.profession"
-  [placeholder]="!filters.profession ? 'Select Profession' : ''">
-</ng-select>
+            <label class="form-label fw-semibold small text-dark">Profession</label>
+            <ng-select
+              [items]="professionList"
+              bindLabel="subTypeTitle"
+              bindValue="subTypeTitle"
+              [(ngModel)]="filters.profession"
+             [placeholder]="filters.profession ? '' : 'Select Profession'">>
+            </ng-select>
           </div>
 
           <!-- Search Button -->
-          <!-- <div class="col-12 col-lg-auto">
-        <button
-          class="btn text-white w-100 px-4 py-2 rounded-4 shadow-sm"
-          style="background:#8B1E1E;"
-          (click)="onSearch()">
+          <div class="col-12 col-lg-auto">
+            <button
+              class="btn text-white w-100 px-4 py-2 rounded-4 shadow-sm"
+              style="background:#590117;"
+              (click)="onSearch()">
+              <i class="bi bi-search"></i> Search
+            </button>
+          </div>
 
-          <i class="bi bi-search"></i>
-        </button>
-      </div> -->
         </div>
       </div>
     </div>
     <div class="col-1"></div>
   </div>
-  <!-- Filter Card -->
 
-  <app-matching-profile></app-matching-profile>
+  <!-- Pass active filters to child -->
+  <app-matching-profile [filters]="activeFilters"></app-matching-profile>
+
 </section>
