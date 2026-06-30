@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   envName: 'prod',
-  // ////////localhost //////////////
+  ////////localhost //////////////
 
   //  apiUrl: 'http://localhost:11011/',
   // apiUrlauth: 'http://localhost:11011/',
@@ -13,14 +13,20 @@ export const environment = {
 
   /////for live server api//////////
 
-  apiUrlauth: 'http://159.69.174.28:11011/',
-  apiUrl: 'http://159.69.174.28:11011/',
+  
+//  apiUrl: 'http://159.69.174.28:11011/',
+//  apiUrlauth: 'http://159.69.174.28:11011/',
+
+
+  // http://159.69.174.28:11015/
+ apiUrl: 'http://95.217.205.57:11011/',
+ apiUrlauth: 'http://95.217.205.57:11011/',
 
   imageUrl: 'C:\\inetpub\\wwwroot\\Matchmaking\\Matchmaking-app\\matchmaking\\assets\\user-images\\',
 
    apijob:'https://Pakistanmasjidportal.com',
  
-    productUrl: 'http://159.69.174.28:11015/',
+    productUrl: 'http://95.217.205.57/:11030/',
      googleClientId: '51129007656-7853v1j76s30u7cnne2b10nlg9r2ku3l.apps.googleusercontent.com'
 };
 

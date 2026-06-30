@@ -1,0 +1,60 @@
+<section class="testimonial-section bgtestimonail position-relative overflow-hidden py-5">
+  <div class="container-fluid px-4 px-lg-5">
+    <div class="row align-items-center g-4">
+
+      <!-- LEFT: Text Content -->
+      <div class="col-12 col-lg-6">
+        <h2 class="testimonial-heading mb-3">
+          Trusted by Couples,<br>
+          Recommended by Families
+        </h2>
+
+        <h4 class="testimonial-subheading mb-3">
+          Building Meaningful Connections That Last
+        </h4>
+
+        <p class="testimonial-paragraph mb-0">
+          We take pride in creating genuine matches that lead to lasting relationships.
+          Hear from our satisfied members who trusted
+          <span class="fw-semibold txt-primary-dark">Nadia's Matchmaking Services</span>
+          to guide them toward finding the right life partner.
+        </p>
+      </div>
+
+      <!-- RIGHT: Sliding Image Track -->
+      <div class="col-12 col-lg-6">
+        <div class="slider-wrapper"
+             (mouseenter)="onMouseEnter()"
+             (mouseleave)="onMouseLeave()">
+
+          <!-- Outgoing image — slides OUT toward the left (text section) -->
+          <div class="slide-item slide-out" *ngIf="outgoingImage">
+            <img [src]="outgoingImage.imageUrl" [alt]="outgoingImage.personName" class="slide-img">
+          </div>
+
+          <!-- Current / Incoming image — slides IN from the right -->
+          <ng-container *ngFor="let img of [currentImage]; trackBy: trackByIndex">
+            <div class="slide-item slide-in" *ngIf="img">
+              <img [src]="img.imageUrl" [alt]="img.personName" class="slide-img">
+            </div>
+          </ng-container>
+
+          <!-- Empty state -->
+          <div class="slide-item" *ngIf="!currentImage && !outgoingImage">
+            <div class="no-image-placeholder d-flex align-items-center justify-content-center">
+              <span class="ft-4 txt-7th">No testimonials yet</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Decorative Dots -->
+    <div class="d-flex justify-content-center gap-2 mt-5">
+      <span class="testimonial-dot" *ngFor="let d of dots; let i = index" [class.active]="i === activeDot"></span>
+    </div>
+
+  </div>
+</section>
