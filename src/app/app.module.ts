@@ -63,6 +63,7 @@ import { ForgetPasswordComponent } from './login/forget-password/forget-password
 import { SideNavComponent } from './side-nav/side-nav.component';
 import { TestimonialsComponent } from './Admin/testimonials/testimonials.component';
 import { TestimonialsImagesComponent } from './home-page/testimonials-images/testimonials-images.component';
+import { TestimonialsVideosComponent } from './home-page/testimonials-videos/testimonials-videos.component';
 
 
 @NgModule({
@@ -115,6 +116,7 @@ import { TestimonialsImagesComponent } from './home-page/testimonials-images/tes
     SideNavComponent,
     TestimonialsComponent,
     TestimonialsImagesComponent,
+    TestimonialsVideosComponent,
 
   ],
   imports: [

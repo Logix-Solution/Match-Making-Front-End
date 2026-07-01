@@ -1,0 +1,40 @@
+<section class="testimonials-videos bgvideo h-100">
+
+  <div class="videos-slider mt-5">
+    <div class="video-card" *ngFor="let video of videos" (click)="openPlayer(video)">
+      <div class="video-thumb" [style.background-image]="'url(' + video.thumbnailUrl + ')'">
+        <div class="play-icon">
+          <i class="bi bi-play-fill"></i>
+        </div>
+
+        <div class="thumb-overlay">
+          <div class="thumb-name">{{ video.personName }}</div>
+          <div class="thumb-date">{{ video.date }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dots">
+    <span class="dot" *ngFor="let d of dots; let i = index" [class.active]="i === activeDot"></span>
+  </div>
+
+  <!-- Mobile-style video player modal -->
+  <div class="player-backdrop" *ngIf="isPlayerOpen" (click)="closePlayer()">
+    <div class="player-phone" (click)="$event.stopPropagation()">
+      <button class="player-close" (click)="closePlayer()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+      <div class="player-screen" *ngIf="activeVideo">
+        <iframe
+          [src]="activeVideo.embedUrl"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </div>
+
+</section>

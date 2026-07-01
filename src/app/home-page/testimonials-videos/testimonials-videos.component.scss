@@ -1,0 +1,170 @@
+.testimonials-videos {
+  width: 100%;
+  min-height: clamp(360px, 55vw, 480px);
+  padding: clamp(70px, 14vw, 130px) clamp(16px, 6vw, 80px) clamp(30px, 6vw, 60px);
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  // ── 5 equal cards always, consistent at 100% and 80% zoom ───────────────
+  .videos-slider {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    justify-content: flex-start;    // ← must be flex-start, not center
+    gap: 12px;
+    overflow-x: auto;
+    padding: 10px 0;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+
+  .video-card {
+    // 5 cards exactly: (100% - 4 gaps × 12px) / 5
+    flex: 0 0 calc((100% - 48px) / 5);
+    min-width: 0;
+    aspect-ratio: 9 / 16;
+    cursor: pointer;
+    scroll-snap-align: start;
+  }
+
+  .video-thumb {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+
+    .play-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: clamp(32px, 5vw, 42px);
+      height: clamp(32px, 5vw, 42px);
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: clamp(14px, 2vw, 18px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .thumb-overlay {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: clamp(8px, 1.5vw, 12px) 10px;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.65) 100%);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+
+      .thumb-name {
+        color: #fff;
+        font-weight: 600;
+        font-size: clamp(11px, 1.4vw, 14px);
+      }
+
+      .thumb-date {
+        color: #fff;
+        font-size: clamp(9px, 1.1vw, 11px);
+        opacity: 0.85;
+      }
+    }
+
+    &:hover .thumb-overlay,
+    &:active .thumb-overlay {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (hover: none) {
+      .thumb-overlay {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+
+  .dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 16px;
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--3rd);
+      opacity: 0.4;
+
+      &.active {
+        opacity: 1;
+        background: var(--primary);
+      }
+    }
+  }
+
+  // ── Mobile-style player modal ─────────────────────────────────────────────
+  .player-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  .player-phone {
+    position: relative;
+    width: min(320px, 90vw);
+    height: min(580px, 85vh);
+    background: #000;
+    border-radius: 28px;
+    border: 6px solid #1a1a1a;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .player-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 5;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .player-screen {
+    width: 100%;
+    height: 100%;
+
+    iframe {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
