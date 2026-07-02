@@ -121,7 +121,7 @@
                 [attr.stroke-dasharray]="seg.dasharray"
                 [attr.stroke-dashoffset]="seg.dashoffset"
                 style="cursor: pointer;"
-                (click)="openModalWithFilter(seg.country)">
+               (click)="openModalWithFilter(seg.country, seg.countryId)">
               </circle>
             </svg>
           </div>
@@ -131,7 +131,7 @@
               *ngFor="let item of countryProfiles; let i = index"
               class="d-flex align-items-center justify-content-between py-1 px-2 rounded country-legend-item"
               style="cursor: pointer;"
-              (click)="openModalWithFilter(item.country_name)">
+             (click)="openModalWithFilter(item.country_name, item.country_id)">
               <span class="txt-8th">
                 <span class="d-inline-block rounded-circle me-2"
                   [style.background-color]="donutColors[i % donutColors.length]"
@@ -145,26 +145,30 @@
       </div>
     </div>
 
-    <div class="row g-1">
-      <div class="col-12 col-md-6">
-        <h4 class=" txt-8th mb-3">Quick Management</h4>
-        
-        <div class="action-panel-dark d-flex align-items-center justify-content-between mb-3" (click)="openModalWithFilter('All')">
-          <div>
-            <h5 class="ft-2  txt-6th mb-1">Review Pending Profiles</h5>
-            <p class="ft-4 txt-4th mb-0">You have 24 new applications</p>
-          </div>
-          <div class="action-arrow-btn bg-6th txt-primary"><i class="bi bi-chevron-right"></i></div>
-        </div>
+  <div class="row g-1">
+  <div class="col-12 col-md-6">
+    <h4 class="txt-8th mb-3">Quick Management</h4>
 
-        <div class="action-panel-light d-flex align-items-center justify-content-between" (click)="openModalWithFilter('All')">
-          <div>
-            <h5 class="ft-2 txt-8th mb-1">Manage Service Requests</h5>
-            <p class="ft-4 txt-7th mb-0">156 pending custom requests</p>
-          </div>
-          <div class="action-arrow-btn"><i class="bi bi-chevron-right"></i></div>
-        </div>
+    <div class="action-panel-dark d-flex align-items-center justify-content-between mb-3"
+         routerLink="/adminRequestManagement"
+         style="cursor: pointer;">
+      <div>
+        <h5 class="ft-2 txt-6th mb-1">Review Pending Profiles</h5>
+        <p class="ft-4 txt-4th mb-0">You have 24 new applications</p>
       </div>
+      <div class="action-arrow-btn bg-6th txt-primary"><i class="bi bi-chevron-right"></i></div>
+    </div>
+
+    <div class="action-panel-light d-flex align-items-center justify-content-between"
+         routerLink="/adminServicesRequests"
+         style="cursor: pointer;">
+      <div>
+        <h5 class="ft-2 txt-8th mb-1">Manage Service Requests</h5>
+        <p class="ft-4 txt-7th mb-0">156 pending custom requests</p>
+      </div>
+      <div class="action-arrow-btn"><i class="bi bi-chevron-right"></i></div>
+    </div>
+  </div>
 
       <div class="col-12 col-md-6">
         <h4 class=" mb-3">Recent Activity Logs</h4>

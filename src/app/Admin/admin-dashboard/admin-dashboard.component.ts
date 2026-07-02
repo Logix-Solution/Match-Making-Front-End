@@ -21,6 +21,7 @@ interface UserProfile {
   university: string;
   occupation: string;
   income: string;
+  
 }
 
 @Component({
@@ -38,62 +39,17 @@ export class AdminDashboardComponent implements OnInit {
   selectedCountryFilter = 'All';
 
 
-    countryProfiles: { country_name: string; totalProfiles: number; profilePercentage: string }[] = [];
+    countryProfiles: { country_name: string; totalProfiles: number; profilePercentage: string;  country_id: number; }[] = [];
   donutColors = ['#dc3545', '#fd7e14', '#0dcaf0', '#198754', '#6f42c1', '#20c997'];
-  donutSegments: { color: string; dasharray: string; dashoffset: string; country: string }[] = [];
+  donutSegments: { color: string; dasharray: string; dashoffset: string; country: string; countryId: number }[] = [];
 
   // Mock array simulating records displayed in mockup view
-  allProfiles: UserProfile[] = [
-    {
-      name: 'Tayyab Ali',
-      age: 26,
-      status: 'UN MARRIED',
-      avatarUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=120',
-      city: 'Islamabad',
-      phone: '+92 3040695071',
-      nationality: 'Pakistani',
-      caste: 'Arain',
-      religion: 'Islam',
-      sect: 'Sunni',
-      height: "5'11",
-      disabilities: 'No',
-      smoke: 'No',
-      drink: 'No',
-      wantKids: 'Yes',
-      kidsFromPrevious: 'No',
-      education: "Bachelor's",
-      university: 'Comsats University',
-      occupation: 'Engineer',
-      income: 'PKR 50,000/ - 100,000/month'
-    },
-    {
-      name: 'Tayyab Ali',
-      age: 26,
-      status: 'UN MARRIED',
-      avatarUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=120',
-      city: 'Islamabad',
-      phone: '+92 3040695071',
-      nationality: 'Pakistani',
-      caste: 'Arain',
-      religion: 'Islam',
-      sect: 'Sunni',
-      height: "5'11",
-      disabilities: 'No',
-      smoke: 'No',
-      drink: 'No',
-      wantKids: 'Yes',
-      kidsFromPrevious: 'No',
-      education: "Bachelor's",
-      university: 'Comsats University',
-      occupation: 'Engineer',
-      income: 'PKR 50,000/ - 100,000/month'
-    }
-  ];
+//  filteredProfiles: UserProfile[] = [];
 
   filteredProfiles: UserProfile[] = [];
 
  ngOnInit(): void {
-    this.filteredProfiles = [...this.allProfiles];
+   
     this.getDashboardCounts();
        this.getCountryWiseProfiles();
   }
@@ -123,34 +79,76 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   buildDonut(): void {
-    const circumference = 100;
-    let offset = 25; // start from top
-    this.donutSegments = this.countryProfiles.map((item, i) => {
-      const pct = parseFloat(item.profilePercentage);
-      const dash = `${pct.toFixed(2)} ${(circumference - pct).toFixed(2)}`;
-      const seg = {
-        color:       this.donutColors[i % this.donutColors.length],
-        dasharray:   dash,
-        dashoffset:  String(circumference - offset + circumference),
-        country:     item.country_name
-      };
-      offset += pct;
-      return seg;
-    });
-  }
+  const circumference = 100;
+  let offset = 25;
+  this.donutSegments = this.countryProfiles.map((item, i) => {
+    const pct = parseFloat(item.profilePercentage);
+    const dash = `${pct.toFixed(2)} ${(circumference - pct).toFixed(2)}`;
+    const seg = {
+      color:       this.donutColors[i % this.donutColors.length],
+      dasharray:   dash,
+      dashoffset:  String(circumference - offset + circumference),
+      country:     item.country_name,
+      countryId:   item.country_id,          // ← added
+    };
+    offset += pct;
+    return seg;
+  });
+}
 
-  openModalWithFilter(country: string): void {
-    this.selectedCountryFilter = country;
-    if (country === 'All') {
-      this.filteredProfiles = [...this.allProfiles];
-   } else {
-      this.filteredProfiles = this.allProfiles.filter(
-        p => p.nationality.toLowerCase() === country.toLowerCase()
-      );
-    }
-    this.isModalOpen = true;
-    document.body.classList.add('modal-open');
-  }
+ openModalWithFilter(country: string, countryID: number = 0): void {
+  this.selectedCountryFilter = country;
+  this.isModalOpen = true;
+  document.body.classList.add('modal-open');
+  this.filteredProfiles = []; // clear previous results
+
+  if (!countryID) return; // nothing to fetch if no ID
+
+  this.dataService.getHttp(`core-api/Admin/getUserDetailsByCountry`, { countryID }).subscribe({
+    next: (res: any) => {
+      const data = Array.isArray(res) ? res : [];
+      this.filteredProfiles = data.map((u: any) => {
+        let profile: any[] = [];
+        try { profile = JSON.parse(u.userProfile || '[]'); } catch { profile = []; }
+
+        const get = (typeID: number) =>
+          profile.find((p: any) => p.typeID === typeID && p.isPreference === 0)?.subTypeTitle || 'N/A';
+
+        const getInstitute = (typeID: number) =>
+          profile.find((p: any) => p.typeID === typeID && p.isPreference === 0)?.instituteName || 'N/A';
+
+        const location = profile.find((p: any) => p.cityID !== undefined && p.isPreference === 0);
+
+        const dob = u.dob ? new Date(u.dob) : null;
+        const age = dob ? new Date().getFullYear() - dob.getFullYear() : 0;
+
+        return {
+          name:             `${u.firstName || ''} ${u.lastName || ''}`.trim(),
+          age,
+          status:           get(10),
+          avatarUrl:        u.eDoc || '',
+          city:             location?.cityName    || 'N/A',
+          phone:            u.phoneNo             || 'N/A',
+          nationality:      location?.countryName || 'N/A',
+          caste:            get(1),
+          religion:         get(7),
+          sect:             get(8),
+          height:           get(26),
+          disabilities:     get(30),
+          smoke:            get(17),
+          drink:            get(18),
+          wantKids:         get(19),
+          kidsFromPrevious: 'N/A',
+          education:        get(4),
+          university:       getInstitute(4),
+          occupation:       get(5),
+          income:           get(6),
+        } as UserProfile;
+      });
+    },
+    error: (err) => console.error('getUserDetailsByCountry error:', err)
+  });
+}
 
   closeModal(): void {
     this.isModalOpen = false;
