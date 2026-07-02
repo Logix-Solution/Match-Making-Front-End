@@ -64,6 +64,8 @@ import { SideNavComponent } from './side-nav/side-nav.component';
 import { TestimonialsComponent } from './Admin/testimonials/testimonials.component';
 import { TestimonialsImagesComponent } from './home-page/testimonials-images/testimonials-images.component';
 import { TestimonialsVideosComponent } from './home-page/testimonials-videos/testimonials-videos.component';
+import { VerifyOTPComponent } from './login/verify-otp/verify-otp.component';
+import { UpdatePasswordComponent } from './login/update-password/update-password.component';
 
 
 @NgModule({
@@ -117,6 +119,8 @@ import { TestimonialsVideosComponent } from './home-page/testimonials-videos/tes
     TestimonialsComponent,
     TestimonialsImagesComponent,
     TestimonialsVideosComponent,
+    VerifyOTPComponent,
+    UpdatePasswordComponent,
 
   ],
   imports: [

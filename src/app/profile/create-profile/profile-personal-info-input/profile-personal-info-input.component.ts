@@ -389,7 +389,7 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
       .saveHttp(
         this.personalPageFields,
         this.personalFormFields,
-        'auth-api/saveUser',
+        'core-api/Profile/saveUserPersonalInfo',
       )
     
       .subscribe({

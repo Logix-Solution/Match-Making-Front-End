@@ -23,6 +23,8 @@ import { HowItsWorksComponent } from './home-page/how-its-works/how-its-works.co
 import { PremiumServicesComponent } from './home-page/premium-services/premium-services.component';
 import { SucessStoriesComponent } from './home-page/sucess-stories/sucess-stories.component';
 import { TestimonialsComponent } from './Admin/testimonials/testimonials.component';
+import { VerifyOTPComponent } from './login/verify-otp/verify-otp.component';
+import { UpdatePasswordComponent } from './login/update-password/update-password.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -45,6 +47,16 @@ const routes: Routes = [
     {
     path: 'Forget-Password',
     component: ForgetPasswordComponent,
+  },
+
+    {
+    path: 'verify-otp' ,
+    component: VerifyOTPComponent,
+  },
+
+    {
+    path: 'update-password' ,
+    component: UpdatePasswordComponent,
   },
 
     {
