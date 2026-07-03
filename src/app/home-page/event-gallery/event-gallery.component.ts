@@ -26,7 +26,7 @@ export class EventGalleryComponent implements OnInit, OnDestroy {
   }
 
   loadGallery(): void {
-    (this.dataService.getHttp('user-api/getEventsGallery?eventID=0', {}) as any)
+    (this.dataService.getHttp('user-api/getDashboardGalleryEvents', {}) as any)
       .subscribe((res: any) => {
         const data = Array.isArray(res) ? res : [];
         this.images = data.map((event: any) => ({
