@@ -27,7 +27,7 @@ export class PrefencesDetailsComponent implements OnInit {
 
   loadProfile(): void {
     const userID = this.sharedGlobalService.getUserID();
-    (this.sharedDataService.getHttp(`user-api/User/getUserDetails?UserID=${userID}`) as any)
+    (this.sharedDataService.getHttp(`core-api/Profile/getUserDetails?UserID=${userID}`) as any)
       .subscribe({
         next: (res: any) => {
           if (res && res.length > 0) {

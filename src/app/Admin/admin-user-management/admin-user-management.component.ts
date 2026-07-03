@@ -111,7 +111,7 @@ export class AdminUserManagementComponent implements OnInit {
     this.aboutText1        = '';
     document.body.classList.add('modal-open');
 
-    this.dataService.getHttp(`user-api/User/getUserDetails?UserID=${user.userID}`, {}).subscribe({
+    this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${user.userID}`, {}).subscribe({
       next: (res: any) => {
         const u = Array.isArray(res) ? res[0] : res;
         if (!u) { this.detailLoading = false; return; }

@@ -113,7 +113,7 @@ export class AdminRequestManagementComponent implements OnInit {
     this.aboutText1 = '';
     document.body.classList.add('modal-open');
 
-    this.dataService.getHttp(`user-api/User/getUserDetails?UserID=${item.userID}`, {}).subscribe({
+    this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${item.userID}`, {}).subscribe({
       next: (res: any) => {
         const user = Array.isArray(res) ? res[0] : res;
         if (!user) { this.detailLoading = false; return; }

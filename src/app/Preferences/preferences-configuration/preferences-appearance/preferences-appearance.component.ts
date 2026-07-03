@@ -213,7 +213,7 @@ loadUserDetails(): void {
   const userID = this.sharedGlobalService.getUserID();
   if (!userID) return;
 
-  this.dataService.getHttp(`user-api/User/getUserDetails?UserID=${userID}`).subscribe({
+  this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${userID}`).subscribe({
     next: (response: any) => {
       const user = Array.isArray(response) ? response[0] : response;
       if (!user) return;

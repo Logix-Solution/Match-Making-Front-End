@@ -6,22 +6,21 @@ import { SharedFormFieldValidationService } from 'src/shared/services/shared-for
 
 // ─── Interface ────────────────────────────────────────────────────────────────
 interface CareerProfileInterface {
-  userID:        number;  // 0
-  spType:        string;  // 1
-  instituteName: string;  // 2
-  careerJson:    string;  // 3 
+  userID: number; // 0
+  spType: string; // 1
+  instituteName: string; // 2
+  careerJson: string; // 3
 }
 
 @Component({
   selector: 'app-profile-career-info-input',
   templateUrl: './profile-career-info-input.component.html',
-  styleUrls: ['./profile-career-info-input.component.scss']
+  styleUrls: ['./profile-career-info-input.component.scss'],
 })
 export class ProfileCareerInfoInputComponent implements OnInit {
-
   // ─── Inputs from Parent ───────────────────────────────────────────────────
-  @Input() educationList:     any[] = [];
-  @Input() occupationList:    any[] = [];
+  @Input() educationList: any[] = [];
+  @Input() occupationList: any[] = [];
   @Input() monthlyIncomeList: any[] = [];
 
   // ─── Output to Parent ─────────────────────────────────────────────────────
@@ -31,31 +30,36 @@ export class ProfileCareerInfoInputComponent implements OnInit {
   instituteName: string = '';
 
   // ─── Dropdown Selections ──────────────────────────────────────────────────
-  selectedEducation:    any = '';
-  selectedOccupation:   any = '';
+  selectedEducation: any = '';
+  selectedOccupation: any = '';
   selectedMonthlyIncome: any = '';
 
   // ─── Page Fields (API payload) ────────────────────────────────────────────
   careerPageFields: CareerProfileInterface = {
-    userID:        0,
-    spType:        'insert',
+    userID: 0,
+    spType: 'insert',
     instituteName: '',
-    careerJson:    '[]',
+    careerJson: '[]',
   };
 
   // ─── Form Fields (for saveHttp validation) ────────────────────────────────
   careerFormFields: any[] = [
-    { value: 0,        msg: '',                                   type: 'hidden',  required: false }, // 0 userID
-    { value: 'insert', msg: '',                                   type: 'hidden',  required: false }, // 1 spType
-    { value: '',       msg: 'Please enter your institution name', type: 'textbox', required: true  }, // 2 instituteName
-    { value: '[]',     msg: '',                                   type: 'hidden',  required: false }, // 3 careerJson
+    { value: 0, msg: '', type: 'hidden', required: false }, // 0 userID
+    { value: 'insert', msg: '', type: 'hidden', required: false }, // 1 spType
+    {
+      value: '',
+      msg: 'Please enter your institution name',
+      type: 'textbox',
+      required: true,
+    }, // 2 instituteName
+    { value: '[]', msg: '', type: 'hidden', required: false }, // 3 careerJson
   ];
 
   constructor(
-    private dataService:         SharedDataService,
+    private dataService: SharedDataService,
     private sharedGlobalService: SharedGlobalService,
-    private toastr:              ToastrService,
-    private valid:               SharedFormFieldValidationService,
+    private toastr: ToastrService,
+    private valid: SharedFormFieldValidationService,
   ) {}
 
   ngOnInit(): void {
@@ -63,35 +67,48 @@ export class ProfileCareerInfoInputComponent implements OnInit {
   }
 
   // ─── Alias — HTML templates call onFieldChange() ──────────────────────────
-  onFieldChange(): void { this.syncFormFields(); }
+  onFieldChange(): void {
+    this.syncFormFields();
+  }
 
   // ─── Sync bound fields → formFields[] ────────────────────────────────────
   syncFormFields(): void {
     this.careerFormFields[2].value = this.instituteName;
 
     // careerJson: [educationID, occupationID, monthlyIncomeID]
-   const careerEntries = [
-  { typeID: 4, subTypeID: this.selectedEducation     },
-  { typeID: 5, subTypeID: this.selectedOccupation    },
-  { typeID: 6, subTypeID: this.selectedMonthlyIncome },
-].filter(item => item.subTypeID !== '' && item.subTypeID !== null && item.subTypeID !== undefined)
- .map(item    => ({ typeID: item.typeID, subTypeID: Number(item.subTypeID) }));
+    const careerEntries = [
+      { typeID: 4, subTypeID: this.selectedEducation },
+      { typeID: 5, subTypeID: this.selectedOccupation },
+      { typeID: 6, subTypeID: this.selectedMonthlyIncome },
+    ]
+      .filter(
+        (item) =>
+          item.subTypeID !== '' &&
+          item.subTypeID !== null &&
+          item.subTypeID !== undefined,
+      )
+      .map((item) => ({
+        typeID: item.typeID,
+        subTypeID: Number(item.subTypeID),
+      }));
 
-this.careerFormFields[3].value = JSON.stringify(careerEntries);
+    this.careerFormFields[3].value = JSON.stringify(careerEntries);
   }
 
   // ─── SAVE ─────────────────────────────────────────────────────────────────
   save(): void {
-
     // ─── Manual validations (dropdowns not covered by saveHttp) ──────────
     if (!this.selectedEducation) {
-      this.toastr.warning('Please select your education level'); return;
+      this.toastr.warning('Please select your education level');
+      return;
     }
     if (!this.selectedOccupation) {
-      this.toastr.warning('Please select your occupation'); return;
+      this.toastr.warning('Please select your occupation');
+      return;
     }
     if (!this.selectedMonthlyIncome) {
-      this.toastr.warning('Please select your monthly income'); return;
+      this.toastr.warning('Please select your monthly income');
+      return;
     }
 
     // ─── Get userLoginId ──────────────────────────────────────────────────
@@ -103,70 +120,82 @@ this.careerFormFields[3].value = JSON.stringify(careerEntries);
 
     // ─── Sync all fields ──────────────────────────────────────────────────
     this.syncFormFields();
-    this.careerFormFields[0].value = userID;   // userID
+    this.careerFormFields[0].value = userID; // userID
     this.careerFormFields[1].value = 'insert'; // spType
 
     // ─── Sync formFields → pageFields ────────────────────────────────────
-    this.careerPageFields.userID        = this.careerFormFields[0].value;
-    this.careerPageFields.spType        = this.careerFormFields[1].value;
+    this.careerPageFields.userID = this.careerFormFields[0].value;
+    this.careerPageFields.spType = this.careerFormFields[1].value;
     this.careerPageFields.instituteName = this.careerFormFields[2].value;
-    this.careerPageFields.careerJson    = this.careerFormFields[3].value;
+    this.careerPageFields.careerJson = this.careerFormFields[3].value;
 
     console.log('Career PageFields:', this.careerPageFields);
     console.log('Career FormFields:', this.careerFormFields);
 
     // ─── API Call ─────────────────────────────────────────────────────────
-    this.dataService.saveHttp(
-      this.careerPageFields,
-      this.careerFormFields,
-      'core-api/Profile/saveCareer'
-    ).subscribe({
-      next: (response: any) => {
-        const apiResponse = Array.isArray(response) ? response[0] : response;
-        if (apiResponse?.includes('Success')) {
-          this.valid.apiInfoResponse('Career Profile Saved Successfully');
-          this.saveSuccess.emit();  // ← tell parent to go stepper = 3
-        } else {
-          this.valid.apiErrorResponse(apiResponse);
-        }
-      },
-      error: (err: any) => {
-        console.log('Career Save Error:', err);
-      }
-    });
+    this.dataService
+      .saveHttp(
+        this.careerPageFields,
+        this.careerFormFields,
+        'core-api/Profile/saveCareer',
+      )
+      .subscribe({
+        next: (response: any) => {
+          const apiResponse = Array.isArray(response) ? response[0] : response;
+          if (apiResponse?.includes('Success')) {
+            this.valid.apiInfoResponse('Career Profile Saved Successfully');
+            this.saveSuccess.emit(); // ← tell parent to go stepper = 3
+          } else {
+            this.valid.apiErrorResponse(apiResponse);
+          }
+        },
+        error: (err: any) => {
+          console.log('Career Save Error:', err);
+        },
+      });
   }
 
   loadUserDetails(): void {
-  const userID = this.sharedGlobalService.getUserID();
-  if (!userID) return;
+    const userID = this.sharedGlobalService.getUserID();
+    if (!userID) return;
 
-  this.dataService.getHttp(`user-api/User/getUserDetails?UserID=${userID}`).subscribe({
-    next: (response: any) => {
-      const user = Array.isArray(response) ? response[0] : response;
-      if (!user) return;
+    this.dataService
+      .getHttp(`core-api/Profile/getUserDetails?UserID=${userID}`)
+      .subscribe({
+        next: (response: any) => {
+          const user = Array.isArray(response) ? response[0] : response;
+          if (!user) return;
 
-      // this.profileID = user.profileID ?? 0;
-      // set spType to Insert
-      this.careerFormFields[0].value = userID;
-      this.careerFormFields[1].value = 'Insert';
+          // this.profileID = user.profileID ?? 0;
+          // set spType to Insert
+          this.careerFormFields[0].value = userID;
+          this.careerFormFields[1].value = 'Insert';
 
-      let profileItems: any[] = [];
-      try { profileItems = JSON.parse(user.userProfile || '[]'); } catch { profileItems = []; }
+          let profileItems: any[] = [];
+          try {
+            profileItems = JSON.parse(user.userProfile || '[]');
+          } catch {
+            profileItems = [];
+          }
 
-      const getSubTypeID = (typeID: number) =>
-        profileItems.find((p: any) => p.typeID === typeID && p.isPreference === 0)?.subTypeID;
+          const getSubTypeID = (typeID: number) =>
+            profileItems.find(
+              (p: any) => p.typeID === typeID && p.isPreference === 0,
+            )?.subTypeID;
 
-      const getInstName = (typeID: number) =>
-        profileItems.find((p: any) => p.typeID === typeID && p.isPreference === 0)?.instituteName;
+          const getInstName = (typeID: number) =>
+            profileItems.find(
+              (p: any) => p.typeID === typeID && p.isPreference === 0,
+            )?.instituteName;
 
-      this.selectedEducation    = getSubTypeID(4)  || '';
-      this.selectedOccupation   = getSubTypeID(5)  || '';
-      this.selectedMonthlyIncome= getSubTypeID(6)  || '';
-      this.instituteName        = getInstName(4)   || '';
+          this.selectedEducation = getSubTypeID(4) || '';
+          this.selectedOccupation = getSubTypeID(5) || '';
+          this.selectedMonthlyIncome = getSubTypeID(6) || '';
+          this.instituteName = getInstName(4) || '';
 
-      this.syncFormFields();
-    },
-    error: (err) => console.log('Career load error:', err)
-  });
-}
+          this.syncFormFields();
+        },
+        error: (err) => console.log('Career load error:', err),
+      });
+  }
 }
