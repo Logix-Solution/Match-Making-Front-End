@@ -10,7 +10,7 @@ export const environment = {
     // apiUrl: 'http://localhost:11011/',
     // apiUrlauth: 'http://localhost:11011/',
   //  productUrl: 'http://159.69.174.28:11015/',
-      productUrl: 'http://95.217.205.57/:11030/',
+      productUrl: 'http://95.217.205.57:11030/',
 //    googleClientId: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com'
 };
 
