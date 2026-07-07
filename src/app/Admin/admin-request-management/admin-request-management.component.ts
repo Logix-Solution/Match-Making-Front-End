@@ -35,10 +35,9 @@ interface ProfileHeader {
 @Component({
   selector: 'app-admin-request-management',
   templateUrl: './admin-request-management.component.html',
-  styleUrls: ['./admin-request-management.component.scss']
+  styleUrls: ['./admin-request-management.component.scss'],
 })
 export class AdminRequestManagementComponent implements OnInit {
-
   activeTab: 'pending' | 'accepted' | 'rejected' = 'pending';
   allRequests: UserRequest[] = [];
   filteredRequests: UserRequest[] = [];
@@ -46,7 +45,14 @@ export class AdminRequestManagementComponent implements OnInit {
   // ─── Detail Modal ─────────────────────────────────────────────────────────
   isDetailModalOpen = false;
   detailLoading = false;
-  profileHeader: ProfileHeader = { avatar: '', name: '', age: '', location: '', occupation: '', status: '' };
+  profileHeader: ProfileHeader = {
+    avatar: '',
+    name: '',
+    age: '',
+    location: '',
+    occupation: '',
+    status: '',
+  };
   aboutText1 = '';
   profileSections: ProfileSection[] = [];
   showAboutModal = false;
@@ -61,33 +67,43 @@ export class AdminRequestManagementComponent implements OnInit {
     this.loadRequests();
   }
 
- loadRequests(): void {
-    this.dataService.getHttp(`core-api/Admin/getRequestManagement`, {}).subscribe({
-      next: (res: any) => {
-        const data = Array.isArray(res) ? res : [];
-        this.allRequests = data.map((u: any) => ({
-          id:       u.profileID,
-          userID:   u.userID,
-          name:     u.fullname || u.firstName || 'Unknown',
-          age:      this.calculateAge(u.dob),
-          location: u.address || 'N/A',
-          image:    u.eDoc || 'assets/images/default-avatar.png',
-          status:   this.mapStatus(u.statusID),
-          statusID: u.statusID,
-          email:    u.email,
-          phone:    u.phoneNumber
-        }));
-        this.filterRequestsByActiveTab();
-      },
-      error: (err) => console.error('Request Management load error:', err)
-    });
+  loadRequests(): void {
+    this.dataService
+      .getHttp(`core-api/Admin/getRequestManagement`, {})
+      .subscribe({
+        next: (res: any) => {
+          const data = Array.isArray(res) ? res : [];
+          this.allRequests = data.map((u: any) => ({
+            id: u.profileID,
+            userID: u.userID,
+            name: u.fullname || u.firstName || 'Unknown',
+            age: this.calculateAge(u.dob),
+            location: u.address || 'N/A',
+            image:
+              u.eDoc && u.eDoc.trim() !== ''
+                ? environment.productUrl +
+                  'assets/user-images/userProfile/' +
+                  u.eDoc
+                : 'assets/images/default-avatar.png',
+            status: this.mapStatus(u.statusID),
+            statusID: u.statusID,
+            email: u.email,
+            phone: u.phoneNumber,
+          }));
+          this.filterRequestsByActiveTab();
+        },
+        error: (err) => console.error('Request Management load error:', err),
+      });
   }
 
   mapStatus(statusID: number): 'pending' | 'accepted' | 'rejected' {
     switch (statusID) {
-      case 2:  return 'accepted';
-      case 3:  return 'rejected';
-      default: return 'pending';
+      case 2:
+        return 'accepted';
+      case 3:
+        return 'rejected';
+      default:
+        return 'pending';
     }
   }
 
@@ -103,7 +119,9 @@ export class AdminRequestManagementComponent implements OnInit {
   }
 
   filterRequestsByActiveTab(): void {
-    this.filteredRequests = this.allRequests.filter(item => item.status === this.activeTab);
+    this.filteredRequests = this.allRequests.filter(
+      (item) => item.status === this.activeTab,
+    );
   }
 
   // ─── View Details ─────────────────────────────────────────────────────────
@@ -114,18 +132,23 @@ export class AdminRequestManagementComponent implements OnInit {
     this.aboutText1 = '';
     document.body.classList.add('modal-open');
 
-    this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${item.userID}`, {}).subscribe({
-      next: (res: any) => {
-        const user = Array.isArray(res) ? res[0] : res;
-        if (!user) { this.detailLoading = false; return; }
-        this.buildProfile(user);
-        this.detailLoading = false;
-      },
-      error: (err) => {
-        console.error('getUserDetails error:', err);
-        this.detailLoading = false;
-      }
-    });
+    this.dataService
+      .getHttp(`core-api/Profile/getUserDetails?UserID=${item.userID}`, {})
+      .subscribe({
+        next: (res: any) => {
+          const user = Array.isArray(res) ? res[0] : res;
+          if (!user) {
+            this.detailLoading = false;
+            return;
+          }
+          this.buildProfile(user);
+          this.detailLoading = false;
+        },
+        error: (err) => {
+          console.error('getUserDetails error:', err);
+          this.detailLoading = false;
+        },
+      });
   }
 
   closeDetailModal(): void {
@@ -133,26 +156,41 @@ export class AdminRequestManagementComponent implements OnInit {
     document.body.classList.remove('modal-open');
   }
 
-  openAboutModal(): void  { this.showAboutModal = true; }
-  closeAboutModal(): void { this.showAboutModal = false; }
+  openAboutModal(): void {
+    this.showAboutModal = true;
+  }
+  closeAboutModal(): void {
+    this.showAboutModal = false;
+  }
 
   getSectionByTitle(title: string): ProfileSection | undefined {
-    return this.profileSections.find(s => s.title === title);
+    return this.profileSections.find((s) => s.title === title);
   }
 
   // ─── Build Profile from API ───────────────────────────────────────────────
   buildProfile(user: any): void {
     let profileItems: any[] = [];
-    try { profileItems = JSON.parse(user.userProfile || '[]'); } catch { profileItems = []; }
+    try {
+      profileItems = JSON.parse(user.userProfile || '[]');
+    } catch {
+      profileItems = [];
+    }
 
     const get = (typeID: number) =>
-      profileItems.find((p: any) => p.typeID === typeID && p.isPreference === 0)?.subTypeTitle || '—';
+      profileItems.find((p: any) => p.typeID === typeID && p.isPreference === 0)
+        ?.subTypeTitle || '—';
 
     const getInstitute = (typeID: number) =>
-      profileItems.find((p: any) => p.typeID === typeID && p.isPreference === 0);
+      profileItems.find(
+        (p: any) => p.typeID === typeID && p.isPreference === 0,
+      );
 
-    const locationItem = profileItems.find((p: any) => p.cityID !== undefined && p.isPreference === 0);
-    const location = locationItem ? `${locationItem.cityName}, ${locationItem.countryName}` : '—';
+    const locationItem = profileItems.find(
+      (p: any) => p.cityID !== undefined && p.isPreference === 0,
+    );
+    const location = locationItem
+      ? `${locationItem.cityName}, ${locationItem.countryName}`
+      : '—';
 
     const eduItem = getInstitute(4);
     const occItem = getInstitute(5);
@@ -161,14 +199,17 @@ export class AdminRequestManagementComponent implements OnInit {
     this.aboutText1 = user.aboutme || '';
 
     this.profileHeader = {
-      avatar: user.eDoc && user.eDoc.trim() !== ''
-    ? environment.productUrl + 'assets/user-images/userProfile/' + user.eDoc
-    : 'assets/images/default-avatar.png',
-      name:       user.fullname || user.firstName || 'Unknown',
-      age:        `${this.calculateAge(user.dob)} years`,
-      location:   location,
+      avatar:
+        user.eDoc && user.eDoc.trim() !== ''
+          ? environment.productUrl +
+            'assets/user-images/userProfile/' +
+            user.eDoc
+          : 'assets/images/default-avatar.png',
+      name: user.fullname || user.firstName || 'Unknown',
+      age: `${this.calculateAge(user.dob)} years`,
+      location: location,
       occupation: occItem?.subTypeTitle || '—',
-      status:     get(10)
+      status: get(10),
     };
 
     this.profileSections = [
@@ -176,64 +217,67 @@ export class AdminRequestManagementComponent implements OnInit {
         title: 'Education & Career',
         iconClass: 'bi bi-briefcase',
         items: [
-          { description: 'Education',     value: eduItem?.subTypeTitle  || '—' },
-          { description: 'Institute',     value: eduItem?.instituteName || '—' },
-          { description: 'Occupation',    value: occItem?.subTypeTitle  || '—' },
-          { description: 'Monthly Income',value: incItem?.subTypeTitle  || '—' },
-        ]
+          { description: 'Education', value: eduItem?.subTypeTitle || '—' },
+          { description: 'Institute', value: eduItem?.instituteName || '—' },
+          { description: 'Occupation', value: occItem?.subTypeTitle || '—' },
+          {
+            description: 'Monthly Income',
+            value: incItem?.subTypeTitle || '—',
+          },
+        ],
       },
       {
         title: 'Personal Information',
         iconClass: 'bi bi-person',
         items: [
-          { description: 'Cast',          value: get(1)  },
-          { description: 'Ethnicity',     value: get(3)  },
-          { description: 'Gender',        value: get(22) },
-          { description: 'Marital Status',value: get(10) },
-          { description: 'Height',        value: get(26) },
-          { description: 'No of Siblings',value: get(25) },
-          { description: 'Disability',    value: get(30) },
-        ]
+          { description: 'Cast', value: get(1) },
+          { description: 'Ethnicity', value: get(3) },
+          { description: 'Gender', value: get(22) },
+          { description: 'Marital Status', value: get(10) },
+          { description: 'Height', value: get(26) },
+          { description: 'No of Siblings', value: get(25) },
+          { description: 'Disability', value: get(30) },
+        ],
       },
       {
         title: 'Religion',
         iconClass: 'bi bi-moon',
         items: [
-          { description: 'Religion',            value: get(7) },
-          { description: 'Sect',                value: get(8) },
+          { description: 'Religion', value: get(7) },
+          { description: 'Sect', value: get(8) },
           { description: 'Religion Importance', value: get(9) },
-        ]
+        ],
       },
       {
         title: 'Family',
         iconClass: 'bi bi-house',
         items: [
-          { description: 'Housing Situation',  value: get(11) },
-          { description: 'Father Occupation',  value: get(12) },
-          { description: 'Mother Occupation',  value: get(13) },
+          { description: 'Housing Situation', value: get(11) },
+          { description: 'Father Occupation', value: get(12) },
+          { description: 'Mother Occupation', value: get(13) },
           { description: 'Family Involvement', value: get(14) },
-          { description: 'No of Siblings',     value: get(25) },
-          { description: 'Want Kids',          value: get(19) },
-        ]
+          { description: 'No of Siblings', value: get(25) },
+          { description: 'Want Kids', value: get(19) },
+        ],
       },
       {
         title: 'Appearance',
         iconClass: 'bi bi-person-bounding-box',
         items: [
-          { description: 'Body Type',  value: get(15) },
-          { description: 'Skin Tone',  value: get(16) },
-          { description: 'Height',     value: get(26) },
+          { description: 'Body Type', value: get(15) },
+          { description: 'Skin Tone', value: get(16) },
+          { description: 'Height', value: get(26) },
           { description: 'Disability', value: get(30) },
-        ]
+        ],
       },
       {
         title: 'Lifestyle',
         iconClass: 'bi bi-cup-hot',
         items: [
-          { description: 'Smoke',     value: get(17) },
-          { description: 'Alcohol',   value: get(18) },
+          { description: 'Smoke', value: get(17) },
+          { description: 'Alcohol', value: get(18) },
           { description: 'Want Kids', value: get(19) },
-        ]
+        ],
       },
     ];
   }
@@ -241,33 +285,59 @@ export class AdminRequestManagementComponent implements OnInit {
   // ─── Accept / Reject ──────────────────────────────────────────────────────
   onAccept(item: UserRequest): void {
     const adminID = this.sharedGlobalService.getUserID();
-    const payload = { userID: item.userID, statusID: 2, adminID: adminID, spType: 'update' };
-    this.dataService.postDirect('user-api/User/saveUserRequest', payload).subscribe({
-      next: (res: any) => {
-        const response = Array.isArray(res) ? res[0] : res;
-        if (response?.includes('Success')) {
-          this.valid.apiInfoResponse('Request Accepted Successfully');
-          item.status = 'accepted'; item.statusID = 2;
-          this.filterRequestsByActiveTab();
-        } else { this.valid.apiErrorResponse(response); }
-      },
-      error: (err) => { this.valid.apiErrorResponse('Something went wrong.'); console.error(err); }
-    });
+    const payload = {
+      userID: item.userID,
+      statusID: 2,
+      adminID: adminID,
+      spType: 'update',
+    };
+    this.dataService
+      .postDirect('user-api/User/saveUserRequest', payload)
+      .subscribe({
+        next: (res: any) => {
+          const response = Array.isArray(res) ? res[0] : res;
+          if (response?.includes('Success')) {
+            this.valid.apiInfoResponse('Request Accepted Successfully');
+            item.status = 'accepted';
+            item.statusID = 2;
+            this.filterRequestsByActiveTab();
+          } else {
+            this.valid.apiErrorResponse(response);
+          }
+        },
+        error: (err) => {
+          this.valid.apiErrorResponse('Something went wrong.');
+          console.error(err);
+        },
+      });
   }
 
   onReject(item: UserRequest): void {
     const adminID = this.sharedGlobalService.getUserID();
-    const payload = { userID: item.userID, statusID: 3, adminID: adminID, spType: 'update' };
-    this.dataService.postDirect('user-api/User/saveUserRequest', payload).subscribe({
-      next: (res: any) => {
-        const response = Array.isArray(res) ? res[0] : res;
-        if (response?.includes('Success')) {
-          this.valid.apiInfoResponse('Request Rejected Successfully');
-          item.status = 'rejected'; item.statusID = 3;
-          this.filterRequestsByActiveTab();
-        } else { this.valid.apiErrorResponse(response); }
-      },
-      error: (err) => { this.valid.apiErrorResponse('Something went wrong.'); console.error(err); }
-    });
+    const payload = {
+      userID: item.userID,
+      statusID: 3,
+      adminID: adminID,
+      spType: 'update',
+    };
+    this.dataService
+      .postDirect('user-api/User/saveUserRequest', payload)
+      .subscribe({
+        next: (res: any) => {
+          const response = Array.isArray(res) ? res[0] : res;
+          if (response?.includes('Success')) {
+            this.valid.apiInfoResponse('Request Rejected Successfully');
+            item.status = 'rejected';
+            item.statusID = 3;
+            this.filterRequestsByActiveTab();
+          } else {
+            this.valid.apiErrorResponse(response);
+          }
+        },
+        error: (err) => {
+          this.valid.apiErrorResponse('Something went wrong.');
+          console.error(err);
+        },
+      });
   }
 }

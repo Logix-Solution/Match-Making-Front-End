@@ -67,7 +67,11 @@ export class AdminUserManagementComponent implements OnInit {
           userID:      u.userID,
           name:        u.fullname || u.firstName || 'Unknown',
           location:    u.address || 'N/A',
-          image:       u.eDoc   || 'assets/images/default-avatar.png',
+          image:       u.eDoc && u.eDoc.trim() !== ''
+                ? environment.productUrl +
+                  'assets/user-images/userProfile/' +
+                  u.eDoc
+                : 'assets/images/default-avatar.png',
           status:      this.mapStatus(u.active),
           memberSince: this.formatDate(u.dob),
         }));
