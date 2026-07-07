@@ -232,7 +232,7 @@ export class PreferencesPersonalComponent implements OnInit {
             (p: any) => p.cityID !== undefined && p.isPreference === 1,
           );
           if (locationItem) {
-            this.selectedCountry = String(locationItem.countryCodeID || '');
+            this.selectedCountry = String(locationItem.countryID || '');
             this.selectedCity = String(locationItem.cityID || '');
             if (this.selectedCountry) {
               this.countrySelected.emit(Number(this.selectedCountry));

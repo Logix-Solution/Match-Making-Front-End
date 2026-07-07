@@ -128,6 +128,6 @@ export class PrefencesDetailsComponent implements OnInit {
   additionalInfo = '-';
 
   goToEditPrefernces(): void {
-    this.router.navigate(['/preferences-details']);
+    this.router.navigate(['/preferences-configuration']);
   }
 }
