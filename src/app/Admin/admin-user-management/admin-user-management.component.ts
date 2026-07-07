@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SharedDataService } from '../../../shared/services/shared-data.service';
 import { SharedGlobalService } from '../../../shared/services/shared-global.service';
 import { SharedFormFieldValidationService } from 'src/shared/services/shared-form-field-validation.service';
+import { environment } from 'src/envirnment/environment.prod';
 
 interface UserProfile {
   id:          number;
@@ -157,7 +158,9 @@ export class AdminUserManagementComponent implements OnInit {
     this.aboutText1 = user.aboutme || '';
 
     this.profileHeader = {
-      avatar:     user.eDoc || 'assets/images/default-avatar.png',
+   avatar: user.eDoc && user.eDoc.trim() !== ''
+    ? environment.productUrl + 'assets/user-images/userProfile/' + user.eDoc
+    : 'assets/images/default-avatar.png',
       name:       user.fullname || user.firstName || 'Unknown',
       age:        `${this.calculateAge(user.dob)} years`,
       location:   location,

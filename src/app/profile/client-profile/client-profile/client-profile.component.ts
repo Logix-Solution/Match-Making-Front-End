@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SharedDataService } from '../../../../shared/services/shared-data.service';
 import { SharedGlobalService } from '../../../../shared/services/shared-global.service';
+import { environment } from 'src/envirnment/environment';
 
 interface InfoItem {
   description: string;
@@ -145,9 +146,11 @@ export class ClientProfileComponent implements OnInit {
   }
 
   mapUserData(user: any): void {
-    if (user.eDoc) {
-      this.profileHeader.avatar = user.eDoc;
-    }
+   if (user.eDoc && user.eDoc.trim() !== '') {
+  this.profileHeader.avatar = environment.productUrl + 'assets/user-images/userProfile/' + user.eDoc;
+  console.log('✅ Profile Picture URL:', this.profileHeader.avatar);
+}
+
 
     this.profileHeader.name =
       user.fullname || `${user.firstName || ''} ${user.lastName || ''}`.trim();

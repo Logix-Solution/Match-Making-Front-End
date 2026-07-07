@@ -77,10 +77,12 @@
           (click)="toggleDropdown($event)"
         >
           <img
-            src="../../assets//images/profile1.png"
+            [src]="profileImageUrl"
             width="32"
             height="32"
             class="rounded-circle me-2"
+            style="object-fit: cover"
+            (error)="profileImageUrl = 'assets/images/profile1.png'"
           />
           <span>{{
             currentUser?.fullName || currentUser?.loginName || "User"
@@ -125,7 +127,7 @@
               Preferences Details
             </a>
           </li>
-            <li>
+          <li>
             <a
               class="dropdown-item"
               routerLink="/Pricing-Plans"
@@ -134,13 +136,13 @@
               Pricing Plans
             </a>
           </li>
-           <li>
+          <li>
             <a
               class="dropdown-item"
               routerLink="/Account-Setting"
               (click)="isDropdownOpen = false"
             >
-             Settings
+              Settings
             </a>
           </li>
           <li><hr class="dropdown-divider" /></li>
