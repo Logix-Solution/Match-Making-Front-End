@@ -7,8 +7,9 @@ import { SharedFormFieldValidationService } from 'src/shared/services/shared-for
 interface FamilyProfileInterface {
   userID: number; // 0
   spType: string; // 1
-  parentPhoneNumber: string; // 2 -> Combined format string "+92 03359154651"
-  familyJson: string; // 3 -> Strict numeric array "[1,2,3,4,5]"
+  parentPhoneNumber: string; // 2 -> Just the numeric phone number
+  familyJson: string; // 3 -> Strict numeric array "[1,2,3,4,5]" only, no country code
+  parentCountryCode: any; // 4 -> Separate top-level field
 }
 
 @Component({
@@ -36,7 +37,7 @@ export class ProfileFamilyInfoInputComponent implements OnInit {
   selectedMotherOccupation: any = '';
   selectedNoOfSiblings: any = '';
   selectedFamilyInvolvement: any = '';
-  selectedParentCountryCode: string = ''; // Holds prefix e.g., '+92'
+  selectedParentCountryCode: any = ''; // Holds country code, e.g. '+92' or 103
   parentPhoneNumber: string = ''; // Holds numeric tail e.g., '03359154651'
 
   // ─── Page Fields (API payload) ────────────────────────────────────────────
@@ -45,6 +46,7 @@ export class ProfileFamilyInfoInputComponent implements OnInit {
     spType: 'INSERT',
     parentPhoneNumber: '',
     familyJson: '[]',
+    parentCountryCode: '',
   };
 
   // ─── Form Fields (for dataService saveHttp structural validation) ──────────
@@ -58,6 +60,12 @@ export class ProfileFamilyInfoInputComponent implements OnInit {
       required: true,
     }, // 2 parentPhoneNumber
     { value: '[]', msg: '', type: 'hidden', required: false }, // 3 familyJson
+    {
+      value: '',
+      msg: 'Please choose parent country prefix code',
+      type: 'hidden',
+      required: true,
+    }, // 4 parentCountryCode
   ];
 
   constructor(
@@ -77,15 +85,13 @@ export class ProfileFamilyInfoInputComponent implements OnInit {
 
   // ─── Sync bindings to specific fields ─────────────────────────────────────
   syncFormFields(): void {
-    // 1. Concatenate Country Code and Phone Number into parentPhoneNumber
-    if (this.selectedParentCountryCode && this.parentPhoneNumber) {
-      this.familyFormFields[2].value = `${this.selectedParentCountryCode} ${this.parentPhoneNumber.trim()}`;
-    } else {
-      this.familyFormFields[2].value = '';
-    }
+    // 1. Phone number field holds ONLY the number
+    this.familyFormFields[2].value = this.parentPhoneNumber
+      ? this.parentPhoneNumber.trim()
+      : '';
 
     // 2. Collate clean database dropdown IDs strictly into familyJson array
-    const familyEntries = [
+    const familyEntries: any[] = [
       { typeID: 10, subTypeID: this.selectedMaritalStatus },
       { typeID: 11, subTypeID: this.selectedHousingSituation },
       { typeID: 12, subTypeID: this.selectedFatherOccupation },
@@ -105,6 +111,9 @@ export class ProfileFamilyInfoInputComponent implements OnInit {
       }));
 
     this.familyFormFields[3].value = JSON.stringify(familyEntries);
+
+    // 3. Parent country code — its own separate top-level field
+    this.familyFormFields[4].value = this.selectedParentCountryCode;
   }
 
   // ─── Save Action ──────────────────────────────────────────────────────────
@@ -159,6 +168,7 @@ export class ProfileFamilyInfoInputComponent implements OnInit {
     this.familyPageFields.spType = this.familyFormFields[1].value;
     this.familyPageFields.parentPhoneNumber = this.familyFormFields[2].value;
     this.familyPageFields.familyJson = this.familyFormFields[3].value;
+    this.familyPageFields.parentCountryCode = this.familyFormFields[4].value;
 
     console.log('Family Final PageFields Structure:', this.familyPageFields);
 
@@ -210,6 +220,10 @@ export class ProfileFamilyInfoInputComponent implements OnInit {
             profileItems.find(
               (p: any) => p.typeID === typeID && p.isPreference === 0,
             )?.subTypeID;
+
+          // Get parentCountryCode and parentPhoneNO directly — separate fields, no splitting
+          // NOTE: getUserDetails returns the phone number as "parentPhoneNO" (not "parentPhoneNumber")
+          this.selectedParentCountryCode = user.parentCountryCode || '';
           this.parentPhoneNumber = user.parentPhoneNO || '';
 
           this.selectedMaritalStatus = get(10) || '';

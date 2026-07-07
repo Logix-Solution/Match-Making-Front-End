@@ -263,17 +263,27 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
         const getSubTypeID = (typeID: number) =>
           profileItems.find((p: any) => p.typeID === typeID && p.isPreference === 0)?.subTypeID;
 
-        this.selectedGender      = getSubTypeID(22) || '';
-        this.selectedCast        = getSubTypeID(1)  || '';
-        this.selectedEthnicity   = getSubTypeID(3)  || '';
-        this.selectedNationality = getSubTypeID(2)  || '';
+        this.selectedGender    = getSubTypeID(22) || '';
+        this.selectedCast      = getSubTypeID(1)  || '';
+        this.selectedEthnicity = getSubTypeID(3)  || '';
 
-        // ── Country — use countryCodeID directly from user object ─────────
+        // ── Location object (holds cityID, countryID, and the "nationality" string) ──
         const locationItem = profileItems.find(
           (p: any) => p.cityID !== undefined && p.isPreference === 0
         );
 
-        // Country from user.countryCodeID (most reliable)
+        // ── Nationality — comes from locationItem.nationality (a string like "Pakistani"),
+        // NOT a typeID/subTypeID pair, so match it against nationalityList by title ──
+        if (locationItem?.nationality) {
+          const matchedNationality = this.nationalityList.find(
+            (n: any) => n.subTypeTitle === locationItem.nationality
+          );
+          this.selectedNationality = matchedNationality ? matchedNationality.subTypeID : '';
+        } else {
+          this.selectedNationality = '';
+        }
+
+        // ── Country — use countryCodeID directly from user object ─────────
         const countryID = user.countryCodeID || locationItem?.countryID || '';
         this.selectedCountry = countryID;
 
