@@ -116,3 +116,64 @@ $primary-hex: #590117;
     height: 360px;
   }
 }
+
+
+// ─── Lightbox ────────────────────────────────────────────────────────────────
+.testimonial-lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(3px);
+}
+
+.testimonial-lightbox-box {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #000;
+  border: 3px solid $primary-hex;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+.testimonial-lightbox-img {
+  display: block;
+  max-width: 90vw;
+  max-height: 80vh;
+  object-fit: contain;
+}
+
+.testimonial-lightbox-label {
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  text-align: center;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+.testimonial-lightbox-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+
+  &:hover { background: rgba(255, 255, 255, 0.2); }
+}

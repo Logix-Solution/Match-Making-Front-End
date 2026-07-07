@@ -113,4 +113,16 @@ export class TestimonialsImagesComponent implements OnInit, OnDestroy {
   // ── Pause on hover — stops swap completely ────────────────────────────────
   onMouseEnter(): void { this.isPaused = true; }
   onMouseLeave(): void { this.isPaused = false; }
+
+  lightboxImage: TestimonialImage | null = null;
+
+openLightbox(img: TestimonialImage): void {
+  this.lightboxImage = img;
+  this.isPaused = true;           // pause slider while viewing
+}
+
+closeLightbox(): void {
+  this.lightboxImage = null;
+  this.isPaused = false;          // resume slider on close
+}
 }
