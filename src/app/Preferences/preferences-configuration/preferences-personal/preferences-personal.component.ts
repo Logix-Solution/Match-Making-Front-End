@@ -227,15 +227,21 @@ export class PreferencesPersonalComponent implements OnInit {
             ethnicity: this.selectedEthnicity,
           });
 
-          // city/country — now in userPreference with nationalityID key
+          // city/country — now in userPreference with countryID key
           const locationItem = prefItems.find(
             (p: any) => p.cityID !== undefined && p.isPreference === 1,
           );
           if (locationItem) {
             this.selectedCountry = String(locationItem.countryID || '');
-            this.selectedCity = String(locationItem.cityID || '');
+
             if (this.selectedCountry) {
+              // Emit to parent to load city list, then set city after short delay
+              // (same pattern used in profile-personal-info-input.component.ts)
               this.countrySelected.emit(Number(this.selectedCountry));
+              setTimeout(() => {
+                this.selectedCity = String(locationItem.cityID || '');
+                this.syncFormFields();
+              }, 600); // Wait for parent to load city list
             }
           }
           this.syncFormFields();
