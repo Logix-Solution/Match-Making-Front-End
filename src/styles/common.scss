@@ -316,7 +316,8 @@ p {
 .scroll-verticle {
   overflow-x: hidden !important;
   overflow-y: hidden !important;
-  scrollbar-gutter: stable both-edges !important;
+  // scrollbar-gutter: stable both-edges !important;
+ 
 }
 
 .scroll-verticle:hover {
