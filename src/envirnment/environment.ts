@@ -27,7 +27,7 @@ export const environment = {
    apijob:'https://Pakistanmasjidportal.com',
  
     productUrl: 'http://95.217.205.57:11030/',
-     googleClientId: '51129007656-7853v1j76s30u7cnne2b10nlg9r2ku3l.apps.googleusercontent.com'
+    googleClientId: '51129007656-7853v1j76s30u7cnne2b10nlg9r2ku3l.apps.googleusercontent.com'
 };
 
 /*

@@ -1,138 +1,181 @@
 <!-- Full Screen Background -->
-<div class="bgLogin  h-100  w-100 mb-5 d-flex align-items-center justify-content-end p-1 ">
-  
-  
-
+<div
+  class="bgLogin h-100 w-100 mb-5 d-flex align-items-center justify-content-end p-1"
+>
   <!-- Login Card Container -->
   <div class="container-fluid">
     <div class="row justify-content-end">
       <div class="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4">
-        
         <!-- Login Card -->
-        <div class="bg-white rounded-4 shadow-lg p-3 p-md-5 position-relative" style="max-width: 550px; margin: 0 auto;">
+        <div
+          class="bg-white rounded-4 shadow-lg p-3 p-md-5 position-relative"
+          style="max-width: 550px; margin: 0 auto"
+        >
+          <!-- Close Button (Top Right) -->
+          <button
+            class="btn-close position-absolute top-0 end-0 m-3 m-md-4"
+            (click)="closeModal()"
+            style="z-index: 10"
+            aria-label="Close"
+          ></button>
 
-                           <!-- Close Button (Top Right) -->
-  <button class="btn-close    position-absolute top-0 end-0 m-3 m-md-4" 
-          (click)="closeModal()"
-          style=" z-index: 10; "
-          aria-label="Close"></button>
-          
           <!-- Logo -->
           <div class="text-center mb-1">
-
-            <div class=" mb-2" style="height: 80px; display: flex; align-items: center; justify-content: center;">
+            <div
+              class="mb-2"
+              style="
+                height: 80px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
               <!-- Replace with your logo -->
-              <img src="../../assets/images/websiteLogo.svg" 
-              
-                   alt="Muslim Matchmaking" 
-                   class="img-fluid"
-                   style="max-height: 80%; max-width: 80%;">
+              <img
+                src="../../assets/images/websiteLogo.svg"
+                alt="Muslim Matchmaking"
+                class="img-fluid"
+                style="max-height: 80%; max-width: 80%"
+              />
             </div>
-            <p class="text-muted mb-0" style="font-size: 0.95rem; ">
+            <p class="text-muted mb-0" style="font-size: 0.95rem">
               Sign in to continue your journey
             </p>
           </div>
 
           <!-- Google Sign In Button -->
-          <button class="btn btn-outline-secondary w-100 rounded-pill py-3 mb-1 d-flex align-items-center justify-content-center gap-2" 
-                  (click)="signInWithGoogle()"
-                  style="font-family: 'Inter', sans-serif; font-size: 0.95rem;">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
-                 alt="Google" 
-                 width="20" 
-                 height="20">
+          <button
+            class="btn btn-outline-secondary w-100 rounded-pill py-3 mb-1 d-flex align-items-center justify-content-center gap-2"
+            (click)="signInWithGoogle()"
+            style="
+              font-family: &quot;Inter&quot;, sans-serif;
+              font-size: 0.95rem;
+            "
+          >
+            <img
+              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+              alt="Google"
+              width="20"
+              height="20"
+            />
             Continue with Google
           </button>
 
           <!-- Divider -->
           <div class="d-flex align-items-center my-1">
-            <hr class="flex-grow-1 border-top">
-            <span class="px-3 text-muted" style="font-size: 0.65rem; ">
+            <hr class="flex-grow-1 border-top" />
+            <span class="px-3 text-muted" style="font-size: 0.65rem">
               Or continue with email
             </span>
-            <hr class="flex-grow-1 border-top">
+            <hr class="flex-grow-1 border-top" />
           </div>
 
           <!-- Email Address -->
           <div class="mb-2">
-            <label class="form-label fw-semibold mb-2" 
-                   style="font-size: 0.875rem;  color: #1a1a1a;">
+            <label
+              class="form-label fw-semibold mb-2"
+              style="font-size: 0.875rem; color: #1a1a1a"
+            >
               Email Address
             </label>
-           <div class="input-group custom-input-group">
-                <span class="input-group-text border-end-0">
-                  <i class="bi bi-person text-muted"></i>
-                </span>
-              <input type="email" 
-                     class="form-control border-start-0 ps-1" 
-                     placeholder="your@email.com"
-                     [(ngModel)]="email"
-                     (keyup.enter)="login()"
-                     style="border-color: #e5e7eb; background-color: #f9fafb; ">
+            <div class="input-group custom-input-group">
+              <span class="input-group-text border-end-0">
+                <i class="bi bi-person text-muted"></i>
+              </span>
+              <input
+                type="email"
+                class="form-control border-start-0 ps-1"
+                placeholder="your@email.com"
+                [(ngModel)]="email"
+                (keyup.enter)="login()"
+                style="border-color: #e5e7eb; background-color: #f9fafb"
+              />
             </div>
           </div>
 
           <!-- Password -->
           <div class="mb-2">
-            <label class="form-label fw-semibold mb-2" 
-                   style="font-size: 0.875rem; color: #1a1a1a;">
+            <label
+              class="form-label fw-semibold mb-2"
+              style="font-size: 0.875rem; color: #1a1a1a"
+            >
               Password
             </label>
-         <div class="input-group custom-input-group">
-                <span class="input-group-text border-end-0">
+            <div class="input-group custom-input-group">
+              <span class="input-group-text border-end-0">
                 <i class="bi bi-lock text-muted"></i>
               </span>
-              <input [type]="hidePassword ? 'password' : 'text'" 
-                     class="form-control border-start-0 border-end-0 ps-0" 
-                     placeholder="Enter your password"
-                     [(ngModel)]="password"
-                     (keyup.enter)="login()"
-                     style="border-color: #e5e7eb; background-color: #f9fafb; ">
-              <span class="input-group-text bg-light border-start-0 cursor-pointer" 
-                    (click)="togglePasswordVisibility()"
-                    style="border-color: #e5e7eb; cursor: pointer;">
-                <i [class]="hidePassword ? 'bi bi-eye-slash text-muted' : 'bi bi-eye text-muted'"></i>
+              <input
+                [type]="hidePassword ? 'password' : 'text'"
+                class="form-control border-start-0 border-end-0 ps-0"
+                placeholder="Enter your password"
+                [(ngModel)]="password"
+                (keyup.enter)="login()"
+                style="border-color: #e5e7eb; background-color: #f9fafb"
+              />
+              <span
+                class="input-group-text bg-light border-start-0 cursor-pointer"
+                (click)="togglePasswordVisibility()"
+                style="border-color: #e5e7eb; cursor: pointer"
+              >
+                <i
+                  [class]="
+                    hidePassword
+                      ? 'bi bi-eye-slash text-muted'
+                      : 'bi bi-eye text-muted'
+                  "
+                ></i>
               </span>
             </div>
           </div>
 
           <!-- Forgot Password -->
           <div class="text-end mb-2">
-            <a class="txt-primary text-decoration-none cursor-pointer" 
+            <a
+              class="txt-primary text-decoration-none cursor-pointer"
               routerLink="/Forget-Password"
-               style="font-size: 0.875rem;  cursor: pointer;">
+              style="font-size: 0.875rem; cursor: pointer"
+            >
               Forgot Password?
             </a>
           </div>
 
           <!-- Sign In Button -->
-          <button class="btn bg-primary text-white w-100 rounded-pill py-2 fw-semibold mb-2" 
-                  (click)="login()"
-                  [disabled]="isLoading"
-                  style=" font-size: 1rem;">
+          <button
+            class="btn bg-primary text-white w-100 rounded-pill py-2 fw-semibold mb-2"
+            (click)="login()"
+            [disabled]="isLoading"
+            style="font-size: 1rem"
+          >
             <span *ngIf="!isLoading">Sign In</span>
-            <span *ngIf="isLoading" class="d-flex align-items-center justify-content-center gap-2">
-              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span
+              *ngIf="isLoading"
+              class="d-flex align-items-center justify-content-center gap-2"
+            >
+              <span
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
               Signing In...
             </span>
           </button>
 
           <!-- Sign Up Link -->
           <div class="text-center">
-            <span class="text-muted" style="font-size: 0.875rem; ">
-              Don't have an account? 
+            <span class="text-muted" style="font-size: 0.875rem">
+              Don't have an account?
             </span>
-            <a class="txt-primary text-decoration-none fw-semibold cursor-pointer ms-1" 
+            <a
+              class="txt-primary text-decoration-none fw-semibold cursor-pointer ms-1"
               routerLink="/signIn"
-               style="font-size: 0.875rem;  cursor: pointer;">
+              style="font-size: 0.875rem; cursor: pointer"
+            >
               Create Account
             </a>
           </div>
-
         </div>
-
       </div>
     </div>
   </div>
-
 </div>

@@ -53,6 +53,9 @@ export class SharedAuthService {
     );
 }
 
+setCurrentUser(user: any): void {
+  this.currentUserSubject.next(user);
+}
   // login(email: string, password: string): Observable<UserInterface> {
   //  console.log('Attempting login with:', { email, password });
   //   return this.http
