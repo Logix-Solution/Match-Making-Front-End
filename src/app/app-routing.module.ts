@@ -25,6 +25,7 @@ import { SucessStoriesComponent } from './home-page/sucess-stories/sucess-storie
 import { TestimonialsComponent } from './Admin/testimonials/testimonials.component';
 import { VerifyOTPComponent } from './login/verify-otp/verify-otp.component';
 import { UpdatePasswordComponent } from './login/update-password/update-password.component';
+import { PricingPlanConfigurationComponent } from './Admin/pricing-plan-configuration/pricing-plan-configuration.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -126,6 +127,11 @@ const routes: Routes = [
   {
      path: 'testimonials',
     component: TestimonialsComponent,
+  },
+
+   {
+     path: 'pricingConfig',
+    component: PricingPlanConfigurationComponent,
   },
   
   /////////////////////Account setting/////////////

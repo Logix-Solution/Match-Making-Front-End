@@ -66,6 +66,7 @@ import { TestimonialsImagesComponent } from './home-page/testimonials-images/tes
 import { TestimonialsVideosComponent } from './home-page/testimonials-videos/testimonials-videos.component';
 import { VerifyOTPComponent } from './login/verify-otp/verify-otp.component';
 import { UpdatePasswordComponent } from './login/update-password/update-password.component';
+import { PricingPlanConfigurationComponent } from './Admin/pricing-plan-configuration/pricing-plan-configuration.component';
 
 
 @NgModule({
@@ -121,6 +122,7 @@ import { UpdatePasswordComponent } from './login/update-password/update-password
     TestimonialsVideosComponent,
     VerifyOTPComponent,
     UpdatePasswordComponent,
+    PricingPlanConfigurationComponent,
 
   ],
   imports: [

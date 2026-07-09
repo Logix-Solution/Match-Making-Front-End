@@ -1,0 +1,112 @@
+.pricing-admin-container {
+
+  // ─── Row 1: Free Plan + Registration — CSS Grid, not flex ────────────────
+  // Grid columns don't reflow based on content width like flex-basis does,
+  // so no matter how many currency values (dollar / euro / rupees) get
+  // added to Registration, it will always stay in the same row as Free Plan.
+  .top-row {
+    display: grid;
+    grid-template-columns: minmax(260px, 340px) 1fr; // Free Plan fixed-ish, Registration fills the rest
+    align-items: stretch;
+    gap: 1rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr; // stack only on small screens, intentionally
+    }
+  }
+
+  .top-row-free,
+  .top-row-reg {
+    min-width: 0; // critical — prevents grid item from forcing overflow/wrap based on its content
+  }
+
+  .plan-admin-card {
+    border: 1px solid var(--5th) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .price-line {
+      letter-spacing: -0.01em;
+      font-weight: 700;
+      white-space: nowrap;  // keep $ / € / Rs values on one line
+      overflow-x: auto;     // scroll instead of wrap if it ever gets too long
+      overflow-y: hidden;
+    }
+
+    .stat-pill {
+      background-color: var(--primary);
+      color: var(--6th);
+      border: none;
+      padding: 0.5em 1em;
+      opacity: 1;
+    }
+
+    .feature-list li i.txt-muted-check {
+      font-size: 1rem;
+      color: #b7b7b7;
+    }
+  }
+}
+
+// ─── Modal ──────────────────────────────────────────────────────────────────
+.plan-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 3rem 1rem;
+  z-index: 1050;
+  overflow-y: auto;
+}
+
+.plan-modal {
+  width: 100%;
+  max-width: 620px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .plan-modal-body {
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .modal-input,
+  .modal-select-field {
+    background-color: var(--5th);
+    height: 42px;
+    font-size: 13px;
+    color: var(--8th);
+  }
+
+  select.modal-input {
+    appearance: none;
+  }
+
+  textarea.modal-input {
+    height: auto;
+  }
+
+  .tier-editor-card {
+    border: 1px solid var(--5th);
+  }
+
+  .upload-plan-btn {
+    background-color: var(--primary);
+    color: var(--6th);
+    font-weight: 600;
+    border: none;
+    border-radius: 0;
+    padding: 1em;
+  }
+}

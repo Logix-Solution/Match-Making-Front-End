@@ -60,13 +60,14 @@
 
 
 .active-link .dashboard,
-.active-link .eventGallery,
+.active-link .eventsGallery,
 .active-link .servicesRequests,
 .active-link .userManagement,
 .active-link .bestMatch,
 .active-link .requestManagement,
 .active-link .matchComparison,
-.active-link .testimonials{
+.active-link .testimonials,
+.active-link .PricingPlanConfig{
   filter: brightness(0) invert(1);
   /* This converts black SVG icons to white */
 }

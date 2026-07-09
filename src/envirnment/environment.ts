@@ -7,8 +7,8 @@ export const environment = {
   envName: 'prod',
   // //////localhost //////////////
 
-  //  apiUrl: 'http://localhost:11011/',
-  // apiUrlauth: 'http://localhost:11011/',
+   apiUrl: 'http://localhost:11011/',
+  apiUrlauth: 'http://localhost:11011/',
 
 
   /////for live server api//////////
@@ -18,9 +18,9 @@ export const environment = {
 //  apiUrlauth: 'http://159.69.174.28:11011/',
 
 
-  // http://159.69.174.28:11015/
- apiUrl: 'http://95.217.205.57:11011/',
- apiUrlauth: 'http://95.217.205.57:11011/',
+//   // http://159.69.174.28:11015/
+//  apiUrl: 'http://95.217.205.57:11011/',
+//  apiUrlauth: 'http://95.217.205.57:11011/',
 
   imageUrl: 'C:\\inetpub\\wwwroot\\Matchmaking\\Matchmaking-app\\matchmaking\\assets\\user-images\\',
 

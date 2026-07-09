@@ -1,0 +1,181 @@
+<section class="d-flex flex-column h-100 no-scroll">
+<div class="container-fluid py-5 pricing-admin-container  flex-grow-1 scroll-verticle style-1">
+
+  <div class="row mb-4 align-items-center">
+    <div class="col">
+      <h1 class="ft-7 mb-1">Create &amp; Update Your Pricing Plans</h1>
+      <p class="mt-1 mb-0" style="font-weight: 100px !important; color: #6C727A;">These Plans are visible to all clients</p>
+   <!-- <div class="mt-1 mb-0" style="font-weight: 100px !important; color: #6C727A;"></div> -->
+    </div>
+    <div class="col-auto">
+      <button class="btn btnPrimary d-flex align-items-center gap-2" (click)="openCreateModal()">
+        <i class="bi bi-plus-lg"></i>
+        Create New Plan
+      </button>
+    </div>
+  </div>
+
+  <!-- Row 1: Free Plan + Registration side by side (CSS Grid — locked 2-column layout) -->
+  <div
+  class="top-row mb-3"
+  *ngIf="freeTier || registrationTier">
+
+  <div class="top-row-free" *ngIf="freeTier">
+    <div class="card plan-admin-card h-100 p-3 rounded-4 bg-6th">
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <div class="text-uppercase ft-6 fw-semibold txt-7th tracking-wide">Free Plan</div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-link p-0 txt-primary" (click)="openEditModal(freeTier)" aria-label="Edit plan">
+            <i class="bi bi-pencil-fill"></i>
+          </button>
+          <button class="btn btn-link p-0 txt-danger" (click)="deleteTier(freeTier)" aria-label="Delete plan">
+            <i class="bi bi-trash-fill"></i>
+          </button>
+        </div>
+      </div>
+      <button class="btn stat-pill w-100 fw-semibold rounded-3 ft-3 mt-auto" disabled>
+        {{ freeTier.totalClients }} Total Clients
+      </button>
+    </div>
+  </div>
+
+  <div class="top-row-reg" *ngIf="registrationTier">
+    <div class="card plan-admin-card h-100 p-3 rounded-4 bg-6th">
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <div class="text-uppercase ft-6 fw-semibold txt-7th tracking-wide">Registration</div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-link p-0 txt-primary" (click)="openEditModal(registrationTier)" aria-label="Edit plan">
+            <i class="bi bi-pencil-fill"></i>
+          </button>
+          <button class="btn btn-link p-0 txt-danger" (click)="deleteTier(registrationTier)" aria-label="Delete plan">
+            <i class="bi bi-trash-fill"></i>
+          </button>
+        </div>
+      </div>
+      <div class="d-flex align-items-end flex-wrap gap-2 mb-2">
+        <span class="price-line fh-5 txt-primary">{{ priceLine(registrationTier) }}</span>
+        <span class="ft-6 txt-7th mb-1">/ {{ primaryDuration(registrationTier) }}</span>
+      </div>
+      <button class="btn stat-pill fw-semibold rounded-3 ft-3 align-self-start" disabled>
+        {{ registrationTier.totalClientsPaid }} Total Clients Paid
+      </button>
+    </div>
+  </div>
+
+</div>
+
+  <!-- Remaining tiers, 2 per row -->
+  <div class="row g-3">
+    <div class="col-md-6" *ngFor="let tier of regularTiers">
+      <div class="card plan-admin-card h-100 p-3 rounded-4 bg-6th">
+
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <div class="text-uppercase ft-6 fw-semibold txt-7th tracking-wide">{{ tier.name }}</div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-link p-0 txt-primary" (click)="openEditModal(tier)" aria-label="Edit plan">
+              <i class="bi bi-pencil-fill"></i>
+            </button>
+            <button class="btn btn-link p-0 txt-danger" (click)="deleteTier(tier)" aria-label="Delete plan">
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </div>
+        </div>
+        <div class="d-flex align-items-end flex-wrap gap-2 mb-3">
+          <span class="price-line fh-5 txt-primary">{{ priceLine(tier) }}</span>
+          <span class="ft-6 txt-7th mb-1">/ {{ primaryDuration(tier) }}</span>
+        </div>
+
+        <ul *ngIf="featureLines(tier.details).length" class="list-unstyled feature-list mb-3 ft-4 txt-8th">
+          <li *ngFor="let line of featureLines(tier.details)" class="d-flex align-items-start mb-2">
+            <i class="bi bi-check-circle txt-muted-check me-2 mt-0.5"></i>
+            <span>{{ line }}</span>
+          </li>
+        </ul>
+
+        <button class="btn stat-pill w-100 fw-semibold rounded-3 ft-3 mt-auto" disabled>
+          {{ tier.activeClients }} Active Clients
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!freeTier && !registrationTier && regularTiers.length === 0" class="text-center py-5 txt-7th ft-4">
+    No pricing plans yet — click "Create New Plan" to add one.
+  </div>
+
+</div>
+</section>
+
+<!-- ─── Create / Edit Plan Modal — one plan at a time ─────────────────────────── -->
+<div class="plan-modal-backdrop" *ngIf="isModalOpen" (click)="closeModal()">
+  <div class="plan-modal bg-5th rounded-4" (click)="$event.stopPropagation()">
+
+    <div class="d-flex justify-content-between align-items-center px-4 pt-4">
+      <h2 class="fh-5 txt-8th mb-0">Pricing Plan</h2>
+      <button class="btn btn-link p-0 txt-7th fs-4" (click)="closeModal()" aria-label="Close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="plan-modal-body px-4 pb-4">
+
+    <div class="tier-editor-card bg-6th rounded-4 p-3 mt-3">
+
+  <div class="form-group">
+    <label class="text-uppercase ft-6 fw-bold txt-7th mb-1">Plan Name</label>
+    <input
+      type="text"
+      class="form-control modal-input rounded-3 border-0 px-3"
+      placeholder="e.g. Registration, Monthly, Quarterly"
+      [(ngModel)]="workingTier.name"
+    />
+  </div>
+   <!-- One full-width row per currency: Currency Type | Plan Fee | Duration -->
+  <div *ngFor="let fee of workingTier.fees; let ci = index" class="row g-2 mb-2 mt-1">
+  <div class="col-md-4">
+  <label class="text-uppercase ft-6 fw-bold txt-7th mb-1">Currency Type</label>
+  <div class="modal-select-field rounded-3 px-3 d-flex align-items-center justify-content-between ft-4 txt-8th">
+    <span>{{ getSymbol(fee.currencyTypeTitle) }} {{ fee.currencyTypeTitle }}</span>
+    <i class="bi bi-chevron-down ft-6 txt-7th"></i>
+  </div>
+</div>
+    <div class="col-md-4">
+      <label class="text-uppercase ft-6 fw-bold txt-7th mb-1">Plan Fee</label>
+      <input
+        type="number"
+        class="form-control modal-input rounded-3 border-0 px-3"
+        placeholder="0.00"
+        [(ngModel)]="fee.fee"
+      />
+    </div>
+    <div class="col-md-4">
+  <label class="text-uppercase ft-6 fw-bold txt-7th mb-1">Duration</label>
+  <select
+    class="form-select modal-input rounded-3 border-0 px-3"
+    [(ngModel)]="fee.durationID">
+    <option [ngValue]="null">Select</option>
+    <option *ngFor="let d of durationOptions" [ngValue]="d.durationID">{{ d.durationTitle }}</option>
+  </select>
+</div>
+  </div>
+
+  <div class="form-group mt-2" *ngIf="!workingTier.isFreePlan && !workingTier.isRegistration">
+    <label class="text-uppercase ft-6 fw-bold txt-7th mb-1">Plan Details</label>
+    <textarea
+      class="form-control modal-input rounded-3 border-0 px-3 py-2"
+      rows="3"
+      placeholder="One feature per line..."
+      [(ngModel)]="workingTier.details"
+    ></textarea>
+  </div>
+
+</div>
+  </div>
+
+    <button class="btn upload-plan-btn w-100 d-flex align-items-center justify-content-center gap-2" (click)="uploadPlan()">
+      <i class="bi bi-cloud-arrow-up-fill"></i>
+      Upload Plan
+    </button>
+
+  </div>
+</div>

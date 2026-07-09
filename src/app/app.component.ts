@@ -38,6 +38,7 @@ export class AppComponent implements OnInit {
     '/adminbestMatch',
     '/adminMatchComparison',
     '/testimonials',
+    '/pricingConfig',
    
  
   ];
