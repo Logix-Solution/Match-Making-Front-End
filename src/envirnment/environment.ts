@@ -7,15 +7,15 @@ export const environment = {
   envName: 'prod',
   // //////localhost //////////////
 
-   apiUrl: 'http://localhost:11011/',
-  apiUrlauth: 'http://localhost:11011/',
+  //  apiUrl: 'http://localhost:11011/',
+  // apiUrlauth: 'http://localhost:11011/',
 
 
   /////for live server api//////////
 
   
-//  apiUrl: 'http://159.69.174.28:11011/',
-//  apiUrlauth: 'http://159.69.174.28:11011/',
+ apiUrl: 'https://www.nadiamatchmakimg.com:11011/',
+ apiUrlauth: 'https://www.nadiamatchmakimg.com:11011/',
 
 
 //   // http://159.69.174.28:11015/
@@ -24,9 +24,9 @@ export const environment = {
 
   imageUrl: 'C:\\inetpub\\wwwroot\\Matchmaking\\Matchmaking-app\\matchmaking\\assets\\user-images\\',
 
-   apijob:'https://Pakistanmasjidportal.com',
+  
  
-    productUrl: 'http://95.217.205.57:11030/',
+    productUrl: 'https://www.nadiamatchmakimg.com',
     googleClientId: '51129007656-7853v1j76s30u7cnne2b10nlg9r2ku3l.apps.googleusercontent.com'
 };
 
