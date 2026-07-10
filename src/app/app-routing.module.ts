@@ -26,6 +26,8 @@ import { TestimonialsComponent } from './Admin/testimonials/testimonials.compone
 import { VerifyOTPComponent } from './login/verify-otp/verify-otp.component';
 import { UpdatePasswordComponent } from './login/update-password/update-password.component';
 import { PricingPlanConfigurationComponent } from './Admin/pricing-plan-configuration/pricing-plan-configuration.component';
+import { UserPricingPlanComponent } from './pricing-plans/user-pricing-plan/user-pricing-plan.component';
+import { UserUpgradePricePlanComponent } from './pricing-plans/user-upgrade-price-plan/user-upgrade-price-plan.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -142,6 +144,14 @@ const routes: Routes = [
   {
      path: 'Pricing-Plans',
     component: PricingPlansComponent,
+  },
+   {
+     path: 'user-Pricing-Plans',
+    component: UserPricingPlanComponent,
+  },
+   {
+     path: 'Upgrade-Pricing-Plans',
+    component: UserUpgradePricePlanComponent,
   },
 
    /////////////////////User/////////////

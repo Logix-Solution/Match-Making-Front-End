@@ -1,0 +1,315 @@
+$primary-brand: #4A0E17;     // Deep maroon accents
+$hero-bg: #C14B32;          // Bright orange/red accent
+$card-bg: #F4E8DD;          // Neutral tint variation background from images
+$white-pure: #FFFFFF;
+$text-muted-dark: #6C757D;
+$border-color-soft: #EAEAEA;
+
+.user-pricing-page {
+  background-color: #FAFAFA;
+  padding-left: 15px !important;
+  padding-right: 15px !important;
+
+  @media (min-width: 768px) {
+    padding-left: 32px !important;  
+    padding-right: 32px !important;
+  }
+
+  .header-line {
+    border: 0;
+    border-top: 1px solid #707070;
+    opacity: 0.25;
+    margin: 0;
+  }
+
+  // ─── Welcome Header Banner ─────────────────────────────────────────────────
+  .welcome-banner {
+    background: $hero-bg;
+    color: $white-pure;
+    min-height: 190px;
+    border-radius: 20px !important;
+
+    .plan-status-badge {
+      background: rgba($white-pure, 0.15);
+      border-radius: 30px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 400;
+
+      .badge-dot {
+        width: 6px;
+        height: 6px;
+        background-color: #49DE80; 
+        border-radius: 50%;
+        display: inline-block;
+      }
+    }
+
+    .welcome-title {
+      font-size: 34px;
+      font-family: 'Marcellus', serif, Georgia;
+      font-weight: 400;
+    }
+
+    .welcome-subtitle {
+      font-size: 14px;
+      opacity: 0.85;
+      color: $white-pure;
+    }
+
+    .matched-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .matched-count {
+      font-size: 56px;
+      font-weight: 400;
+      line-height: 0.9;
+      font-family: 'Marcellus', serif, Georgia;
+    }
+
+    .matched-profile-text {
+      font-size: 24px;
+      font-family: 'Marcellus', serif, Georgia;
+      font-weight: 300;
+    }
+
+    .matched-caption {
+      font-size: 13px;
+      opacity: 0.9;
+      font-weight: 300;
+      margin-top: 4px;
+    }
+  }
+
+  // ─── Metric Blocks Display Grid ───────────────────────────────────────────
+  .stat-card {
+    background-color: #F7EDE4; 
+    border: none;
+    border-radius: 16px !important;
+    min-height: 90px;
+    padding: 16px !important;
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 400;
+      color: $primary-brand;
+      font-family: 'Marcellus', serif, Georgia;
+      line-height: 1;
+    }
+
+    .stat-unit {
+      font-size: 16px;
+      font-weight: 400;
+      color: $primary-brand;
+      font-family: 'Marcellus', serif, Georgia;
+    }
+
+    .stat-icon {
+      font-size: 18px;
+      color: $hero-bg;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: #616161;
+      font-weight: 400;
+    }
+  }
+
+  // ─── Best Matches Card Module Layout ──────────────────────────────────────
+  .profile-card {
+    background-color: $white-pure;
+    border: 1px solid rgba(0,0,0,0.03) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.015) !important;
+
+    .profile-img {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      background-color: #EAEAEA;
+    }
+
+    .profile-name {
+      font-family: 'Marcellus', serif, Georgia;
+      font-size: 24px;
+      color: #222222;
+      font-weight: 400;
+    }
+
+    .profile-gender {
+      font-size: 14px;
+    }
+
+    .fav-btn i {
+      color: #C14B32;
+    }
+
+    .profile-meta-data {
+      font-size: 14px;
+      span {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 16px;
+        i {
+          font-size: 15px;
+          color: #888888;
+        }
+      }
+    }
+
+    .location-txt {
+      font-size: 13px;
+    }
+  }
+
+  // ─── Core Sections Architecture ──────────────────────────────────────────
+  .section-title {
+    font-size: 22px;
+    font-weight: 400;
+    color: #222222;
+    font-family: 'Marcellus', serif, Georgia;
+  }
+
+  .section-subtitle {
+    font-size: 14px;
+    color: $text-muted-dark;
+  }
+
+  // ─── Plans Grid Component Modules ─────────────────────────────────────────
+  .plan-card {
+    background-color: $white-pure;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 16px !important;
+    transition: transform 0.2s ease;
+
+    &--highlighted {
+      border: 1px solid rgba($primary-brand, 0.15);
+    }
+
+    .plan-badge {
+      position: absolute;
+      top: -11px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #F1D4BF;
+      color: $primary-brand;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 14px;
+      border-radius: 20px;
+      white-space: nowrap;
+
+      &.badge-value {
+        background-color: #4A0E17;
+        color: $white-pure;
+      }
+    }
+
+    .plan-crown-icon {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      color: $primary-brand;
+      font-size: 15px;
+    }
+
+    .plan-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: $text-muted-dark;
+      letter-spacing: 0.04em;
+    }
+
+    .plan-price {
+      font-size: 32px;
+      font-weight: 400;
+      color: $primary-brand;
+      font-family: 'Marcellus', serif, Georgia;
+      line-height: 1.1;
+    }
+
+    .plan-duration {
+      font-size: 13px;
+      color: $text-muted-dark;
+    }
+
+    .plan-billing-cycle {
+      font-size: 11px;
+      color: #999999;
+    }
+
+    .plan-features {
+      li {
+        font-size: 13px;
+        color: #444444;
+
+        i {
+          color: #888888;
+          font-size: 14px;
+        }
+      }
+    }
+
+    .choose-btn {
+      background-color: #F1D4BF;
+      color: $primary-brand;
+      border: none;
+      font-weight: 500;
+      font-size: 13px;
+      border-radius: 8px;
+      padding: 8px 16px;
+
+      &:hover {
+        background-color: darken(#F1D4BF, 4%);
+      }
+    }
+  }
+
+  // ─── Right Sidebar Support Grid Configurations ─────────────────────────────
+  .contact-card {
+    background-color: $white-pure;
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.01);
+    border-radius: 16px !important;
+
+    .contact-icon-wrap {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background-color: #F5E6E1;
+      color: #B25A47;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+    }
+
+    .contact-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #9E9E9E;
+      letter-spacing: 0.04em;
+    }
+
+    .contact-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: $primary-brand;
+    }
+
+    .contact-subvalue {
+      font-size: 12px;
+      color: $text-muted-dark;
+    }
+
+    .contact-action {
+      font-size: 13px;
+      font-weight: 500;
+      color: $hero-bg;
+      text-decoration: none;
+    }
+  }
+}

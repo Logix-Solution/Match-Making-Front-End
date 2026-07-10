@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedDataService } from '../../../shared/services/shared-data.service';
+import { environment } from 'src/envirnment/environment';
 interface UserProfile {
   name: string;
   age: number;
@@ -126,7 +127,8 @@ export class AdminDashboardComponent implements OnInit {
           name:             `${u.firstName || ''} ${u.lastName || ''}`.trim(),
           age,
           status:           get(10),
-          avatarUrl:        u.eDoc || '',
+          //  environment.productUrl + 'assets/user-images/Galleryimages/' + img.galleryeDoc
+          avatarUrl:       environment.productUrl + 'assets/user-images/userProfile/' + (u.eDoc || ''),
           city:             location?.cityName    || 'N/A',
           phone:            u.phoneNo             || 'N/A',
           nationality:      location?.countryName || 'N/A',

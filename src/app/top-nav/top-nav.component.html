@@ -28,21 +28,40 @@
           <a class="nav-link text-white" routerLink="/">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white" routerLink="/client-profile">About</a>
+          <a
+            class="nav-link text-white"
+            href="javascript:void(0)"
+            (click)="scrollToSection('about-section', $event)"
+            >About</a
+          >
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white">How It Works</a>
+          <a
+            class="nav-link text-white"
+            href="javascript:void(0)"
+            (click)="scrollToSection('how-it-works-section', $event)"
+            >How It Works</a
+          >
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white">Features</a>
+          <a
+            class="nav-link text-white"
+            href="javascript:void(0)"
+            (click)="scrollToSection('features-section', $event)"
+            >Features</a
+          >
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white">Success Stories</a>
+          <a
+            class="nav-link text-white"
+            href="javascript:void(0)"
+            (click)="scrollToSection('success-stories-section', $event)"
+            >Success Stories</a
+          >
         </li>
         <li class="nav-item" *ngIf="currentUser?.roleId === 3">
-          <a class="nav-link text-white" routerLink="/Explore-Match"
-            >Explore Match</a
-          >
+          <a class="nav-link text-white" routerLink="/Explore-Match">Explore Match</a>
+         
         </li>
       </ul>
 

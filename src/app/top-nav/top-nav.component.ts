@@ -77,4 +77,28 @@ export class TopNavComponent implements OnInit {
     this.authService.logout();
     this.router.navigate(['/']);
   }
+
+  // ── Scroll to a section on the home page ───────────────────────────────────
+  // If we're already on the home page, scroll directly. Otherwise navigate
+  // home first, then scroll once that view has rendered. The home page's
+  // scrollable container (.scroll-verticle) sits below the top nav, so
+  // scrollIntoView keeps the nav visible without touching its CSS.
+  scrollToSection(sectionId: string, event: Event): void {
+    event.preventDefault();
+
+    if (this.router.url === '/') {
+      this.performScroll(sectionId);
+    } else {
+      this.router.navigate(['/']).then(() => {
+        setTimeout(() => this.performScroll(sectionId), 300);
+      });
+    }
+  }
+
+  private performScroll(sectionId: string): void {
+    const el = document.getElementById(sectionId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
 }

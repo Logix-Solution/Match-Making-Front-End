@@ -1,0 +1,271 @@
+
+$primary-brand: #4A0E17;    
+$hero-bg: #C14B32;          
+$card-bg: #F1CEB275;          
+$white-pure: #FFFFFF;
+$text-muted-dark: #6C757D;
+$border-color-soft: #D3C3B3;
+
+.user-pricing-page {
+ 
+padding-left: 15px !important;
+  padding-right: 15px !important;
+
+  @media (min-width: 768px) {
+    padding-left: 24px !important;  
+    padding-right: 24px !important;
+  }
+
+  // ─── Left Hero Banner ─────────────────────────────────────────────────────
+  .welcome-banner {
+    background: $hero-bg;
+    color: $white-pure;
+    min-height: 160px;
+
+    .plan-status-badge {
+      background: rgba($white-pure, 0.18);
+      border-radius: 30px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 500;
+
+      .badge-dot {
+        width: 7px;
+        height: 7px;
+        background-color: #49DE80; 
+        border-radius: 50%;
+        display: inline-block;
+      }
+    }
+
+    .welcome-title {
+      font-size: 32px;
+      letter-spacing: -0.01em;
+    }
+
+    .welcome-subtitle {
+      font-size: 15px;
+      opacity: 0.9;
+      color: $white-pure;
+    }
+
+    .matched-count {
+      font-size: 54px;
+      font-weight: 300;
+      line-height: 0.95;
+      font-family: serif, Georgia; // Elegant display typography
+    }
+
+    .matched-profile-text {
+      font-size: 26px;
+      font-weight: 300;
+      font-family: serif, Georgia;
+    }
+
+    .matched-caption {
+      font-size: 13px;
+      opacity: 0.8;
+      font-weight: 300;
+    }
+  }
+
+  // ─── Right Custom Stat Metric Cards ──────────────────────────────────────
+  .stat-card {
+    background-color: $card-bg;
+    border: none;
+    min-height: 84px;
+    padding: 14px !important;
+    transition: all 0.2s ease-in-out;
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 400;
+      color: $primary-brand;
+      font-family: serif, Georgia;
+      line-height: 1;
+    }
+
+    .stat-unit {
+      font-size: 18px;
+      color: $primary-brand;
+      font-family: serif, Georgia;
+    }
+
+    .stat-icon {
+      font-size: 16px;
+      color: $hero-bg;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #555555;
+      font-weight: 400;
+    }
+  }
+
+  // ─── Pricing Card Grid Section ──────────────────────────────────────────
+  .section-title {
+    font-size: 22px;
+    font-weight: 400;
+    color: #333333;
+  }
+
+  .section-subtitle {
+    font-size: 14px;
+    color: $text-muted-dark;
+  }
+
+  .plan-card {
+    background-color: $white-pure;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    position: relative;
+    border-radius: 16px !important;
+
+    &--highlighted {
+      box-shadow: 0 8px 30px rgba($primary-brand, 0.08);
+    }
+
+    &--selected {
+      border: 2px solid $hero-bg !important;
+    }
+
+    .plan-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #E2C4A8; // Warm gold/beige badge standard
+      color: #4A3319;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 14px;
+      border-radius: 20px;
+      white-space: nowrap;
+
+      &.badge-value {
+        background-color: $primary-brand; // Dark value badge design override
+        color: $white-pure;
+      }
+    }
+
+    .plan-crown-icon {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      color: $primary-brand;
+      font-size: 14px;
+    }
+
+    .plan-name {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: $text-muted-dark;
+    }
+
+    .plan-price {
+      font-size: 34px;
+      font-weight: 400;
+      color: $primary-brand;
+      font-family: serif, Georgia;
+      line-height: 1;
+    }
+
+    .plan-duration {
+      font-size: 13px;
+      color: $text-muted-dark;
+    }
+
+    .plan-billing-cycle {
+      font-size: 11px;
+      color: #999999;
+    }
+
+    .plan-features {
+      li {
+        font-size: 13px;
+        color: #444444;
+
+        i {
+          color: #A0A0A0;
+          font-size: 15px;
+        }
+      }
+    }
+
+    .choose-btn {
+      background-color: #F1D4BF;
+      color: $primary-brand;
+      border: none;
+      font-weight: 500;
+      font-size: 14px;
+      border-radius: 10px;
+      padding: 10px 16px;
+      transition: background 0.2s ease;
+
+      &:hover {
+        background-color: ddarken(#F1D4BF, 5%);
+      }
+    }
+  }
+
+  .section-divider {
+    border-top: 1px solid $border-color-soft;
+    opacity: 0.6;
+  }
+
+  // ─── Contact/Support Architecture ───────────────────────────────────────
+  .contact-card {
+    background-color: $white-pure;
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    min-height: 180px;
+
+    .contact-icon-wrap {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #F2DCD3;
+      color: #B25A47;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .contact-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #A5A5A5;
+      letter-spacing: 0.02em;
+    }
+
+    .contact-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: $primary-brand;
+    }
+
+    .contact-subvalue {
+      font-size: 12px;
+      color: $text-muted-dark;
+    }
+
+    .contact-action {
+      font-size: 13px;
+      font-weight: 500;
+      color: $hero-bg;
+      text-decoration: none;
+
+      i {
+        font-size: 10px;
+        transition: transform 0.2s ease;
+      }
+
+      &:hover i {
+        transform: translateX(3px);
+      }
+    }
+  }
+}

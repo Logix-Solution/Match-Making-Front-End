@@ -1,0 +1,148 @@
+$primary-brand: #4A0E17;
+$hero-bg: #C14B32;
+$white-pure: #FFFFFF;
+
+.upgrade-page-wrapper {
+  background-color: #F8F9FA;
+  min-height: calc(100vh - 70px); // Deduct your top navigation bar height
+  display: flex;
+  align-items: center;
+
+  .custom-row-max {
+    max-width: 1080px; // Restricts layout columns from stretching infinitely horizontally
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+  }
+
+  
+.section-sub-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1F2937;
+}
+ 
+.upload-main-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: #374151;
+}
+ 
+.upload-sub-text {
+  font-size: 13px;
+}
+
+  .sub-heading {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+
+  .main-title {
+    font-family: 'Marcellus', serif;
+    color: $primary-brand;
+    font-size: 36px;
+    font-weight: 500;
+    font-style: italic;
+  }
+
+  .plan-fee-text {
+    font-size: 15px;
+    color: #4B5563;
+    
+    .fee-highlight {
+      color: #000000;
+    }
+  }
+
+  .detail-card {
+    background: $white-pure;
+    border: 1px solid #E5E7EB !important;
+  }
+
+  .card-inner-title {
+    font-size: 12px;
+    color: #9CA3AF;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .form-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #4B5563;
+    letter-spacing: 0.05em;
+  }
+
+  .display-data-field {
+    background-color: #F3F4F6;
+    height: 50px;
+    
+    .data-text {
+      font-size: 14px;
+      color: #1F2937;
+      font-weight: 500;
+    }
+
+    .copy-btn {
+      color: #9CA3AF;
+      &:hover {
+        color: $primary-brand;
+      }
+    }
+  }
+
+  .dropzone-area {
+    background-color: #F9FAFB;
+    border: 2px dashed #D1D5DB;
+    min-height: 200px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+
+    &:hover {
+      border-color: $hero-bg;
+    }
+  }
+
+  .custom-input {
+    background-color: #F3F4F6;
+    border: 1px solid transparent;
+    height: 50px;
+    font-size: 14px;
+
+    &:focus {
+      background-color: $white-pure;
+      border-color: $hero-bg;
+      box-shadow: none;
+    }
+  }
+
+  .info-alert-box {
+    background-color: #FFF7ED;
+    border: 1px solid #FFEDD5;
+    color: #7C2D12;
+    font-size: 12.5px;
+
+    i {
+      color: #EA580C;
+    }
+  }
+
+  .btn-upgrade-submit {
+    background-color: $white-pure;
+    border: 2px solid $primary-brand;
+    color: $primary-brand;
+    border-radius: 8px;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+
+    &:hover:not(:disabled) {
+      background-color: $primary-brand;
+      color: $white-pure;
+    }
+  }
+
+  .bottom-disclaimer {
+    font-size: 12px;
+  }
+}

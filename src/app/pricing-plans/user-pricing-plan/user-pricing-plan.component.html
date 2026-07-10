@@ -1,0 +1,155 @@
+<section
+  class="container-fluid user-pricing-page py-4 px-3 px-md-5 d-flex h-100 no-scroll p-0"
+>
+  <div class="flex-grow-1 scroll-verticle style-1 p-0">
+    <div class="row g-2 g-md-3 mb-5 align-items-stretch">
+      <div class="col-xl-8 col-lg-7 col-md-7">
+        <div
+          class="welcome-banner rounded-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center p-4 p-lg-5 h-100"
+        >
+          <div>
+            <span
+              class="plan-status-badge d-inline-flex align-items-center gap-2 mb-3"
+            >
+              <span class="badge-dot"></span>
+              Free Plan &middot; Upgrade to unlock
+            </span>
+            <h1 class="welcome-title mb-0 fw-normal">
+              Welcome back, {{ userName }}!
+            </h1>
+            <p class="welcome-subtitle mb-0 mt-1">Best Matches Found</p>
+          </div>
+
+          <div class="matched-block mt-4 mt-md-0 text-md-end">
+            <div
+              class="d-flex align-items-baseline justify-content-md-end gap-2"
+            >
+              <span class="matched-count">{{ matchedProfiles }}</span>
+              <span class="matched-profile-text text-uppercase">Profiles</span>
+            </div>
+            <div class="matched-caption">
+              Based on your Preference &amp; Activity
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-4 col-lg-5 col-md-5">
+        <div class="row g-3 h-100">
+          <div class="col-6" *ngFor="let stat of stats">
+            <div
+              class="stat-card rounded-4 p-3 d-flex flex-column justify-content-between h-100"
+            >
+              <div
+                class="d-flex justify-content-between align-items-start w-100"
+              >
+                <div class="stat-value-group d-flex align-items-baseline gap-1">
+                  <span class="stat-value">{{ stat.value }}</span>
+                  <span class="stat-unit" *ngIf="stat.unit">{{
+                    stat.unit
+                  }}</span>
+                </div>
+                <i class="bi {{ stat.icon }} stat-icon"></i>
+              </div>
+              <div class="stat-label">{{ stat.label }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-5">
+      <div class="d-flex align-items-center mb-1">
+        <h2 class="section-title mb-0 me-3">Upgrade Your Plan</h2>
+        <hr class="flex-grow-1" style="border: 1px solid #ccc; margin: 0" />
+      </div>
+      <p class="section-subtitle mb-4">
+        Unlock full access to all 12 matching profiles
+      </p>
+      <div class="row g-3">
+        <div class="col-sm-6 col-lg-3 d-flex" *ngFor="let plan of plans">
+          <div
+            class="plan-card rounded-4 p-4 flex-fill d-flex flex-column"
+            [class.plan-card--highlighted]="plan.highlighted"
+            [class.plan-card--selected]="selectedPlanId === plan.id"
+          >
+            <span
+              class="plan-badge text-uppercase"
+              *ngIf="plan.badge"
+              [class.badge-value]="plan.highlighted"
+            >
+              {{ plan.badge }}
+            </span>
+
+            <i
+              class="bi bi-crown-fill plan-crown-icon"
+              *ngIf="plan.id === 3"
+            ></i>
+
+            <div class="plan-name text-uppercase mb-3">{{ plan.name }}</div>
+
+            <div class="d-flex flex-column mb-3">
+              <span class="plan-price">{{ plan.price }}</span>
+              <span class="plan-duration">{{ plan.duration }}</span>
+              <span class="plan-billing-cycle mt-1">{{
+                plan.billingText
+              }}</span>
+            </div>
+
+            <ul class="plan-features list-unstyled mb-4 flex-grow-1">
+              <li
+                *ngFor="let feature of plan.features"
+                class="d-flex align-items-start gap-2 mb-2"
+              >
+                <i class="bi bi-check2"></i>
+                <span>{{ feature }}</span>
+              </li>
+            </ul>
+
+            <button
+              type="button"
+              class="btn choose-btn w-100 mt-auto"
+              (click)="choosePlan(plan)"
+            >
+              {{ selectedPlanId === plan.id ? "Selected" : "Choose" }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <hr class="section-divider my-5" /> -->
+
+    <div class="mb-4">
+      <div class="d-flex align-items-center gap-3 mb-4">
+        <h2 class="section-title mb-0">Have a Question?</h2>
+        <hr class="flex-grow-1" style="border: 1px solid #ccc; margin: 0" />
+      </div>
+
+      <div class="row g-3 mb-5">
+        <div class="col-md-4" *ngFor="let contact of contacts">
+          <div
+            class="contact-card rounded-4 p-4 d-flex flex-column justify-content-between h-100"
+          >
+            <div>
+              <div class="contact-icon-wrap mb-3">
+                <i class="bi {{ contact.icon }}"></i>
+              </div>
+              <div class="contact-label mb-1">{{ contact.label }}</div>
+              <div class="contact-value mb-1">{{ contact.value }}</div>
+              <div class="contact-subvalue" *ngIf="contact.subValue">
+                {{ contact.subValue }}
+              </div>
+            </div>
+            <a
+              href="javascript:void(0)"
+              class="contact-action d-inline-flex align-items-center gap-1 mt-3"
+            >
+              {{ contact.actionLabel }} <i class="bi bi-chevron-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
