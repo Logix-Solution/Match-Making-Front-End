@@ -1,0 +1,16 @@
+# 🔒 Block ALL search engines
+User-agent: *
+Disallow: /
+
+# Block specific bots
+User-agent: Googlebot
+Disallow: /
+
+User-agent: Bingbot
+Disallow: /
+
+User-agent: Slurp  # Yahoo
+Disallow: /
+
+User-agent: DuckDuckBot
+Disallow: /

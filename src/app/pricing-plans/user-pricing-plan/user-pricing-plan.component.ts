@@ -57,17 +57,17 @@ export class UserPricingPlanComponent implements OnInit {
 
   // TODO: wire to real endpoints once provided
   stats: StatItem[] = [
-    { value: 0, icon: 'bi-eye', label: 'Profile Views' },
-    { value: 0, icon: 'bi-heart', label: 'Interests Sent' },
-    { value: 0, icon: 'bi-chat', label: 'Messages' },
-    { value: 0, icon: 'bi-star', label: 'Shortlisted' },
+    { value: 2, icon: 'bi-eye', label: 'Profile Views' },
+    { value: 4, icon: 'bi-heart', label: 'Interests Sent' },
+    { value: 5, icon: 'bi-chat', label: 'Messages' },
+    { value: 2, icon: 'bi-star', label: 'Shortlisted' },
   ];
 
   // TODO: wire to real endpoint once provided
   contacts: ContactItem[] = [
     { icon: 'bi-envelope', label: 'Email Us', value: 'support@example.com', actionLabel: 'Send Email' },
     { icon: 'bi-telephone', label: 'Call Us', value: '+1 234 567 8900', actionLabel: 'Call Now' },
-    { icon: 'bi-chat-dots', label: 'Live Chat', value: 'Available 9am - 6pm', actionLabel: 'Start Chat' },
+    { icon: 'bi-geo-alt', label: 'Our office', value: 'Berlin,Germeny', actionLabel: 'Get Direction' },
   ];
 
   constructor(

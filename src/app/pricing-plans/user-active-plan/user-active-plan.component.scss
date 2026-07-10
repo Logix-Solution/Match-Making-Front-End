@@ -186,8 +186,12 @@ $border-color-soft: #EAEAEA;
     transition: transform 0.2s ease;
 
     &--highlighted {
-      border: 1px solid rgba($primary-brand, 0.15);
-    }
+    border: 1px solid rgba($primary-brand, 0.15);
+  }
+
+  &--selected {
+    border: 2px solid $primary-brand !important;
+  }
 
     .plan-badge {
       position: absolute;

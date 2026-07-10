@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { SeoBlockService } from './seo-block.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+
+  
   title = 'Matchmaking';
  showNav     = true;
   showSideNav = false;
@@ -43,7 +47,9 @@ export class AppComponent implements OnInit {
  
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router,
+       private seoBlock: SeoBlockService
+  ) {}
 
   ngOnInit(): void {
     // Scroll to top on every navigation
@@ -51,6 +57,7 @@ export class AppComponent implements OnInit {
       if (event instanceof NavigationEnd && typeof window !== 'undefined') {
         window.scrollTo(0, 0);
       }
+      this.seoBlock.blockSearchEngines();
     });
 
     // Update nav state on every route change
