@@ -115,7 +115,7 @@ export class LoginComponent implements OnInit {
             this.getMenu(roleId);
 
             if (roleId === 3) {
-              this.router.navigate(['/Explore-Match']);
+              this.router.navigate(['/Pricing-Plans']);
             } else if (roleId === 1 || roleId === 2) {
               this.router.navigate(['/adminDashboard']);
             } else {
@@ -163,7 +163,7 @@ export class LoginComponent implements OnInit {
             this.getMenu(roleId);
 
             if (roleId === 3) {
-              this.router.navigate(['/Explore-Match']);
+              this.router.navigate(['/Pricing-Plans']);
             } else if (roleId === 2 || roleId === 1) {
               this.router.navigate(['/adminDashboard']);
             } else {
@@ -214,7 +214,7 @@ export class LoginComponent implements OnInit {
 
     setTimeout(() => {
       if (roleId === 3) {
-        this.router.navigate(['/Explore-Match']);
+        this.router.navigate(['/Pricing-Plans']);
       } else if (roleId === 2 || roleId === 1) {
         this.router.navigate(['/adminDashboard']);
       } else {
