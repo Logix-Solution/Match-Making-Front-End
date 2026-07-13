@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   envName: 'prod',
-  // //////localhost //////////////
+  // // //////localhost //////////////
 
   //  apiUrl: 'http://localhost:11011/',
   // apiUrlauth: 'http://localhost:11011/',
@@ -26,7 +26,7 @@ export const environment = {
 
   
  
-    productUrl: 'https://www.nadiamatchmaking.com',
+    productUrl: 'https://www.nadiamatchmaking.com/',
     googleClientId: '51129007656-7853v1j76s30u7cnne2b10nlg9r2ku3l.apps.googleusercontent.com'
 };
 

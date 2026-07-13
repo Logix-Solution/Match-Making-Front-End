@@ -67,34 +67,85 @@ export class AdminRequestManagementComponent implements OnInit {
     this.loadRequests();
   }
 
-  loadRequests(): void {
-    this.dataService
-      .getHttp(`core-api/Admin/getRequestManagement`, {})
-      .subscribe({
-        next: (res: any) => {
-          const data = Array.isArray(res) ? res : [];
-          this.allRequests = data.map((u: any) => ({
+//   loadRequests(): void {
+//     this.dataService
+//       .getHttp(`core-api/Admin/getRequestManagement`, {})
+//       .subscribe({
+//         next: (res: any) => {
+//           const data = Array.isArray(res) ? res : [];
+//           this.allRequests = data.map((u: any) => ({
+//             id: u.profileID,
+//             userID: u.userID,
+//             name: u.fullname || u.firstName || 'Unknown',
+//             age: this.calculateAge(u.dob),
+//             location: u.address || 'N/A',
+//             // image: u.eDoc && u.eDoc.trim() !== '' ? environment.productUrl + 'assets/user-images/userProfile/' +  u.eDoc : 'assets/images/default-avatar.png',
+//               image: u.eDoc && u.eDoc.trim() !== '' 
+//   ? environment.productUrl + 'assets/user-images/userProfile/' + u.eDoc 
+//   : 'assets/images/default-avatar.png',
+
+// // ✅ CORRECT WAY TO CONSOLE LOG
+// console.log('User image:', u.eDoc);
+// console.log('Full image path:', environment.productUrl + 'assets/user-images/userProfile/' + u.eDoc);
+// console.log('Final image used:', u.eDoc && u.eDoc.trim() !== '' 
+//   ? environment.productUrl + 'assets/user-images/userProfile/' + u.eDoc 
+//   : 'assets/images/default-avatar.png');
+
+//             status: this.mapStatus(u.statusID),
+//             statusID: u.statusID,
+//             email: u.email,
+//             phone: u.phoneNumber,
+//           }));
+
+//           this.filterRequestsByActiveTab();
+//         },
+//         error: (err) => console.error('Request Management load error:', err),
+//       });
+//   }
+
+loadRequests(): void {
+  this.dataService
+    .getHttp(`core-api/Admin/getRequestManagement`, {})
+    .subscribe({
+      next: (res: any) => {
+        const data = Array.isArray(res) ? res : [];
+        this.allRequests = data.map((u: any) => {
+          // ✅ Build the image path
+          const hasImage = u.eDoc && u.eDoc.trim() !== '';
+          const imagePath = hasImage 
+            ? environment.productUrl + 'assets/user-images/userProfile/' + u.eDoc 
+            : 'assets/images/default-avatar.png';
+
+          // // ✅ CONSOLE LOGS - Properly placed before the return
+          // console.log('=== User Image Debug ===');
+          // console.log('User ID:', u.userID);
+          // console.log('User Name:', u.fullname || u.firstName);
+          // console.log('eDoc value:', u.eDoc);
+          // console.log('Has image?', hasImage);
+          // console.log('Full image path:', imagePath);
+          // console.log('Environment URL:', environment.productUrl);
+          // console.log('========================');
+
+          // ✅ Return the object
+          return {
             id: u.profileID,
             userID: u.userID,
             name: u.fullname || u.firstName || 'Unknown',
             age: this.calculateAge(u.dob),
             location: u.address || 'N/A',
-            image:
-              u.eDoc && u.eDoc.trim() !== ''
-                ? environment.productUrl +
-                  'assets/user-images/userProfile/' +
-                  u.eDoc
-                : 'assets/images/default-avatar.png',
+            image: imagePath,
             status: this.mapStatus(u.statusID),
             statusID: u.statusID,
             email: u.email,
             phone: u.phoneNumber,
-          }));
-          this.filterRequestsByActiveTab();
-        },
-        error: (err) => console.error('Request Management load error:', err),
-      });
-  }
+          };
+        });
+
+        this.filterRequestsByActiveTab();
+      },
+      error: (err) => console.error('Request Management load error:', err),
+    });
+}
 
   mapStatus(statusID: number): 'pending' | 'accepted' | 'rejected' {
     switch (statusID) {

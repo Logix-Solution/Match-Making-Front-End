@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SharedDataService } from '../../../shared/services/shared-data.service';
+import { environment } from 'src/envirnment/environment';
 
 interface GalleryImage {
   src: string;
@@ -28,9 +29,12 @@ export class EventGalleryComponent implements OnInit, OnDestroy {
   loadGallery(): void {
     (this.dataService.getHttp('user-api/getDashboardGalleryEvents', {}) as any)
       .subscribe((res: any) => {
+        console.log(res,'event images')
         const data = Array.isArray(res) ? res : [];
         this.images = data.map((event: any) => ({
-          src:            event.eDoc,
+          // src:            event.eDoc,
+           src:        environment.productUrl + 'assets/user-images/Events/' +    event.eDoc,
+          // environment.productUrl + 'assets/user-images/Galleryimages/' + img.galleryeDoc
           alt:            event.eventTitle      || 'Event Image',
           eventTypeTitle: event.eventTypeTitle  || ''
         }));

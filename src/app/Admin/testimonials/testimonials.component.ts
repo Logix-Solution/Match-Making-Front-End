@@ -64,7 +64,8 @@ export class TestimonialsComponent implements OnInit {
           mediaTypeID: f.mediaTypeID,
           personName:  f.personName || 'Unknown',
           date:        f.date,
-          imageUrl:    f.eImage    || '',
+          // imageUrl:    f.eImage    || '',
+           imageUrl:  environment.productUrl + 'assets/user-images/Feedback/' + f.eImage || '',
           videoLink:   f.videoLink || '',
         }));
 

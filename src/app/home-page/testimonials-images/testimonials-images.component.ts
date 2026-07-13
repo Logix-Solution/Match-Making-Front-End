@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SharedDataService } from '../../../shared/services/shared-data.service';
+import { environment } from 'src/envirnment/environment';
 
 interface TestimonialImage {
   id:         number;
@@ -54,7 +55,8 @@ export class TestimonialsImagesComponent implements OnInit, OnDestroy {
           .map((f: any) => ({
             id:         f.feedbackID,
             personName: f.personName || 'Member',
-            imageUrl:   f.eImage || '',
+            // imageUrl:   f.eImage || '',
+             imageUrl:  environment.productUrl + 'assets/user-images/Feedback/' + f.eImage || '',
           }))
           .filter((f: TestimonialImage) => !!f.imageUrl);
 

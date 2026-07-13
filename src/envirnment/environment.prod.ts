@@ -11,7 +11,7 @@ apiUrl: 'https://www.nadiamatchmaking.com:11011/',
     // apiUrl: 'http://localhost:11011/',
     // apiUrlauth: 'http://localhost:11011/',
   //  productUrl: 'http://159.69.174.28:11015/',
-       productUrl: 'https://www.nadiamatchmaking.com',
+       productUrl: 'https://www.nadiamatchmaking.com/',
 //    googleClientId: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com'
 };
 

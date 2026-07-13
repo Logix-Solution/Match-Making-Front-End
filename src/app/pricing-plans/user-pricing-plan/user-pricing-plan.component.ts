@@ -92,7 +92,7 @@ export class UserPricingPlanComponent implements OnInit {
 
       if (!user) return;
 
-      this.profileID = user.profileID;
+      this.profileID = 0;
       this.userName = user.fullname || user.firstName || '';
 
       // currencyTypeID is nested inside userProfile JSON, not top-level
