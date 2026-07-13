@@ -139,7 +139,7 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
     { value: 0,        msg: 'Please select your city',            type: 'selectbox',  required: true  }, // 10
     { value: 0,        msg: 'Please select your nationality',     type: 'selectbox',  required: true  }, // 11
     { value: '',       msg: 'Please tell us about yourself',      type: 'textbox',    required: true  }, // 12
-    { value: '',       msg: 'Please upload your profile picture', type: 'textbox',    required: true  }, // 13
+    { value: '',       msg: '',               type: 'textbox',    required: false }, // 13
     { value: '',       msg: '',                                   type: 'hidden',     required: false }, // 14
     { value: '',       msg: '',                                   type: 'hidden',     required: false }, // 15
     { value: 'CNIC',   msg: '',                                   type: 'hidden',     required: false }, // 16
@@ -201,7 +201,7 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
         // ── Profile picture — build URL from filename ─────────────────────
         if (user.eDoc && user.eDoc.trim() !== '') {
           this.profilePicturePreview = environment.productUrl + 'assets/user-images/userProfile/' + user.eDoc;
-            console.log('✅ Profile Picture URL:', this.profilePicturePreview);
+          console.log('✅ Profile Picture URL:', this.profilePicturePreview);
           this.eDoc     = '';
           this.eDocPath = '';
           this.eDocExt  = '';
@@ -389,18 +389,19 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
 
   // ─── Save ─────────────────────────────────────────────────────────────────
   save(): void {
+      // console.log('profileID at save time:', this.profileID);
     if (!this.selectedCast) {
       this.toastr.warning('Please select your cast'); return;
     }
     if (!this.selectedEthnicity) {
       this.toastr.warning('Please select your ethnicity'); return;
     }
-    if (!this.eDoc) {
-      this.toastr.warning('Please upload your profile picture'); return;
-    }
-    if (this.galleryImages.length < 3) {
-      this.toastr.warning('Please upload at least 3 gallery images'); return;
-    }
+    // if (!this.eDoc) {
+    //   this.toastr.warning('Please upload your profile picture'); return;
+    // }
+    // if (this.galleryImages.length < 3) {
+    //   this.toastr.warning('Please upload at least 3 gallery images'); return;
+    // }
 
     const hasCnic     = (this.cnicFrontDoc && this.cnicBackDoc) || (this.cnicFrontPreview && this.cnicBackPreview);
     const hasPassport = this.passportDoc || this.passportPreview;
