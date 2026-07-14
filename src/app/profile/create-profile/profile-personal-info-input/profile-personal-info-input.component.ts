@@ -104,12 +104,16 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
   passportPreview:       string    = '';
 
   // ─── Gallery ──────────────────────────────────────────────────────────────
-  galleryImages: {
-    galleryEdoc:     string;
-    galleryEdocPath: string;
-    galleryEdocExt:  string;
-    preview:         string;
-  }[] = [];
+galleryImages: {
+  galleryImageID:  number;
+  galleryEdoc:     string;
+  galleryEdocPath: string;
+  galleryEdocExt:  string;
+  preview:         string;
+}[] = [];
+
+//  Snapshot of IDs as loaded from server — used to detect "no changes"
+originalGalleryImageIDs: number[] = [];
 
   // ─── Page Fields (API payload) ────────────────────────────────────────────
   personalPageFields: PersonalProfileInterface = {
@@ -237,24 +241,28 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
           this.passportDocExt  = '';
         }
 
-        // ── Gallery images — build each URL from filename ─────────────────
-        if (user.galleryImages) {
-          try {
-            const serverGallery = JSON.parse(user.galleryImages);
-            this.galleryImages = serverGallery
-              .filter((img: any) => img.galleryeDoc && img.galleryeDoc.trim() !== '')
-              .map((img: any) => ({
-                galleryEdoc:     '',
-                galleryEdocPath: environment.imageUrl + 'Galleryimages',
-                galleryEdocExt:  '',
-                preview:         environment.productUrl + 'assets/user-images/Galleryimages/' + img.galleryeDoc
-                
-              }));
-             
-          } catch (e) {
-            this.galleryImages = [];
-          }
-        }
+       // ── Gallery images — build each URL from filename ─────────────────
+if (user.galleryImages) {
+  try {
+    const serverGallery = JSON.parse(user.galleryImages);
+    this.galleryImages = serverGallery
+      .filter((img: any) => img.galleryeDoc && img.galleryeDoc.trim() !== '')
+      .map((img: any) => ({
+        galleryImageID:  img.galleryImageID ?? 0,
+        galleryEdoc:     '',
+        galleryEdocPath: '',
+        galleryEdocExt:  '',
+        preview:         environment.productUrl + 'assets/user-images/Galleryimages/' + img.galleryeDoc
+      }));
+
+    // remember original IDs to detect if nothing changed at save time
+    this.originalGalleryImageIDs = this.galleryImages.map(img => img.galleryImageID);
+
+  } catch (e) {
+    this.galleryImages = [];
+    this.originalGalleryImageIDs = [];
+  }
+}
 
         // ── Parse userProfile subtypes ───────────────────────────────────
         let profileItems: any[] = [];
@@ -379,12 +387,27 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
 
     this.personalFormFields[28].value = JSON.stringify(subTypeEntries);
 
-    const gallery = this.galleryImages.map((img) => ({
-      galleryEdoc:     img.galleryEdoc,
-      galleryEdocPath: environment.imageUrl + 'Galleryimages',
-      galleryEdocExt:  img.galleryEdocExt,                        // no dot
-    }));
-    this.personalFormFields[29].value = JSON.stringify(gallery);
+  // ── Determine if gallery has any actual changes (add/remove) ──────────
+const currentGalleryIDs = this.galleryImages.map(img => img.galleryImageID);
+const hasNewImage = currentGalleryIDs.includes(0);
+const idsUnchanged =
+  currentGalleryIDs.length === this.originalGalleryImageIDs.length &&
+  [...currentGalleryIDs].sort().every(
+    (id, i) => id === [...this.originalGalleryImageIDs].sort()[i]
+  );
+
+if (!hasNewImage && idsUnchanged) {
+  // nothing added, nothing removed, nothing changed
+  this.personalFormFields[29].value = '';
+} else {
+  const gallery = this.galleryImages.map((img) => ({
+    galleryImageID:  img.galleryImageID,
+    galleryEdoc:     img.galleryImageID === 0 ? img.galleryEdoc : '',
+    galleryEdocExt:  img.galleryImageID === 0 ? img.galleryEdocExt : '',   // no dot
+    galleryEdocPath: img.galleryImageID === 0 ? (environment.imageUrl + 'Galleryimages') : '',
+  }));
+  this.personalFormFields[29].value = JSON.stringify(gallery);
+}
   }
 
   // ─── Save ─────────────────────────────────────────────────────────────────
@@ -567,24 +590,24 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
     this.syncFormFields();
   }
 
-  // ─── Gallery Handlers ─────────────────────────────────────────────────────
-  onGallerySelected(event: Event): void {
-    const files = (event.target as HTMLInputElement).files;
-    if (!files) return;
-    Array.from(files).forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.galleryImages.push({
-          galleryEdoc:     e.target.result.split(',')[1],
-          galleryEdocPath: environment.imageUrl + 'Galleryimages',
-          galleryEdocExt:  file.name.split('.').pop() || '',      // ← no dot
-          preview:         e.target.result,
-        });
-        this.syncFormFields();
-      };
-      reader.readAsDataURL(file);
-    });
-  }
+onGallerySelected(event: Event): void {
+  const files = (event.target as HTMLInputElement).files;
+  if (!files) return;
+  Array.from(files).forEach((file) => {
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.galleryImages.push({
+        galleryImageID:  0,
+        galleryEdoc:     e.target.result.split(',')[1],
+        galleryEdocPath: environment.imageUrl + 'Galleryimages',
+        galleryEdocExt:  file.name.split('.').pop() || '',
+        preview:         e.target.result,
+      });
+      this.syncFormFields();
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
   removeGalleryImage(index: number): void {
     this.galleryImages.splice(index, 1);
