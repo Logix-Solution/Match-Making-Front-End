@@ -114,7 +114,7 @@ loadRequests(): void {
           const hasImage = u.eDoc && u.eDoc.trim() !== '';
           const imagePath = hasImage 
             ? environment.productUrl + 'assets/user-images/userProfile/' + u.eDoc 
-            : 'assets/images/default-avatar.png';
+            : 'assets/images/profile1.png';
 
           // // ✅ CONSOLE LOGS - Properly placed before the return
           // console.log('=== User Image Debug ===');
@@ -132,7 +132,7 @@ loadRequests(): void {
             userID: u.userID,
             name: u.fullname || u.firstName || 'Unknown',
             age: this.calculateAge(u.dob),
-            location: u.address || 'N/A',
+            location: this.extractLocation(u.userProfile),
             image: imagePath,
             status: this.mapStatus(u.statusID),
             statusID: u.statusID,
@@ -146,6 +146,15 @@ loadRequests(): void {
       error: (err) => console.error('Request Management load error:', err),
     });
 }
+
+  // ─── Shared helper: parse userProfile JSON string and pull city/country ──
+  private extractLocation(userProfileJson: string): string {
+    let profileItems: any[] = [];
+    try { profileItems = JSON.parse(userProfileJson || '[]'); } catch { profileItems = []; }
+
+    const locationItem = profileItems.find((p: any) => p.cityID !== undefined && p.isPreference === 0);
+    return locationItem ? `${locationItem.cityName}, ${locationItem.countryName}` : 'N/A';
+  }
 
   mapStatus(statusID: number): 'pending' | 'accepted' | 'rejected' {
     switch (statusID) {
@@ -236,12 +245,7 @@ loadRequests(): void {
         (p: any) => p.typeID === typeID && p.isPreference === 0,
       );
 
-    const locationItem = profileItems.find(
-      (p: any) => p.cityID !== undefined && p.isPreference === 0,
-    );
-    const location = locationItem
-      ? `${locationItem.cityName}, ${locationItem.countryName}`
-      : '—';
+    const location = this.extractLocation(user.userProfile);
 
     const eduItem = getInstitute(4);
     const occItem = getInstitute(5);

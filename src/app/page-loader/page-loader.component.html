@@ -1,6 +1,17 @@
-<div class="loader-overlay" *ngIf="isLoading">
+<!-- <div class="loader-overlay" *ngIf="isLoading">
   <div class="loader-box">
     <div class="spinner"></div>
+    <p>{{ message }}</p>
+  </div>
+</div> -->
+<div class="loader-overlay" *ngIf="isLoading">
+  <div class="loader-box">
+    <div class="heart-loader">
+      <span class="floating-heart fh-1">♥</span>
+      <span class="floating-heart fh-2">♥</span>
+      <span class="floating-heart fh-3">♥</span>
+      <div class="heart"></div>
+    </div>
     <p>{{ message }}</p>
   </div>
 </div>

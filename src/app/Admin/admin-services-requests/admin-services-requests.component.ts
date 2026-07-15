@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedDataService } from '../../../shared/services/shared-data.service';
 import { SharedGlobalService } from '../../../shared/services/shared-global.service';
+import { environment } from 'src/envirnment/environment';
 
 interface ServiceRequest {
   id:          number;
@@ -41,7 +42,12 @@ export class AdminServicesRequestsComponent implements OnInit {
           id:          s.serviceID,
           name:        s.firstName || 'Unknown',
           location:    [s.cityName, s.countryName].filter(Boolean).join(', ') || 'N/A',
-          image:       s.eDoc || 'assets/images/default-avatar.png',
+          //  const hasImage = s.eDoc && s.eDoc.trim() !== '';
+          //    const image = hasImage 
+          //             ? environment.productUrl + 'assets/user-images/userProfile/' + s.eDoc 
+          //             : 'assets/images/default-avatar.png';
+          
+          image:     environment.productUrl + 'assets/user-images/userProfile/' + s.eDoc || 'assets/images/profile1.png',
           phone:       s.phoneNumber || '',
           category:    s.eventTypeTitle || 'Other',
           serviceType: s.eventTypeTitle || 'Other',

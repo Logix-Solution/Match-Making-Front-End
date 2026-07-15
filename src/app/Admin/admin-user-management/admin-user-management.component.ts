@@ -58,27 +58,39 @@ export class AdminUserManagementComponent implements OnInit {
     this.loadUsers();
   }
 
-  loadUsers(): void {
+loadUsers(): void {
     this.dataService.getHttp('core-api/Admin/getRequestManagement', {}).subscribe({
       next: (res: any) => {
         const data = Array.isArray(res) ? res : [];
-        this.allUsers = data.map((u: any) => ({
-          id:          u.profileID,
-          userID:      u.userID,
-          name:        u.fullname || u.firstName || 'Unknown',
-          location:    u.address || 'N/A',
-          image:       u.eDoc && u.eDoc.trim() !== ''
-                ? environment.productUrl +
-                  'assets/user-images/userProfile/' +
-                  u.eDoc
-                : 'assets/images/default-avatar.png',
-          status:      this.mapStatus(u.active),
-          memberSince: this.formatDate(u.dob),
-        }));
+        this.allUsers = data.map((u: any) => {
+          const imageUrl = u.eDoc && u.eDoc.trim() !== ''
+            ? environment.productUrl + 'assets/user-images/userProfile/' + u.eDoc
+            : 'assets/images/profile1.png';
+
+          console.log(imageUrl, 'user image', '| eDoc:', u.eDoc, '| userID:', u.userID);
+
+          return {
+            id:          u.profileID,
+            userID:      u.userID,
+            name:        u.fullname || u.firstName || 'Unknown',
+            location:    this.extractLocation(u.userProfile),
+            image:       imageUrl,
+            status:      this.mapStatus(u.active),
+            memberSince: this.formatDate(u.dob),
+          };
+        });
         this.filteredUsers = [...this.allUsers];
       },
       error: (err) => console.error('User Management load error:', err)
     });
+  }
+  // ─── Shared helper: parse userProfile JSON string and pull city/country ──
+  private extractLocation(userProfileJson: string): string {
+    let profileItems: any[] = [];
+    try { profileItems = JSON.parse(userProfileJson || '[]'); } catch { profileItems = []; }
+
+    const locationItem = profileItems.find((p: any) => p.cityID !== undefined && p.isPreference === 0);
+    return locationItem ? `${locationItem.cityName}, ${locationItem.countryName}` : 'N/A';
   }
 
   mapStatus(active: number): 'Active' | 'Blocked' {
@@ -152,8 +164,7 @@ export class AdminUserManagementComponent implements OnInit {
     const getInstitute = (typeID: number) =>
       profileItems.find((p: any) => p.typeID === typeID && p.isPreference === 0);
 
-    const locationItem = profileItems.find((p: any) => p.cityID !== undefined && p.isPreference === 0);
-    const location     = locationItem ? `${locationItem.cityName}, ${locationItem.countryName}` : '—';
+    const location = this.extractLocation(user.userProfile);
 
     const eduItem = getInstitute(4);
     const occItem = getInstitute(5);

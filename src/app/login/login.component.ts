@@ -141,7 +141,45 @@ export class LoginComponent implements OnInit {
   }
 
   // ─── Email/Password Login ─────────────────────────────────────────────────
-  login(): void {
+  // login(): void {
+  //   const validate = [
+  //     { value: this.email,    msg: 'Please enter email address', type: 'textBox', required: true },
+  //     { value: this.password, msg: 'Please enter password',      type: 'textBox', required: true },
+  //   ];
+
+  //   if (this.valid.validateToastr(validate) === true) {
+  //     this.isLoading = true;
+  //     this.error     = '';
+
+  //     this.authService
+  //       .login(this.email, this.password)
+  //       .pipe(first())
+  //       .subscribe(
+  //         (data) => {
+  //           this.isLoading = false;
+  //           this.valid.apiSuccessResponse('Login Successful!');
+
+  //           const roleId = this.global.getRoleId();
+  //           this.getMenu(roleId);
+
+  //           if (roleId === 3) {
+  //             this.router.navigate(['/Pricing-Plans']);
+  //           } else if (roleId === 2 || roleId === 1) {
+  //             this.router.navigate(['/adminDashboard']);
+  //           } else {
+  //             this.router.navigate(['/']);
+  //           }
+  //         },
+  //         (error) => {
+  //           this.isLoading = false;
+  //           console.error('Login error:', error);
+  //           this.valid.apiErrorResponse('Incorrect Email and Password');
+  //         }
+  //       );
+  //   }
+  // }
+
+    login(): void {
     const validate = [
       { value: this.email,    msg: 'Please enter email address', type: 'textBox', required: true },
       { value: this.password, msg: 'Please enter password',      type: 'textBox', required: true },
@@ -173,7 +211,16 @@ export class LoginComponent implements OnInit {
           (error) => {
             this.isLoading = false;
             console.error('Login error:', error);
-            this.valid.apiErrorResponse('Incorrect Email and Password');
+
+            const backendMessage =
+              error?.error?.message ||
+              error?.error?.Message ||
+              (typeof error?.error === 'string' ? error.error : null) ||
+              error?.message ||
+              'Incorrect Email or Password';
+
+            this.error = backendMessage;
+            this.valid.apiErrorResponse(backendMessage);
           }
         );
     }

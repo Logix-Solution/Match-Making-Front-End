@@ -1,13 +1,12 @@
 /////////////////////////////////page loader comoponent styles///////////////////////////////////
-
 .loader-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(3px);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -18,27 +17,125 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 20px 30px;
-  border-radius: 15px;
+  gap: 14px;
+  padding: 32px 40px;
+  border-radius: 20px;
   background: var(--bg-third);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.spinner {
-  width: 45px;
-  height: 45px;
-  border: 5px solid var(--bg-secondary);
-  border-top-color: var(--spinner-color);
-  border-radius: 50%;
-  animation: spin 0.9s linear infinite;
+// ── Heart loader ──────────────────────────────────────────────
+.heart-loader {
+  position: relative;
+  width: 50px;
+  height: 50px;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+.heart {
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  width: 20px;
+  height: 20px;
+  background: var(--primary, #6B1A2A);
+  transform: rotate(-45deg);
+  animation: heartbeat 1.1s ease-in-out infinite;
+  will-change: transform;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary, #6B1A2A);
+  }
+
+  &::before {
+    top: -10px;
+    left: 0;
+  }
+
+  &::after {
+    top: 0;
+    left: 10px;
   }
 }
+
+// small floating hearts around the main one
+.floating-heart {
+  position: absolute;
+  font-size: 12px;
+  color: var(--primary, #6B1A2A);
+  opacity: 0;
+  animation: floatUp 1.8s ease-in-out infinite;
+  will-change: transform, opacity;
+
+  &.fh-1 { left: -10px; top: 10px; animation-delay: 0.2s; }
+  &.fh-2 { right: -10px; top: 6px;  animation-delay: 0.7s; }
+  &.fh-3 { left: 50%; top: -6px; transform: translateX(-50%); animation-delay: 1.2s; }
+}
+
+.loader-box p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--primary, #6B1A2A);
+  letter-spacing: 0.3px;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: rotate(-45deg) scale(1); }
+  25%      { transform: rotate(-45deg) scale(1.18); }
+  40%      { transform: rotate(-45deg) scale(0.95); }
+  60%      { transform: rotate(-45deg) scale(1.1); }
+}
+
+@keyframes floatUp {
+  0%   { opacity: 0; transform: translateY(0) scale(0.6); }
+  30%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-22px) scale(1); }
+}
+// .loader-overlay {
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: 100%;
+//   background: rgba(0, 0, 0, 0.3);
+//   backdrop-filter: blur(3px);
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   z-index: 9999;
+// }
+
+// .loader-box {
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   gap: 12px;
+//   padding: 20px 30px;
+//   border-radius: 15px;
+//   background: var(--bg-third);
+//   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+// }
+
+// .spinner {
+//   width: 45px;
+//   height: 45px;
+//   border: 5px solid var(--bg-secondary);
+//   border-top-color: var(--spinner-color);
+//   border-radius: 50%;
+//   animation: spin 0.9s linear infinite;
+// }
+
+// @keyframes spin {
+//   to {
+//     transform: rotate(360deg);
+//   }
+// }
 
 p {
   margin: 0;

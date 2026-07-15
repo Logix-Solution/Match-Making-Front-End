@@ -1,2 +1,8 @@
-<app-user-pricing-plan></app-user-pricing-plan>
-<!-- <app-user-active-plan></app-user-active-plan> -->
+<div *ngIf="isLoading" class="text-center py-5">
+  <div class="spinner-border" style="color: var(--primary)"></div>
+</div>
+
+<ng-container *ngIf="!isLoading">
+  <app-user-active-plan *ngIf="hasActivePlan"></app-user-active-plan>
+  <app-user-pricing-plan *ngIf="!hasActivePlan"></app-user-pricing-plan>
+</ng-container>

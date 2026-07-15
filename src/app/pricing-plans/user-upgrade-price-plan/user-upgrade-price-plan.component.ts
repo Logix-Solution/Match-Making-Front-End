@@ -5,9 +5,10 @@ import { SharedGlobalService } from '../../../shared/services/shared-global.serv
 import { SharedFormFieldValidationService } from 'src/shared/services/shared-form-field-validation.service';
 
 interface BankDetailsAPIResponse {
-  accountHolder?: string;
-  iban?: string;
+  bankDetailID?: number;
   bankName?: string;
+  accountNumber?: string;
+  accountHolderName?: string;
 }
 
 @Component({
@@ -47,11 +48,16 @@ export class UserUpgradePricePlanComponent implements OnInit {
   }
 
   fetchSystemBankDetails(): void {
-    this.bankDetails = {
-      accountHolder: 'Muslim Matchmaking International Ltd',
-      iban: 'DE89 3704 0044 0532 1234 00',
-      bankName: 'Deutsche Bank Berlin'
-    };
+    this.dataService.getHttp('core-api/Payment/getBankDetails').subscribe({
+      next: (res: any) => {
+        const response = Array.isArray(res) ? res[0] : res;
+        this.bankDetails = response || {};
+      },
+      error: (err) => {
+        this.valid.apiErrorResponse('Unable to load bank details.');
+        console.error(err);
+      },
+    });
   }
 
   copyToClipboard(value: string | undefined): void {
