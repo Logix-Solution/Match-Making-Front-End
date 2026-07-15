@@ -1,6 +1,7 @@
-<section class="container-fluid user-pricing-page py-4 px-3 px-md-5 d-flex h-100 no-scroll">
+<section
+  class="container-fluid user-pricing-page py-4 px-3 px-md-5 d-flex h-100 no-scroll"
+>
   <div class="flex-grow-1 scroll-verticle style-1">
-    
     <div class="row g-3 mb-5 align-items-stretch">
       <div class="col-xl-8 col-lg-7 col-md-7">
         <div
@@ -36,12 +37,20 @@
       <div class="col-xl-4 col-lg-5 col-md-12">
         <div class="row g-3 h-100">
           <div class="col-6" *ngFor="let stat of stats">
-            <div class="stat-card rounded-4 p-3 d-flex flex-column justify-content-between h-100">
-              <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+            <div
+              class="stat-card rounded-4 p-3 d-flex flex-column justify-content-between h-100"
+            >
+              <div
+                class="d-flex justify-content-between align-items-start w-100 mb-2"
+              >
                 <i class="bi {{ stat.icon }} stat-icon"></i>
-                <div class="stat-value-group d-flex align-items-baseline gap-0.5">
+                <div
+                  class="stat-value-group d-flex align-items-baseline gap-0.5"
+                >
                   <span class="stat-value">{{ stat.value }}</span>
-                  <span class="stat-unit" *ngIf="stat.unit">{{ stat.unit }}</span>
+                  <span class="stat-unit" *ngIf="stat.unit">{{
+                    stat.unit
+                  }}</span>
                 </div>
               </div>
               <div class="stat-label text-truncate">{{ stat.label }}</div>
@@ -52,39 +61,63 @@
     </div>
 
     <div class="row g-4 align-items-start">
-      
       <div class="col-lg-8 col-md-12">
-        
         <div class="mb-5">
           <div class="d-flex align-items-center mb-4">
             <h2 class="section-title mb-0 me-3">Best Matches</h2>
             <hr class="flex-grow-1 header-line" />
           </div>
-          <p class="section-subtitle mt-n3 mb-4">Showing according to your plan</p>
+          <p class="section-subtitle mt-n3 mb-4">
+            Showing according to your plan
+          </p>
 
-          <div class="card profile-card rounded-4 p-4 border-0 mb-4 shadow-sm position-relative">
-            <div class="d-flex flex-column flex-sm-row gap-4 align-items-start align-items-sm-center">
+          <div
+            class="card profile-card rounded-4 p-4 border-0 mb-4 shadow-sm position-relative"
+          >
+            <div
+              class="d-flex flex-column flex-sm-row gap-4 align-items-start align-items-sm-center"
+            >
               <div class="profile-image-wrapper position-relative">
-                <img src="../../../assets/images/profile1.png" alt="Fatima Profile" class="profile-img rounded-circle" />
+                <img
+                  src="../../../assets/images/profile1.png"
+                  alt="Fatima Profile"
+                  class="profile-img rounded-circle"
+                />
               </div>
               <div class="flex-grow-1">
-                <div class="d-flex align-items-center justify-content-between w-100">
+                <div
+                  class="d-flex align-items-center justify-content-between w-100"
+                >
                   <div>
                     <h3 class="profile-name mb-0">Fatima</h3>
-                    <span class="profile-gender text-muted mb-2 d-inline-block">Female</span>
+                    <span class="profile-gender text-muted mb-2 d-inline-block"
+                      >Female</span
+                    >
                   </div>
                   <button class="btn fav-btn p-0" aria-label="Favorite profile">
                     <i class="bi bi-heart-fill txt-danger fs-5"></i>
                   </button>
                 </div>
-                
-                <div class="d-flex flex-wrap gap-x-4 gap-y-2 profile-meta-data mt-2 text-muted">
-                  <span class="d-flex align-items-center gap-1"><i class="bi bi-person-vcard"></i> 36</span>
-                  <span class="d-flex align-items-center gap-1"><i class="bi bi-arrows-vertical"></i> 5'3</span>
-                  <span class="d-flex align-items-center gap-1"><i class="bi bi-heartbreak"></i> Divorced</span>
-                  <span class="d-flex align-items-center gap-1"><i class="bi bi-briefcase"></i> Product Manager</span>
+
+                <div
+                  class="d-flex flex-wrap gap-x-4 gap-y-2 profile-meta-data mt-2 text-muted"
+                >
+                  <span class="d-flex align-items-center gap-1"
+                    ><i class="bi bi-person-vcard"></i> 36</span
+                  >
+                  <span class="d-flex align-items-center gap-1"
+                    ><i class="bi bi-arrows-vertical"></i> 5'3</span
+                  >
+                  <span class="d-flex align-items-center gap-1"
+                    ><i class="bi bi-heartbreak"></i> Divorced</span
+                  >
+                  <span class="d-flex align-items-center gap-1"
+                    ><i class="bi bi-briefcase"></i> Product Manager</span
+                  >
                 </div>
-                <div class="d-flex align-items-center gap-1 mt-2 text-muted location-txt">
+                <div
+                  class="d-flex align-items-center gap-1 mt-2 text-muted location-txt"
+                >
                   <i class="bi bi-geo-alt"></i> <span>Pakistan</span>
                 </div>
               </div>
@@ -97,40 +130,71 @@
             <h2 class="section-title mb-0 me-3">Upgrade Your Plan</h2>
             <hr class="flex-grow-1 header-line" />
           </div>
-          <p class="section-subtitle mb-4">Unlock full access to all 12 matching profiles</p>
-          
+          <p class="section-subtitle mb-4">
+            Unlock full access to all 12 matching profiles
+          </p>
+
           <div class="row g-3">
-            <div class="col-sm-6 col-md-6 col-xl-3 d-flex" *ngFor="let plan of plans">
-              <div class="plan-card rounded-4 p-3 flex-fill d-flex flex-column position-relative justify-content-between"
-                   [class.plan-card--highlighted]="plan.highlighted"
-                   [class.plan-card--selected]="selectedPlanId === plan.id">
-                
+            <div
+              class="col-sm-6 col-md-6 col-xl-3 d-flex"
+              *ngFor="let plan of plans"
+            >
+              <div
+                class="plan-card rounded-4 p-3 flex-fill d-flex flex-column position-relative justify-content-between"
+                [class.plan-card--highlighted]="plan.highlighted"
+                [class.plan-card--selected]="selectedPlanId === plan.id"
+              >
                 <div>
-                  <span class="plan-badge text-uppercase" *ngIf="plan.badge" [class.badge-value]="plan.highlighted">
+                  <span
+                    class="plan-badge text-uppercase"
+                    *ngIf="plan.badge"
+                    [class.badge-value]="plan.highlighted"
+                  >
                     {{ plan.badge }}
                   </span>
 
-                  <i class="bi bi-crown-fill plan-crown-icon" *ngIf="plan.id === 3"></i>
+                  <i
+                    class="bi bi-crown-fill plan-crown-icon"
+                    *ngIf="plan.id === 3"
+                  ></i>
 
-                  <div class="plan-name text-uppercase mb-3 mt-1">{{ plan.name }}</div>
+                  <div class="plan-name text-uppercase mb-3 mt-1">
+                    {{ plan.name }}
+                  </div>
 
                   <div class="d-flex flex-column mb-3">
                     <span class="plan-price">{{ plan.price }}</span>
                     <span class="plan-duration">{{ plan.duration }}</span>
-                    <span class="plan-billing-cycle mt-1">{{ plan.billingText }}</span>
+                    <span class="plan-billing-cycle mt-1">{{
+                      plan.billingText
+                    }}</span>
                   </div>
 
                   <ul class="plan-features list-unstyled mb-4">
-                    <li *ngFor="let feature of plan.features" class="d-flex align-items-start gap-2 mb-2">
+                    <li
+                      *ngFor="let feature of plan.features"
+                      class="d-flex align-items-start gap-2 mb-2"
+                    >
                       <i class="bi bi-check2"></i>
                       <span>{{ feature }}</span>
                     </li>
                   </ul>
                 </div>
 
-                <button type="button" class="btn choose-btn w-100 mt-auto" (click)="choosePlan(plan)">
-                  Choose
+                <button
+                  class="btn choose-btn w-100 mt-auto"
+                  [ngClass]="
+                    isCurrentPlan(plan.id) ? 'btn-selected' : 'btn-choose'
+                  "
+                  [disabled]="isCurrentPlan(plan.id)"
+                  (click)="choosePlan(plan)"
+                >
+                  {{ isCurrentPlan(plan.id) ? "Selected" : "Choose Plan" }}
                 </button>
+
+                <!-- <button type="button" class="btn choose-btn w-100 mt-auto" (click)="choosePlan(plan)">
+                  Choose
+                </button> -->
               </div>
             </div>
           </div>
@@ -144,23 +208,29 @@
         </div>
 
         <div class="d-flex flex-column gap-3">
-          <div class="contact-card rounded-4 p-4 d-flex flex-column justify-content-between" *ngFor="let contact of contacts">
+          <div
+            class="contact-card rounded-4 p-4 d-flex flex-column justify-content-between"
+            *ngFor="let contact of contacts"
+          >
             <div>
               <div class="contact-icon-wrap mb-3">
                 <i class="bi {{ contact.icon }}"></i>
               </div>
               <div class="contact-label mb-1">{{ contact.label }}</div>
               <div class="contact-value mb-1">{{ contact.value }}</div>
-              <div class="contact-subvalue" *ngIf="contact.subValue">{{ contact.subValue }}</div>
+              <div class="contact-subvalue" *ngIf="contact.subValue">
+                {{ contact.subValue }}
+              </div>
             </div>
-            <a href="javascript:void(0)" class="contact-action d-inline-flex align-items-center gap-1 mt-3">
+            <a
+              href="javascript:void(0)"
+              class="contact-action d-inline-flex align-items-center gap-1 mt-3"
+            >
               {{ contact.actionLabel }} <i class="bi bi-chevron-right"></i>
             </a>
           </div>
         </div>
       </div>
-
     </div>
-
   </div>
 </section>

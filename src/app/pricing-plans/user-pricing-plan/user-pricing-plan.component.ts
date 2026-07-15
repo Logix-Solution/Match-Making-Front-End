@@ -50,6 +50,8 @@ interface ContactItem {
 export class UserPricingPlanComponent implements OnInit {
   userName: string = '';
   matchedProfiles: number = 12;
+
+  // Real profileID from getUserDetails — used for loading plans AND save/navigate
   profileID: number | null = null;
 
   plans: DisplayPlan[] = [];
@@ -77,52 +79,54 @@ export class UserPricingPlanComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadUserAndPlans(); // Placeholder for currencyTypeID, will be set after user details are loaded
+    this.loadUserAndPlans();
   }
 
- private loadUserAndPlans(): void {
-  const userID = this.sharedGlobalService.getUserID();
+  private loadUserAndPlans(): void {
+    const userID = this.sharedGlobalService.getUserID();
 
-  this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${userID}`, {}).subscribe({
-    next: (res: any) => {
-      console.log('getUserDetails raw response:', res);
+    this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${userID}`, {}).subscribe({
+      next: (res: any) => {
+        console.log('getUserDetails raw response:', res);
 
-      const user = Array.isArray(res) ? res[0] : res;
-      console.log('getUserDetails resolved user object:', user);
+        const user = Array.isArray(res) ? res[0] : res;
+        console.log('getUserDetails resolved user object:', user);
 
-      if (!user) return;
+        if (!user) return;
 
-      this.profileID = 0;
-      this.userName = user.fullname || user.firstName || '';
+        // Real profileID from get function — used to load plans AND save/navigate
+        this.profileID = user.profileID;
 
-      // currencyTypeID is nested inside userProfile JSON, not top-level
-      let profileItems: any[] = [];
-      try {
-        profileItems = JSON.parse(user.userProfile || '[]');
-      } catch {
-        profileItems = [];
-      }
+        this.userName = user.fullname || user.firstName || '';
 
-      const currencyItem = profileItems.find(
-        (p: any) => p.currencyTypeID !== undefined && p.currencyTypeID !== null,
-      );
-      const currencyTypeID = currencyItem?.currencyTypeID;
+        // currencyTypeID is nested inside userProfile JSON, not top-level
+        let profileItems: any[] = [];
+        try {
+          profileItems = JSON.parse(user.userProfile || '[]');
+        } catch {
+          profileItems = [];
+        }
 
-      console.log('Extracted profileID:', this.profileID);
-      console.log('Extracted currencyTypeID:', currencyTypeID);
+        const currencyItem = profileItems.find(
+          (p: any) => p.currencyTypeID !== undefined && p.currencyTypeID !== null,
+        );
+        const currencyTypeID = currencyItem?.currencyTypeID;
 
-      if (this.profileID && currencyTypeID) {
-        this.loadPlans(this.profileID, currencyTypeID);
-      } else {
-        console.error('Missing profileID or currencyTypeID', {
-          profileID: this.profileID,
-          currencyTypeID,
-        });
-      }
-    },
-    error: (err) => console.error('getUserDetails error:', err),
-  });
-}
+        console.log('Extracted profileID:', this.profileID);
+        console.log('Extracted currencyTypeID:', currencyTypeID);
+
+        if (this.profileID && currencyTypeID) {
+          this.loadPlans(this.profileID, currencyTypeID);
+        } else {
+          console.error('Missing profileID or currencyTypeID', {
+            profileID: this.profileID,
+            currencyTypeID,
+          });
+        }
+      },
+      error: (err) => console.error('getUserDetails error:', err),
+    });
+  }
 
   private loadPlans(profileID: number, currencyTypeID: number | string): void {
     this.dataService
@@ -158,15 +162,16 @@ export class UserPricingPlanComponent implements OnInit {
     };
   }
 
-  choosePlan(plan: DisplayPlan): void {
-    this.selectedPlanId = plan.id;
-    this.router.navigate(['/Upgrade-Pricing-Plans'], {
-      queryParams: {
-        planID: plan.id,
-        profileID: this.profileID,
-        planName: plan.name,
-        planFee: plan.rawFee,
-      },
-    });
-  }
+choosePlan(plan: DisplayPlan): void {
+  this.selectedPlanId = plan.id;
+  this.router.navigate(['/Upgrade-Pricing-Plans'], {
+    queryParams: {
+      planID: plan.id,
+      profileID: this.profileID,
+      planName: plan.name,
+      planFee: plan.rawFee,
+      userplanID: 0,  
+    },
+  });
+}
 }

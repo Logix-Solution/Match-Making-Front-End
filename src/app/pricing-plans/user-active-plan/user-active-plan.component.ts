@@ -52,6 +52,8 @@ interface ContactCard {
 export class UserActivePlanComponent implements OnInit {
   userName = '';
   matchedProfiles = 12;
+
+  // Real profileID from getUserDetails — used for loading plans AND save/navigate
   profileID: number | null = null;
 
   // TODO: wire to real endpoint once provided
@@ -65,6 +67,10 @@ export class UserActivePlanComponent implements OnInit {
   plans: PricingPlan[] = [];
   selectedPlanId: number | null = null;
   currentPlanId: number | null = null;
+
+  // Set to true when the user's active plan is the free/Registration tier,
+  // which is filtered out of `plans` and therefore can never highlight a card.
+  isOnFreePlan: boolean = false;
 
   // TODO: wire to real endpoint once provided
   contacts: ContactCard[] = [
@@ -113,6 +119,7 @@ export class UserActivePlanComponent implements OnInit {
 
         if (!user) return;
 
+        // Real profileID from get function — used to load plans AND save/navigate
         this.profileID = user.profileID;
         this.userName = user.fullname || user.firstName || '';
 
@@ -145,40 +152,39 @@ export class UserActivePlanComponent implements OnInit {
     });
   }
 
-  private loadPlans(profileID: number, currencyTypeID: number | string): void {
-    this.dataService
-      .getHttp(`core-api/Payment/getUserPlans?profileID=${profileID}&currencyTypeID=${currencyTypeID}`, {})
-      .subscribe({
-        next: (res: any) => {
-          console.log('getUserPlans response:', res);
+private loadPlans(profileID: number, currencyTypeID: number | string): void {
+  this.dataService
+    .getHttp(`core-api/Payment/getUserPlans?profileID=${profileID}&currencyTypeID=${currencyTypeID}`, {})
+    .subscribe({
+      next: (res: any) => {
+        console.log('getUserPlans response:', res);
 
-          const data: ApiUserPlan[] = Array.isArray(res) ? res : [];
+        const data: ApiUserPlan[] = Array.isArray(res) ? res : [];
 
-          // currentPlan is a per-item flag (1/0), not a top-level value
-          const currentItem = data.find((p) => p.currentPlan === 1);
-          this.currentPlanId = currentItem ? currentItem.planID : null;
+        this.plans = data
+          .filter((p) => {
+            const nameLower = (p.planName || '').toLowerCase();
+            return !nameLower.includes('free') && !nameLower.includes('registration');
+          })
+          .map((p) => this.mapApiPlanToDisplay(p));
 
-          this.plans = data
-            .filter((p) => {
-              const nameLower = (p.planName || '').toLowerCase();
-              return !nameLower.includes('free') && !nameLower.includes('registration');
-            })
-            .map((p) => this.mapApiPlanToDisplay(p));
+        // Find currentPlan ONLY among the plans actually displayed
+        // (avoids matching a filtered-out free/Registration plan that also has currentPlan:1)
+        const currentItem = data.find(
+          (p) => p.currentPlan === 1 && this.plans.some((dp) => dp.id === p.planID),
+        );
+        this.currentPlanId = currentItem ? currentItem.planID : null;
 
-          // Pre-select the user's current plan, if it's among the displayed plans
-          if (this.currentPlanId) {
-            const match = this.plans.find((p) => p.id === this.currentPlanId);
-            if (match) {
-              this.selectedPlanId = match.id;
-            }
-          }
+        if (this.currentPlanId) {
+          this.selectedPlanId = this.currentPlanId;
+        }
 
-          console.log('Final mapped plans:', this.plans);
-          console.log('currentPlanId:', this.currentPlanId);
-        },
-        error: (err) => console.error('getUserPlans error:', err),
-      });
-  }
+        console.log('Final mapped plans:', this.plans);
+        console.log('currentPlanId:', this.currentPlanId);
+      },
+      error: (err) => console.error('getUserPlans error:', err),
+    });
+}
 
   private mapApiPlanToDisplay(p: ApiUserPlan): PricingPlan {
     const fee = +p.planFee || 0;
@@ -196,15 +202,20 @@ export class UserActivePlanComponent implements OnInit {
     };
   }
 
-  choosePlan(plan: PricingPlan): void {
-    this.selectedPlanId = plan.id;
-    this.router.navigate(['/Upgrade-Pricing-Plans'], {
-      queryParams: {
-        planID: plan.id,
-        profileID: this.profileID,
-        planName: plan.name,
-        planFee: plan.rawFee,
-      },
-    });
-  }
+  isCurrentPlan(planId: number): boolean {
+  return this.currentPlanId === planId;
+}
+
+choosePlan(plan: PricingPlan): void {
+  this.selectedPlanId = plan.id;
+  this.router.navigate(['/Upgrade-Pricing-Plans'], {
+    queryParams: {
+      planID: plan.id,
+      profileID: this.profileID,
+      planName: plan.name,
+      planFee: plan.rawFee,
+      // userplanID: this.currentPlanId ?? 0,  
+    },
+  });
+}
 }
