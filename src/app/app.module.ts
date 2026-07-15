@@ -70,6 +70,7 @@ import { PricingPlanConfigurationComponent } from './Admin/pricing-plan-configur
 import { UserPricingPlanComponent } from './pricing-plans/user-pricing-plan/user-pricing-plan.component';
 import { UserActivePlanComponent } from './pricing-plans/user-active-plan/user-active-plan.component';
 import { UserUpgradePricePlanComponent } from './pricing-plans/user-upgrade-price-plan/user-upgrade-price-plan.component';
+import { WelcomeComponent } from './home-page/welcome/welcome.component';
 
 
 @NgModule({
@@ -129,6 +130,7 @@ import { UserUpgradePricePlanComponent } from './pricing-plans/user-upgrade-pric
     UserPricingPlanComponent,
     UserActivePlanComponent,
     UserUpgradePricePlanComponent,
+    WelcomeComponent,
 
   ],
   imports: [

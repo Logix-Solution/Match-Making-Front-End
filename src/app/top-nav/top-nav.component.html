@@ -113,25 +113,18 @@
 
         <!-- DROPDOWN MENU -->
         <ul class="dropdown-menu" [class.show]="isDropdownOpen">
-          <li>
-            <a
-              class="dropdown-item"
-              routerLink="/create-profile"
-              (click)="isDropdownOpen = false"
-            >
-              Create Profile
+                    <li>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="goToProfileMenu()">
+              Profile
             </a>
           </li>
           <li>
-            <a
-              class="dropdown-item"
-              routerLink="/preferences-configuration"
-              (click)="isDropdownOpen = false"
-            >
+            <a class="dropdown-item" href="javascript:void(0)" (click)="goToPreferencesMenu()">
               Preferences
             </a>
           </li>
-          <li>
+
+          <!-- <li>
             <a
               class="dropdown-item"
               routerLink="/client-profile"
@@ -148,7 +141,7 @@
             >
               Preferences Details
             </a>
-          </li>
+          </li> -->
           <li>
             <a
               class="dropdown-item"

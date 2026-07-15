@@ -8,6 +8,7 @@ import { SideNavSevice } from 'src/shared/services/sidenavSevice';
 import { SharedGlobalService } from 'src/shared/services/shared-global.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/envirnment/environment';
+import { ProfileCompletionService } from 'src/shared/services/profile-completion.service';
 
 declare const google: any;
 
@@ -33,7 +34,8 @@ export class LoginComponent implements OnInit {
     private router:       Router,
     private SideNavSevice: SideNavSevice,
     private global:       SharedGlobalService,
-    private toastr:       ToastrService
+    private toastr:       ToastrService,
+    private profileCompletionService: ProfileCompletionService,
   ) {}
 
   ngOnInit(): void {
@@ -70,6 +72,24 @@ export class LoginComponent implements OnInit {
       return;
     }
     google.accounts.id.prompt();
+  }
+
+  // ─── Navigate based on profile/preferences completion (roleID 3 only) ────
+  private navigateAfterLoginForRole3(): void {
+    this.profileCompletionService.calculateCompletion().subscribe({
+      next: (result) => {
+        if (result.overallCompletion === 100) {
+          this.router.navigate(['/Pricing-Plans']);
+        } else {
+          this.router.navigate(['/welcome']);
+        }
+      },
+      error: (err) => {
+        console.error('calculateCompletion error:', err);
+        // Fallback: if completion check fails, still let the user in
+        this.router.navigate(['/welcome']);
+      }
+    });
   }
 
   // ─── Handle Google Credential Response ───────────────────────────────────
@@ -115,7 +135,7 @@ export class LoginComponent implements OnInit {
             this.getMenu(roleId);
 
             if (roleId === 3) {
-              this.router.navigate(['/Pricing-Plans']);
+              this.navigateAfterLoginForRole3();
             } else if (roleId === 1 || roleId === 2) {
               this.router.navigate(['/adminDashboard']);
             } else {
@@ -141,44 +161,6 @@ export class LoginComponent implements OnInit {
   }
 
   // ─── Email/Password Login ─────────────────────────────────────────────────
-  // login(): void {
-  //   const validate = [
-  //     { value: this.email,    msg: 'Please enter email address', type: 'textBox', required: true },
-  //     { value: this.password, msg: 'Please enter password',      type: 'textBox', required: true },
-  //   ];
-
-  //   if (this.valid.validateToastr(validate) === true) {
-  //     this.isLoading = true;
-  //     this.error     = '';
-
-  //     this.authService
-  //       .login(this.email, this.password)
-  //       .pipe(first())
-  //       .subscribe(
-  //         (data) => {
-  //           this.isLoading = false;
-  //           this.valid.apiSuccessResponse('Login Successful!');
-
-  //           const roleId = this.global.getRoleId();
-  //           this.getMenu(roleId);
-
-  //           if (roleId === 3) {
-  //             this.router.navigate(['/Pricing-Plans']);
-  //           } else if (roleId === 2 || roleId === 1) {
-  //             this.router.navigate(['/adminDashboard']);
-  //           } else {
-  //             this.router.navigate(['/']);
-  //           }
-  //         },
-  //         (error) => {
-  //           this.isLoading = false;
-  //           console.error('Login error:', error);
-  //           this.valid.apiErrorResponse('Incorrect Email and Password');
-  //         }
-  //       );
-  //   }
-  // }
-
     login(): void {
     const validate = [
       { value: this.email,    msg: 'Please enter email address', type: 'textBox', required: true },
@@ -201,7 +183,7 @@ export class LoginComponent implements OnInit {
             this.getMenu(roleId);
 
             if (roleId === 3) {
-              this.router.navigate(['/Pricing-Plans']);
+              this.navigateAfterLoginForRole3();
             } else if (roleId === 2 || roleId === 1) {
               this.router.navigate(['/adminDashboard']);
             } else {
@@ -261,7 +243,7 @@ export class LoginComponent implements OnInit {
 
     setTimeout(() => {
       if (roleId === 3) {
-        this.router.navigate(['/Pricing-Plans']);
+        this.navigateAfterLoginForRole3();
       } else if (roleId === 2 || roleId === 1) {
         this.router.navigate(['/adminDashboard']);
       } else {

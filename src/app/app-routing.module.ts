@@ -29,6 +29,7 @@ import { PricingPlanConfigurationComponent } from './Admin/pricing-plan-configur
 import { UserPricingPlanComponent } from './pricing-plans/user-pricing-plan/user-pricing-plan.component';
 import { UserUpgradePricePlanComponent } from './pricing-plans/user-upgrade-price-plan/user-upgrade-price-plan.component';
 import { UserActivePlanComponent } from './pricing-plans/user-active-plan/user-active-plan.component';
+import { WelcomeComponent } from './home-page/welcome/welcome.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -79,6 +80,11 @@ const routes: Routes = [
    {
     path: 'Sucess-Story',
     component:  SucessStoriesComponent ,
+  },
+
+    {
+    path: 'welcome',
+    component: WelcomeComponent, 
   },
 ////////////////preferences ///////////////////////
   

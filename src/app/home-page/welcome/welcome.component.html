@@ -1,0 +1,72 @@
+<div class="welcome-scroll-container scroll-verticle style-1 no-scroll">
+  <div class="onboarding-wrapper d-flex flex-column align-items-center text-center">
+
+    <!-- Check icon badge -->
+    <div class="check-badge-outer d-flex align-items-center justify-content-center mb-3">
+      <div class="check-badge-inner d-flex align-items-center justify-content-center">
+        <i class="bi bi-check-lg"></i>
+      </div>
+    </div>
+
+    <!-- Account created pill -->
+    <div class="account-created-pill d-inline-flex align-items-center gap-2 mb-4">
+      <i class="bi bi-stars"></i>
+      <span>ACCOUNT CREATED</span>
+    </div>
+
+    <!-- Heading -->
+    <h1 class="welcome-heading mb-1">Welcome to</h1>
+    <h2 class="company-heading mb-3">{{ companyName }}</h2>
+
+    <p class="welcome-subtext mb-4">
+      Your account is ready. Complete your profile and<br>
+      set your preferences to start seeing your matches.
+    </p>
+
+    <!-- Completion Card -->
+    <div class="completion-card d-flex align-items-center shadow-sm">
+
+      <!-- Progress Ring -->
+      <div class="progress-ring-wrap flex-shrink-0">
+        <svg viewBox="0 0 100 100" class="progress-ring">
+          <circle class="ring-bg" cx="50" cy="50" r="44"></circle>
+          <circle class="ring-fill" cx="50" cy="50" r="44"
+                  [style.strokeDasharray]="circumference"
+                  [style.strokeDashoffset]="dashOffset"></circle>
+        </svg>
+        <div class="progress-ring-label">
+          <span class="ring-percent">{{ overallCompletion }}%</span>
+          <span class="ring-caption">DONE</span>
+        </div>
+      </div>
+
+      <!-- Details -->
+      <div class="completion-details flex-grow-1">
+        <h3 class="completion-title mb-1">Profile Completion</h3>
+        <p class="completion-subtitle mb-3">Start filling in your details to get your first matches.</p>
+
+        <div class="completion-row d-flex align-items-center justify-content-between">
+          <span class="row-label">Profile</span>
+          <div class="d-flex align-items-center gap-3">
+            <span class="row-percent">{{ profileCompletion }}%</span>
+            <button type="button" class="arrow-btn" (click)="goToProfile()">
+              <i class="bi bi-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="completion-row d-flex align-items-center justify-content-between">
+          <span class="row-label">Preferences</span>
+          <div class="d-flex align-items-center gap-3">
+            <span class="row-percent">{{ preferencesCompletion }}%</span>
+            <button type="button" class="arrow-btn" (click)="goToPreferences()">
+              <i class="bi bi-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

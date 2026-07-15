@@ -1,0 +1,222 @@
+.welcome-scroll-container {
+  width: 100%;
+  height: 100%;
+  padding-top: 8px;
+}
+
+.onboarding-wrapper {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+}
+
+// ── Check badge ──────────────────────────────────────────
+.check-badge-outer {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: rgba(89, 1, 23, 0.08);
+}
+
+.check-badge-inner {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: rgba(89, 1, 23, 0.12);
+  color: var(--primary);
+  font-size: 26px;
+}
+
+// ── Account created pill ─────────────────────────────────
+.account-created-pill {
+  padding: 8px 18px;
+  border-radius: 30px;
+  border: 1px solid rgba(89, 1, 23, 0.25);
+  background: var(--6th);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+}
+
+// ── Headings ──────────────────────────────────────────────
+.welcome-heading {
+  font-family: 'Marcellus', serif;
+  font-weight: 700;
+  font-size: clamp(24px, 3.5vw, 42px);
+  color: var(--8th);
+}
+
+.company-heading {
+  font-family: 'Marcellus', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: clamp(22px, 3.5vw, 42px);
+  background: linear-gradient(90deg, var(--primary), var(--2nd));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.welcome-subtext {
+  color: var(--7th);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+// ── Completion Card ───────────────────────────────────────
+.completion-card {
+  width: 100%;
+  background: var(--6th);
+  border-radius: 20px;
+  padding: 20px 24px;
+  gap: 20px;
+  text-align: left;
+}
+
+// ── Progress Ring ─────────────────────────────────────────
+.progress-ring-wrap {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.progress-ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ring-bg {
+  fill: none;
+  stroke: var(--4th);
+  stroke-width: 8;
+}
+
+.ring-fill {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.progress-ring-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring-percent {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--8th);
+  line-height: 1.1;
+}
+
+.ring-caption {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--7th);
+}
+
+// ── Details ───────────────────────────────────────────────
+.completion-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--8th);
+}
+
+.completion-subtitle {
+  font-size: 12px;
+  color: var(--7th);
+}
+
+.completion-row {
+  padding: 8px 0;
+  border-top: 1px solid var(--5th);
+
+  &:first-of-type {
+    border-top: none;
+  }
+}
+
+.row-label {
+  font-size: 13px;
+  color: var(--8th);
+  font-weight: 500;
+}
+
+.row-percent {
+  font-size: 12px;
+  color: var(--7th);
+  min-width: 30px;
+  text-align: right;
+}
+
+.arrow-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: var(--2nd);
+  color: var(--6th);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: var(--primary);
+  }
+}
+
+// ── Responsive ────────────────────────────────────────────
+
+// Short viewports (laptops at 100% zoom, small height windows)
+@media (max-height: 750px) {
+  .onboarding-wrapper {
+    padding: 20px 20px 40px;
+  }
+
+  .check-badge-outer {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 12px !important;
+  }
+
+  .check-badge-inner {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+
+  .account-created-pill {
+    padding: 6px 14px;
+    margin-bottom: 16px !important;
+  }
+
+  .welcome-subtext {
+    margin-bottom: 20px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .completion-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .completion-row {
+    justify-content: space-between !important;
+  }
+}
