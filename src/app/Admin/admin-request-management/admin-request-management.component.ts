@@ -67,93 +67,103 @@ export class AdminRequestManagementComponent implements OnInit {
     this.loadRequests();
   }
 
-//   loadRequests(): void {
-//     this.dataService
-//       .getHttp(`core-api/Admin/getRequestManagement`, {})
-//       .subscribe({
-//         next: (res: any) => {
-//           const data = Array.isArray(res) ? res : [];
-//           this.allRequests = data.map((u: any) => ({
-//             id: u.profileID,
-//             userID: u.userID,
-//             name: u.fullname || u.firstName || 'Unknown',
-//             age: this.calculateAge(u.dob),
-//             location: u.address || 'N/A',
-//             // image: u.eDoc && u.eDoc.trim() !== '' ? environment.productUrl + 'assets/user-images/userProfile/' +  u.eDoc : 'assets/images/default-avatar.png',
-//               image: u.eDoc && u.eDoc.trim() !== '' 
-//   ? environment.productUrl + 'assets/user-images/userProfile/' + u.eDoc 
-//   : 'assets/images/default-avatar.png',
+  //   loadRequests(): void {
+  //     this.dataService
+  //       .getHttp(`core-api/Admin/getRequestManagement`, {})
+  //       .subscribe({
+  //         next: (res: any) => {
+  //           const data = Array.isArray(res) ? res : [];
+  //           this.allRequests = data.map((u: any) => ({
+  //             id: u.profileID,
+  //             userID: u.userID,
+  //             name: u.fullname || u.firstName || 'Unknown',
+  //             age: this.calculateAge(u.dob),
+  //             location: u.address || 'N/A',
+  //             // image: u.eDoc && u.eDoc.trim() !== '' ? environment.productUrl + 'assets/user-images/userProfile/' +  u.eDoc : 'assets/images/profile1.png',
+  //               image: u.eDoc && u.eDoc.trim() !== ''
+  //   ? environment.productUrl + 'assets/user-images/userProfile/' + u.eDoc
+  //   : 'assets/images/profile1.png',
 
-// // ✅ CORRECT WAY TO CONSOLE LOG
-// console.log('User image:', u.eDoc);
-// console.log('Full image path:', environment.productUrl + 'assets/user-images/userProfile/' + u.eDoc);
-// console.log('Final image used:', u.eDoc && u.eDoc.trim() !== '' 
-//   ? environment.productUrl + 'assets/user-images/userProfile/' + u.eDoc 
-//   : 'assets/images/default-avatar.png');
+  // // ✅ CORRECT WAY TO CONSOLE LOG
+  // console.log('User image:', u.eDoc);
+  // console.log('Full image path:', environment.productUrl + 'assets/user-images/userProfile/' + u.eDoc);
+  // console.log('Final image used:', u.eDoc && u.eDoc.trim() !== ''
+  //   ? environment.productUrl + 'assets/user-images/userProfile/' + u.eDoc
+  //   : 'assets/images/profile1.png');
 
-//             status: this.mapStatus(u.statusID),
-//             statusID: u.statusID,
-//             email: u.email,
-//             phone: u.phoneNumber,
-//           }));
+  //             status: this.mapStatus(u.statusID),
+  //             statusID: u.statusID,
+  //             email: u.email,
+  //             phone: u.phoneNumber,
+  //           }));
 
-//           this.filterRequestsByActiveTab();
-//         },
-//         error: (err) => console.error('Request Management load error:', err),
-//       });
-//   }
+  //           this.filterRequestsByActiveTab();
+  //         },
+  //         error: (err) => console.error('Request Management load error:', err),
+  //       });
+  //   }
 
-loadRequests(): void {
-  this.dataService
-    .getHttp(`core-api/Admin/getRequestManagement`, {})
-    .subscribe({
-      next: (res: any) => {
-        const data = Array.isArray(res) ? res : [];
-        this.allRequests = data.map((u: any) => {
-          // ✅ Build the image path
-          const hasImage = u.eDoc && u.eDoc.trim() !== '';
-          const imagePath = hasImage 
-            ? environment.productUrl + 'assets/user-images/userProfile/' + u.eDoc 
-            : 'assets/images/profile1.png';
+  loadRequests(): void {
+    this.dataService
+      .getHttp(`core-api/Admin/getRequestManagement`, {})
+      .subscribe({
+        next: (res: any) => {
+          const data = Array.isArray(res) ? res : [];
+          this.allRequests = data.map((u: any) => {
+            // ✅ Build the image path
+            const hasImage = u.eDoc && u.eDoc.trim() !== '';
+            const imagePath = hasImage
+              ? environment.productUrl +
+                'assets/user-images/userProfile/' +
+                u.eDoc
+              : 'assets/images/profile1.png';
 
-          // // ✅ CONSOLE LOGS - Properly placed before the return
-          // console.log('=== User Image Debug ===');
-          // console.log('User ID:', u.userID);
-          // console.log('User Name:', u.fullname || u.firstName);
-          // console.log('eDoc value:', u.eDoc);
-          // console.log('Has image?', hasImage);
-          // console.log('Full image path:', imagePath);
-          // console.log('Environment URL:', environment.productUrl);
-          // console.log('========================');
+            // // ✅ CONSOLE LOGS - Properly placed before the return
+            // console.log('=== User Image Debug ===');
+            // console.log('User ID:', u.userID);
+            // console.log('User Name:', u.fullname || u.firstName);
+            // console.log('eDoc value:', u.eDoc);
+            // console.log('Has image?', hasImage);
+            // console.log('Full image path:', imagePath);
+            // console.log('Environment URL:', environment.productUrl);
+            // console.log('========================');
 
-          // ✅ Return the object
-          return {
-            id: u.profileID,
-            userID: u.userID,
-            name: u.fullname || u.firstName || 'Unknown',
-            age: this.calculateAge(u.dob),
-            location: this.extractLocation(u.userProfile),
-            image: imagePath,
-            status: this.mapStatus(u.statusID),
-            statusID: u.statusID,
-            email: u.email,
-            phone: u.phoneNumber,
-          };
-        });
+            // ✅ Return the object
+            return {
+              id: u.profileID,
+              userID: u.userID,
+              name: u.fullname || u.firstName || 'Unknown',
+              age: this.calculateAge(u.dob),
+              location: this.extractLocation(u.userProfile),
+              image: imagePath,
+              status: this.mapStatus(u.statusID),
+              statusID: u.statusID,
+              email: u.email,
+              phone: u.phoneNumber,
+            };
+          });
 
-        this.filterRequestsByActiveTab();
-      },
-      error: (err) => console.error('Request Management load error:', err),
-    });
-}
+          this.filterRequestsByActiveTab();
+        },
+        error: (err) => console.error('Request Management load error:', err),
+      });
+  }
 
   // ─── Shared helper: parse userProfile JSON string and pull city/country ──
   private extractLocation(userProfileJson: string): string {
     let profileItems: any[] = [];
-    try { profileItems = JSON.parse(userProfileJson || '[]'); } catch { profileItems = []; }
+    try {
+      profileItems = JSON.parse(userProfileJson || '[]');
+    } catch {
+      profileItems = [];
+    }
 
-    const locationItem = profileItems.find((p: any) => p.cityID !== undefined && p.isPreference === 0);
-    return locationItem ? `${locationItem.cityName}, ${locationItem.countryName}` : 'N/A';
+    const locationItem = profileItems.find(
+      (p: any) => p.cityID !== undefined && p.isPreference === 0,
+    );
+    return locationItem
+      ? `${locationItem.cityName}, ${locationItem.countryName}`
+      : 'N/A';
   }
 
   mapStatus(statusID: number): 'pending' | 'accepted' | 'rejected' {
@@ -259,7 +269,7 @@ loadRequests(): void {
           ? environment.productUrl +
             'assets/user-images/userProfile/' +
             user.eDoc
-          : 'assets/images/default-avatar.png',
+          : 'assets/images/profile1.png',
       name: user.fullname || user.firstName || 'Unknown',
       age: `${this.calculateAge(user.dob)} years`,
       location: location,

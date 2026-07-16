@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SharedDataService } from '../../../shared/services/shared-data.service';
 import { SharedFormFieldValidationService } from 'src/shared/services/shared-form-field-validation.service';
 import { SharedGlobalService } from 'src/shared/services/shared-global.service';
+import { environment } from 'src/envirnment/environment';
 
 interface ServiceItem {
   id: string;
@@ -18,7 +19,6 @@ interface EventDetail {
   cityName: string;
   countryID: number;
   countryName: string;
-  interestStatusID: number;
 }
 
 @Component({
@@ -44,7 +44,15 @@ export class PremiumServicesComponent implements OnInit {
   isLoading            = false;
 
   // ── Interest state ────────────────────────────────────────────────────────
-  interestStatusID     = 1;   // 1 = send interest, 0 = withdraw
+  // interestStatusID always reflects the CURRENT status as returned by GET.
+  // 0 = no interest sent yet (button shows "Send Interest")
+  // 1 = interest already sent (button shows "Withdraw Interest")
+  interestStatusID     = 0;
+
+  // serviceID from GET: 0 (or falsy) means no record exists yet -> insert.
+  // Non-zero means a record already exists -> update.
+  serviceID             = 0;
+
   isSendingInterest    = false;
 
   // ── Slider ────────────────────────────────────────────────────────────────
@@ -65,7 +73,8 @@ export class PremiumServicesComponent implements OnInit {
     this.currentSlide     = 0;
     this.modalEvents      = [];
     this.eventDescription = '';
-    this.interestStatusID = 1;
+    this.interestStatusID = 0;
+    this.serviceID        = 0;
     this.isLoading        = true;
 
     (this.dataService.getHttp('user-api/getDashboardEvent', { eventTypeID: service.eventTypeID }) as any)
@@ -75,17 +84,28 @@ export class PremiumServicesComponent implements OnInit {
           if (data.length) {
             // Parse eDoc JSON string
             try {
-              this.modalEvents = JSON.parse(data[0].eDoc);
+              const parsedEvents: EventDetail[] = JSON.parse(data[0].eDoc);
+              // Build full image URL for each event's eDoc filename
+              this.modalEvents = parsedEvents.map(event => ({
+                ...event,
+                eDoc: event.eDoc && event.eDoc.trim() !== ''
+                  ? environment.productUrl + 'assets/user-images/Events/' + event.eDoc
+                  : 'assets/images/default-event.png'
+              }));
             } catch (e) {
               this.modalEvents = [];
             }
             // Description from API
             this.eventDescription = data[0].eventDescription || '';
 
-            // Check interestStatusID from first event if available
-            if (this.modalEvents.length && this.modalEvents[0].interestStatusID !== undefined) {
-              this.interestStatusID = this.modalEvents[0].interestStatusID;
-            }
+            // interestStatusID and serviceID now come from the top-level response
+            this.interestStatusID = data[0].interestStatusID !== undefined
+              ? data[0].interestStatusID
+              : 0;
+
+            this.serviceID = data[0].serviceID !== undefined
+              ? data[0].serviceID
+              : 0;
           }
           this.isLoading = false;
         },
@@ -100,48 +120,63 @@ export class PremiumServicesComponent implements OnInit {
     this.eventDescription = '';
   }
 
-  // ── Send Interest ─────────────────────────────────────────────────────────
+  // ── Send / Withdraw Interest (insert first time, update thereafter) ──────
   sendInterest(): void {
     if (!this.selectedService) return;
 
-    const loggedInUser = JSON.parse(localStorage.getItem('userData') || '{}');
-    const senderID     = this.sharedGlobalService.getUserID() || 0;
+    const roleID = this.sharedGlobalService.getRoleId();
+
+    // Only role 3 (regular user) is allowed to send/withdraw interest
+    if (roleID !== 3) {
+      this.valid.apiErrorResponse('Please login with user account.');
+      return;
+    }
+
+    const senderID = this.sharedGlobalService.getUserID() || 0;
+
+    // No record yet -> first-time insert. Otherwise -> update (toggle).
+    const isInsert = !this.serviceID;
+
+    const newStatusID = isInsert
+      ? 1
+      : (this.interestStatusID === 1 ? 0 : 1);
 
     const payload = {
-      senderID:         senderID,
-      receiverID:       this.selectedService.eventTypeID,
-      interestStatusID: this.interestStatusID,
-      spType:           'insert'
+      userID:      senderID,
+      eventTypeID: this.selectedService.eventTypeID,
+      eventID:     0,
+      serviceID:   isInsert ? 0 : this.serviceID,
+      statusID:    newStatusID,
+      spType:      isInsert ? 'insert' : 'update'
     };
-    console.log(payload,'sendInterest');
+    console.log(payload, 'sendInterest');
 
     this.isSendingInterest = true;
 
-    (this.dataService.postDirect('core-api/Admin/saveUserInterest', payload) as any)
+    (this.dataService.postDirect('core-api/Admin/SaveService', payload) as any)
       .subscribe({
-       next: (res: any) => {
-        const response = Array.isArray(res) ? res[0] : res;
-        if (response?.includes('Success')) {
-          this.valid.apiInfoResponse('Interest Send successfully.');
-      
-        } else {
-          this.valid.apiErrorResponse(response);
-        }
-      },
-      error: (err: any) => {
-        this.valid.apiErrorResponse('Something went wrong. Please try again.');
-        console.error('SaveEvent error:', err);
-      },
-    });
+        next: (res: any) => {
+          const response = Array.isArray(res) ? res[0] : res;
+          if (response?.includes('Success')) {
+            this.valid.apiInfoResponse(
+              newStatusID === 1 ? 'Interest sent successfully.' : 'Interest withdrawn successfully.'
+              // this.openOverlay(this.selectedService!) // Refresh modal data to reflect new interest status
+            );
+            this.openOverlay(this.selectedService!); // Refresh modal data to reflect new interest status
+            // reflect the new state locally so the button/color update immediately
+            this.interestStatusID = newStatusID;
+          } else {
+            this.valid.apiErrorResponse(response);
+          }
+          this.isSendingInterest = false;
+        },
+        error: (err: any) => {
+          this.valid.apiErrorResponse('Something went wrong. Please try again.');
+          console.error('SaveEvent error:', err);
+          this.isSendingInterest = false;
+        },
+      });
   }
-  //       next: () => {
-  //         // Toggle: 1 → 0 → 1
-  //         this.interestStatusID  = this.interestStatusID === 1 ? 0 : 1;
-  //         this.isSendingInterest = false;
-  //       },
-  //       error: () => { this.isSendingInterest = false; }
-  //     });
-  // }
 
   // ── Slider ────────────────────────────────────────────────────────────────
   get sliderDots(): number[] {

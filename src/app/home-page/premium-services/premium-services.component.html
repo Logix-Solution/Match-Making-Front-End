@@ -174,12 +174,12 @@
   <button
     class="btn btn-lg d-flex align-items-center justify-content-center gap-2 py-3 rounded-3 text-white fw-semibold"
     style="border: none;"
-    [style.background-color]="interestStatusID === 1 ? '#c94a30' : '#6c757d'"
+    [style.background-color]="interestStatusID === 1 ? '#6c757d' : '#c94a30'"
     [disabled]="isSendingInterest"
     (click)="sendInterest()">
     <span *ngIf="isSendingInterest" class="spinner-border spinner-border-sm me-1"></span>
     <i *ngIf="!isSendingInterest" class="bi bi-whatsapp fs-5"></i>
-    {{ isSendingInterest ? 'Please wait...' : (interestStatusID === 1 ? 'Send Interest' : 'Withdraw Interest') }}
+    {{ isSendingInterest ? 'Please wait...' : (interestStatusID === 1 ? 'Withdraw Interest' : 'Send Interest') }}
   </button>
 </div>
 
