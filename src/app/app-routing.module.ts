@@ -30,6 +30,7 @@ import { UserPricingPlanComponent } from './pricing-plans/user-pricing-plan/user
 import { UserUpgradePricePlanComponent } from './pricing-plans/user-upgrade-price-plan/user-upgrade-price-plan.component';
 import { UserActivePlanComponent } from './pricing-plans/user-active-plan/user-active-plan.component';
 import { WelcomeComponent } from './home-page/welcome/welcome.component';
+import { RegisterationFeeComponent } from './Preferences/registeration-fee/registeration-fee.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -96,6 +97,11 @@ const routes: Routes = [
    {
     path: 'preferences-configuration',
     component: PreferencesConfigurationComponent,
+  },
+
+  {
+    path: 'registerationFee',
+    component: RegisterationFeeComponent,
   },
   
 

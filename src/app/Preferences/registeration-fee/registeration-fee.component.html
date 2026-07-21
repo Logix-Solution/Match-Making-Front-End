@@ -1,0 +1,181 @@
+<div class="registration-page-wrapper py-5 d-flex flex-column no-scroll h-100">
+  <div class="container-fluid flex-grow-1 scroll-verticle style-1 p-0">
+
+    <!-- ── Header ──────────────────────────────────────────────────────── -->
+    <div class="text-center mb-4">
+      <span class="sub-heading text-uppercase text-muted d-block mb-1">Profile Analysis Complete</span>
+      <h1 class="main-title mb-3">
+        Congratulations! You Have <span class="count-highlight">{{ matchedProfiles }}</span> Profile Matches According to Your Preferences
+      </h1>
+    </div>
+
+    <div class="custom-row-max px-3 px-lg-0">
+
+      <!-- ── Sub-header + Fee Card ──────────────────────────────────────── -->
+      <h2 class="section-sub-title mb-1">Submit Your Profile</h2>
+
+      <ng-container *ngIf="!isLoadingPlan; else feeLoading">
+        <p class="plan-fee-text mb-4" *ngIf="registrationPlan">
+          A one-time fee of
+          <strong class="fee-highlight">{{ formattedFee }}</strong>
+          is required to submit your profile and access your matches.
+        </p>
+
+        <div class="fee-card d-flex align-items-center justify-content-between p-3 p-md-4 rounded-4 mb-4" *ngIf="registrationPlan">
+          <div class="d-flex align-items-center gap-3">
+            <div class="fee-icon-wrap d-flex align-items-center justify-content-center rounded-circle">
+              <i class="bi bi-currency-exchange"></i>
+            </div>
+            <div>
+              <h3 class="fee-card-title mb-0">Profile Submission Fee</h3>
+              <span class="fee-card-sub text-muted">One-time · Non-refundable</span>
+            </div>
+          </div>
+          <div class="fee-card-amount">{{ formattedFee }}</div>
+        </div>
+      </ng-container>
+      <ng-template #feeLoading>
+        <p class="plan-fee-text mb-4 text-muted">Loading registration fee...</p>
+      </ng-template>
+
+      <!-- ── Two Columns ────────────────────────────────────────────────── -->
+      <div class="row g-4 align-items-start">
+
+        <!-- LEFT: Bank Details + Reference + Paid Amount + Info ─────────── -->
+        <div class="col-xl-6 col-lg-6 col-12">
+          <div class="card detail-card h-100 p-4 border-0 shadow-sm rounded-4">
+
+            <h3 class="card-inner-title text-uppercase mb-4">Bank Transfer Details</h3>
+
+            <!-- Account Holder -->
+            <div class="mb-3">
+              <label class="form-label text-uppercase">Account Holder</label>
+              <div class="display-data-field d-flex align-items-center justify-content-between p-3 rounded-3">
+                <span class="data-text">{{ bankDetails.accountHolderName || '---------' }}</span>
+                <button class="btn copy-btn p-0" type="button"
+                        (click)="copyToClipboard(bankDetails.accountHolderName)"
+                        [disabled]="!bankDetails.accountHolderName">
+                  <i class="bi bi-copy"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Account Number -->
+            <div class="mb-3">
+              <label class="form-label text-uppercase">Account Number</label>
+              <div class="display-data-field d-flex align-items-center justify-content-between p-3 rounded-3">
+                <span class="data-text font-monospace">{{ bankDetails.accountNumber || '---------' }}</span>
+                <button class="btn copy-btn p-0" type="button"
+                        (click)="copyToClipboard(bankDetails.accountNumber)"
+                        [disabled]="!bankDetails.accountNumber">
+                  <i class="bi bi-copy"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Bank Name -->
+            <div class="mb-4">
+              <label class="form-label text-uppercase">Bank Name</label>
+              <div class="display-data-field d-flex align-items-center justify-content-between p-3 rounded-3">
+                <span class="data-text">{{ bankDetails.bankName || '---------' }}</span>
+                <button class="btn copy-btn p-0" type="button"
+                        (click)="copyToClipboard(bankDetails.bankName)"
+                        [disabled]="!bankDetails.bankName">
+                  <i class="bi bi-copy"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Reference No + Paid Amount -->
+            <div class="row g-3 mb-4">
+              <div class="col-7">
+                <label class="form-label text-uppercase">Reference No#</label>
+                <div class="display-data-field d-flex align-items-center justify-content-between p-3 rounded-3">
+                  <input type="text"
+                         class="data-text border-0 bg-transparent w-100 outline-none"
+                         placeholder="---------"
+                         [(ngModel)]="referenceNumber"
+                         style="outline:none;" />
+                  <button class="btn copy-btn p-0 ms-2" type="button"
+                          (click)="copyToClipboard(referenceNumber)"
+                          [disabled]="!referenceNumber">
+                    <i class="bi bi-copy"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="col-5">
+                <label class="form-label text-uppercase">Paid Amount</label>
+                <div class="display-data-field d-flex align-items-center p-3 rounded-3">
+                  <input type="text"
+                         class="data-text border-0 bg-transparent w-100 outline-none"
+                         placeholder="---------"
+                         [(ngModel)]="paidAmount"
+                         style="outline:none;" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Info Alert -->
+            <div class="info-alert-box d-flex align-items-start gap-3 p-3 rounded-3 mt-auto">
+              <i class="bi bi-check-circle-fill mt-1"></i>
+              <p class="mb-0 info-text">
+                Please include the reference number in your transfer so we can identify your payment quickly.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- RIGHT: Upload + Button + Disclaimer ─────────────────────────── -->
+        <div class="col-xl-6 col-lg-6 col-12">
+          <div class="d-flex flex-column h-100 gap-4">
+
+            <!-- Upload Label + Dropzone -->
+            <div>
+              <label class="form-label text-uppercase mb-1">Upload Payment Screenshot</label>
+              <p class="form-sublabel text-muted mb-3" style="font-size: 13px;">
+                After completing the transfer, upload a screenshot or photo of the payment confirmation.
+              </p>
+
+              <div class="dropzone-area rounded-4 p-4 text-center d-flex flex-column align-items-center justify-content-center"
+                   (click)="fileInput.click()"
+                   (dragover)="$event.preventDefault()"
+                   (drop)="onFileDropped($event)">
+                <input type="file" #fileInput class="d-none"
+                       accept="image/png, image/jpeg, application/pdf"
+                       (change)="onFileSelected($event)" />
+
+                <div class="upload-icon-wrap mb-3">
+                  <i class="bi bi-upload fs-4 text-muted"></i>
+                </div>
+
+                <h3 class="upload-main-text mb-1" *ngIf="!selectedFile">Drop your screenshot here</h3>
+                <p class="upload-sub-text text-muted mb-0" *ngIf="!selectedFile">or click to browse · PNG, JPG, PDF</p>
+
+                <h3 class="upload-main-text mb-1 text-success text-truncate w-100 p-2" *ngIf="selectedFile">
+                  <i class="bi bi-file-earmark-check-fill me-1"></i> {{ selectedFile.name }}
+                </h3>
+              </div>
+            </div>
+
+            <!-- Register Button + Disclaimer -->
+            <div class="mt-auto">
+              <button type="button"
+                      class="btn btn-register-submit w-100 p-3 text-uppercase fw-semibold mb-2"
+                      [disabled]="!referenceNumber || !paidAmount || !selectedFile || !registrationPlan"
+                      (click)="submitRegistration()">
+                Register Profile
+              </button>
+              <p class="text-center text-muted bottom-disclaimer mb-0">
+                Your profile will be reviewed within 24 hours after payment verification.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

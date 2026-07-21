@@ -1,0 +1,189 @@
+.registration-page-wrapper {
+
+  .sub-heading {
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
+  .main-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 1.4;
+    color: #1a1a1a;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+
+    .count-highlight {
+      font-size: 44px;
+      color: var(--3rd);
+      font-weight: 700;
+      margin: 0 4px;
+    }
+  }
+
+  .custom-row-max {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-sub-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+
+  .plan-fee-text {
+    color: #6b6b6b;
+    font-size: 14px;
+
+    .fee-highlight {
+      color: var(--primary);
+    }
+  }
+
+  // ── Fee Card ──────────────────────────────────────────
+  .fee-card {
+    border: 1px solid var(--primary);
+    background: #fff;
+
+    .fee-icon-wrap {
+      width: 44px;
+      height: 44px;
+      background: #f4ecec;
+      color: var(--primary);
+      font-size: 18px;
+    }
+
+    .fee-card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .fee-card-sub {
+      font-size: 12px;
+    }
+
+    .fee-card-amount {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+  }
+
+  // ── Detail Card / Bank Details ───────────────────────
+  .detail-card {
+    background: #fff;
+
+    .card-inner-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a1a;
+      letter-spacing: 0.5px;
+    }
+
+    .form-label {
+      font-size: 11px;
+      color: #8a8a8a;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .display-data-field {
+      background: #f2eff0;
+
+      .data-text {
+        font-size: 14px;
+        color: #1a1a1a;
+      }
+
+      input.data-text::placeholder {
+        color: #9a9a9a;
+      }
+
+      .copy-btn {
+        color: var(--primary);
+        font-size: 15px;
+
+        &:disabled {
+          color: #b8b8b8;
+        }
+      }
+    }
+
+    .info-alert-box {
+      background: #f7f2ee;
+      border: 1px solid #ecd9c9;
+
+      i {
+        color: var(--3rd);
+      }
+
+      .info-text {
+        font-size: 13px;
+        color: #6b6b6b;
+      }
+    }
+  }
+
+  // ── Upload / Dropzone ─────────────────────────────────
+  .dropzone-area {
+    border: 2px dashed #d6d0d0;
+    background: #fafafa;
+    min-height: 200px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+
+    &:hover {
+      border-color: var(--primary);
+      background: #faf6f6;
+    }
+
+    .upload-icon-wrap {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eeeeee;
+      border-radius: 50%;
+    }
+
+    .upload-main-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .upload-sub-text {
+      font-size: 12px;
+    }
+  }
+
+  // ── Register Button ───────────────────────────────────
+  .btn-register-submit {
+    background: #fff;
+    border: 1.5px solid var(--primary);
+    color: var(--primary);
+    border-radius: 10px;
+    letter-spacing: 0.5px;
+    transition: background 0.2s ease, color 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .bottom-disclaimer {
+    font-size: 12px;
+  }
+}
