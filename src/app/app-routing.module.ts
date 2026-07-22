@@ -31,6 +31,7 @@ import { UserUpgradePricePlanComponent } from './pricing-plans/user-upgrade-pric
 import { UserActivePlanComponent } from './pricing-plans/user-active-plan/user-active-plan.component';
 import { WelcomeComponent } from './home-page/welcome/welcome.component';
 import { RegisterationFeeComponent } from './Preferences/registeration-fee/registeration-fee.component';
+import { LockProfilesComponent } from './Admin/lock-profiles/lock-profiles.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -147,6 +148,10 @@ const routes: Routes = [
    {
      path: 'pricingConfig',
     component: PricingPlanConfigurationComponent,
+  },
+    {
+     path: 'lockProfile',
+    component: LockProfilesComponent,
   },
   
   /////////////////////Account setting/////////////

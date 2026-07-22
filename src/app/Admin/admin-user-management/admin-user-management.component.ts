@@ -1,17 +1,26 @@
 import { Component, OnInit } from '@angular/core';
+import { forkJoin } from 'rxjs';
 import { SharedDataService } from '../../../shared/services/shared-data.service';
 import { SharedGlobalService } from '../../../shared/services/shared-global.service';
 import { SharedFormFieldValidationService } from 'src/shared/services/shared-form-field-validation.service';
 import { environment } from 'src/envirnment/environment.prod';
 
-interface UserProfile {
-  id: number;
+type TabType = 'all' | 'pending' | 'accepted' | 'rejected';
+
+interface UserItem {
+  id: number;              // profileID
   userID: number;
   name: string;
+  age: number;
   location: string;
   image: string;
-  status: 'Active' | 'Blocked';
-  memberSince: string;
+  planBadge: string;       // e.g. "Monthly Plan"
+  status: 'pending' | 'accepted' | 'rejected';
+  statusID: number;
+  active: number;          // 0/1 — drives Block/UnBlock, independent of status
+  dateLabel: string;       // "Requested At" or "Member Since"
+  dateValue: string;
+  profilesSharedCount: number; // TODO: no field provided by API yet — defaulted
 }
 
 interface ProfileSection {
@@ -29,30 +38,62 @@ interface ProfileHeader {
   status: string;
 }
 
+interface ActivityItem {
+  userPlanID: number;
+  planName: string;
+  referenceNo: string;
+  paidAmount: string;
+  eDoc: string | null;
+  eDocPath: string | null;
+  toDate: string | null;
+}
+
+interface MatchProfileItem {
+  userProfileStatusID: number;
+  statusID: number;
+  sourceProfileID: number;
+  destinationProfileID: number;
+  match: string;
+  fullName: string;
+  address: string;
+  subTypeTitle: string;
+  pendingStatusID: number;
+}
+
 @Component({
   selector: 'app-admin-user-management',
   templateUrl: './admin-user-management.component.html',
   styleUrls: ['./admin-user-management.component.scss'],
 })
 export class AdminUserManagementComponent implements OnInit {
-  searchQuery: string = '';
-  allUsers: UserProfile[] = [];
-  filteredUsers: UserProfile[] = [];
+  searchQuery = '';
+  activeTab: TabType = 'all';
 
-  // ─── Detail Modal ─────────────────────────────────────────────────────────
+  allUsers: UserItem[] = [];
+  filteredUsers: UserItem[] = [];
+
+isDocPreviewOpen = false;
+docPreviewUrl = '';
+docPreviewLabel = '';
+
+  // ─── Full Profile ("View Details") Modal ───────────────────────────────────
   isDetailModalOpen = false;
   detailLoading = false;
   showAboutModal = false;
   aboutText1 = '';
   profileHeader: ProfileHeader = {
-    avatar: '',
-    name: '',
-    age: '',
-    location: '',
-    occupation: '',
-    status: '',
+    avatar: '', name: '', age: '', location: '', occupation: '', status: '',
   };
   profileSections: ProfileSection[] = [];
+
+  // ─── Activity Modal (Activities + Matches Profiles, opens on avatar click) ─
+  isActivityModalOpen = false;
+  activityModalLoading = false;
+  activityUser: UserItem | null = null;
+  activityPlanBadge = '';
+  activities: ActivityItem[] = [];
+  matchProfiles: MatchProfileItem[] = [];
+  savingMatches = false;
 
   constructor(
     private dataService: SharedDataService,
@@ -64,73 +105,84 @@ export class AdminUserManagementComponent implements OnInit {
     this.loadUsers();
   }
 
+  // ─── Load + Map (single endpoint feeds all 4 tabs) ─────────────────────────
   loadUsers(): void {
     this.dataService
       .getHttp('core-api/Admin/getRequestManagement', {})
       .subscribe({
         next: (res: any) => {
           const data = Array.isArray(res) ? res : [];
-          this.allUsers = data.map((u: any) => {
-            const imageUrl =
-              u.eDoc && u.eDoc.trim() !== ''
-                ? environment.productUrl +
-                  'assets/user-images/userProfile/' +
-                  u.eDoc
-                : 'assets/images/profile1.png';
-
-            console.log(
-              imageUrl,
-              'user image',
-              '| eDoc:',
-              u.eDoc,
-              '| userID:',
-              u.userID,
-            );
-
-            return {
-              id: u.profileID,
-              userID: u.userID,
-              name: u.fullname || u.firstName || 'Unknown',
-              location: this.extractLocation(u.userProfile),
-              image: imageUrl,
-              status: this.mapStatus(u.active),
-              memberSince: this.formatDate(u.dob),
-            };
-          });
-          this.filteredUsers = [...this.allUsers];
+          this.allUsers = data.map((u: any) => this.mapUser(u));
+          this.applyFilters();
         },
         error: (err) => console.error('User Management load error:', err),
       });
   }
-  // ─── Shared helper: parse userProfile JSON string and pull city/country ──
+
+  private mapUser(u: any): UserItem {
+    const hasImage = u.eDoc && u.eDoc.trim() !== '';
+    const image = hasImage
+      ? environment.productUrl + 'assets/user-images/userProfile/' + u.eDoc
+      : 'assets/images/profile1.png';
+
+    // API sends statusTitle (string) as the source of truth for status placement —
+    // statusID / the typo'd statusIS field are NOT reliable, so we derive from statusTitle.
+    const status = this.mapStatusTitle(u.statusTitle);
+
+    return {
+      id: u.profileID,
+      userID: u.userID,
+      name: u.fullname || u.firstName || 'Unknown',
+      age: this.calculateAge(u.dob),
+      location: this.extractLocation(u.userProfile),
+      image,
+      planBadge: this.extractPlanBadge(u.userPlans),
+      status,
+      statusID: this.statusIDFromStatus(status),
+      active: u.active,
+      dateLabel: status === 'pending' ? 'Requested At' : 'Member Since',
+      dateValue: this.formatDate(status === 'pending' ? (u.requestedDate || u.dob) : u.dob),
+      // TODO: no "profiles shared" field provided by API — defaulting until wired up
+      profilesSharedCount: u.profilesSharedCount ?? u.sharedProfileCount ?? 10,
+    };
+  }
+
   private extractLocation(userProfileJson: string): string {
     let profileItems: any[] = [];
-    try {
-      profileItems = JSON.parse(userProfileJson || '[]');
-    } catch {
-      profileItems = [];
+    try { profileItems = JSON.parse(userProfileJson || '[]'); } catch { profileItems = []; }
+    const locationItem = profileItems.find((p: any) => p.cityID !== undefined && p.isPreference === 0);
+    return locationItem ? `${locationItem.cityName}, ${locationItem.countryName}` : 'N/A';
+  }
+
+  private extractPlanBadge(userPlansJson: string): string {
+    let plans: any[] = [];
+    try { plans = JSON.parse(userPlansJson || '[]'); } catch { plans = []; }
+    const current = plans.find((p: any) => p.CurrentPlan === 1);
+    if (!current?.planName) return '';
+    return current.planName === 'Registration' ? 'Registration' : `${current.planName} Plan`;
+  }
+
+  // ── Derives status from statusTitle string (e.g. "Reject", "Accept", "Pending") ──
+ private mapStatusTitle(statusTitle: string | null | undefined): 'pending' | 'accepted' | 'rejected' {
+  const title = (statusTitle || '').trim().toLowerCase();
+  if (title.startsWith('accept') || title.startsWith('approv')) return 'accepted';
+  if (title.startsWith('reject')) return 'rejected';
+  return 'pending';
+}
+
+  // Keeps a numeric statusID internally consistent with `status`, since the API's
+  // own statusID/statusIS field isn't reliable for this purpose.
+  private statusIDFromStatus(status: 'pending' | 'accepted' | 'rejected'): number {
+    switch (status) {
+      case 'accepted': return 2;
+      case 'rejected': return 3;
+      default: return 1;
     }
-
-    const locationItem = profileItems.find(
-      (p: any) => p.cityID !== undefined && p.isPreference === 0,
-    );
-    return locationItem
-      ? `${locationItem.cityName}, ${locationItem.countryName}`
-      : 'N/A';
   }
-
-  mapStatus(active: number): 'Active' | 'Blocked' {
-    return active === 1 ? 'Active' : 'Blocked';
-  }
-
-  formatDate(dob: string): string {
-    if (!dob) return 'N/A';
-    return new Date(dob).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  }
+formatDate(dob: string | null): string {
+  if (!dob) return 'N/A';
+  return new Date(dob).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
 
   calculateAge(dob: string): number {
     if (!dob) return 0;
@@ -138,42 +190,113 @@ export class AdminUserManagementComponent implements OnInit {
     return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
   }
 
-  onSearchChange(): void {
-    const q = this.searchQuery.trim().toLowerCase();
-    this.filteredUsers = !q
-      ? [...this.allUsers]
-      : this.allUsers.filter(
-          (u) =>
-            u.name.toLowerCase().includes(q) ||
-            u.location.toLowerCase().includes(q),
-        );
+  // ─── Tabs + Search ──────────────────────────────────────────────────────────
+  setTab(tab: TabType): void {
+    this.activeTab = tab;
+    this.applyFilters();
   }
 
-  // ─── View Details ─────────────────────────────────────────────────────────
-  onViewDetails(user: UserProfile): void {
+  onSearchChange(): void {
+    this.applyFilters();
+  }
+
+  private applyFilters(): void {
+    const q = this.searchQuery.trim().toLowerCase();
+    this.filteredUsers = this.allUsers.filter((u) => {
+      const matchesTab = this.activeTab === 'all' || u.status === this.activeTab;
+      const matchesSearch = !q ||
+        u.name.toLowerCase().includes(q) ||
+        u.location.toLowerCase().includes(q);
+      return matchesTab && matchesSearch;
+    });
+  }
+
+  // ─── Accept / Reject / Undo ──────────────────────────────────────────────────
+  onAccept(item: UserItem): void {
+    this.saveStatus(item, 2, 'Request Accepted Successfully');
+  }
+
+  onReject(item: UserItem): void {
+    this.saveStatus(item, 3, 'Request Rejected Successfully');
+  }
+
+  onUndo(item: UserItem): void {
+    this.saveStatus(item, 1, 'Request Restored Successfully');
+  }
+
+  // Reloads the full list from the server after a successful save instead of
+  // patching local state — guarantees the card lands under whatever tab the
+  // API's statusTitle actually reports, avoiding drift between client and server.
+  private saveStatus(item: UserItem, statusID: number, successMsg: string): void {
+    const adminID = this.sharedGlobalService.getUserID();
+    const payload = { userID: item.userID, statusID, adminID, spType: 'update' };
+    console.log('Saving status for user:', item.userID, 'to statusID:', statusID, 'with payload:', payload);
+
+    this.dataService.postDirect('user-api/User/saveUserRequest', payload).subscribe({
+      next: (res: any) => {
+        const response = Array.isArray(res) ? res[0] : res;
+        if (response?.includes('Success')) {
+          this.valid.apiInfoResponse(successMsg);
+          this.loadUsers();
+        } else {
+          this.valid.apiErrorResponse(response);
+        }
+      },
+      error: (err) => {
+        this.valid.apiErrorResponse('Something went wrong.');
+        console.error(err);
+      },
+    });
+  }
+
+  // ─── Block / Un-Block (Accepted tab) ────────────────────────────────────────
+  onBlockUser(item: UserItem): void {
+    const isCurrentlyActive = item.active === 1;
+    const spType = isCurrentlyActive ? 'Deactive' : 'Active';
+    const adminID = this.sharedGlobalService.getUserID();
+    const payload = { adminID, userID: item.userID, spType };
+
+    this.dataService.postDirect('core-api/Admin/SaveUserDeactive', payload).subscribe({
+      next: (res: any) => {
+        const response = Array.isArray(res) ? res[0] : res;
+        if (response?.includes('Success')) {
+          item.active = isCurrentlyActive ? 0 : 1;
+          this.valid.apiInfoResponse(
+            isCurrentlyActive ? `${item.name} has been blocked` : `${item.name} has been activated`,
+          );
+        } else {
+          this.valid.apiErrorResponse(response);
+        }
+      },
+      error: (err) => {
+        this.valid.apiErrorResponse('Something went wrong. Please try again.');
+        console.error('Block/Active error:', err);
+      },
+    });
+  }
+
+  // TODO: no delete endpoint was provided — wire this up once you have one.
+  onDeleteUser(item: UserItem): void {
+    console.log('Delete user requested (endpoint pending):', item);
+  }
+
+  // ─── Full Profile ("View Details") Modal ───────────────────────────────────
+  onViewDetails(item: UserItem): void {
     this.isDetailModalOpen = true;
     this.detailLoading = true;
     this.profileSections = [];
     this.aboutText1 = '';
     document.body.classList.add('modal-open');
 
-    this.dataService
-      .getHttp(`core-api/Profile/getUserDetails?UserID=${user.userID}`, {})
-      .subscribe({
-        next: (res: any) => {
-          const u = Array.isArray(res) ? res[0] : res;
-          if (!u) {
-            this.detailLoading = false;
-            return;
-          }
-          this.buildProfile(u);
-          this.detailLoading = false;
-        },
-        error: (err) => {
-          console.error('getUserDetails error:', err);
-          this.detailLoading = false;
-        },
-      });
+    this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${item.userID}`, {}).subscribe({
+      next: (res: any) => {
+        const u = Array.isArray(res) ? res[0] : res;
+        if (!u) { this.detailLoading = false; return; }
+        this.buildProfile(u);
+        this.detailLoading = false;
+      },
+      error: (err) => { console.error('getUserDetails error:', err); this.detailLoading = false; },
+    });
   }
 
   closeDetailModal(): void {
@@ -181,12 +304,8 @@ export class AdminUserManagementComponent implements OnInit {
     document.body.classList.remove('modal-open');
   }
 
-  openAboutModal(): void {
-    this.showAboutModal = true;
-  }
-  closeAboutModal(): void {
-    this.showAboutModal = false;
-  }
+  openAboutModal(): void { this.showAboutModal = true; }
+  closeAboutModal(): void { this.showAboutModal = false; }
 
   getSectionByTitle(title: string): ProfileSection | undefined {
     return this.profileSections.find((s) => s.title === title);
@@ -194,23 +313,14 @@ export class AdminUserManagementComponent implements OnInit {
 
   buildProfile(user: any): void {
     let profileItems: any[] = [];
-    try {
-      profileItems = JSON.parse(user.userProfile || '[]');
-    } catch {
-      profileItems = [];
-    }
+    try { profileItems = JSON.parse(user.userProfile || '[]'); } catch { profileItems = []; }
 
     const get = (typeID: number) =>
-      profileItems.find((p: any) => p.typeID === typeID && p.isPreference === 0)
-        ?.subTypeTitle || '—';
-
+      profileItems.find((p: any) => p.typeID === typeID && p.isPreference === 0)?.subTypeTitle || '—';
     const getInstitute = (typeID: number) =>
-      profileItems.find(
-        (p: any) => p.typeID === typeID && p.isPreference === 0,
-      );
+      profileItems.find((p: any) => p.typeID === typeID && p.isPreference === 0);
 
     const location = this.extractLocation(user.userProfile);
-
     const eduItem = getInstitute(4);
     const occItem = getInstitute(5);
     const incItem = getInstitute(6);
@@ -218,118 +328,203 @@ export class AdminUserManagementComponent implements OnInit {
     this.aboutText1 = user.aboutme || '';
 
     this.profileHeader = {
-      avatar:
-        user.eDoc && user.eDoc.trim() !== ''
-          ? environment.productUrl +
-            'assets/user-images/userProfile/' +
-            user.eDoc
-          : 'assets/images/profile1.png',
+      avatar: user.eDoc && user.eDoc.trim() !== ''
+        ? environment.productUrl + 'assets/user-images/userProfile/' + user.eDoc
+        : 'assets/images/profile1.png',
       name: user.fullname || user.firstName || 'Unknown',
       age: `${this.calculateAge(user.dob)} years`,
-      location: location,
+      location,
       occupation: occItem?.subTypeTitle || '—',
       status: get(10),
     };
 
     this.profileSections = [
-      {
-        title: 'Education & Career',
-        iconClass: 'bi bi-briefcase',
-        items: [
-          { description: 'Education', value: eduItem?.subTypeTitle || '—' },
-          { description: 'Institute', value: eduItem?.instituteName || '—' },
-          { description: 'Occupation', value: occItem?.subTypeTitle || '—' },
-          {
-            description: 'Monthly Income',
-            value: incItem?.subTypeTitle || '—',
-          },
-        ],
-      },
-      {
-        title: 'Personal Information',
-        iconClass: 'bi bi-person',
-        items: [
-          { description: 'Cast', value: get(1) },
-          { description: 'Ethnicity', value: get(3) },
-          { description: 'Gender', value: get(22) },
-          { description: 'Marital Status', value: get(10) },
-          { description: 'Height', value: get(26) },
-          { description: 'No of Siblings', value: get(25) },
-          { description: 'Disability', value: get(30) },
-        ],
-      },
-      {
-        title: 'Religion',
-        iconClass: 'bi bi-moon',
-        items: [
-          { description: 'Religion', value: get(7) },
-          { description: 'Sect', value: get(8) },
-          { description: 'Religion Importance', value: get(9) },
-        ],
-      },
-      {
-        title: 'Family',
-        iconClass: 'bi bi-house',
-        items: [
-          { description: 'Housing Situation', value: get(11) },
-          { description: 'Father Occupation', value: get(12) },
-          { description: 'Mother Occupation', value: get(13) },
-          { description: 'Family Involvement', value: get(14) },
-          { description: 'No of Siblings', value: get(25) },
-          { description: 'Want Kids', value: get(19) },
-        ],
-      },
-      {
-        title: 'Appearance',
-        iconClass: 'bi bi-person-bounding-box',
-        items: [
-          { description: 'Body Type', value: get(15) },
-          { description: 'Skin Tone', value: get(16) },
-          { description: 'Height', value: get(26) },
-          { description: 'Disability', value: get(30) },
-        ],
-      },
-      {
-        title: 'Lifestyle',
-        iconClass: 'bi bi-cup-hot',
-        items: [
-          { description: 'Smoke', value: get(17) },
-          { description: 'Alcohol', value: get(18) },
-          { description: 'Want Kids', value: get(19) },
-        ],
-      },
+      { title: 'Education & Career', iconClass: 'bi bi-briefcase', items: [
+        { description: 'Education', value: eduItem?.subTypeTitle || '—' },
+        { description: 'Institute', value: eduItem?.instituteName || '—' },
+        { description: 'Occupation', value: occItem?.subTypeTitle || '—' },
+        { description: 'Monthly Income', value: incItem?.subTypeTitle || '—' },
+      ]},
+      { title: 'Personal Information', iconClass: 'bi bi-person', items: [
+        { description: 'Cast', value: get(1) },
+        { description: 'Ethnicity', value: get(3) },
+        { description: 'Gender', value: get(22) },
+        { description: 'Marital Status', value: get(10) },
+        { description: 'Height', value: get(26) },
+        { description: 'No of Siblings', value: get(25) },
+        { description: 'Disability', value: get(30) },
+      ]},
+      { title: 'Religion', iconClass: 'bi bi-moon', items: [
+        { description: 'Religion', value: get(7) },
+        { description: 'Sect', value: get(8) },
+        { description: 'Religion Importance', value: get(9) },
+      ]},
+      { title: 'Family', iconClass: 'bi bi-house', items: [
+        { description: 'Housing Situation', value: get(11) },
+        { description: 'Father Occupation', value: get(12) },
+        { description: 'Mother Occupation', value: get(13) },
+        { description: 'Family Involvement', value: get(14) },
+        { description: 'No of Siblings', value: get(25) },
+        { description: 'Want Kids', value: get(19) },
+      ]},
+      { title: 'Appearance', iconClass: 'bi bi-person-bounding-box', items: [
+        { description: 'Body Type', value: get(15) },
+        { description: 'Skin Tone', value: get(16) },
+        { description: 'Height', value: get(26) },
+        { description: 'Disability', value: get(30) },
+      ]},
+      { title: 'Lifestyle', iconClass: 'bi bi-cup-hot', items: [
+        { description: 'Smoke', value: get(17) },
+        { description: 'Alcohol', value: get(18) },
+        { description: 'Want Kids', value: get(19) },
+      ]},
     ];
   }
 
-  // ─── Block / Activate ─────────────────────────────────────────────────────
-  onBlockUser(user: UserProfile): void {
-    const isCurrentlyActive = user.status === 'Active';
-    const spType = isCurrentlyActive ? 'Deactive' : 'Active';
-    const adminID = this.sharedGlobalService.getUserID();
-    const payload = { adminID, userID: user.userID, spType };
+  // ─── Activity Modal (Activities + Matches Profiles) — opens on avatar click ─
+  onOpenActivityModal(item: UserItem): void {
+    this.isActivityModalOpen = true;
+    this.activityModalLoading = true;
+    this.activityUser = item;
+    this.activities = [];
+    this.matchProfiles = [];
+    this.activityPlanBadge = '';
+    document.body.classList.add('modal-open');
 
-    this.dataService
-      .postDirect('core-api/Admin/SaveUserDeactive', payload)
-      .subscribe({
-        next: (res: any) => {
-          const response = Array.isArray(res) ? res[0] : res;
-          if (response?.includes('Success')) {
-            user.status = isCurrentlyActive ? 'Blocked' : 'Active';
-            this.valid.apiInfoResponse(
-              isCurrentlyActive
-                ? `${user.name} has been blocked`
-                : `${user.name} has been activated`,
-            );
-          } else {
-            this.valid.apiErrorResponse(response);
-          }
-        },
-        error: (err) => {
-          this.valid.apiErrorResponse(
-            'Something went wrong. Please try again.',
-          );
-          console.error('Block/Active error:', err);
-        },
-      });
+    forkJoin({
+      userDetails: this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${item.userID}`, {}),
+      matches: this.dataService.getHttp(`core-api/Admin/getUserMatchProfile?profileID=${item.id}`, {}),
+    }).subscribe({
+      next: ({ userDetails, matches }: any) => {
+        const u = Array.isArray(userDetails) ? userDetails[0] : userDetails;
+        this.buildActivities(u);
+
+      const matchData = Array.isArray(matches) ? matches : [];
+this.matchProfiles = matchData.map((m: any) => {
+  const derivedStatus = this.mapMatchStatus(m.statusTitle);
+  return {
+    userProfileStatusID: +m.userProfileStatusID || 0,
+    statusID: derivedStatus,
+    sourceProfileID: +m.sourceProfileID,
+    destinationProfileID: +(m.destinationprofileID ?? m.destinationProfileID),
+    match: m.match,
+    fullName: m.fullName,
+    address: m.address,
+    subTypeTitle: m.subTypeTitle,
+    pendingStatusID: derivedStatus,
+  };
+});
+
+        this.activityModalLoading = false;
+      },
+      error: (err) => { console.error('Activity modal load error:', err); this.activityModalLoading = false; },
+    });
   }
+
+ private buildActivities(user: any): void {
+  let plans: any[] = [];
+  try { plans = JSON.parse(user?.userPlans || '[]'); } catch { plans = []; }
+
+  const mapped: ActivityItem[] = plans.map((p: any) => ({
+    userPlanID: p.userPlanID,
+    planName: p.planName === 'Registration' ? 'Registration Fee' : `${p.planName} Plan`,
+    referenceNo: p.referenceNo,
+    paidAmount: p.paidAmount,
+    eDoc: p.eDoc || null,
+    eDocPath: p.eDocPath || null,
+    toDate: p.toDate || p.fromDate || p.effectDate || null,
+  }));
+
+  // Registration Fee always pinned first; everything else sorted by toDate,
+  // latest first — matches "show latest on top" requirement.
+  const registrationRows = mapped.filter((a) => a.planName === 'Registration Fee');
+  const otherRows = mapped
+    .filter((a) => a.planName !== 'Registration Fee')
+    .sort((a, b) => new Date(b.toDate || 0).getTime() - new Date(a.toDate || 0).getTime());
+
+  this.activities = [...registrationRows, ...otherRows];
+
+  const current = plans.find((p: any) => p.CurrentPlan === 1);
+  this.activityPlanBadge = current?.planName ? `${current.planName} Plan` : '';
+}
+
+  closeActivityModal(): void {
+    this.isActivityModalOpen = false;
+    this.activityUser = null;
+    document.body.classList.remove('modal-open');
+  }
+
+  toggleMatchStatus(match: MatchProfileItem, statusID: number): void {
+    match.pendingStatusID = statusID;
+  }
+
+ saveMatchStatuses(): void {
+  if (!this.activityUser) return;
+  const changed = this.matchProfiles.filter((m) => m.pendingStatusID !== m.statusID);
+
+  if (changed.length === 0) { this.closeActivityModal(); return; }
+
+  this.savingMatches = true;
+  const userID = this.activityUser.userID;
+
+  // Build payloads FIRST so you can actually see what's being sent —
+  // logging the Observable array (as before) only shows unexecuted streams.
+  const payloads = changed.map((m) => ({
+    userProfileStatusID: m.userProfileStatusID || 0,
+    statusID: m.pendingStatusID,
+    sourceProfileID: m.sourceProfileID,
+    destinationProfileID: m.destinationProfileID,
+    userID,
+    // spType: m.userProfileStatusID ? 'update' : 'insert',
+    spType: 'insert', 
+  }));
+
+  console.log('saveMatchProfileStatus payloads for userID:', userID, payloads);
+
+  const calls = payloads.map((payload) =>
+    this.dataService.postDirect('core-api/Admin/saveMatchProfileStatus', payload),
+  );
+
+  forkJoin(calls).subscribe({
+    next: () => {
+      this.valid.apiInfoResponse('Match visibility updated successfully');
+      this.savingMatches = false;
+      this.closeActivityModal();
+    },
+    error: (err) => {
+      this.valid.apiErrorResponse('Something went wrong while saving.');
+      console.error('saveMatchProfileStatus error:', err);
+      this.savingMatches = false;
+    },
+  });
+}
+private mapMatchStatus(statusTitle: string | null | undefined): number {
+  const title = (statusTitle || '').trim().toLowerCase();
+  if (title.startsWith('hide')) return 1;
+  if (title.startsWith('show')) return 2;
+  return 2; // default to Show if title is missing/unrecognized
+}
+
+
+// ─── Payment Doc Preview Modal (opens from Activities action icon) ─────────
+
+
+onViewActivityDoc(activity: ActivityItem): void {
+  if (!activity.eDoc) {
+    this.valid.apiInfoResponse('No document uploaded for this plan.');
+    return;
+  }
+  // Payment docs are uploaded separately from profile images —
+  // adjust the folder segment below if your backend serves them elsewhere.
+  this.docPreviewUrl = environment.productUrl + 'assets/user-images/PaymentImage/' + activity.eDoc;
+console.log('Opening doc preview for activity:', activity, 'with URL:', this.docPreviewUrl);
+  this.docPreviewLabel = activity.planName;
+  this.isDocPreviewOpen = true;
+}
+
+closeDocPreview(): void {
+  this.isDocPreviewOpen = false;
+  this.docPreviewUrl = '';
+}
+
 }

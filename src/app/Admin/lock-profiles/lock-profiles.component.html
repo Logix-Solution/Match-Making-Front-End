@@ -1,0 +1,417 @@
+<main class="container-fluid ps-3 d-flex flex-column h-100 no-scroll" (click)="closeAllDropdowns()">
+  <header class="dashboard-header mb-3">
+    <h1 class="ft-7 m-0">Lock Profiles</h1>
+    <p class="mt-1 mb-0" style="color: #6c727a">
+      All lock profiles are shown here.
+    </p>
+  </header>
+
+  <section class="mb-4 max-w-search">
+    <div class="position-relative">
+      <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 txt-7th ft-3"></i>
+      <input
+        type="text"
+        class="form-control ps-5 py-2 ft-3 border bg-6th rounded-3 custom-search-input"
+        placeholder="Search"
+        [(ngModel)]="searchQuery"
+        (input)="onSearchChange()"
+      />
+    </div>
+  </section>
+
+  <section class="d-flex flex-column gap-3 flex-grow-1 scroll-verticle style-1">
+    <div class="row g-3 align-items-stretch" *ngFor="let record of filteredProfiles">
+
+      <!-- SOURCE CARD -->
+      <div class="col-12 col-lg-5">
+        <div class="card bg-6th border-6th rounded-3 p-3 shadow-sm h-100 position-relative">
+          <i
+            class="bi lock-icon lock-icon-corner"
+            [ngClass]="record.isLocked ? 'bi-lock-fill locked-icon' : 'bi-unlock-fill unlocked-icon'"
+          ></i>
+          <div class="d-flex align-items-center gap-3">
+            <img
+              [src]="record.source.image"
+              [alt]="record.source.name"
+              class="lock-avatar rounded-2 object-fit-cover"
+              onerror="this.src = 'assets/images/profile1.png'"
+            />
+            <div class="flex-grow-1">
+              <h3 class="fh-6 txt-8th m-0 mb-1">
+                {{ record.source.name }}<ng-container *ngIf="record.source.age > 0">, {{ record.source.age }}</ng-container>
+              </h3>
+              <p class="ft-4 txt-7th m-0 d-flex align-items-center gap-1 mb-2">
+                <i class="bi bi-geo-alt-fill text-muted"></i> {{ record.source.location }}
+              </p>
+              <div class="ft-6 txt-7th text-uppercase">
+                Locked At <strong class="txt-8th">{{ record.lockedAt }}</strong>
+              </div>
+            </div>
+          </div>
+          <button
+            type="button"
+            class="w-100 mt-3 py-2 px-3 rounded-2 border-0 bg-5th txt-8th ft-4 fw-medium d-flex align-items-center justify-content-center gap-1"
+            (click)="onViewDetails(record.source)"
+          >
+            <i class="bi bi-eye"></i> View Details
+          </button>
+        </div>
+      </div>
+
+      <!-- STATUS COLUMN (middle) -->
+      <div class="col-12 col-lg-2 d-flex flex-column align-items-center justify-content-center gap-2">
+        <i
+          class="bi lock-icon-center"
+          [ngClass]="record.isLocked ? 'bi-lock-fill locked-icon' : 'bi-unlock-fill unlocked-icon'"
+        ></i>
+
+        <div class="position-relative" (click)="$event.stopPropagation()">
+          <button
+            type="button"
+            class="status-dropdown-btn d-flex align-items-center gap-1 px-3 py-2 rounded-2 border-0 ft-4 fw-medium"
+            (click)="toggleDropdown(record)"
+          >
+            {{ record.statusTitle }}
+            <i class="bi bi-chevron-down ft-6"></i>
+          </button>
+
+          <div class="status-dropdown-menu rounded-3 shadow-sm" *ngIf="record.showDropdown">
+            <button
+              type="button"
+              *ngFor="let opt of statusOptions"
+              class="status-dropdown-item w-100 text-start px-3 py-2 border-0 bg-transparent ft-4"
+              [class.selected]="opt.statusID === record.statusID"
+              (click)="onSelectStatus(record, opt)"
+            >
+              {{ opt.statusTitle }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DESTINATION CARD -->
+      <div class="col-12 col-lg-5">
+        <div class="card bg-6th border-6th rounded-3 p-3 shadow-sm h-100 position-relative">
+          <i
+            class="bi lock-icon lock-icon-corner"
+            [ngClass]="record.isLocked ? 'bi-lock-fill locked-icon' : 'bi-unlock-fill unlocked-icon'"
+          ></i>
+          <div class="d-flex align-items-center gap-3">
+            <img
+              [src]="record.destination.image"
+              [alt]="record.destination.name"
+              class="lock-avatar rounded-2 object-fit-cover"
+              onerror="this.src = 'assets/images/profile1.png'"
+            />
+            <div class="flex-grow-1">
+              <h3 class="fh-6 txt-8th m-0 mb-1">
+                {{ record.destination.name }}<ng-container *ngIf="record.destination.age > 0">, {{ record.destination.age }}</ng-container>
+              </h3>
+              <p class="ft-4 txt-7th m-0 d-flex align-items-center gap-1 mb-2">
+                <i class="bi bi-geo-alt-fill text-muted"></i> {{ record.destination.location }}
+              </p>
+              <div class="ft-6 txt-7th text-uppercase">
+                Locked At <strong class="txt-8th">{{ record.lockedAt }}</strong>
+              </div>
+            </div>
+          </div>
+          <button
+            type="button"
+            class="w-100 mt-3 py-2 px-3 rounded-2 border-0 bg-5th txt-8th ft-4 fw-medium d-flex align-items-center justify-content-center gap-1"
+            (click)="onViewDetails(record.destination)"
+          >
+            <i class="bi bi-eye"></i> View Details
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-12 text-center py-5 border border-dashed rounded-3 bg-5th mt-4" *ngIf="filteredProfiles.length === 0">
+      <p class="ft-2 txt-7th m-0">No profiles found.</p>
+    </div>
+  </section>
+</main>
+
+<!-- ─── Confirm "Married" Modal ──────────────────────────────────────────── -->
+<div
+  *ngIf="isConfirmModalOpen"
+  class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+  style="z-index: 1080; background: rgba(0, 0, 0, 0.5)"
+  (click)="cancelMarriedConfirm()"
+>
+  <div class="married-confirm-card rounded-4 p-4 text-center" (click)="$event.stopPropagation()">
+    <div class="d-flex justify-content-end mb-1">
+      <i class="bi bi-x-lg txt-7th" style="cursor: pointer" (click)="cancelMarriedConfirm()"></i>
+    </div>
+
+    <div class="married-icon-wrap mx-auto mb-3">
+      <i class="bi bi-heart-fill"></i>
+    </div>
+
+    <h2 class="married-title mb-2">Are You Sure?</h2>
+    <p class="txt-7th ft-4 mb-4">
+      Once Status is Changed to Married, It won't revert.
+    </p>
+
+    <div class="d-flex gap-2">
+      <button type="button" class="btn-cancel-married flex-grow-1 py-3 rounded-3 border-0 fw-semibold" (click)="cancelMarriedConfirm()">
+        Cancel
+      </button>
+      <button type="button" class="btn-confirm-married flex-grow-1 py-3 rounded-3 border-0 fw-semibold" (click)="confirmMarried()">
+        Yes, They Got Married
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Full Page Detail Modal ─────────────────────────────────────────────── -->
+<div
+  *ngIf="isDetailModalOpen"
+  class="position-fixed top-0 start-0 w-100 h-100"
+  style="z-index: 1055; background: rgba(0, 0, 0, 0.5); overflow-y: auto"
+>
+  <div class="container-fluid bg-5th p-3 min-vh-100">
+    <div
+      class="d-flex align-items-center justify-content-between mt-5 bg-5th py-3 px-3 rounded-3"
+      style="position: sticky; top: 0; z-index: 1056"
+    >
+      <h2 class="fh-4 txt-8th m-0">Profile Details</h2>
+      <button
+        class="btn btn-light border rounded-circle d-flex align-items-center justify-content-center"
+        style="width: 36px; height: 36px"
+        (click)="closeDetailModal()"
+      >
+        <i class="bi bi-x-lg ft-4"></i>
+      </button>
+    </div>
+
+    <div *ngIf="detailLoading" class="text-center py-5">
+      <div class="spinner-border" style="color: var(--primary)"></div>
+      <p class="ft-4 txt-7th mt-2">Loading profile...</p>
+    </div>
+
+    <div *ngIf="!detailLoading">
+      <div class="row g-3">
+        <div class="col-12 col-xl-3">
+          <div
+            class="bg-6th rounded-4 p-3 shadow-sm text-center d-flex flex-column align-items-center gap-2 py-3"
+          >
+            <img
+              [src]="profileHeader.avatar"
+              alt="Profile Avatar"
+              class="rounded-circle border p-1"
+              style="width: 120px; height: 120px; object-fit: cover"
+              onerror="this.src = 'assets/images/profile1.png'"
+            />
+            <div>
+              <h2 class="text-uppercase txt-8th fh-4 fw-bold mb-0">
+                {{ profileHeader.name }}
+              </h2>
+              <div class="ft-4 txt-7th">{{ profileHeader.age }}</div>
+              <div
+                class="ft-5 txt-7th d-flex align-items-center justify-content-center gap-1 mt-1"
+              >
+                <i class="bi bi-geo-alt-fill"></i> {{ profileHeader.location }}
+              </div>
+            </div>
+            <div class="w-100 d-flex gap-2 justify-content-center mt-1">
+              <div
+                class="rounded-3 py-1 px-2 text-center bg-4th"
+                style="min-width: 80px"
+              >
+                <div class="ft-6 txt-7th fw-bold text-uppercase">
+                  <i class="bi bi-briefcase ft-6"></i> Occupation
+                </div>
+                <div class="ft-5 txt-8th fw-bold mt-1">
+                  {{ profileHeader.occupation }}
+                </div>
+              </div>
+              <div
+                class="rounded-3 py-1 px-2 text-center bg-4th"
+                style="min-width: 80px"
+              >
+                <div class="ft-6 txt-7th fw-bold text-uppercase">
+                  <i class="bi bi-heart-fill ft-6"></i> Status
+                </div>
+                <div class="ft-5 txt-8th fw-bold mt-1">
+                  {{ profileHeader.status }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-xl-9">
+          <div class="d-flex flex-column gap-3">
+            <div class="bg-6th rounded-4 p-3 shadow-sm txt-8th">
+              <div
+                class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light"
+              >
+                <i class="bi bi-person-circle text-secondary h-100"></i> About
+                Me
+              </div>
+              <p
+                class="txt-7th ft-4 mt-2 mb-0 lh-base"
+                style="
+                  max-height: 72px;
+                  overflow: hidden;
+                  display: -webkit-box;
+                  -webkit-line-clamp: 3;
+                  -webkit-box-orient: vertical;
+                "
+              >
+                {{ aboutText1 || "No description provided." }}
+              </p>
+              <span
+                *ngIf="aboutText1.length > 200"
+                class="ft-5 fw-bold mt-1 d-inline-block"
+                style="cursor: pointer; color: var(--2nd)"
+                (click)="openAboutModal()"
+                >...see more</span
+              >
+            </div>
+
+            <ng-container
+              *ngIf="getSectionByTitle('Education & Career') as eduSection"
+            >
+              <div class="bg-6th rounded-4 p-3 shadow-sm txt-8th">
+                <div
+                  class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light"
+                >
+                  <i class="{{ eduSection.iconClass }} text-secondary"></i>
+                  {{ eduSection.title }}
+                </div>
+                <div class="row mt-1">
+                  <div class="col-6" *ngFor="let item of eduSection.items">
+                    <div
+                      class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50"
+                    >
+                      <span class="ft-4 txt-7th">{{ item.description }}</span>
+                      <span class="ft-4 fw-bold txt-8th">{{ item.value }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3 mt-3">
+        <div
+          class="col-12 col-md-4"
+          *ngFor="
+            let sec of [
+              getSectionByTitle('Personal Information'),
+              getSectionByTitle('Lifestyle'),
+              getSectionByTitle('Appearance'),
+            ]
+          "
+        >
+          <div *ngIf="sec" class="bg-6th rounded-4 p-3 shadow-sm txt-8th h-100">
+            <div
+              class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light"
+            >
+              <i class="{{ sec.iconClass }} text-secondary"></i> {{ sec.title }}
+            </div>
+            <div class="mt-1">
+              <div
+                *ngFor="let item of sec.items"
+                class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50"
+              >
+                <span class="ft-5 txt-7th">{{ item.description }}</span>
+                <span class="ft-5 fw-bold txt-8th text-end">{{
+                  item.value
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3 mt-3">
+        <div
+          class="col-12 col-md-4"
+          *ngIf="getSectionByTitle('Religion') as relSection"
+        >
+          <div class="bg-6th rounded-4 p-3 shadow-sm txt-8th h-100">
+            <div
+              class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light"
+            >
+              <i class="{{ relSection.iconClass }} text-secondary"></i>
+              {{ relSection.title }}
+            </div>
+            <div class="mt-1">
+              <div
+                *ngFor="let item of relSection.items"
+                class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50"
+              >
+                <span class="ft-5 txt-7th">{{ item.description }}</span>
+                <span class="ft-5 fw-bold txt-8th text-end">{{
+                  item.value
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="col-12 col-md-8"
+          *ngIf="getSectionByTitle('Family') as famSection"
+        >
+          <div class="bg-6th rounded-4 p-3 shadow-sm txt-8th h-100">
+            <div
+              class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light"
+            >
+              <i class="{{ famSection.iconClass }} text-secondary"></i>
+              {{ famSection.title }}
+            </div>
+            <div class="row mt-1 row-cols-1 row-cols-sm-2">
+              <div class="col" *ngFor="let item of famSection.items">
+                <div
+                  class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50"
+                >
+                  <span class="ft-5 txt-7th">{{ item.description }}</span>
+                  <span class="ft-5 fw-bold txt-8th text-end">{{
+                    item.value
+                  }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- About Modal -->
+<div
+  *ngIf="showAboutModal"
+  class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+  style="z-index: 1060; background: rgba(0, 0, 0, 0.5)"
+  (click)="closeAboutModal()"
+>
+  <div
+    class="bg-6th rounded-4 p-4 shadow"
+    style="max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <span class="ft-4 fw-bold txt-8th">About Me</span>
+      <i
+        class="bi bi-x-lg txt-7th"
+        style="cursor: pointer"
+        (click)="closeAboutModal()"
+      ></i>
+    </div>
+    <p class="txt-7th ft-4 lh-base mb-0">{{ aboutText1 }}</p>
+  </div>
+</div>
+
+<div
+  class="modal-backdrop fade show"
+  *ngIf="isDetailModalOpen"
+  style="z-index: 1054"
+></div>

@@ -72,6 +72,7 @@ import { UserActivePlanComponent } from './pricing-plans/user-active-plan/user-a
 import { UserUpgradePricePlanComponent } from './pricing-plans/user-upgrade-price-plan/user-upgrade-price-plan.component';
 import { WelcomeComponent } from './home-page/welcome/welcome.component';
 import { RegisterationFeeComponent } from './Preferences/registeration-fee/registeration-fee.component';
+import { LockProfilesComponent } from './Admin/lock-profiles/lock-profiles.component';
 
 
 @NgModule({
@@ -133,6 +134,7 @@ import { RegisterationFeeComponent } from './Preferences/registeration-fee/regis
     UserUpgradePricePlanComponent,
     WelcomeComponent,
     RegisterationFeeComponent,
+    LockProfilesComponent,
 
   ],
   imports: [

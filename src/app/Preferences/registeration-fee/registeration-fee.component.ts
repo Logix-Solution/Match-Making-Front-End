@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { SharedDataService } from '../../../shared/services/shared-data.service';
 import { SharedGlobalService } from '../../../shared/services/shared-global.service';
 import { SharedFormFieldValidationService } from 'src/shared/services/shared-form-field-validation.service';
+import { environment } from 'src/envirnment/environment';
 
 interface ApiUserPlan {
   planID: number;
@@ -191,7 +192,7 @@ export class RegisterationFeeComponent implements OnInit {
         referenceNo: this.referenceNumber,
         paidAmount: String(this.paidAmount),
         eDoc: base64Data,
-        eDocPath: fileName,
+        eDocPath: environment.imageUrl + 'PaymentImage',
         eDocExt: fileExt,
         userID: this.sharedGlobalService.getUserID(),
         spType: 'INSERT',

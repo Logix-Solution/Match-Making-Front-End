@@ -1,0 +1,88 @@
+.lock-avatar {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+}
+
+.lock-icon {
+  font-size: 20px;
+}
+
+.locked-icon {
+  color: var(--2nd, #c84b31);
+}
+
+.unlocked-icon {
+  color: #6c727a;
+}
+
+// ─── Status Dropdown ────────────────────────────────────────────────────
+.status-dropdown-btn {
+  background: #eceef0;
+  color: #1a1a1a;
+  white-space: nowrap;
+  min-width: 110px;
+}
+
+.status-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: #ffffff;
+  min-width: 140px;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.status-dropdown-item {
+  color: #1a1a1a;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background-color: #f4f4f5;
+  }
+
+  &.selected {
+    background-color: #f4ecec;
+    color: var(--primary);
+    font-weight: 600;
+  }
+}
+
+// ─── Married Confirm Modal ──────────────────────────────────────────────
+.married-confirm-card {
+  background: #ffffff;
+  width: 420px;
+  max-width: 90vw;
+}
+
+.married-icon-wrap {
+  width: 64px;
+  height: 64px;
+  background: #fdecea;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    font-size: 28px;
+    color: var(--2nd, #c84b31);
+  }
+}
+
+.married-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--2nd, #c84b31);
+}
+
+.btn-cancel-married {
+  background: #eceef0;
+  color: #1a1a1a;
+}
+
+.btn-confirm-married {
+  background: var(--2nd, #c84b31);
+  color: #ffffff;
+}
