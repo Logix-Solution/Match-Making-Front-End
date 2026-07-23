@@ -317,3 +317,14 @@ $border-color-soft: #EAEAEA;
     }
   }
 }
+.best-matches-scroll {
+  &.scrollable {
+    max-height: 370px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px; 
+   background-color: var(--bg-primary);
+  //  width:6px;
+  
+  }
+}

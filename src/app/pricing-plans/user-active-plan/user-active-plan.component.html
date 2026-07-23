@@ -12,7 +12,7 @@
               class="plan-status-badge d-inline-flex align-items-center gap-2 mb-3"
             >
               <span class="badge-dot"></span>
-              Monthly Plan &middot; One Profile a Week
+             {{ currentPlanLabel }} &middot; One Profile a Week
             </span>
             <h1 class="welcome-title mb-0 fw-normal">
               Welcome back, {{ userName }}!
@@ -62,68 +62,82 @@
 
     <div class="row g-4 align-items-start">
       <div class="col-lg-8 col-md-12">
-        <div class="mb-5">
-          <div class="d-flex align-items-center mb-4">
-            <h2 class="section-title mb-0 me-3">Best Matches</h2>
-            <hr class="flex-grow-1 header-line" />
+     <div class="mb-5">
+  <div class="d-flex align-items-center mb-4">
+    <h2 class="section-title mb-0 me-3">Best Matches</h2>
+    <hr class="flex-grow-1 header-line" />
+  </div>
+  <p class="section-subtitle mt-n3 mb-4">
+    Showing according to your plan
+  </p>
+
+  <div class="best-matches-scroll" [class.scrollable]="bestMatches.length > 2">
+    <div
+      class="card profile-card rounded-4 p-4 border-0 mb-4 shadow-sm position-relative"
+      *ngFor="let match of bestMatches"
+    >
+      <div
+        class="d-flex flex-column flex-sm-row gap-4 align-items-start align-items-sm-center"
+      >
+        <div class="profile-image-wrapper position-relative">
+          <img
+            [src]="match.imageDoc "
+            [alt]="match.name + ' Profile'"
+            class="profile-img rounded-circle"
+          />
+        </div>
+        <div class="flex-grow-1">
+          <div
+            class="d-flex align-items-center justify-content-between w-100"
+          >
+            <div>
+              <h3 class="profile-name mb-0">{{ match.name }}</h3>
+              <span class="profile-gender text-muted mb-2 d-inline-block">{{
+                match.gender
+              }}</span>
+            </div>
+            <button
+              class="btn fav-btn p-0"
+              [attr.aria-label]="match.isInterested ? 'Withdraw interest' : 'Send interest'"
+              [disabled]="match.isTogglingInterest"
+              (click)="toggleInterest(match)"
+            >
+              <i
+                class="bi fs-5"
+                [class.bi-heart-fill]="match.isInterested"
+                [class.bi-heart]="!match.isInterested"
+                [class.txt-danger]="match.isInterested"
+              ></i>
+            </button>
           </div>
-          <p class="section-subtitle mt-n3 mb-4">
-            Showing according to your plan
-          </p>
 
           <div
-            class="card profile-card rounded-4 p-4 border-0 mb-4 shadow-sm position-relative"
+            class="d-flex flex-wrap gap-x-4 gap-y-2 profile-meta-data mt-2 text-muted"
           >
-            <div
-              class="d-flex flex-column flex-sm-row gap-4 align-items-start align-items-sm-center"
+            <span class="d-flex align-items-center gap-1" *ngIf="match.age !== null"
+              ><i class="bi bi-person-vcard"></i> {{ match.age }}</span
             >
-              <div class="profile-image-wrapper position-relative">
-                <img
-                  src="../../../assets/images/profile1.png"
-                  alt="Fatima Profile"
-                  class="profile-img rounded-circle"
-                />
-              </div>
-              <div class="flex-grow-1">
-                <div
-                  class="d-flex align-items-center justify-content-between w-100"
-                >
-                  <div>
-                    <h3 class="profile-name mb-0">Fatima</h3>
-                    <span class="profile-gender text-muted mb-2 d-inline-block"
-                      >Female</span
-                    >
-                  </div>
-                  <button class="btn fav-btn p-0" aria-label="Favorite profile">
-                    <i class="bi bi-heart-fill txt-danger fs-5"></i>
-                  </button>
-                </div>
-
-                <div
-                  class="d-flex flex-wrap gap-x-4 gap-y-2 profile-meta-data mt-2 text-muted"
-                >
-                  <span class="d-flex align-items-center gap-1"
-                    ><i class="bi bi-person-vcard"></i> 36</span
-                  >
-                  <span class="d-flex align-items-center gap-1"
-                    ><i class="bi bi-arrows-vertical"></i> 5'3</span
-                  >
-                  <span class="d-flex align-items-center gap-1"
-                    ><i class="bi bi-heartbreak"></i> Divorced</span
-                  >
-                  <span class="d-flex align-items-center gap-1"
-                    ><i class="bi bi-briefcase"></i> Product Manager</span
-                  >
-                </div>
-                <div
-                  class="d-flex align-items-center gap-1 mt-2 text-muted location-txt"
-                >
-                  <i class="bi bi-geo-alt"></i> <span>Pakistan</span>
-                </div>
-              </div>
-            </div>
+            <span class="d-flex align-items-center gap-1" *ngIf="match.height"
+              ><i class="bi bi-arrows-vertical"></i> {{ match.height }}</span
+            >
+            <span class="d-flex align-items-center gap-1" *ngIf="match.maritalStatus"
+              ><i class="bi bi-heartbreak"></i> {{ match.maritalStatus }}</span
+            >
+            <span class="d-flex align-items-center gap-1" *ngIf="match.occupation"
+              ><i class="bi bi-briefcase"></i> {{ match.occupation }}</span
+            >
+          </div>
+          <div
+            class="d-flex align-items-center gap-1 mt-2 text-muted location-txt"
+            *ngIf="match.address"
+          >
+            <i class="bi bi-geo-alt"></i> <span>{{ match.address }}</span>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
 
         <div class="mb-5">
           <div class="d-flex align-items-center mb-2">

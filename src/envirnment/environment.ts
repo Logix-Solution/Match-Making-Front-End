@@ -5,17 +5,17 @@
 export const environment = {
   production: false,
   envName: 'prod',
-  //////localhost //////////////
+  // // //////localhost //////////////
 
-   apiUrl: 'http://localhost:11011/',
-  apiUrlauth: 'http://localhost:11011/',
+  //  apiUrl: 'http://localhost:11011/',
+  // apiUrlauth: 'http://localhost:11011/',
 
 
 //   /////for live server api//////////
 
   
-//  apiUrl: 'https://www.nadiamatchmaking.com:11011/',
-//  apiUrlauth: 'https://www.nadiamatchmaking.com:11011/',
+ apiUrl: 'https://www.nadiamatchmaking.com:11011/',
+ apiUrlauth: 'https://www.nadiamatchmaking.com:11011/',
 
 
 //   // http://159.69.174.28:11015/

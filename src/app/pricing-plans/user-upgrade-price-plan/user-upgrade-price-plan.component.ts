@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SharedDataService } from '../../../shared/services/shared-data.service';
 import { SharedGlobalService } from '../../../shared/services/shared-global.service';
 import { SharedFormFieldValidationService } from 'src/shared/services/shared-form-field-validation.service';
@@ -35,6 +35,7 @@ export class UserUpgradePricePlanComponent implements OnInit {
     private dataService: SharedDataService,
     private sharedGlobalService: SharedGlobalService,
     private valid: SharedFormFieldValidationService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -123,7 +124,9 @@ export class UserUpgradePricePlanComponent implements OnInit {
         next: (res: any) => {
           const response = Array.isArray(res) ? res[0] : res;
           if (response?.includes('Success')) {
+
             this.valid.apiInfoResponse('Upgrade Request Submitted Successfully');
+            this.router.navigate(['/user-active-plan']);
           } else {
             this.valid.apiErrorResponse(response);
           }
