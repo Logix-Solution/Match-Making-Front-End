@@ -9,7 +9,7 @@ interface ApiUserPlan {
   planDescription: string;
   planCurrencyID: number;
   profileID: number;
-  currentPlan: number;      // 1 = this is the user's current plan, 0 = not
+  currentPlan: number;
   planFee: string;
   durationID: number;
   durationTitle: string;
@@ -22,6 +22,13 @@ interface StatCard {
   unit?: string;
   label: string;
   icon: string;
+}
+interface ApiDashboardCounts {
+  userID: number;
+  profileView: string;
+  mutualLike: string;
+  countries: string;
+  avgResponse: string;
 }
 
 interface PricingPlan {
@@ -36,12 +43,21 @@ interface PricingPlan {
   rawFee: number;
 }
 
+interface ApiSupport {
+  supportID: number;
+  email: string;
+  contactNo: string;
+  address: string;
+}
+
 interface ContactCard {
   icon: string;
   label: string;
   value: string;
   subValue?: string;
   actionLabel: string;
+  link: string;
+  target?: string;
 }
 
 @Component({
@@ -53,49 +69,18 @@ export class UserActivePlanComponent implements OnInit {
   userName = '';
   matchedProfiles = 12;
 
-  // Real profileID from getUserDetails — used for loading plans AND save/navigate
   profileID: number | null = null;
 
-  // TODO: wire to real endpoint once provided
-  stats: StatCard[] = [
-    { value: '248', label: 'Profile Views', icon: 'bi-graph-up' },
-    { value: '19', label: 'Mutual Likes', icon: 'bi-star' },
-    { value: '14', label: 'Countries', icon: 'bi-globe' },
-    { value: '2', unit: 'h', label: 'Avg Response', icon: 'bi-clock' },
-  ];
+  stats: StatCard[] = [];
 
   plans: PricingPlan[] = [];
   selectedPlanId: number | null = null;
   currentPlanId: number | null = null;
-
-  // Set to true when the user's active plan is the free/Registration tier,
-  // which is filtered out of `plans` and therefore can never highlight a card.
   isOnFreePlan: boolean = false;
 
-  // TODO: wire to real endpoint once provided
-  contacts: ContactCard[] = [
-    {
-      icon: 'bi-envelope',
-      label: 'EMAIL US',
-      value: 'support@matchwell.eu',
-      subValue: 'Response within 24 hours',
-      actionLabel: 'Send email',
-    },
-    {
-      icon: 'bi-telephone',
-      label: 'CALL US',
-      value: '+49 30 1234 5678',
-      subValue: 'Mon – Fri, 9:00 – 18:00 CET',
-      actionLabel: 'Call now',
-    },
-    {
-      icon: 'bi-geo-alt',
-      label: 'OUR OFFICE',
-      value: 'Berlin, Germany',
-      subValue: 'Friedrichstraße 123, 10115',
-      actionLabel: 'Get directions',
-    },
-  ];
+  // Populated from core-api/Admin/getSupport
+  contacts: ContactCard[] = [];
+  
 
   constructor(
     private dataService: SharedDataService,
@@ -105,6 +90,108 @@ export class UserActivePlanComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUserAndPlans();
+    this.loadSupport();
+     this.loadDashboardCounts();
+  }
+
+  private loadDashboardCounts(): void {
+  const userID = this.sharedGlobalService.getUserID();
+
+  this.dataService
+    .getHttp(`core-api/Profile/getUserDashboardCounts?userID=${userID}`, {})
+    .subscribe({
+      next: (res: any) => {
+        console.log('getUserDashboardCounts raw response:', res);
+        const counts: ApiDashboardCounts = Array.isArray(res) ? res[0] : res;
+        if (!counts) return;
+
+        this.stats = this.mapCountsToStats(counts);
+        console.log('Mapped stats:', this.stats);
+      },
+      error: (err) => console.error('getUserDashboardCounts error:', err),
+    });
+}
+
+private mapCountsToStats(counts: ApiDashboardCounts): StatCard[] {
+  return [
+    { value: counts.profileView ?? '0', label: 'Profile Views', icon: 'bi-graph-up' },
+    { value: counts.mutualLike ?? '0', label: 'Mutual Likes', icon: 'bi-star' },
+    { value: counts.countries ?? '0', label: 'Countries', icon: 'bi-globe' },
+    { value: counts.avgResponse ?? '0', unit: 'h', label: 'Avg Response', icon: 'bi-clock' },
+  ];
+}
+  private loadSupport(): void {
+    this.dataService.getHttp('core-api/Admin/getSupport', {}).subscribe({
+      next: (res: any) => {
+        console.log('getSupport raw response:', res);
+        const support: ApiSupport = Array.isArray(res) ? res[0] : res;
+        if (!support) return;
+
+        this.contacts = this.mapSupportToContacts(support);
+        console.log('Mapped contacts:', this.contacts);
+      },
+      error: (err) => console.error('getSupport error:', err),
+    });
+  }
+
+  private mapSupportToContacts(support: ApiSupport): ContactCard[] {
+  const email = this.splitLeading(support.email, /^\S+@\S+/);
+  const phone = this.splitLeading(support.contactNo, /^[+\d][\d\s\-]*\d/);
+  const address = this.splitAddress(support.address);
+
+  const whatsappDigits = phone.main.replace(/[^\d]/g, ''); // strip +, spaces, dashes
+
+  return [
+   {
+      icon: 'bi-envelope',
+      label: 'EMAIL US',
+      value: email.main,
+      subValue: email.rest,
+      actionLabel: 'Send email',
+      link: `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email.main)}`,
+      target: '_blank',
+    },
+    {
+      icon: 'bi-telephone',
+      label: 'CALL US',
+      value: phone.main,
+      subValue: phone.rest,
+      actionLabel: 'Message on WhatsApp',
+      link: `https://wa.me/${whatsappDigits}`,
+      target: '_blank',
+    },
+    {
+      icon: 'bi-geo-alt',
+      label: 'OUR OFFICE',
+      value: address.main,
+      subValue: address.rest,
+      actionLabel: 'Get directions',
+      link: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(support.address)}`,
+      target: '_blank',
+    },
+  ];
+}
+
+  // Pulls the leading segment matching `regex` out as the main value,
+  // treats whatever follows as the subValue (e.g. "support@x.com Response within 24 hours")
+  private splitLeading(str: string, regex: RegExp): { main: string; rest: string } {
+    if (!str) return { main: '', rest: '' };
+    const match = str.match(regex);
+    if (!match) return { main: str.trim(), rest: '' };
+    const main = match[0].trim();
+    const rest = str.slice(match[0].length).trim();
+    return { main, rest };
+  }
+
+  // Address format has a double-space between city/country and street,
+  // e.g. "Berlin, Germany  Friedrichstraße 123, 10117"
+  private splitAddress(str: string): { main: string; rest: string } {
+    if (!str) return { main: '', rest: '' };
+    const parts = str.split(/\s{2,}/).map((p) => p.trim()).filter(Boolean);
+    if (parts.length >= 2) {
+      return { main: parts[0], rest: parts.slice(1).join(', ') };
+    }
+    return { main: str.trim(), rest: '' };
   }
 
   private loadUserAndPlans(): void {
@@ -112,18 +199,12 @@ export class UserActivePlanComponent implements OnInit {
 
     this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${userID}`, {}).subscribe({
       next: (res: any) => {
-        console.log('getUserDetails raw response:', res);
-
         const user = Array.isArray(res) ? res[0] : res;
-        console.log('getUserDetails resolved user object:', user);
-
         if (!user) return;
 
-        // Real profileID from get function — used to load plans AND save/navigate
         this.profileID = user.profileID;
         this.userName = user.fullname || user.firstName || '';
 
-        // currencyTypeID is nested inside userProfile JSON, not top-level
         let profileItems: any[] = [];
         try {
           profileItems = JSON.parse(user.userProfile || '[]');
@@ -135,9 +216,6 @@ export class UserActivePlanComponent implements OnInit {
           (p: any) => p.currencyTypeID !== undefined && p.currencyTypeID !== null,
         );
         const currencyTypeID = currencyItem?.currencyTypeID;
-
-        console.log('Extracted profileID:', this.profileID);
-        console.log('Extracted currencyTypeID:', currencyTypeID);
 
         if (this.profileID && currencyTypeID) {
           this.loadPlans(this.profileID, currencyTypeID);
@@ -152,39 +230,32 @@ export class UserActivePlanComponent implements OnInit {
     });
   }
 
-private loadPlans(profileID: number, currencyTypeID: number | string): void {
-  this.dataService
-    .getHttp(`core-api/Payment/getUserPlans?profileID=${profileID}&currencyTypeID=${currencyTypeID}`, {})
-    .subscribe({
-      next: (res: any) => {
-        console.log('getUserPlans response:', res);
+  private loadPlans(profileID: number, currencyTypeID: number | string): void {
+    this.dataService
+      .getHttp(`core-api/Payment/getUserPlans?profileID=${profileID}&currencyTypeID=${currencyTypeID}`, {})
+      .subscribe({
+        next: (res: any) => {
+          const data: ApiUserPlan[] = Array.isArray(res) ? res : [];
 
-        const data: ApiUserPlan[] = Array.isArray(res) ? res : [];
+          this.plans = data
+            .filter((p) => {
+              const nameLower = (p.planName || '').toLowerCase();
+              return !nameLower.includes('free') && !nameLower.includes('registration');
+            })
+            .map((p) => this.mapApiPlanToDisplay(p));
 
-        this.plans = data
-          .filter((p) => {
-            const nameLower = (p.planName || '').toLowerCase();
-            return !nameLower.includes('free') && !nameLower.includes('registration');
-          })
-          .map((p) => this.mapApiPlanToDisplay(p));
+          const currentItem = data.find(
+            (p) => p.currentPlan === 1 && this.plans.some((dp) => dp.id === p.planID),
+          );
+          this.currentPlanId = currentItem ? currentItem.planID : null;
 
-        // Find currentPlan ONLY among the plans actually displayed
-        // (avoids matching a filtered-out free/Registration plan that also has currentPlan:1)
-        const currentItem = data.find(
-          (p) => p.currentPlan === 1 && this.plans.some((dp) => dp.id === p.planID),
-        );
-        this.currentPlanId = currentItem ? currentItem.planID : null;
-
-        if (this.currentPlanId) {
-          this.selectedPlanId = this.currentPlanId;
-        }
-
-        console.log('Final mapped plans:', this.plans);
-        console.log('currentPlanId:', this.currentPlanId);
-      },
-      error: (err) => console.error('getUserPlans error:', err),
-    });
-}
+          if (this.currentPlanId) {
+            this.selectedPlanId = this.currentPlanId;
+          }
+        },
+        error: (err) => console.error('getUserPlans error:', err),
+      });
+  }
 
   private mapApiPlanToDisplay(p: ApiUserPlan): PricingPlan {
     const fee = +p.planFee || 0;
@@ -203,19 +274,18 @@ private loadPlans(profileID: number, currencyTypeID: number | string): void {
   }
 
   isCurrentPlan(planId: number): boolean {
-  return this.currentPlanId === planId;
-}
+    return this.currentPlanId === planId;
+  }
 
-choosePlan(plan: PricingPlan): void {
-  this.selectedPlanId = plan.id;
-  this.router.navigate(['/Upgrade-Pricing-Plans'], {
-    queryParams: {
-      planID: plan.id,
-      profileID: this.profileID,
-      planName: plan.name,
-      planFee: plan.rawFee,
-      // userplanID: this.currentPlanId ?? 0,  
-    },
-  });
-}
+  choosePlan(plan: PricingPlan): void {
+    this.selectedPlanId = plan.id;
+    this.router.navigate(['/Upgrade-Pricing-Plans'], {
+      queryParams: {
+        planID: plan.id,
+        profileID: this.profileID,
+        planName: plan.name,
+        planFee: plan.rawFee,
+      },
+    });
+  }
 }
