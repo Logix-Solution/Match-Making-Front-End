@@ -67,7 +67,8 @@
 .active-link .requestManagement,
 .active-link .matchComparison,
 .active-link .testimonials,
-.active-link .PricingPlanConfig{
+.active-link .PricingPlanConfig,
+.active-link .lockProfile{
   filter: brightness(0) invert(1);
   /* This converts black SVG icons to white */
 }

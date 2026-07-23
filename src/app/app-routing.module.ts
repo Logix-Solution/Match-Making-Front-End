@@ -32,6 +32,9 @@ import { UserActivePlanComponent } from './pricing-plans/user-active-plan/user-a
 import { WelcomeComponent } from './home-page/welcome/welcome.component';
 import { RegisterationFeeComponent } from './Preferences/registeration-fee/registeration-fee.component';
 import { LockProfilesComponent } from './Admin/lock-profiles/lock-profiles.component';
+import { TermsConditionComponent } from './home-page/terms-condition/terms-condition.component';
+import { PrivacyPolicyComponent } from './home-page/privacy-policy/privacy-policy.component';
+import { CookiePolicyComponent } from './home-page/cookie-policy/cookie-policy.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -87,6 +90,18 @@ const routes: Routes = [
     {
     path: 'welcome',
     component: WelcomeComponent, 
+  },
+    {
+    path: 'Terms-and-Conditions',
+    component: TermsConditionComponent, 
+  },
+    {
+    path: 'privacy-policy',
+    component: PrivacyPolicyComponent, 
+  },
+    {
+    path: 'Cookie-Policy',
+    component:  CookiePolicyComponent, 
   },
 ////////////////preferences ///////////////////////
   

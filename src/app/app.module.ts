@@ -73,6 +73,9 @@ import { UserUpgradePricePlanComponent } from './pricing-plans/user-upgrade-pric
 import { WelcomeComponent } from './home-page/welcome/welcome.component';
 import { RegisterationFeeComponent } from './Preferences/registeration-fee/registeration-fee.component';
 import { LockProfilesComponent } from './Admin/lock-profiles/lock-profiles.component';
+import { PrivacyPolicyComponent } from './home-page/privacy-policy/privacy-policy.component';
+import { TermsConditionComponent } from './home-page/terms-condition/terms-condition.component';
+import { CookiePolicyComponent } from './home-page/cookie-policy/cookie-policy.component';
 
 
 @NgModule({
@@ -135,6 +138,9 @@ import { LockProfilesComponent } from './Admin/lock-profiles/lock-profiles.compo
     WelcomeComponent,
     RegisterationFeeComponent,
     LockProfilesComponent,
+    PrivacyPolicyComponent,
+    TermsConditionComponent,
+    CookiePolicyComponent,
 
   ],
   imports: [
