@@ -203,7 +203,7 @@ export class RegisterationFeeComponent implements OnInit {
           const response = Array.isArray(res) ? res[0] : res;
           if (response?.includes('Success')) {
             this.valid.apiInfoResponse('Profile Registered Successfully');
-            this.router.navigate(['/Explore-Matches']);
+            this.router.navigate(['/user-Pricing-Plans']);
           } else {
             this.valid.apiErrorResponse(response);
           }

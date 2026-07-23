@@ -89,14 +89,14 @@
                   <stop offset="100%" stop-color="#2c2c2c" stop-opacity="0"/>
                 </linearGradient>
               </defs>
-              <path d="M 0 170 Q 120 150 240 120 T 480 50 L 600 20" fill="none" stroke="#2c2c2c" stroke-width="3"></path>
-              <path d="M 0 170 Q 120 150 240 120 T 480 50 L 600 20 L 600 200 L 0 200 Z" fill="url(#chartGrad)"></path>
+              <path [attr.d]="signupChartPath" fill="none" stroke="#2c2c2c" stroke-width="3"></path>
+              <path [attr.d]="signupChartAreaPath" fill="url(#chartGrad)"></path>
               <line x1="0" y1="50" x2="600" y2="50" stroke="#ebebeb" stroke-dasharray="4"></line>
               <line x1="0" y1="100" x2="600" y2="100" stroke="#ebebeb" stroke-dasharray="4"></line>
               <line x1="0" y1="150" x2="600" y2="150" stroke="#ebebeb" stroke-dasharray="4"></line>
             </svg>
             <div class="d-flex justify-content-between position-absolute bottom-0 w-100 ft-5 txt-7th pt-2">
-              <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+              <span *ngFor="let month of signupChartMonths">{{ month }}</span>
             </div>
           </div>
         </div>

@@ -11,7 +11,7 @@
       <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 txt-7th ft-3"></i>
       <input
         type="text"
-        class="form-control ps-5 py-2 ft-3 border bg-6th rounded-3 custom-search-input"
+        class="form-control ps-5 py-2 ft-3 border bg-6th rounded-3 custom-search-input col-4"
         placeholder="Search"
         [(ngModel)]="searchQuery"
         (input)="onSearchChange()"
@@ -27,7 +27,7 @@
         <div class="card bg-6th border-6th rounded-3 p-3 shadow-sm h-100 position-relative">
           <i
             class="bi lock-icon lock-icon-corner"
-            [ngClass]="record.isLocked ? 'bi-lock-fill locked-icon' : 'bi-unlock-fill unlocked-icon'"
+          
           ></i>
           <div class="d-flex align-items-center gap-3">
             <img
@@ -50,7 +50,7 @@
           </div>
           <button
             type="button"
-            class="w-100 mt-3 py-2 px-3 rounded-2 border-0 bg-5th txt-8th ft-4 fw-medium d-flex align-items-center justify-content-center gap-1"
+            class="w-50 justify-content-end  mt-3 py-2 px-3 rounded-2 border-0 bg-5th txt-8th ft-4 fw-medium d-flex align-items-center justify-content-center gap-1"
             (click)="onViewDetails(record.source)"
           >
             <i class="bi bi-eye"></i> View Details
@@ -94,7 +94,7 @@
         <div class="card bg-6th border-6th rounded-3 p-3 shadow-sm h-100 position-relative">
           <i
             class="bi lock-icon lock-icon-corner"
-            [ngClass]="record.isLocked ? 'bi-lock-fill locked-icon' : 'bi-unlock-fill unlocked-icon'"
+         
           ></i>
           <div class="d-flex align-items-center gap-3">
             <img
@@ -117,7 +117,7 @@
           </div>
           <button
             type="button"
-            class="w-100 mt-3 py-2 px-3 rounded-2 border-0 bg-5th txt-8th ft-4 fw-medium d-flex align-items-center justify-content-center gap-1"
+            class="w-50 text-end mt-3 py-2 px-3 rounded-2 border-0 bg-5th txt-8th ft-4 fw-medium d-flex align-items-center justify-content-center gap-1"
             (click)="onViewDetails(record.destination)"
           >
             <i class="bi bi-eye"></i> View Details
