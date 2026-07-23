@@ -3,12 +3,21 @@ import { ToastrService } from 'ngx-toastr';
 import { SharedDataService } from '../../../../shared/services/shared-data.service';
 import { SharedGlobalService } from '../../../../shared/services/shared-global.service';
 import { SharedFormFieldValidationService } from 'src/shared/services/shared-form-field-validation.service';
+import { Router } from '@angular/router';
 
 // ─── Interface ────────────────────────────────────────────────────────────────
 interface LifestylePreferenceInterface {
   userID: number; // 0
   spType: string; // 1
   lifeStylePrefrence: string; // 2  → [{typeID:17,subTypeID},{typeID:18,subTypeID},{typeID:19,subTypeID}]
+}
+
+interface UserRegistrationPlan {
+  profileID: number;
+  userID: number;
+  fullName: string;
+  planID: number;
+  planName: string;
 }
 
 @Component({
@@ -49,6 +58,7 @@ export class PreferencesLifestyleComponent implements OnInit {
     private sharedGlobalService: SharedGlobalService,
     private toastr: ToastrService,
     private valid: SharedFormFieldValidationService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -133,12 +143,41 @@ export class PreferencesLifestyleComponent implements OnInit {
               'Lifestyle Preferences Saved Successfully',
             );
             this.saveSuccess.emit();
+            this.checkRegistrationPlanAndNavigate(userID);
           } else {
             this.valid.apiErrorResponse(apiResponse);
           }
         },
         error: (err: any) =>
           console.log('Lifestyle Preference Save Error:', err),
+      });
+  }
+
+  // ─── Checks whether the user already has a registration plan on file.
+  // If the API returns data, they already have a plan → don't redirect to the fee page.
+  // If the API returns an empty array, they don't have one yet → send them to pay it.
+  private checkRegistrationPlanAndNavigate(userID: number): void {
+    this.dataService
+      .getHttp(`core-api/Profile/userRegistrationPlan?userID=${userID}`)
+      .subscribe({
+        next: (response: any) => {
+          console.log('userRegistrationPlan response:', response);
+
+          const hasPlan = Array.isArray(response)
+            ? response.length > 0
+            : !!response; // handles a single object being returned instead of an array
+
+          if (!hasPlan) {
+            this.router.navigate(['/registerationFee']);
+          }
+        },
+        error: (err: any) => {
+          console.log('userRegistrationPlan check error:', err);
+          // If the check itself fails, we don't know the user's plan status —
+          // erring on the side of NOT redirecting avoids sending someone who
+          // already has a plan back to the fee page. Adjust if you'd rather
+          // default the other way.
+        },
       });
   }
 
