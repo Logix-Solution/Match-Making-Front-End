@@ -27,7 +27,7 @@ export const environment = {
   
  
     productUrl: 'https://www.nadiamatchmaking.com/',
-    googleClientId: '51129007656-7853v1j76s30u7cnne2b10nlg9r2ku3l.apps.googleusercontent.com'
+    googleClientId: '47658660033-n1ukc7efluk8qece8ankl46cr31kjl8m.apps.googleusercontent.com'
 };
 
 /*

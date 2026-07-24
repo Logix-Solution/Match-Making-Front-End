@@ -76,6 +76,7 @@ import { LockProfilesComponent } from './Admin/lock-profiles/lock-profiles.compo
 import { PrivacyPolicyComponent } from './home-page/privacy-policy/privacy-policy.component';
 import { TermsConditionComponent } from './home-page/terms-condition/terms-condition.component';
 import { CookiePolicyComponent } from './home-page/cookie-policy/cookie-policy.component';
+import { ConsultationComponent } from './home-page/consultation/consultation.component';
 
 
 @NgModule({
@@ -141,6 +142,7 @@ import { CookiePolicyComponent } from './home-page/cookie-policy/cookie-policy.c
     PrivacyPolicyComponent,
     TermsConditionComponent,
     CookiePolicyComponent,
+    ConsultationComponent,
 
   ],
   imports: [

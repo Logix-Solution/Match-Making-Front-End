@@ -1,0 +1,155 @@
+<div class=" container-fluid consult-page h-100 no-scrollbar d-flex flex-column p-4">
+
+ 
+
+  <!-- ───── Body ───── -->
+  <div class="consult-body flex-grow-1 scroll-verticle style-1">
+
+    <!-- ───── Left sidebar ───── -->
+    <aside class="sidebar">
+      <div class="info-card">
+        <h3>30-min consultation</h3>
+        <span class="pill-tag"><i class="bi bi-clock"></i> 30 minutes &nbsp;•&nbsp; Voice Call</span>
+        <p class="info-desc">
+          Connect with a dedicated family advisor to discuss your marriage goals, path validation, relationship challenges, or pre-marital counseling options.
+        </p>
+        <hr />
+        <ul class="feature-list">
+          <li><i class="bi bi-check-circle-fill"></i> Highly Confidential Advisory</li>
+          <li><i class="bi bi-check-circle-fill"></i> Personalized Couples Blueprint</li>
+          <li><i class="bi bi-check-circle-fill"></i> Flexible Audio/ Video Platform</li>
+        </ul>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="stars">
+          <i class="bi bi-star-fill" *ngFor="let s of [1,2,3,4,5]"></i>
+        </div>
+        <p class="quote">
+          "The most thorough consultation. Having Heena listen and guide us changed our perspective entirely."
+        </p>
+        <span class="quote-attr">— NADIA'S MATCHMAKING……</span>
+      </div>
+    </aside>
+
+    <!-- ───── Right content ───── -->
+    <main class="booking-main">
+
+      <!-- Date picker -->
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-head-left">
+            <div class="icon-badge"><i class="bi bi-calendar3"></i></div>
+            <div>
+              <h2>Select a Date</h2>
+              <p>Choose from available consultation slots</p>
+            </div>
+          </div>
+
+          <div class="month-nav">
+            <button (click)="prevMonth()" aria-label="Previous month"><i class="bi bi-chevron-left"></i></button>
+            <span>{{ monthLabel }}</span>
+            <button (click)="nextMonth()" aria-label="Next month"><i class="bi bi-chevron-right"></i></button>
+          </div>
+        </div>
+
+        <div class="calendar">
+          <div class="cal-row cal-head">
+            <span
+              *ngFor="let wd of weekdayLabels; let i = index"
+              [class.weekend]="i === 5 || i === 6"
+            >{{ wd }}</span>
+          </div>
+
+          <div class="cal-row" *ngFor="let week of calendarWeeks">
+            <button
+              *ngFor="let day of week"
+              class="cal-cell"
+              [class.dim]="!day.inCurrentMonth || day.isPast"
+              [class.weekend]="day.isWeekend && day.inCurrentMonth && !day.isPast"
+              [class.outlined]="day.inCurrentMonth && !day.isPast && !day.isSelected && isTodayLike(day)"
+              [class.selected]="day.isSelected"
+              [disabled]="day.isPast"
+              (click)="selectDate(day)"
+            >{{ day.label }}</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Time slots -->
+      <div class="panel slots-panel">
+        <div class="slots-head">
+          <i class="bi bi-clock"></i>
+          <span>AVAILABLE SLOTS FOR {{ selectedDateLabel }}.</span>
+        </div>
+        <div class="slots-grid">
+          <button
+            *ngFor="let slot of timeSlots"
+            class="slot-pill"
+            [class.active]="selectedSlot === slot"
+            (click)="selectSlot(slot)"
+          >{{ slot }}</button>
+        </div>
+      </div>
+
+      <!-- Booking form -->
+      <div class="panel form-panel">
+        <h2>Consultation Details</h2>
+        <p class="form-sub">Please provide your information to finalize the booking.</p>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>First Name <span class="req">*</span></label>
+            <input type="text" placeholder="Salif" [(ngModel)]="firstName" />
+          </div>
+          <div class="field">
+            <label>Surname <span class="req">*</span></label>
+            <input type="text" placeholder="Saif" [(ngModel)]="surname" />
+          </div>
+
+          <div class="field">
+            <label>Email Address <span class="req">*</span></label>
+            <input type="email" placeholder="hello@xyz.com" [(ngModel)]="email" />
+          </div>
+          <div class="field">
+            <label>Phone Number <span class="req">*</span></label>
+            <div class="phone-group">
+              <select [(ngModel)]="selectedCountryCode">
+                <option *ngFor="let c of countryCodes" [value]="c.code">{{ c.code }}</option>
+              </select>
+              <input type="tel" placeholder="300 1234567" [(ngModel)]="phone" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Country <span class="req">*</span></label>
+            <select [(ngModel)]="country">
+              <option value="" disabled selected>Select Country</option>
+              <option *ngFor="let c of countryList" [value]="c">{{ c }}</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Consultation Language <span class="req">*</span></label>
+            <select [(ngModel)]="consultationLanguage">
+              <option *ngFor="let l of languageList" [value]="l">{{ l }}</option>
+            </select>
+          </div>
+
+          <div class="field field-full">
+            <label>Special Requests / Topics to Discuss <span class="req">*</span></label>
+            <textarea
+              rows="3"
+              placeholder="Topics, questions you would like to share with your consultant"
+              [(ngModel)]="specialRequests"
+            ></textarea>
+          </div>
+        </div>
+
+        <button class="confirm-btn" [disabled]="isSubmitting" (click)="confirmAppointment()">
+          <i class="bi bi-calendar-check"></i> Confirm Appointment
+        </button>
+      </div>
+
+    </main>
+  </div>
+</div>

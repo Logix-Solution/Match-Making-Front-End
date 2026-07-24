@@ -35,6 +35,7 @@ import { LockProfilesComponent } from './Admin/lock-profiles/lock-profiles.compo
 import { TermsConditionComponent } from './home-page/terms-condition/terms-condition.component';
 import { PrivacyPolicyComponent } from './home-page/privacy-policy/privacy-policy.component';
 import { CookiePolicyComponent } from './home-page/cookie-policy/cookie-policy.component';
+import { ConsultationComponent } from './home-page/consultation/consultation.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -103,6 +104,11 @@ const routes: Routes = [
     path: 'Cookie-Policy',
     component:  CookiePolicyComponent, 
   },
+ {
+    path: 'Consultation',
+    component:  ConsultationComponent, 
+  },
+  
 ////////////////preferences ///////////////////////
   
  {
