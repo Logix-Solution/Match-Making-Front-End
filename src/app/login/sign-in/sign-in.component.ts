@@ -35,6 +35,16 @@ export class SignInComponent implements OnInit {
   isLoading:    boolean = false;
   isGoogleLoading: boolean = false;
 
+  // ─── Touched state (per field, set true on blur OR on save attempt) ──────
+  touched = {
+    fullName: false,
+    email:    false,
+    phone:    false,
+    password: false,
+  };
+
+  private readonly emailPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   // ─── Page Fields (API payload) ────────────────────────────────────────────
   pageFields: SaveUserLoginInterface = {
     fullName:    '',
@@ -93,13 +103,12 @@ export class SignInComponent implements OnInit {
       this.toastr.error('Google Sign-In is not available. Please try again.');
       return;
     }
-    google.accounts.id.prompt();  
+    google.accounts.id.prompt();
   }
 
   // ─── Handle Google Credential Response ───────────────────────────────────
   handleGoogleResponse(response: any): void {
     try {
-      // Decode the JWT credential to get user info
       const credential  = response.credential;
       const payload     = JSON.parse(atob(credential.split('.')[1]));
 
@@ -112,7 +121,7 @@ export class SignInComponent implements OnInit {
         userID:    0,
         userRoleID: 0,
         userName:  userName,
-        contact:   '',        
+        contact:   '',
         email:     email,
         roleID:    3,
         spType:    'insert'
@@ -120,7 +129,6 @@ export class SignInComponent implements OnInit {
 
       console.log('Google Sign-Up Payload:', googlePayload);
 
-      // ─── Call API ──────────────────────────────────────────────────────
       (this.dataService.postDirect('auth-api/GoogleSaveUser', googlePayload) as any)
         .subscribe({
           next: (res: any) => {
@@ -159,8 +167,59 @@ export class SignInComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  // ─── Mark a single field as touched (called on blur) ─────────────────────
+  markTouched(field: keyof typeof this.touched): void {
+    this.touched[field] = true;
+  }
+
+  // ─── Mark all fields touched (called on save attempt) ─────────────────────
+  private markAllTouched(): void {
+    this.touched.fullName = true;
+    this.touched.email    = true;
+    this.touched.phone    = true;
+    this.touched.password = true;
+  }
+
+  // ─── Per-field error checks (used by template) ────────────────────────────
+  get fullNameError(): string {
+    if (!this.touched.fullName) return '';
+    if (!this.fullName?.trim()) return 'Full name is required';
+    return '';
+  }
+
+  get emailError(): string {
+    if (!this.touched.email) return '';
+    if (!this.email?.trim()) return 'Email is required';
+    if (!this.emailPattern.test(this.email.trim())) return 'Enter a valid email address';
+    return '';
+  }
+
+  get phoneError(): string {
+    if (!this.touched.phone) return '';
+    if (!this.phone?.trim()) return 'Phone number is required';
+    return '';
+  }
+
+  get passwordError(): string {
+    if (!this.touched.password) return '';
+    if (!this.password?.trim()) return 'Password is required';
+    return '';
+  }
+
+  get isFormValid(): boolean {
+    return !this.fullNameError && !this.emailError && !this.phoneError && !this.passwordError
+      && !!this.fullName?.trim() && !!this.email?.trim()
+      && !!this.phone?.trim() && !!this.password?.trim();
+  }
+
   // ─── Create Profile (Save) ────────────────────────────────────────────────
   createProfile(): void {
+    this.markAllTouched();
+
+    if (!this.isFormValid) {
+      return; // red messages are now visible; stop here
+    }
+
     this.formFields[0].value = this.fullName;
     this.formFields[1].value = 'insert';
     this.formFields[2].value = this.email;
