@@ -36,6 +36,7 @@ import { TermsConditionComponent } from './home-page/terms-condition/terms-condi
 import { PrivacyPolicyComponent } from './home-page/privacy-policy/privacy-policy.component';
 import { CookiePolicyComponent } from './home-page/cookie-policy/cookie-policy.component';
 import { ConsultationComponent } from './home-page/consultation/consultation.component';
+import { RequestSubmitedComponent } from './Preferences/request-submited/request-submited.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -124,6 +125,11 @@ const routes: Routes = [
   {
     path: 'registerationFee',
     component: RegisterationFeeComponent,
+  },
+  
+   {
+    path: 'reguestSubmited',
+    component: RequestSubmitedComponent,
   },
   
 

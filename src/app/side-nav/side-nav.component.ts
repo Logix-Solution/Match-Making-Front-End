@@ -4,6 +4,8 @@ import { SharedGlobalService } from '../../shared/services/shared-global.service
 import { SharedAuthService } from '../../shared/services/shared-auth.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { SharedNotificationService } from 'src/shared/services/shared-notification.service';
+import { SharedOneSignalService } from 'src/shared/services/shared-onesignal.service';
 
 @Component({
   selector: 'app-side-nav',
@@ -16,6 +18,8 @@ export class SideNavComponent implements OnInit, OnDestroy {
     private authSharedService: SharedAuthService,
     private router: Router,
     private authService :SharedAuthService,
+   private notificationService: SharedNotificationService,
+    private oneSignal: SharedOneSignalService,
   ) {}
 
   private subscription!: Subscription;
@@ -26,10 +30,11 @@ export class SideNavComponent implements OnInit, OnDestroy {
   showLogoDropdown: boolean = false;
   unreadMessageCount: number = 0;
   roleId: number | null = null;
+  unreadNotificationCount: number = 0;
+  isPushSubscribed: boolean = false;
 
-
-  ngOnInit(): void {
-     this.roleId = this.global.getRoleId();
+ngOnInit(): void {
+    this.roleId = this.global.getRoleId();
 
     this.subscription = this.authSharedService.menuTrigger$.subscribe(() => {
       this.getMenu();
@@ -38,9 +43,26 @@ export class SideNavComponent implements OnInit, OnDestroy {
 
     this.getMenu();
     this.getLoginName();
-     this.getRoleTitleFromMenus();
-    
+    this.getRoleTitleFromMenus();
 
+    this.unreadCountSubscription = this.notificationService.unreadCount$.subscribe((count) => {
+      this.unreadNotificationCount = count;
+    });
+
+    // Links this browser to the logged-in user's ID so the backend can
+    // target pushes at them specifically. Safe to call every load — OneSignal
+    // no-ops if already logged in as this ID.
+    this.oneSignal.identifyUser();
+
+    this.oneSignal.isSubscribed().then((subscribed) => {
+      this.isPushSubscribed = subscribed;
+    });
+  }
+
+   enablePushNotifications(): void {
+    this.oneSignal.requestPermission();
+    // Optimistically flip the flag; isSubscribed() will confirm on next load
+    this.isPushSubscribed = true;
   }
 
   
@@ -120,15 +142,15 @@ export class SideNavComponent implements OnInit, OnDestroy {
     return menuTitle?.toLowerCase().includes('message');
   }
 
-  ngOnDestroy() {
+ngOnDestroy() {
     if (this.subscription) this.subscription.unsubscribe();
     if (this.unreadCountSubscription) this.unreadCountSubscription.unsubscribe();
   }
 
-    logout(): void {
+  logout(): void {
+    this.oneSignal.clearUser(); 
     this.authService.logout();
-
-     this.router.navigate(['/']);
+    this.router.navigate(['/']);
   }
 }
 

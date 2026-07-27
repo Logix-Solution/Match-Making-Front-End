@@ -77,6 +77,8 @@ import { PrivacyPolicyComponent } from './home-page/privacy-policy/privacy-polic
 import { TermsConditionComponent } from './home-page/terms-condition/terms-condition.component';
 import { CookiePolicyComponent } from './home-page/cookie-policy/cookie-policy.component';
 import { ConsultationComponent } from './home-page/consultation/consultation.component';
+import { RequestSubmitedComponent } from './Preferences/request-submited/request-submited.component';
+import { OneStepAwayComponent } from './home-page/one-step-away/one-step-away.component';
 
 
 @NgModule({
@@ -143,6 +145,8 @@ import { ConsultationComponent } from './home-page/consultation/consultation.com
     TermsConditionComponent,
     CookiePolicyComponent,
     ConsultationComponent,
+    RequestSubmitedComponent,
+    OneStepAwayComponent,
 
   ],
   imports: [

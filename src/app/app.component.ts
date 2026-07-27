@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { SeoBlockService } from './seo-block.service';
+import { SharedOneSignalService } from '../shared/services/shared-onesignal.service';
+
 
 @Component({
   selector: 'app-root',
@@ -49,7 +51,8 @@ export class AppComponent implements OnInit {
   ];
 
   constructor(private router: Router,
-       private seoBlock: SeoBlockService
+       private seoBlock: SeoBlockService,
+       private oneSignal: SharedOneSignalService
   ) {}
 
   ngOnInit(): void {
@@ -59,6 +62,7 @@ export class AppComponent implements OnInit {
         window.scrollTo(0, 0);
       }
       this.seoBlock.blockSearchEngines();
+          this.oneSignal.init();
     });
 
     // Update nav state on every route change

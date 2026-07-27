@@ -151,10 +151,7 @@
   }
 }
 
-.btn-activity-delete {
-  color: var(--primary);
-  font-size: 16px;
-}
+
 
 .toggle-btn {
   min-width: 64px;
@@ -236,4 +233,92 @@ nav.d-inline-flex {
 // ~4 visible rows (header + 4 data rows)
 .matches-scroll {
   max-height: 208px;
+}
+
+.tooltip-top {
+  position: relative;
+  cursor: default;
+
+  &::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    transform: translateX(-50%) translateY(4px);
+    background: #2B2320;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    padding: 6px 10px;
+    border-radius: 6px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .15s ease, transform .15s ease;
+    z-index: 50;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    transform: translateX(-50%) translateY(4px);
+    border: 5px solid transparent;
+    border-top-color: #2B2320;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .15s ease, transform .15s ease;
+    z-index: 50;
+  }
+
+  &:hover::after,
+  &:hover::before {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.free-plan-pill {
+  background-color: #f1f3f5 !important;
+  color: #6c727a !important;
+}
+
+.min-w-0 {
+  min-width: 0;
+}
+// ─── Compact sizing to match ~80% zoom appearance at 100% ──────────────────
+.service-avatar {
+  width: 44px;   // was 56px
+  height: 44px;  // was 56px
+}
+
+.compact-name {
+  font-size: 14px !important;
+  line-height: 1.3;
+}
+
+.compact-location {
+  font-size: 12px !important;
+}
+
+.badge-category {
+  font-size: 10px !important;
+  padding: 3px 10px !important;
+}
+
+.compact-btn {
+  height: 40px;   // was 50px (via .main-action-btn)
+  font-size: 13px !important;
+}
+
+.compact-card {
+  padding: 10px !important; // slightly tighter than p-2's default
+}
+
+.row.scroll-verticle {
+  zoom: 0.85;
 }

@@ -171,25 +171,29 @@
   </div>
 
       <div class="col-12 col-md-6">
-        <h4 class=" mb-3">Recent Activity Logs</h4>
-        <div class="dashboard-card d-flex flex-column gap-3">
-          <div class="d-flex gap-3 align-items-start border-bottom pb-2">
-            <div class="icon-shape bg-5th txt-7th rounded-circle"><i class="bi bi-person-fill"></i></div>
-            <div>
-              <p class="ft-3 txt-8th mb-0">Sarah submitted a new profile for review.</p>
-              <span class="ft-5 txt-7th">2 hours ago</span>
-            </div>
-          </div>
-          <div class="d-flex gap-3 align-items-start">
-            <div class="icon-shape bg-5th txt-7th rounded-circle"><i class="bi bi-shield-check"></i></div>
-            <div>
-              <p class="ft-3 txt-8th mb-0">System generated weekly matching report.</p>
-              <span class="ft-5 txt-7th">5 hours ago</span>
-            </div>
-          </div>
-          <button class="btn btn-outline-secondary w-100 ft-3 mt-2 border-0 txt-7th">View All Activity</button>
-        </div>
+  <h4 class="mb-3">Recent Activity Logs</h4>
+  <div class="dashboard-card d-flex flex-column gap-3">
+    <div
+      class="d-flex gap-3 align-items-start pb-2"
+      [class.border-bottom]="!last"
+      *ngFor="let item of recentActivity; let last = last"
+      style="cursor: pointer;"
+      (click)="readActivity(item)"
+    >
+      <div class="icon-shape rounded-circle" [ngClass]="item.iconBgClass">
+        <i [class]="'bi ' + item.icon"></i>
       </div>
+      <div>
+        <p class="ft-3 txt-8th mb-0" [class.fw-semibold]="!item.isRead">{{ item.title }}</p>
+        <span class="ft-5 txt-7th">{{ timeAgo(item.createdAt) }}</span>
+      </div>
+    </div>
+
+    <button class="btn btn-outline-secondary w-100 ft-3 mt-2 border-0 txt-7th" (click)="openActivityModal()">
+      View All Activity
+    </button>
+  </div>
+</div>
     </div>
 
   </div>
@@ -263,3 +267,38 @@
 </div>
 
 <div class="modal-backdrop fade show" *ngIf="isModalOpen"></div>
+
+<!-- Recent Activity Modal -->
+<div class="modal fade" [class.show]="isActivityModalOpen" [style.display]="isActivityModalOpen ? 'block' : 'none'" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 rounded-4">
+      <div class="modal-header border-0 px-4 pt-3 pb-0">
+        <h2 class="fh-5 fw-bold txt-8th m-0">All Activity</h2>
+        <button type="button" class="btn-close shadow-none" (click)="closeActivityModal()"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <div class="d-flex flex-column gap-2">
+          <div
+            *ngFor="let item of allActivity"
+            class="d-flex gap-3 align-items-start p-3 rounded-3"
+            [class.bg-light]="!item.isRead"
+            style="cursor: pointer;"
+            (click)="readActivity(item)"
+          >
+            <div class="icon-shape rounded-circle" [ngClass]="item.iconBgClass">
+              <i [class]="'bi ' + item.icon"></i>
+            </div>
+            <div class="flex-grow-1">
+              <p class="ft-3 txt-8th mb-0" [class.fw-semibold]="!item.isRead">{{ item.title }}</p>
+              <p class="ft-5 txt-7th mb-0">{{ item.message }}</p>
+              <span class="ft-6 txt-7th">{{ timeAgo(item.createdAt) }}</span>
+            </div>
+            <span *ngIf="!item.isRead" class="badge bg-danger rounded-pill align-self-center" style="width:8px;height:8px;padding:0;"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade show" *ngIf="isActivityModalOpen"></div>

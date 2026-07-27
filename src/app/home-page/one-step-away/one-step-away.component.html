@@ -1,0 +1,20 @@
+<section class="hero-banner">
+  <div class="hero-overlay">
+    <div class="hero-logo">
+      <img src="../../../assets/images/websiteLogo.svg" alt="Nadia Matchmaking" class="logo-icon">
+
+    </div>
+
+    <div class="hero-content-row">
+      <div class="hero-text">
+        <h1 class="hero-heading">Your Perfect Match Could Be Just One Step Away</h1>
+        <p class="hero-subheading">Join our trusted matchmaking community and discover genuine connections tailored to your preferences.</p>
+      </div>
+
+      <div class="hero-buttons" *ngIf="showAuthButtons">
+        <button class="btn-login" (click)="onLogin()">LOGIN</button>
+        <button class="btn-create" (click)="onCreateAccount()">Create Account</button>
+      </div>
+    </div>
+  </div>
+</section>

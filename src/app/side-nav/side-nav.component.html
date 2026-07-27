@@ -9,13 +9,16 @@
 
     <div class="d-flex align-items-center gap-3">
 
-      <div class="position-relative">
-        <i class="bi bi-bell-fill text-white fs-6" style="cursor: pointer;"></i>
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-              style="font-size: 9px; padding: 2px 4px;">
-          3
-        </span>
-      </div>
+     <div class="position-relative">
+  <i class="bi bi-bell-fill text-white fs-6" style="cursor: pointer;"></i>
+  <span
+    *ngIf="unreadNotificationCount > 0"
+    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+    style="font-size: 9px; padding: 2px 4px;"
+  >
+    {{ unreadNotificationCount > 9 ? '9+' : unreadNotificationCount }}
+  </span>
+</div>
 
       <div style="width: 1px; height: 24px; background: rgba(255,255,255,0.3);"></div>
 

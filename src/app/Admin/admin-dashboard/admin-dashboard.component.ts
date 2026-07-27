@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SharedDataService } from '../../../shared/services/shared-data.service';
 import { environment } from 'src/envirnment/environment';
+import { Subscription } from 'rxjs';
+import { SharedNotificationService, AppNotification } from '../../../shared/services/shared-notification.service';
 interface UserProfile {
   name: string;
   age: number;
@@ -37,13 +39,20 @@ interface SignupGrowthPoint {
   styleUrls: ['./admin-dashboard.component.scss']
 })
 export class AdminDashboardComponent implements OnInit {
-  constructor(private dataService: SharedDataService) {}
+  constructor(private dataService: SharedDataService,
+     private notificationService: SharedNotificationService,
+  ) {}
   isModalOpen = false;
   totalUser = 0;
   pendingApproval = 0;
   activeMatches = 0;
   interestedClients = 0;
   selectedCountryFilter = 'All';
+
+   recentActivity: AppNotification[] = [];
+  allActivity: AppNotification[] = [];
+  isActivityModalOpen = false;
+  private activitySub!: Subscription;
 
 
     countryProfiles: { country_name: string; totalProfiles: number; profilePercentage: string;  country_id: number; }[] = [];
@@ -66,6 +75,32 @@ export class AdminDashboardComponent implements OnInit {
     this.getDashboardCounts();
        this.getCountryWiseProfiles();
     this.getUserSignupGrowth();
+     this.loadActivity(); 
+  }
+
+   private loadActivity(): void {
+    this.activitySub = this.notificationService.notifications$.subscribe((list) => {
+      this.recentActivity = list.slice(0, 2);
+      this.allActivity = list;
+    });
+  }
+
+  timeAgo(date: Date): string {
+    return this.notificationService.timeAgo(date);
+  }
+
+  openActivityModal(): void {
+    this.isActivityModalOpen = true;
+    document.body.classList.add('modal-open');
+  }
+
+  closeActivityModal(): void {
+    this.isActivityModalOpen = false;
+    document.body.classList.remove('modal-open');
+  }
+
+  readActivity(item: AppNotification): void {
+    this.notificationService.markAsRead(item.id);
   }
 
   getDashboardCounts(): void {
@@ -219,4 +254,8 @@ export class AdminDashboardComponent implements OnInit {
     this.isModalOpen = false;
     document.body.classList.remove('modal-open');
   }
+    ngOnDestroy(): void {
+    this.activitySub?.unsubscribe();
+  }
+
 }

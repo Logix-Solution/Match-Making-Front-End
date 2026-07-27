@@ -70,20 +70,30 @@
             (click)="onOpenActivityModal(user)"
             onerror="this.src = 'assets/images/profile1.png'"
           />
-          <div class="flex-grow-1">
-            <h3 class="fh-6 txt-8th m-0 mb-1">
-              {{ user.name
-              }}<ng-container *ngIf="user.age > 0"
-                >, {{ user.age }}</ng-container
+          <div class="flex-grow-1 min-w-0">
+            <h3
+              class="fh-6 txt-8th m-0 mb-1 tooltip-top"
+              [attr.data-tooltip]="user.name"
+            >
+              <span
+                class="d-inline-block text-truncate"
+                style="max-width: 100%; vertical-align: bottom"
               >
+                {{ user.name }}
+                <ng-container *ngIf="user.age > 0"
+                  >, {{ user.age }}</ng-container
+                >
+              </span>
             </h3>
             <p class="ft-4 txt-7th m-0 d-flex align-items-center gap-1">
               <i class="bi bi-geo-alt-fill text-muted"></i> {{ user.location }}
             </p>
           </div>
-          <span *ngIf="user.planBadge" class="plan-pill">{{
-            user.planBadge
-          }}</span>
+          <span
+            class="plan-pill flex-shrink-0"
+            [class.free-plan-pill]="!user.planBadge"
+            >{{ user.planBadge || "Free Plan" }}</span
+          >
         </div>
 
         <!-- ── PENDING actions ─────────────────────────────────────────── -->
@@ -122,7 +132,7 @@
         <!-- ── ACCEPTED actions ────────────────────────────────────────── -->
         <ng-container *ngIf="user.status === 'accepted'">
           <div class="ft-6 txt-7th text-uppercase mb-2">
-            Member Since <strong class="txt-8th">{{ user.dateValue }}</strong>
+            Member Since <strong class=" ms-1txt-8th">{{ user.dateValue }}</strong>
           </div>
           <div class="row g-2">
             <div class="col-7">
@@ -483,7 +493,7 @@
                 <tr class="ft-6 text-uppercase txt-7th">
                   <th>Plan</th>
                   <th>Reference No#</th>
-                  <th>Date</th>
+                  <th>Expiry Date</th>
                   <th class="text-end">Amount</th>
                   <th class="text-center">Action</th>
                 </tr>
@@ -496,11 +506,11 @@
                   <td class="ft-5 txt-8th text-end">€ {{ a.paidAmount }}</td>
                   <td class="text-center">
                     <button
-                      class="btn-activity-delete border-0 bg-transparent"
+                      class="actions border-0 bg-transparent"
                       [disabled]="!a.eDoc"
                       (click)="onViewActivityDoc(a)"
                     >
-                      <i class="bi bi-shield-fill-exclamation"></i>
+                     
                     </button>
                   </td>
                 </tr>
