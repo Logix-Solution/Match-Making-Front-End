@@ -10,7 +10,7 @@ declare global {
 
 @Injectable({ providedIn: 'root' })
 export class SharedOneSignalService {
-  private readonly APP_ID = 'YOUR-ONESIGNAL-APP-ID'; // safe to expose, not secret
+  private readonly APP_ID = '20f47ea2-90c2-4fcc-b058-98beb7ad60ab'; // safe to expose, not secret
   private initialized = false;
 
   constructor(
@@ -89,12 +89,11 @@ export class SharedOneSignalService {
   }
 
   // Call from a button — never auto-prompt on page load, browsers penalize that heavily
-  requestPermission(): void {
-    window.OneSignalDeferred.push((OneSignal: any) => {
-      OneSignal.Notifications.requestPermission();
-    });
-  }
-
+ requestPermission(): void {
+  window.OneSignalDeferred.push((OneSignal: any) => {
+    OneSignal.Notifications.requestPermission();
+  });
+}
   isSubscribed(): Promise<boolean> {
     return new Promise((resolve) => {
       window.OneSignalDeferred.push((OneSignal: any) => {

@@ -3,6 +3,7 @@ import { SharedDataService } from '../../../shared/services/shared-data.service'
 import { environment } from 'src/envirnment/environment';
 import { Subscription } from 'rxjs';
 import { SharedNotificationService, AppNotification } from '../../../shared/services/shared-notification.service';
+import { SharedGlobalService } from 'src/shared/services/shared-global.service';
 interface UserProfile {
   name: string;
   age: number;
@@ -41,6 +42,7 @@ interface SignupGrowthPoint {
 export class AdminDashboardComponent implements OnInit {
   constructor(private dataService: SharedDataService,
      private notificationService: SharedNotificationService,
+     private global : SharedGlobalService,
   ) {}
   isModalOpen = false;
   totalUser = 0;
@@ -99,10 +101,10 @@ export class AdminDashboardComponent implements OnInit {
     document.body.classList.remove('modal-open');
   }
 
-  readActivity(item: AppNotification): void {
-    this.notificationService.markAsRead(item.id);
-  }
-
+ readActivity(item: AppNotification): void {
+  const userID = this.global.getUserID(); // or whatever your global service is called there
+  this.notificationService.markAsRead(item, userID);
+}
   getDashboardCounts(): void {
     this.dataService.getHttp('core-api/Admin/getDashboardCounts', {}).subscribe({
       next: (res: any) => {

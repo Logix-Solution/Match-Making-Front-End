@@ -93,9 +93,48 @@
         *ngIf="currentUser?.roleId === 3"
         class="user-dropdown-wrapper d-flex align-items-center gap-2 mt-3 mt-lg-0"
       >
-        <!-- Notification icon -->
-        <i class="bi bi-bell text-white fs-5 cursor-pointer"></i>
+<!-- Notification icon -->
+<div class="position-relative notification-dropdown-wrap">
+  <i
+    class="bi bi-bell text-white fs-5 cursor-pointer"
+    (click)="toggleNotificationDropdown($event)"
+  ></i>
+  <span
+    *ngIf="unreadNotificationCount > 0"
+    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+    style="font-size: 9px; padding: 2px 4px;"
+  >
+    {{ unreadNotificationCount > 9 ? '9+' : unreadNotificationCount }}
+  </span>
 
+  <ul
+    *ngIf="isNotificationOpen"
+    class="dropdown-menu show p-0"
+    style="right: 0; left: auto; top: 28px; width: 320px; max-height: 380px; overflow-y: auto;"
+  >
+    <li class="px-3 py-2 border-bottom fw-semibold text-dark" style="font-size: 13px;">
+      Notifications
+    </li>
+    <li *ngIf="notifications.length === 0" class="px-3 py-4 text-center text-muted" style="font-size: 12.5px;">
+      No notifications yet.
+    </li>
+    <li
+      *ngFor="let item of notifications"
+      class="d-flex gap-2 align-items-start px-3 py-2 border-bottom"
+      [class.bg-light]="!item.isRead"
+      style="cursor: pointer;"
+      (click)="readNotification(item)"
+    >
+      <i [class]="'bi ' + item.icon" style="font-size: 14px; color: #6B1A2A; margin-top: 2px;"></i>
+      <div class="flex-grow-1">
+        <div class="text-dark" [class.fw-semibold]="!item.isRead" style="font-size: 12.5px;">{{ item.title }}</div>
+        <div class="text-muted" style="font-size: 11.5px;">{{ item.message }}</div>
+        <div class="text-muted" style="font-size: 10.5px;">{{ timeAgo(item.createdAt) }}</div>
+      </div>
+      <span *ngIf="!item.isRead" class="rounded-circle bg-danger align-self-center" style="width:7px;height:7px;flex-shrink:0;"></span>
+    </li>
+  </ul>
+</div>
         <!-- USER DROPDOWN TRIGGER -->
         <a
           class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
@@ -173,3 +212,18 @@
     </div>
   </div>
 </nav>
+<div *ngIf="showPushPrompt" class="position-fixed bottom-0 end-0 m-3 p-3 bg-white rounded shadow" style="z-index: 2000; max-width: 280px;">
+  <p class="mb-2" style="font-size: 13px; color: #222;">Enable notifications to stay updated?</p>
+  <div class="d-flex gap-2">
+    <button class="btn btn-sm btn-primary" (click)="onEnableNotificationsClick()">Allow</button>
+    <button class="btn btn-sm btn-outline-secondary" (click)="dismissPushPrompt()">Not now</button>
+  </div>
+</div>
+<div *ngIf="toastNotification" class="position-fixed top-0 end-0 m-3 p-3 bg-white rounded shadow-lg d-flex gap-2 align-items-start" style="z-index: 2100; max-width: 320px; border-left: 4px solid #6B1A2A;">
+  <i [class]="'bi ' + toastNotification.icon" style="font-size: 18px; color: #6B1A2A; margin-top: 2px;"></i>
+  <div class="flex-grow-1">
+    <div class="fw-semibold" style="font-size: 13px; color: #222;">{{ toastNotification.title }}</div>
+    <div class="text-muted" style="font-size: 12px;">{{ toastNotification.message }}</div>
+  </div>
+  <button class="btn-close btn-sm" style="font-size: 10px;" (click)="dismissToast()"></button>
+</div>

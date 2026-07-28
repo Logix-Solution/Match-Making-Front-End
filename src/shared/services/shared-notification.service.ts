@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-// import { SharedDataService } from './shared-data.service'; // uncomment once a real endpoint exists
-
-export type NotificationType = 'profile_submitted' | 'plan_requested' | 'match_found' | 'message' | 'system';
+import { SharedDataService } from './shared-data.service';
 
 export interface AppNotification {
   id: number;
-  type: NotificationType;
   title: string;
+  type?: string;
   message: string;
   createdAt: Date;
   isRead: boolean;
@@ -19,60 +17,20 @@ export interface AppNotification {
 
 @Injectable({ providedIn: 'root' })
 export class SharedNotificationService {
-  private notificationsSubject = new BehaviorSubject<AppNotification[]>(this.getMockNotifications());
+  private notificationsSubject = new BehaviorSubject<AppNotification[]>([]);
   notifications$ = this.notificationsSubject.asObservable();
 
   unreadCount$: Observable<number> = this.notifications$.pipe(
     map((list) => list.filter((n) => !n.isRead).length)
   );
 
-  constructor(/* private dataService: SharedDataService */) {
-    // Live delivery now comes through SharedOneSignalService's
-    // 'foregroundWillDisplay' listener calling pushNotification() directly —
-    // see shared-onesignal.service.ts. No polling/websocket needed here
-    // for the "app is open" case anymore.
-    //
-    // Still call loadFromApi() once on startup so the list is populated
-    // with real history (not just whatever arrived via push since page load):
-    // this.loadFromApi();
-  }
+  // ─── Fires only when a LIVE push arrives — used to trigger the toast popup ──
+  private newNotificationSubject = new Subject<AppNotification>();
+  newNotification$ = this.newNotificationSubject.asObservable();
 
-  private getMockNotifications(): AppNotification[] {
-    return [
-      {
-        id: 1,
-        type: 'profile_submitted',
-        title: 'Salif submitted a new profile',
-        message: 'Salif completed registration and submitted a profile for review.',
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2),
-        isRead: false,
-        icon: 'bi-person-fill',
-        iconBgClass: 'bg-5th txt-7th',
-      },
-      {
-        id: 2,
-        type: 'plan_requested',
-        title: 'Salif requested a plan',
-        message: 'Salif requested to upgrade to the Monthly plan.',
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5),
-        isRead: false,
-        icon: 'bi-credit-card',
-        iconBgClass: 'bg-5th txt-7th',
-      },
-      {
-        id: 3,
-        type: 'match_found',
-        title: 'New match found',
-        message: 'A new potential match has been found based on preferences.',
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24),
-        isRead: true,
-        icon: 'bi-heart-fill',
-        iconBgClass: 'bg-5th txt-7th',
-      },
-    ];
-  }
+  constructor(private dataService: SharedDataService) {}
 
-  getRecent(limit: number = 2): AppNotification[] {
+  getRecent(limit: number = 5): AppNotification[] {
     return this.notificationsSubject.value.slice(0, limit);
   }
 
@@ -80,24 +38,80 @@ export class SharedNotificationService {
     return this.notificationsSubject.value;
   }
 
-  markAsRead(id: number): void {
+  loadForUser(userID: number): void {
+    if (!userID) return;
+
+    this.dataService.getHttp(`notification-api/Notification/getNotificationLog?userID=${userID}`, {}).subscribe({
+      next: (res: any) => {
+        const data = Array.isArray(res) ? res : [];
+        const mapped = data.map((n: any) => this.mapApiItem(n));
+        this.notificationsSubject.next(mapped);
+      },
+      error: (err) => console.error('getNotificationLog error:', err),
+    });
+  }
+
+  private mapApiItem(n: any): AppNotification {
+    const titleLower = (n.notificationTitle || '').toLowerCase();
+    let icon = 'bi-bell-fill';
+    if (titleLower.includes('profile')) icon = 'bi-person-fill';
+    else if (titleLower.includes('plan')) icon = 'bi-credit-card';
+    else if (titleLower.includes('match')) icon = 'bi-heart-fill';
+
+    return {
+      id: n.notificationID,
+      title: n.notificationTitle || '',
+      message: n.notificationSubTitle || '',
+      createdAt: this.parseNotificationDate(n.createdOn),
+      isRead: n.flag === 1,
+      icon,
+      iconBgClass: 'bg-5th txt-7th',
+    };
+  }
+
+  private parseNotificationDate(dateStr: string): Date {
+    if (!dateStr) return new Date();
+    const match = dateStr.match(/(\w{3})\s+(\d{1,2})\s+(\d{4})\s+(\d{1,2}):(\d{2})(AM|PM)/i);
+    if (!match) return new Date();
+
+    const [, monthStr, day, year, hourStr, minute, meridian] = match;
+    const months: { [key: string]: number } = {
+      jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+      jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11,
+    };
+    const month = months[monthStr.toLowerCase().slice(0, 3)] ?? 0;
+
+    let hour = parseInt(hourStr, 10);
+    if (meridian.toUpperCase() === 'PM' && hour !== 12) hour += 12;
+    if (meridian.toUpperCase() === 'AM' && hour === 12) hour = 0;
+
+    return new Date(+year, month, +day, hour, +minute);
+  }
+
+  markAsRead(notification: AppNotification, userID: number): void {
+    if (notification.isRead) return;
+
     const updated = this.notificationsSubject.value.map((n) =>
-      n.id === id ? { ...n, isRead: true } : n
+      n.id === notification.id ? { ...n, isRead: true } : n
     );
     this.notificationsSubject.next(updated);
 
-    // TODO: persist to backend once available:
-    // this.dataService.postDirect('core-api/Admin/markNotificationRead', { notificationID: id }).subscribe();
-  }
+    const payload = {
+      userID,
+      notificationID: notification.id,
+      flagID: 1,
+      spType: 'insert',
+    };
 
-  markAllAsRead(): void {
-    const updated = this.notificationsSubject.value.map((n) => ({ ...n, isRead: true }));
-    this.notificationsSubject.next(updated);
-  }
-
-  // Called by SharedOneSignalService when a live push arrives, or manually for testing
-  pushNotification(notification: AppNotification): void {
-    this.notificationsSubject.next([notification, ...this.notificationsSubject.value]);
+    this.dataService.postDirect('notification-api/Notification/SaveReadNotification', payload).subscribe({
+      error: (err) => {
+        console.error('SaveReadNotification error:', err);
+        const rolledBack = this.notificationsSubject.value.map((n) =>
+          n.id === notification.id ? { ...n, isRead: false } : n
+        );
+        this.notificationsSubject.next(rolledBack);
+      },
+    });
   }
 
   timeAgo(date: Date): string {
@@ -111,27 +125,9 @@ export class SharedNotificationService {
     return `${days} day${days > 1 ? 's' : ''} ago`;
   }
 
-  // ── Real API integration point — implement once endpoint exists ───────
-  // private loadFromApi(): void {
-  //   this.dataService.getHttp('core-api/Admin/getNotifications', {}).subscribe({
-  //     next: (res: any) => {
-  //       const data = Array.isArray(res) ? res : [];
-  //       this.notificationsSubject.next(data.map((n: any) => this.mapApiItem(n)));
-  //     },
-  //     error: (err) => console.error('getNotifications error:', err),
-  //   });
-  // }
-  //
-  // private mapApiItem(n: any): AppNotification {
-  //   return {
-  //     id: n.notificationID,
-  //     type: n.type,
-  //     title: n.title,
-  //     message: n.message,
-  //     createdAt: new Date(n.createdAt),
-  //     isRead: n.isRead === 1,
-  //     icon: this.iconForType(n.type),
-  //     iconBgClass: 'bg-5th txt-7th',
-  //   };
-  // }
+  // Called by SharedOneSignalService when a LIVE push arrives
+  pushNotification(notification: AppNotification): void {
+    this.notificationsSubject.next([notification, ...this.notificationsSubject.value]);
+    this.newNotificationSubject.next(notification); // ← triggers the toast, list update stays separate
+  }
 }
