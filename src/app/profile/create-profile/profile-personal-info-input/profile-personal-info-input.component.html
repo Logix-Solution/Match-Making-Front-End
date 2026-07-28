@@ -1,18 +1,13 @@
 <div class="">
   <div class="fh-5 fw-bold mt-3">Personal Information</div>
 
-  <!-- ─── Row 1: Name, Gender, DOB, Phone, CNIC ─────── -->
+  <!-- ─── Row 1: Name, Gender, DOB, Phone, CNIC/Passport ─────── -->
   <div class="row g-2 align-items-end mt-4">
     <!-- Full Name -->
     <div class="col" style="flex: 0 0 24%">
       <div class="form-group">
-        <label
-          class="txt-7th ft-6 fw-bold text-uppercase mb-1"
-          style="font-size: 11px"
-        >
-          Full Name (Cannot be changed once approved)<span class="text-danger"
-            >&nbsp;*</span
-          >
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
+          Full Name (Cannot be changed once approved)<span class="text-danger">&nbsp;*</span>
         </label>
         <input
           type="text"
@@ -23,11 +18,7 @@
           (blur)="markTouched('fullName')"
           style="height: 42px; font-size: 13px"
         />
-        <div
-          class="text-danger mt-1"
-          style="font-size: 11px"
-          *ngIf="fullNameError"
-        >
+        <div class="text-danger mt-1" style="font-size: 11px" *ngIf="fullNameError">
           {{ fullNameError }}
         </div>
       </div>
@@ -36,26 +27,22 @@
     <!-- Gender -->
     <div class="col" style="flex: 0 0 14%">
       <div class="form-group">
-        <label
-          class="txt-7th ft-6 fw-bold text-uppercase mb-1"
-          style="font-size: 11px"
-        >
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
           Gender<span class="text-danger">&nbsp;*</span>
         </label>
-        <ng-select
-          [items]="genderList"
-          bindLabel="subTypeTitle"
-          bindValue="subTypeID"
-          placeholder="Select Gender"
+        <select
+          class="form-select border-0 px-3 rounded-pill"
           [(ngModel)]="selectedGender"
           (change)="onFieldChange(); markTouched('gender')"
-          class="rounded-pill-select"
-        ></ng-select>
-        <div
-          class="text-danger mt-1"
-          style="font-size: 11px"
-          *ngIf="genderError"
+          (blur)="markTouched('gender')"
+          style="height: 42px; font-size: 13px; appearance: none !important;"
         >
+          <option [ngValue]="null">Select Gender</option>
+          <option *ngFor="let item of genderList" [ngValue]="item.subTypeID">
+            {{ item.subTypeTitle }}
+          </option>
+        </select>
+        <div class="text-danger mt-1" style="font-size: 11px" *ngIf="genderError">
           {{ genderError }}
         </div>
       </div>
@@ -64,14 +51,8 @@
     <!-- Date of Birth -->
     <div class="col" style="flex: 0 0 20%">
       <div class="form-group">
-        <label
-          class="txt-7th fw-bold text-uppercase mb-1"
-          style="font-size: 8px"
-        >
-          Date of Birth (Cannot be changed once approved)<span
-            class="text-danger"
-            >&nbsp;*</span
-          >
+        <label class="txt-7th fw-bold text-uppercase mb-1" style="font-size: 8px">
+          Date of Birth (Cannot be changed once approved)<span class="text-danger">&nbsp;*</span>
         </label>
         <input
           type="text"
@@ -90,13 +71,10 @@
       </div>
     </div>
 
-    <!-- Phone Number -->
+    <!-- Phone Number (no masking — plain input) -->
     <div class="col" style="flex: 0 0 24%">
       <div class="form-group">
-        <label
-          class="txt-7th ft-6 fw-bold text-uppercase mb-1"
-          style="font-size: 11px"
-        >
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
           Phone Number<span class="text-danger">&nbsp;*</span>
         </label>
         <div class="d-flex flex-row gap-1 w-100">
@@ -108,10 +86,7 @@
               style="height: 42px; font-size: 13px; appearance: none !important"
             >
               <option value="">+92</option>
-              <option
-                *ngFor="let item of countryList"
-                [value]="item.country_code"
-              >
+              <option *ngFor="let item of countryList" [value]="item.country_code">
                 {{ item.country_code }}
               </option>
             </select>
@@ -128,32 +103,24 @@
             />
           </div>
         </div>
-        <div
-          class="text-danger mt-1"
-          style="font-size: 11px"
-          *ngIf="phoneError"
-        >
+        <div class="text-danger mt-1" style="font-size: 11px" *ngIf="phoneError">
           {{ phoneError }}
         </div>
       </div>
     </div>
 
-    <!-- CNIC -->
+    <!-- CNIC / Passport — masking removed -->
     <div class="col" style="flex: 0 0 18%">
       <div class="form-group">
-        <label
-          class="txt-7th ft-6 fw-bold text-uppercase mb-1"
-          style="font-size: 11px"
-        >
-          CNIC Number<span class="text-danger">&nbsp;*</span>
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
+          CNIC / Passport Number<span class="text-danger">&nbsp;*</span>
         </label>
         <input
           type="text"
           class="form-control border-0 px-3 rounded-pill"
-          placeholder="xxxxx-xxxxxxx-x"
-          maxlength="15"
+          placeholder="Enter CNIC or Passport number"
           [(ngModel)]="cnic"
-          (ngModelChange)="formatCNIC()"
+          (ngModelChange)="onFieldChange()"
           (blur)="markTouched('cnic')"
           style="height: 42px; font-size: 13px"
         />
@@ -169,26 +136,21 @@
     <!-- Country -->
     <div class="col-md-2">
       <div class="form-group">
-        <label
-          class="txt-7th ft-6 fw-bold text-uppercase mb-1"
-          style="font-size: 11px"
-        >
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
           Country<span class="text-danger">&nbsp;*</span>
         </label>
-        <ng-select
-          [items]="countryList"
-          bindLabel="country_name"
-          bindValue="country_id"
-          placeholder="Select Country"
+        <select
+          class="form-select border-0 px-3 rounded-pill"
           [(ngModel)]="selectedCountry"
           (change)="onCountryChange()"
-          class="rounded-pill-select"
-        ></ng-select>
-        <div
-          class="text-danger mt-1"
-          style="font-size: 11px"
-          *ngIf="countryError"
+          style="height: 42px; font-size: 13px; appearance: none !important;"
         >
+          <option [ngValue]="null">Select Country</option>
+          <option *ngFor="let item of countryList" [ngValue]="item.country_id">
+            {{ item.country_name }}
+          </option>
+        </select>
+        <div class="text-danger mt-1" style="font-size: 11px" *ngIf="countryError">
           {{ countryError }}
         </div>
       </div>
@@ -197,21 +159,21 @@
     <!-- City -->
     <div class="col-md-2">
       <div class="form-group">
-        <label
-          class="txt-7th ft-6 fw-bold text-uppercase mb-1"
-          style="font-size: 11px"
-        >
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
           City<span class="text-danger">&nbsp;*</span>
         </label>
-        <ng-select
-          [items]="cityList"
-          bindLabel="city_name"
-          bindValue="city_id"
-          placeholder="Select City"
+        <select
+          class="form-select border-0 px-3 rounded-pill"
           [(ngModel)]="selectedCity"
           (change)="onFieldChange(); markTouched('city')"
-          class="rounded-pill-select"
-        ></ng-select>
+          (blur)="markTouched('city')"
+          style="height: 42px; font-size: 13px; appearance: none !important;"
+        >
+          <option [ngValue]="null">Select City</option>
+          <option *ngFor="let item of cityList" [ngValue]="item.city_id">
+            {{ item.city_name }}
+          </option>
+        </select>
         <div class="text-danger mt-1" style="font-size: 11px" *ngIf="cityError">
           {{ cityError }}
         </div>
@@ -219,45 +181,47 @@
     </div>
 
     <!-- Nationality -->
-   <!-- Nationality -->
-<div class="col-md-2">
-  <div class="form-group">
-    <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
-      Nationality<span class="text-danger">&nbsp;*</span>
-    </label>
-   <ng-select
-  [items]="countryList"
-  bindLabel="nationality"
-  bindValue="country_id"
-  placeholder="Select Nationality"
-  [(ngModel)]="selectedNationality"
-  (change)="onFieldChange(); markTouched('nationality')"
-  class="rounded-pill-select"
-></ng-select>
-    <div class="text-danger mt-1" style="font-size: 11px" *ngIf="nationalityError">
-      {{ nationalityError }}
+    <div class="col-md-2">
+      <div class="form-group">
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
+          Nationality<span class="text-danger">&nbsp;*</span>
+        </label>
+        <select
+          class="form-select border-0 px-3 rounded-pill"
+          [(ngModel)]="selectedNationality"
+          (change)="onFieldChange(); markTouched('nationality')"
+          (blur)="markTouched('nationality')"
+          style="height: 42px; font-size: 13px; appearance: none !important;"
+        >
+          <option [ngValue]="null">Select Nationality</option>
+          <option *ngFor="let item of countryList" [ngValue]="item.country_id">
+            {{ item.nationality }}
+          </option>
+        </select>
+        <div class="text-danger mt-1" style="font-size: 11px" *ngIf="nationalityError">
+          {{ nationalityError }}
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
     <!-- Cast -->
     <div class="col-md-3">
       <div class="form-group">
-        <label
-          class="txt-7th ft-6 fw-bold text-uppercase mb-1"
-          style="font-size: 11px"
-        >
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
           Cast<span class="text-danger">&nbsp;*</span>
         </label>
-        <ng-select
-          [items]="castList"
-          bindLabel="subTypeTitle"
-          bindValue="subTypeID"
-          placeholder="Select Cast"
+        <select
+          class="form-select border-0 px-3 rounded-pill"
           [(ngModel)]="selectedCast"
           (change)="onFieldChange(); markTouched('cast')"
-          class="rounded-pill-select"
-        ></ng-select>
+          (blur)="markTouched('cast')"
+          style="height: 42px; font-size: 13px; appearance: none !important;"
+        >
+          <option [ngValue]="null">Select Cast</option>
+          <option *ngFor="let item of castList" [ngValue]="item.subTypeID">
+            {{ item.subTypeTitle }}
+          </option>
+        </select>
         <div class="text-danger mt-1" style="font-size: 11px" *ngIf="castError">
           {{ castError }}
         </div>
@@ -267,26 +231,22 @@
     <!-- Ethnicity -->
     <div class="col-md-3">
       <div class="form-group">
-        <label
-          class="txt-7th ft-6 fw-bold text-uppercase mb-1"
-          style="font-size: 11px"
-        >
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
           Ethnicity<span class="text-danger">&nbsp;*</span>
         </label>
-        <ng-select
-          [items]="ethnicityList"
-          bindLabel="subTypeTitle"
-          bindValue="subTypeID"
-          placeholder="Select Ethnicity"
+        <select
+          class="form-select border-0 px-3 rounded-pill"
           [(ngModel)]="selectedEthnicity"
           (change)="onFieldChange(); markTouched('ethnicity')"
-          class="rounded-pill-select"
-        ></ng-select>
-        <div
-          class="text-danger mt-1"
-          style="font-size: 11px"
-          *ngIf="ethnicityError"
+          (blur)="markTouched('ethnicity')"
+          style="height: 42px; font-size: 13px; appearance: none !important;"
         >
+          <option [ngValue]="null">Select Ethnicity</option>
+          <option *ngFor="let item of ethnicityList" [ngValue]="item.subTypeID">
+            {{ item.subTypeTitle }}
+          </option>
+        </select>
+        <div class="text-danger mt-1" style="font-size: 11px" *ngIf="ethnicityError">
           {{ ethnicityError }}
         </div>
       </div>
@@ -297,10 +257,7 @@
   <div class="row mt-4">
     <div class="col-md-12">
       <div class="form-group">
-        <label
-          class="txt-7th ft-6 fw-bold text-uppercase mb-1"
-          style="font-size: 11px"
-        >
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
           About Me<span class="text-danger">&nbsp;*</span>
         </label>
         <textarea
@@ -313,11 +270,7 @@
           style="border-radius: 16px; font-size: 13px"
         >
         </textarea>
-        <div
-          class="text-danger mt-1"
-          style="font-size: 11px"
-          *ngIf="aboutMeError"
-        >
+        <div class="text-danger mt-1" style="font-size: 11px" *ngIf="aboutMeError">
           {{ aboutMeError }}
         </div>
       </div>
@@ -335,7 +288,7 @@
       <input #profilePicInput type="file" accept="image/*" style="display:none"
        (change)="onProfilePictureSelected($event)" />
 
-     <div class="text-danger mt-1" style="font-size: 11px;" *ngIf="profilePictureError">{{ profilePictureError }}</div>
+      <div class="text-danger mt-1" style="font-size: 11px;" *ngIf="profilePictureError">{{ profilePictureError }}</div>
 
       <div
         *ngIf="profilePicturePreview; else profileUploadBox"
@@ -351,14 +304,7 @@
         />
         <button
           class="btn btn-sm btn-danger rounded-circle position-absolute"
-          style="
-            top: 4px;
-            right: 4px;
-            width: 24px;
-            height: 24px;
-            padding: 0;
-            font-size: 11px;
-          "
+          style="top: 4px; right: 4px; width: 24px; height: 24px; padding: 0; font-size: 11px;"
           (click)="$event.stopPropagation(); removeProfilePicture()"
         >
           x
@@ -371,9 +317,7 @@
           style="cursor: pointer"
           (click)="profilePicInput.click()"
         >
-          <div
-            class="bg-6th rounded-circle p-2 mat-elevation-z1 d-flex flex-row justify-content-center align-items-center"
-          >
+          <div class="bg-6th rounded-circle p-2 mat-elevation-z1 d-flex flex-row justify-content-center align-items-center">
             <div class="uploadIcon"></div>
           </div>
           <div class="fh-6 mt-2">Drag and drop or click to browse</div>
@@ -392,7 +336,6 @@
 
     <!-- Document Upload — CNIC / Passport Switcher -->
     <div class="col-md-3 px-2 d-flex flex-column" [ngSwitch]="documentType">
-      <!-- Selection -->
       <div *ngSwitchCase="'selection'" class="w-100 d-flex flex-column">
         <div class="txt-7th ft-5">
           SELECT YOUR CHOICE <span class="txt-2nd">&nbsp;*</span>
@@ -421,7 +364,6 @@
         </div>
       </div>
 
-      <!-- CNIC Front & Back -->
       <div *ngSwitchCase="'cnic'" class="w-100 d-flex flex-column">
         <div class="txt-7th ft-5">
           YOUR CNIC (Front & Back) <span class="txt-2nd">&nbsp;*</span>
@@ -430,14 +372,7 @@
           <button
             (click)="setDocumentType('selection')"
             class="btn btn-sm btn-light mat-elevation-z1 rounded-circle position-absolute border z-3"
-            style="
-              width: 32px;
-              height: 32px;
-              padding: 0;
-              left: -10px;
-              top: 50%;
-              transform: translateY(-50%);
-            "
+            style="width: 32px; height: 32px; padding: 0; left: -10px; top: 50%; transform: translateY(-50%);"
           >
             <i class="bi bi-arrow-left"></i>
           </button>
@@ -463,14 +398,7 @@
               />
               <button
                 class="btn btn-sm btn-danger rounded-circle position-absolute"
-                style="
-                  top: 4px;
-                  right: 4px;
-                  width: 22px;
-                  height: 22px;
-                  padding: 0;
-                  font-size: 10px;
-                "
+                style="top: 4px; right: 4px; width: 22px; height: 22px; padding: 0; font-size: 10px;"
                 (click)="$event.stopPropagation(); removeCnicFront()"
               >
                 x
@@ -506,14 +434,7 @@
               />
               <button
                 class="btn btn-sm btn-danger rounded-circle position-absolute"
-                style="
-                  top: 4px;
-                  right: 4px;
-                  width: 22px;
-                  height: 22px;
-                  padding: 0;
-                  font-size: 10px;
-                "
+                style="top: 4px; right: 4px; width: 22px; height: 22px; padding: 0; font-size: 10px;"
                 (click)="$event.stopPropagation(); removeCnicBack()"
               >
                 x
@@ -530,7 +451,6 @@
         </div>
       </div>
 
-      <!-- Passport -->
       <div *ngSwitchCase="'passport'" class="w-100 d-flex flex-column">
         <div class="txt-7th ft-5">
           YOUR PASSPORT <span class="txt-2nd">&nbsp;*</span>
@@ -539,14 +459,7 @@
           <button
             (click)="setDocumentType('selection')"
             class="btn btn-sm btn-light mat-elevation-z1 rounded-circle position-absolute border z-3"
-            style="
-              width: 32px;
-              height: 32px;
-              padding: 0;
-              left: -10px;
-              top: 50%;
-              transform: translateY(-50%);
-            "
+            style="width: 32px; height: 32px; padding: 0; left: -10px; top: 50%; transform: translateY(-50%);"
           >
             <i class="bi bi-arrow-left"></i>
           </button>
@@ -572,14 +485,7 @@
               />
               <button
                 class="btn btn-sm btn-danger rounded-circle position-absolute"
-                style="
-                  top: 4px;
-                  right: 4px;
-                  width: 22px;
-                  height: 22px;
-                  padding: 0;
-                  font-size: 10px;
-                "
+                style="top: 4px; right: 4px; width: 22px; height: 22px; padding: 0; font-size: 10px;"
                 (click)="$event.stopPropagation(); removePassport()"
               >
                 x
@@ -597,19 +503,13 @@
       </div>
     </div>
 
-    <!-- Document error (shows for whichever case is active) -->
+    <!-- Document error -->
     <div class="col-md-3 d-flex flex-column">
       <div class="ft-5"><span class="txt-2nd">&nbsp;</span></div>
-      <div
-        class="text-danger mt-1"
-        style="font-size: 11px"
-        *ngIf="documentError"
-      >
+      <div class="text-danger mt-1" style="font-size: 11px" *ngIf="documentError">
         {{ documentError }}
       </div>
-      <div
-        class="bg-6th border-6th rounded-3 d-flex flex-column py-1 px-2 mt-1"
-      >
+      <div class="bg-6th border-6th rounded-3 d-flex flex-column py-1 px-2 mt-1">
         <div class="txt-2nd ft-5 fw-bold">NOTE:</div>
         <div class="ft-5 mt-1">
           Your CNIC/ID Card/Passport Picture<span class="txt-2nd">&nbsp;*</span>
@@ -621,7 +521,7 @@
       </div>
     </div>
 
-    <!-- Hide Photos Checkbox (no validation — excluded per requirement) -->
+    <!-- Hide Photos Checkbox -->
     <div class="col-md-3 d-flex flex-column">
       <div class="ft-5"><span class="txt-2nd">&nbsp;</span></div>
       <div class="d-flex flex-row mt-1">
@@ -654,9 +554,7 @@
     (change)="onGallerySelected($event)"
   />
 
-  <div
-    class="d-flex flex-row ps-3 py-3 pe-5 bg-6th rounded-3 mat-elevation-z1 justify-content-between mt-3 flex-wrap gap-2"
-  >
+  <div class="d-flex flex-row ps-3 py-3 pe-5 bg-6th rounded-3 mat-elevation-z1 justify-content-between mt-3 flex-wrap gap-2">
     <div class="d-flex flex-row flex-wrap gap-2">
       <div
         *ngFor="let img of galleryImages; let i = index"
@@ -671,15 +569,7 @@
         />
         <button
           class="btn btn-sm btn-danger rounded-circle position-absolute"
-          style="
-            top: -6px;
-            right: -6px;
-            width: 20px;
-            height: 20px;
-            padding: 0;
-            font-size: 10px;
-            line-height: 1;
-          "
+          style="top: -6px; right: -6px; width: 20px; height: 20px; padding: 0; font-size: 10px; line-height: 1;"
           (click)="removeGalleryImage(i)"
         >
           x
@@ -702,9 +592,7 @@
       style="cursor: pointer"
       (click)="galleryInput.click()"
     >
-      <div class="rounded-circle bg-2nd px-2 text-center txt-6th me-2 ft-4">
-        +
-      </div>
+      <div class="rounded-circle bg-2nd px-2 text-center txt-6th me-2 ft-4">+</div>
       <div>Add Pictures</div>
     </div>
   </div>

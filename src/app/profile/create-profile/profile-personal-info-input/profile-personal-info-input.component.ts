@@ -65,7 +65,6 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
 
   // ─── Inputs from Parent ───────────────────────────────────────────────────
   @Input() castList:        any[] = [];
-  // @Input() nationalityList: any[] = [];
   @Input() ethnicityList:   any[] = [];
   @Input() genderList:      any[] = [];
   @Input() countryList:     any[] = [];
@@ -85,7 +84,7 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
   hidePhoto:   boolean = false;
   profileID:   number  = 0;
 
-  // ─── Dropdown Selections (null = "nothing selected", so ng-select shows placeholder) ──
+  // ─── Dropdown Selections (null = "nothing selected") ──────────────────────
   selectedGender:      any    = null;
   selectedNationality: any    = null;
   selectedCast:        any    = null;
@@ -128,26 +127,25 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
     preview:         string;
   }[] = [];
 
-  // Snapshot of IDs as loaded from server — used to detect "no changes"
   originalGalleryImageIDs: number[] = [];
 
-  // ─── Validation: touched state per field (checkbox intentionally excluded) ─
- touched: TouchedState = {
-  fullName:       false,
-  gender:         false,
-  dob:            false,
-  phone:          false,
-  cnic:           false,
-  country:        false,
-  city:           false,
-  nationality:    false,
-  cast:           false,
-  ethnicity:      false,
-  aboutMe:        false,
-  document:       false,
-  gallery:        false,
-  profilePicture: false,
-};
+  // ─── Validation: touched state per field ──────────────────────────────────
+  touched: TouchedState = {
+    fullName:       false,
+    gender:         false,
+    dob:            false,
+    phone:          false,
+    cnic:           false,
+    country:        false,
+    city:           false,
+    nationality:    false,
+    cast:           false,
+    ethnicity:      false,
+    aboutMe:        false,
+    document:       false,
+    gallery:        false,
+    profilePicture: false,
+  };
 
   // ─── Page Fields (API payload) ────────────────────────────────────────────
   personalPageFields: PersonalProfileInterface = {
@@ -172,7 +170,7 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
     { value: '',       msg: 'Please enter your phone number',     type: 'textbox',    required: true  }, // 5
     { value: '',       msg: '',                                   type: 'hidden',     required: false }, // 6
     { value: '',       msg: 'Please select your date of birth',   type: 'datePicker', required: true  }, // 7
-    { value: '',       msg: 'Please enter your CNIC number',      type: 'textbox',    required: true  }, // 8
+    { value: '',       msg: 'Please enter your CNIC/Passport number', type: 'textbox', required: true  }, // 8
     { value: 0,        msg: 'Please select your country',         type: 'selectbox',  required: true  }, // 9
     { value: 0,        msg: 'Please select your city',            type: 'selectbox',  required: true  }, // 10
     { value: 0,        msg: 'Please select your nationality',     type: 'selectbox',  required: true  }, // 11
@@ -196,6 +194,162 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
     { value: '[]',     msg: '',                                   type: 'hidden',     required: false }, // 29
     { value: 0,        msg: '',                                   type: 'hidden',     required: false }, // 30
   ];
+
+  // ─── Phone number length per country code (national number length, digits only) ──
+  private countryPhoneLengths: { [code: string]: number } = {
+    '+93':  9,   // Afghanistan
+    '+355': 9,   // Albania
+    '+213': 9,   // Algeria
+    '+376': 6,   // Andorra
+    '+244': 9,   // Angola
+    '+54':  10,  // Argentina
+    '+374': 8,   // Armenia
+    '+61':  9,   // Australia
+    '+43':  10,  // Austria
+    '+994': 9,   // Azerbaijan
+    '+973': 8,   // Bahrain
+    '+880': 10,  // Bangladesh
+    '+375': 9,   // Belarus
+    '+32':  9,   // Belgium
+    '+501': 7,   // Belize
+    '+229': 8,   // Benin
+    '+975': 8,   // Bhutan
+    '+591': 8,   // Bolivia
+    '+387': 8,   // Bosnia and Herzegovina
+    '+267': 8,   // Botswana
+    '+55':  11,  // Brazil
+    '+673': 7,   // Brunei
+    '+359': 9,   // Bulgaria
+    '+226': 8,   // Burkina Faso
+    '+257': 8,   // Burundi
+    '+238': 7,   // Cabo Verde
+    '+855': 9,   // Cambodia
+    '+237': 9,   // Cameroon
+    '+1':   10,  // Canada / United States
+    '+236': 8,   // Central African Republic
+    '+235': 8,   // Chad
+    '+56':  9,   // Chile
+    '+86':  11,  // China
+    '+57':  10,  // Colombia
+    '+269': 7,   // Comoros
+    '+242': 9,   // Congo
+    '+506': 8,   // Costa Rica
+    '+385': 9,   // Croatia
+    '+53':  8,   // Cuba
+    '+357': 8,   // Cyprus
+    '+420': 9,   // Czech Republic
+    '+45':  8,   // Denmark
+    '+253': 8,   // Djibouti
+    '+593': 9,   // Ecuador
+    '+20':  10,  // Egypt
+    '+503': 8,   // El Salvador
+    '+240': 9,   // Equatorial Guinea
+    '+291': 7,   // Eritrea
+    '+372': 8,   // Estonia
+    '+251': 9,   // Ethiopia
+    '+679': 7,   // Fiji
+    '+358': 9,   // Finland
+    '+33':  9,   // France
+    '+995': 9,   // Georgia
+    '+49':  10,  // Germany
+    '+233': 9,   // Ghana
+    '+30':  10,  // Greece
+    '+502': 8,   // Guatemala
+    '+224': 9,   // Guinea
+    '+245': 7,   // Guinea-Bissau
+    '+592': 7,   // Guyana
+    '+509': 8,   // Haiti
+    '+504': 8,   // Honduras
+    '+36':  9,   // Hungary
+    '+91':  10,  // India
+    '+62':  10,  // Indonesia
+    '+98':  10,  // Iran
+    '+964': 10,  // Iraq
+    '+353': 9,   // Ireland
+    '+972': 9,   // Israel
+    '+39':  10,  // Italy
+    '+81':  10,  // Japan
+    '+962': 9,   // Jordan
+    '+7':   10,  // Kazakhstan / Russia
+    '+254': 9,   // Kenya
+    '+965': 8,   // Kuwait
+    '+996': 9,   // Kyrgyzstan
+    '+856': 9,   // Laos
+    '+371': 8,   // Latvia
+    '+961': 8,   // Lebanon
+    '+266': 8,   // Lesotho
+    '+231': 8,   // Liberia
+    '+218': 9,   // Libya
+    '+423': 7,   // Liechtenstein
+    '+370': 8,   // Lithuania
+    '+352': 9,   // Luxembourg
+    '+60':  9,   // Malaysia
+    '+960': 7,   // Maldives
+    '+223': 8,   // Mali
+    '+356': 8,   // Malta
+    '+52':  10,  // Mexico
+    '+373': 8,   // Moldova
+    '+976': 8,   // Mongolia
+    '+212': 9,   // Morocco
+    '+258': 9,   // Mozambique
+    '+95':  9,   // Myanmar
+    '+977': 10,  // Nepal
+    '+31':  9,   // Netherlands
+    '+64':  9,   // New Zealand
+    '+234': 10,  // Nigeria
+    '+47':  8,   // Norway
+    '+968': 8,   // Oman
+    '+92':  10,  // Pakistan
+    '+970': 9,   // Palestine
+    '+507': 8,   // Panama
+    '+595': 9,   // Paraguay
+    '+51':  9,   // Peru
+    '+63':  10,  // Philippines
+    '+48':  9,   // Poland
+    '+351': 9,   // Portugal
+    '+974': 8,   // Qatar
+    '+40':  9,   // Romania
+    '+250': 9,   // Rwanda
+    '+966': 9,   // Saudi Arabia
+    '+221': 9,   // Senegal
+    '+381': 9,   // Serbia
+    '+65':  8,   // Singapore
+    '+421': 9,   // Slovakia
+    '+386': 8,   // Slovenia
+    '+27':  9,   // South Africa
+    '+82':  10,  // South Korea
+    '+34':  9,   // Spain
+    '+94':  9,   // Sri Lanka
+    '+249': 9,   // Sudan
+    '+46':  9,   // Sweden
+    '+41':  9,   // Switzerland
+    '+963': 9,   // Syria
+    '+886': 9,   // Taiwan
+    '+992': 9,   // Tajikistan
+    '+255': 9,   // Tanzania
+    '+66':  9,   // Thailand
+    '+228': 8,   // Togo
+    '+216': 8,   // Tunisia
+    '+90':  10,  // Turkey
+    '+993': 8,   // Turkmenistan
+    '+256': 9,   // Uganda
+    '+380': 9,   // Ukraine
+    '+971': 9,   // United Arab Emirates
+    '+44':  10,  // United Kingdom
+    '+598': 8,   // Uruguay
+    '+998': 9,   // Uzbekistan
+    '+58':  10,  // Venezuela
+    '+84':  9,   // Vietnam
+    '+967': 9,   // Yemen
+    '+260': 9,   // Zambia
+    '+263': 9,   // Zimbabwe
+  };
+
+  private defaultPhoneLength = 15; // E.164 fallback max if code not found
+
+  get currentPhoneMaxLength(): number {
+    return this.countryPhoneLengths[this.selectedCountryCode] || this.defaultPhoneLength;
+  }
 
   constructor(
     private dataService:         SharedDataService,
@@ -236,7 +390,7 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
         this.hidePhoto   = user.hidePhotos === 1;
         this.phoneNumber = user.phoneNo   || user.phoneNumber || '';
 
-        // ── Profile picture — build URL from filename ─────────────────────
+        // ── Profile picture ────────────────────────────────────────────────
         if (user.eDoc && user.eDoc.trim() !== '') {
           this.profilePicturePreview = environment.productUrl + 'assets/user-images/userProfile/' + user.eDoc;
           this.eDoc     = '';
@@ -247,7 +401,6 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
         // ── CNIC Front ───────────────────────────────────────────────────
         if (user.cnicFrontEDoc && user.cnicFrontEDoc.trim() !== '') {
           this.cnicFrontPreview = environment.productUrl + 'assets/user-images/userCNICF/' + user.cnicFrontEDoc;
-          console.log( this.cnicFrontPreview ,'cnic F')
           this.documentType     = 'cnic';
           this.cnicFrontDoc     = '';
           this.cnicFrontDocPath = '';
@@ -272,7 +425,7 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
           this.passportDocExt  = '';
         }
 
-        // ── Gallery images — build each URL from filename ─────────────────
+        // ── Gallery images ─────────────────────────────────────────────────
         if (user.galleryImages) {
           try {
             const serverGallery = JSON.parse(user.galleryImages);
@@ -305,23 +458,22 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
         this.selectedCast      = getSubTypeID(1)  ?? null;
         this.selectedEthnicity = getSubTypeID(3)  ?? null;
 
-        // ── Location object (holds cityID, countryID, and the "nationality" string) ──
+        // ── Location object ────────────────────────────────────────────────
         const locationItem = profileItems.find(
           (p: any) => p.cityID !== undefined && p.isPreference === 0
         );
 
-        // ── Nationality — match against nationalityList by title ──────────
-  // ── Nationality — match against countryList's "nationality" field ──────
-if (locationItem?.nationality) {
-  const matchedNationality = this.countryList.find(
-    (c: any) => c.nationality === locationItem.nationality
-  );
-  this.selectedNationality = matchedNationality ? matchedNationality.country_id : null;
-} else {
-  this.selectedNationality = null;
-}
+        // ── Nationality — matched against countryList's "nationality" field ─
+        if (locationItem?.nationality) {
+          const matchedNationality = this.countryList.find(
+            (c: any) => c.nationality === locationItem.nationality
+          );
+          this.selectedNationality = matchedNationality ? matchedNationality.country_id : null;
+        } else {
+          this.selectedNationality = null;
+        }
 
-        // ── Country — use countryCodeID directly from user object ─────────
+        // ── Country ─────────────────────────────────────────────────────
         const countryID = user.countryCodeID || locationItem?.countryID || null;
         this.selectedCountry = countryID;
 
@@ -350,7 +502,7 @@ if (locationItem?.nationality) {
     this.syncFormFields();
   }
 
-  // ─── Country Change ───────────────────────────────────────────────────────
+  // ─── Country Change (for Country dropdown — city cascade) ────────────────
   onCountryChange(): void {
     const country = this.countryList.find((c) => c.country_id == this.selectedCountry);
     this.selectedCountryCode = country ? country.country_code : '';
@@ -361,29 +513,34 @@ if (locationItem?.nationality) {
     this.syncFormFields();
   }
 
-  // ─── CNIC Formatter (exact length lock — no typing past 13 digits) ────────
-  formatCNIC(): void {
-    let value = (this.cnic || '').replace(/\D/g, '');
-    value = value.slice(0, 13); // hard stop at 13 digits — no extra typing allowed
-    if (value.length > 5)  value = value.slice(0, 5)  + '-' + value.slice(5);
-    if (value.length > 13) value = value.slice(0, 13) + '-' + value.slice(13);
-    this.cnic = value;
+  // ─── Country Code Change (for Phone country-code dropdown) ───────────────
+  onCountryCodeChange(): void {
+    // Re-trim existing phone number if it now exceeds the new country's length
+    this.formatPhoneNumber();
+  }
+
+  // ─── Phone Formatter — strips non-digits, truncates to country's expected length ──
+  formatPhoneNumber(): void {
+    let value = (this.phoneNumber || '').replace(/\D/g, '');
+    const maxLen = this.currentPhoneMaxLength;
+    value = value.slice(0, maxLen);
+    this.phoneNumber = value;
     this.syncFormFields();
   }
 
   onFieldChange(): void { this.syncFormFields(); }
 
   // ─── Touched Helpers ────────────────────────────────────────────────────
- markTouched(field: keyof TouchedState): void {
-  this.touched[field] = true;
-}
+  markTouched(field: keyof TouchedState): void {
+    this.touched[field] = true;
+  }
 
-private markAllTouched(): void {
-  (Object.keys(this.touched) as (keyof TouchedState)[])
-    .forEach((key) => (this.touched[key] = true));
-}
+  private markAllTouched(): void {
+    (Object.keys(this.touched) as (keyof TouchedState)[])
+      .forEach((key) => (this.touched[key] = true));
+  }
 
-  // ─── Inline Error Getters (never shown as toastr, template-only) ─────────
+  // ─── Inline Error Getters ─────────────────────────────────────────────────
   get fullNameError(): string {
     if (!this.touched.fullName) return '';
     return this.fullName?.trim() ? '' : 'Full name is required';
@@ -403,15 +560,17 @@ private markAllTouched(): void {
     if (!this.touched.phone) return '';
     const digits = (this.phoneNumber || '').replace(/\D/g, '');
     if (!digits) return 'Phone number is required';
+    const expectedLen = this.currentPhoneMaxLength;
+    if (this.countryPhoneLengths[this.selectedCountryCode] && digits.length !== expectedLen) {
+      return `Phone number must be exactly ${expectedLen} digits for ${this.selectedCountryCode}`;
+    }
     return '';
   }
 
+  // CNIC/Passport — masking removed, just required-check now
   get cnicError(): string {
     if (!this.touched.cnic) return '';
-    const digits = (this.cnic || '').replace(/\D/g, '');
-    if (!digits) return 'CNIC number is required';
-    if (digits.length !== 13) return 'CNIC must be exactly 13 digits (xxxxx-xxxxxxx-x)';
-    return '';
+    return this.cnic?.trim() ? '' : 'CNIC/Passport number is required';
   }
 
   get countryError(): string {
@@ -489,7 +648,7 @@ private markAllTouched(): void {
     this.personalFormFields[8].value  = this.cnic;
     this.personalFormFields[9].value  = Number(this.selectedCountry)     || 0;
     this.personalFormFields[10].value = Number(this.selectedCity)        || 0;
-this.personalFormFields[11].value = Number(this.selectedNationality) || 0;
+    this.personalFormFields[11].value = Number(this.selectedNationality) || 0;
     this.personalFormFields[12].value = this.aboutMe;
     this.personalFormFields[13].value = this.eDoc;
     this.personalFormFields[14].value = environment.imageUrl + 'userProfile';
