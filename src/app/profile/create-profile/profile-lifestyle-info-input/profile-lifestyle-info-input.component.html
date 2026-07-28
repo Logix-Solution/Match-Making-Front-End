@@ -1,76 +1,84 @@
 <div class="fh-5 fw-bold mt-3">Lifestyle</div>
 
-<div class="row mt-4">
+<div class="row mt-4 align-items-start">
 
   <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Do you smoke?<span class="text-danger">&nbsp;*</span>
       </label>
       <select
         class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedSmoke"
-        (change)="onFieldChange()"
+        (change)="onFieldChange(); markTouched('smoke')"
+        (blur)="markTouched('smoke')"
         style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Option</option>
         <option *ngFor="let item of smokeList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
         </option>
       </select>
+      <div class="field-error">{{ smokeError }}</div>
     </div>
   </div>
 
   <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Do you drink Alcohol?<span class="text-danger">&nbsp;*</span>
       </label>
       <select
         class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedAlcohol"
-        (change)="onFieldChange()"
+        (change)="onFieldChange(); markTouched('alcohol')"
+        (blur)="markTouched('alcohol')"
         style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Option</option>
         <option *ngFor="let item of alcoholList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
         </option>
       </select>
+      <div class="field-error">{{ alcoholError }}</div>
     </div>
   </div>
 
   <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Do you want Kids?<span class="text-danger">&nbsp;*</span>
       </label>
       <select
         class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedWantKids"
-        (change)="onFieldChange()"
+        (change)="onFieldChange(); markTouched('wantKids')"
+        (blur)="markTouched('wantKids')"
         style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Option</option>
         <option *ngFor="let item of wantKidsList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
         </option>
       </select>
+      <div class="field-error">{{ wantKidsError }}</div>
     </div>
   </div>
 
   <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Partner Status<span class="text-danger">&nbsp;*</span>
       </label>
       <select
         class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedMaritalStatus"
-        (change)="onFieldChange()"
+        (change)="onFieldChange(); markTouched('maritalStatus')"
+        (blur)="markTouched('maritalStatus')"
         style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Status</option>
         <option *ngFor="let item of maritalStatusList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
         </option>
       </select>
+      <div class="field-error">{{ maritalStatusError }}</div>
     </div>
   </div>
 

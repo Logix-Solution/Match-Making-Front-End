@@ -12,6 +12,17 @@ interface FamilyProfileInterface {
   parentCountryCode: any; // 4 -> Separate top-level field
 }
 
+interface FamilyTouchedState {
+  maritalStatus:      boolean;
+  housingSituation:   boolean;
+  fatherOccupation:   boolean;
+  motherOccupation:   boolean;
+  parentCountryCode:  boolean;
+  parentPhoneNumber:  boolean;
+  noOfSiblings:        boolean;
+  familyInvolvement:  boolean;
+}
+
 @Component({
   selector: 'app-profile-family-info-input',
   templateUrl: './profile-family-info-input.component.html',
@@ -39,6 +50,18 @@ export class ProfileFamilyInfoInputComponent implements OnInit {
   selectedFamilyInvolvement: any = '';
   selectedParentCountryCode: any = ''; // Holds country code, e.g. '+92' or 103
   parentPhoneNumber: string = ''; // Holds numeric tail e.g., '03359154651'
+
+  // ─── Validation: touched state per field ───────────────────────────────────
+  touched: FamilyTouchedState = {
+    maritalStatus:     false,
+    housingSituation:  false,
+    fatherOccupation:  false,
+    motherOccupation:  false,
+    parentCountryCode: false,
+    parentPhoneNumber: false,
+    noOfSiblings:      false,
+    familyInvolvement: false,
+  };
 
   // ─── Page Fields (API payload) ────────────────────────────────────────────
   familyPageFields: FamilyProfileInterface = {
@@ -83,6 +106,77 @@ export class ProfileFamilyInfoInputComponent implements OnInit {
     this.syncFormFields();
   }
 
+  // ─── Touched Helpers ────────────────────────────────────────────────────
+  markTouched(field: keyof FamilyTouchedState): void {
+    this.touched[field] = true;
+  }
+
+  private markAllTouched(): void {
+    (Object.keys(this.touched) as (keyof FamilyTouchedState)[]).forEach(
+      (key) => (this.touched[key] = true),
+    );
+  }
+
+  // ─── Inline Error Getters (template-only, no toastr) ──────────────────────
+  get maritalStatusError(): string {
+    if (!this.touched.maritalStatus) return '';
+    return this.selectedMaritalStatus ? '' : 'Marital status is required';
+  }
+
+  get housingSituationError(): string {
+    if (!this.touched.housingSituation) return '';
+    return this.selectedHousingSituation ? '' : 'Housing situation is required';
+  }
+
+  get fatherOccupationError(): string {
+    if (!this.touched.fatherOccupation) return '';
+    return this.selectedFatherOccupation
+      ? ''
+      : "Father's occupation is required";
+  }
+
+  get motherOccupationError(): string {
+    if (!this.touched.motherOccupation) return '';
+    return this.selectedMotherOccupation
+      ? ''
+      : "Mother's occupation is required";
+  }
+
+  get parentCountryCodeError(): string {
+    if (!this.touched.parentCountryCode) return '';
+    return this.selectedParentCountryCode ? '' : 'Country code is required';
+  }
+
+  get parentPhoneNumberError(): string {
+    if (!this.touched.parentPhoneNumber) return '';
+    return this.parentPhoneNumber?.trim() ? '' : 'Phone number is required';
+  }
+
+  get noOfSiblingsError(): string {
+    if (!this.touched.noOfSiblings) return '';
+    return this.selectedNoOfSiblings ? '' : 'Number of siblings is required';
+  }
+
+  get familyInvolvementError(): string {
+    if (!this.touched.familyInvolvement) return '';
+    return this.selectedFamilyInvolvement
+      ? ''
+      : 'Family involvement level is required';
+  }
+
+  private isFormValid(): boolean {
+    return (
+      !this.maritalStatusError &&
+      !this.housingSituationError &&
+      !this.fatherOccupationError &&
+      !this.motherOccupationError &&
+      !this.parentCountryCodeError &&
+      !this.parentPhoneNumberError &&
+      !this.noOfSiblingsError &&
+      !this.familyInvolvementError
+    );
+  }
+
   // ─── Sync bindings to specific fields ─────────────────────────────────────
   syncFormFields(): void {
     // 1. Phone number field holds ONLY the number
@@ -118,37 +212,10 @@ export class ProfileFamilyInfoInputComponent implements OnInit {
 
   // ─── Save Action ──────────────────────────────────────────────────────────
   save(): void {
-    // ─── Form Interface Field Validations ───────────────────────────────────
-    if (!this.selectedMaritalStatus) {
-      this.toastr.warning('Please select your marital status');
-      return;
-    }
-    if (!this.selectedHousingSituation) {
-      this.toastr.warning('Please select your housing situation');
-      return;
-    }
-    if (!this.selectedFatherOccupation) {
-      this.toastr.warning("Please select your father's occupation");
-      return;
-    }
-    if (!this.selectedMotherOccupation) {
-      this.toastr.warning("Please select your mother's occupation");
-      return;
-    }
-    if (!this.selectedParentCountryCode) {
-      this.toastr.warning('Please choose parent country prefix code');
-      return;
-    }
-    if (!this.parentPhoneNumber || this.parentPhoneNumber.trim() === '') {
-      this.toastr.warning('Please enter parent phone number');
-      return;
-    }
-    if (!this.selectedNoOfSiblings) {
-      this.toastr.warning('Please select your number of siblings');
-      return;
-    }
-    if (!this.selectedFamilyInvolvement) {
-      this.toastr.warning('Please select family involvement presence level');
+    this.markAllTouched();
+
+    if (!this.isFormValid()) {
+      this.toastr.warning('Fill All Required Fields');
       return;
     }
 

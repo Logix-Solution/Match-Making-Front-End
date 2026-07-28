@@ -12,6 +12,13 @@ interface CareerProfileInterface {
   careerJson: string; // 3
 }
 
+interface CareerTouchedState {
+  education:     boolean;
+  institute:     boolean;
+  occupation:    boolean;
+  monthlyIncome: boolean;
+}
+
 @Component({
   selector: 'app-profile-career-info-input',
   templateUrl: './profile-career-info-input.component.html',
@@ -33,6 +40,14 @@ export class ProfileCareerInfoInputComponent implements OnInit {
   selectedEducation: any = '';
   selectedOccupation: any = '';
   selectedMonthlyIncome: any = '';
+
+  // ─── Validation: touched state per field ───────────────────────────────────
+  touched: CareerTouchedState = {
+    education:     false,
+    institute:     false,
+    occupation:    false,
+    monthlyIncome: false,
+  };
 
   // ─── Page Fields (API payload) ────────────────────────────────────────────
   careerPageFields: CareerProfileInterface = {
@@ -71,6 +86,47 @@ export class ProfileCareerInfoInputComponent implements OnInit {
     this.syncFormFields();
   }
 
+  // ─── Touched Helpers ────────────────────────────────────────────────────
+  markTouched(field: keyof CareerTouchedState): void {
+    this.touched[field] = true;
+  }
+
+  private markAllTouched(): void {
+    (Object.keys(this.touched) as (keyof CareerTouchedState)[]).forEach(
+      (key) => (this.touched[key] = true),
+    );
+  }
+
+  // ─── Inline Error Getters (template-only, no toastr) ──────────────────────
+  get educationError(): string {
+    if (!this.touched.education) return '';
+    return this.selectedEducation ? '' : 'Education level is required';
+  }
+
+  get instituteError(): string {
+    if (!this.touched.institute) return '';
+    return this.instituteName?.trim() ? '' : 'Institution name is required';
+  }
+
+  get occupationError(): string {
+    if (!this.touched.occupation) return '';
+    return this.selectedOccupation ? '' : 'Occupation is required';
+  }
+
+  get monthlyIncomeError(): string {
+    if (!this.touched.monthlyIncome) return '';
+    return this.selectedMonthlyIncome ? '' : 'Monthly income is required';
+  }
+
+  private isFormValid(): boolean {
+    return (
+      !this.educationError &&
+      !this.instituteError &&
+      !this.occupationError &&
+      !this.monthlyIncomeError
+    );
+  }
+
   // ─── Sync bound fields → formFields[] ────────────────────────────────────
   syncFormFields(): void {
     this.careerFormFields[2].value = this.instituteName;
@@ -97,17 +153,10 @@ export class ProfileCareerInfoInputComponent implements OnInit {
 
   // ─── SAVE ─────────────────────────────────────────────────────────────────
   save(): void {
-    // ─── Manual validations (dropdowns not covered by saveHttp) ──────────
-    if (!this.selectedEducation) {
-      this.toastr.warning('Please select your education level');
-      return;
-    }
-    if (!this.selectedOccupation) {
-      this.toastr.warning('Please select your occupation');
-      return;
-    }
-    if (!this.selectedMonthlyIncome) {
-      this.toastr.warning('Please select your monthly income');
+    this.markAllTouched();
+
+    if (!this.isFormValid()) {
+      this.toastr.warning('Fill All Required Fields');
       return;
     }
 

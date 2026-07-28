@@ -3,6 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SharedDataService } from '../../../../shared/services/shared-data.service';
 import { SharedGlobalService } from '../../../../shared/services/shared-global.service';
 import { SharedFormFieldValidationService } from 'src/shared/services/shared-form-field-validation.service';
+import { Router } from '@angular/router';
 
 interface LifestyleProfileInterface {
   userID: number; // 0
@@ -12,6 +13,13 @@ interface LifestyleProfileInterface {
   tiktoklink: string; // 4
   snapchatlink: string; // 5
   lifeStyleJson: string; // 6
+}
+
+interface LifestyleTouchedState {
+  smoke:         boolean;
+  alcohol:       boolean;
+  wantKids:      boolean;
+  maritalStatus: boolean;
 }
 
 @Component({
@@ -40,6 +48,14 @@ export class ProfileLifestyleInfoInputComponent implements OnInit {
   tiktokLink: string = '';
   snapchatLink: string = '';
 
+  // ─── Validation: touched state per field (required dropdowns only) ────────
+  touched: LifestyleTouchedState = {
+    smoke:         false,
+    alcohol:       false,
+    wantKids:      false,
+    maritalStatus: false,
+  };
+
   // ─── Page Fields (API Payload Template) ───────────────────────────────────
   lifestylePageFields: LifestyleProfileInterface = {
     userID: 0,
@@ -67,6 +83,7 @@ export class ProfileLifestyleInfoInputComponent implements OnInit {
     private sharedGlobalService: SharedGlobalService,
     private toastr: ToastrService,
     private valid: SharedFormFieldValidationService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -75,6 +92,49 @@ export class ProfileLifestyleInfoInputComponent implements OnInit {
 
   onFieldChange(): void {
     this.syncFormFields();
+  }
+
+  // ─── Touched Helpers ────────────────────────────────────────────────────
+  markTouched(field: keyof LifestyleTouchedState): void {
+    this.touched[field] = true;
+  }
+
+  private markAllTouched(): void {
+    (Object.keys(this.touched) as (keyof LifestyleTouchedState)[]).forEach(
+      (key) => (this.touched[key] = true),
+    );
+  }
+
+  // ─── Inline Error Getters (template-only, no toastr) ──────────────────────
+  get smokeError(): string {
+    if (!this.touched.smoke) return '';
+    return this.selectedSmoke ? '' : 'Please select smoking preference';
+  }
+
+  get alcoholError(): string {
+    if (!this.touched.alcohol) return '';
+    return this.selectedAlcohol ? '' : 'Please select alcohol preference';
+  }
+
+  get wantKidsError(): string {
+    if (!this.touched.wantKids) return '';
+    return this.selectedWantKids
+      ? ''
+      : 'Please state your preference for wanting children';
+  }
+
+  get maritalStatusError(): string {
+    if (!this.touched.maritalStatus) return '';
+    return this.selectedMaritalStatus ? '' : 'Partner status is required';
+  }
+
+  private isFormValid(): boolean {
+    return (
+      !this.smokeError &&
+      !this.alcoholError &&
+      !this.wantKidsError &&
+      !this.maritalStatusError
+    );
   }
 
   // ─── Synchronize Variables with Payload Arrays ────────────────────────────
@@ -114,23 +174,10 @@ export class ProfileLifestyleInfoInputComponent implements OnInit {
 
   // ─── Save Implementation Method ───────────────────────────────────────────
   save(): void {
-    // ─── Dropdown Validation Validations ────────────────────────────────────
-    if (!this.selectedSmoke) {
-      this.toastr.warning('Select  smoke Feild');
-      return;
-    }
-    if (!this.selectedAlcohol) {
-      this.toastr.warning('Select  Alcohol Feild');
-      return;
-    }
-    if (!this.selectedWantKids) {
-      this.toastr.warning(
-        'Select  state your preferences for wanting children',
-      );
-      return;
-    }
-    if (!this.selectedMaritalStatus) {
-      this.toastr.warning('Select Maritals Status');
+    this.markAllTouched();
+
+    if (!this.isFormValid()) {
+      this.toastr.warning('Fill All Required Fields');
       return;
     }
 
@@ -169,7 +216,10 @@ export class ProfileLifestyleInfoInputComponent implements OnInit {
           if (apiResponse?.includes('Success')) {
             this.valid.apiInfoResponse(
               'Lifestyle Profile Completed Successfully',
+
+              
             );
+              this.router.navigate(['/welcome']);
             this.saveSuccess.emit(); // Profile completion final callback
           } else {
             this.valid.apiErrorResponse(apiResponse);

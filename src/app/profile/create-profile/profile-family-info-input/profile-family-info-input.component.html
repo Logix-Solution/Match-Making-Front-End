@@ -1,86 +1,94 @@
 <div class="fh-5 fw-bold mt-3">Family Profile</div>
 
-<div class="row mt-4">
+<div class="row mt-4 align-items-start">
 
   <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Marital Status<span class="text-danger">&nbsp;*</span>
       </label>
       <select
         class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedMaritalStatus"
-        (change)="onFieldChange()"
+        (change)="onFieldChange(); markTouched('maritalStatus')"
+        (blur)="markTouched('maritalStatus')"
         style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Marital Status</option>
         <option *ngFor="let item of maritalStatusList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
         </option>
       </select>
+      <div class="field-error">{{ maritalStatusError }}</div>
     </div>
   </div>
 
   <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Housing Situation<span class="text-danger">&nbsp;*</span>
       </label>
       <select
         class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedHousingSituation"
-        (change)="onFieldChange()"
+        (change)="onFieldChange(); markTouched('housingSituation')"
+        (blur)="markTouched('housingSituation')"
         style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Housing Situation</option>
         <option *ngFor="let item of housingSituationList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
         </option>
       </select>
+      <div class="field-error">{{ housingSituationError }}</div>
     </div>
   </div>
 
   <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Father's Occupation<span class="text-danger">&nbsp;*</span>
       </label>
       <select
         class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedFatherOccupation"
-        (change)="onFieldChange()"
+        (change)="onFieldChange(); markTouched('fatherOccupation')"
+        (blur)="markTouched('fatherOccupation')"
         style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Father's Occupation</option>
         <option *ngFor="let item of fatherOccupationList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
         </option>
       </select>
+      <div class="field-error">{{ fatherOccupationError }}</div>
     </div>
   </div>
 
   <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Mother's Occupation<span class="text-danger">&nbsp;*</span>
       </label>
       <select
         class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedMotherOccupation"
-        (change)="onFieldChange()"
+        (change)="onFieldChange(); markTouched('motherOccupation')"
+        (blur)="markTouched('motherOccupation')"
         style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Mother's Occupation</option>
         <option *ngFor="let item of motherOccupationList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
         </option>
       </select>
+      <div class="field-error">{{ motherOccupationError }}</div>
     </div>
   </div>
 </div>
 
-<div class="row mt-4">
+<div class="row mt-4 align-items-start">
 
   <div class="col-md-4">
     <div class="row">
       <div class="col-12">
-        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
           Parent Phone Number<span class="text-danger">&nbsp;*</span>
         </label>
       </div>
@@ -89,13 +97,15 @@
           <select
             class="form-select border-0 px-2 rounded-pill"
             [(ngModel)]="selectedParentCountryCode"
-            (change)="onFieldChange()"
+            (change)="onFieldChange(); markTouched('parentCountryCode')"
+            (blur)="markTouched('parentCountryCode')"
             style="height: 42px; font-size: 13px; appearance: none !important;">
             <option value="">Code</option>
             <option *ngFor="let item of countryList" [value]="item.country_code">
               {{ item.country_code }}
             </option>
           </select>
+          <div class="field-error">{{ parentCountryCodeError }}</div>
         </div>
       </div>
       <div class="col-8">
@@ -106,8 +116,10 @@
             placeholder="Enter phone number"
             [(ngModel)]="parentPhoneNumber"
             (ngModelChange)="onFieldChange()"
+            (blur)="markTouched('parentPhoneNumber')"
             style="height: 42px; font-size: 13px;"
           />
+          <div class="field-error">{{ parentPhoneNumberError }}</div>
         </div>
       </div>
     </div>
@@ -115,37 +127,41 @@
 
   <div class="col-md-4">
     <div class="form-group">
-      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         No. of Siblings<span class="text-danger">&nbsp;*</span>
       </label>
       <select
         class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedNoOfSiblings"
-        (change)="onFieldChange()"
+        (change)="onFieldChange(); markTouched('noOfSiblings')"
+        (blur)="markTouched('noOfSiblings')"
         style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select No. of Siblings</option>
         <option *ngFor="let item of noOfSiblingsList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
         </option>
       </select>
+      <div class="field-error">{{ noOfSiblingsError }}</div>
     </div>
   </div>
 
   <div class="col-md-4">
     <div class="form-group">
-      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Family Involvement Presence<span class="text-danger">&nbsp;*</span>
       </label>
       <select
         class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedFamilyInvolvement"
-        (change)="onFieldChange()"
+        (change)="onFieldChange(); markTouched('familyInvolvement')"
+        (blur)="markTouched('familyInvolvement')"
         style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Family Involvement</option>
         <option *ngFor="let item of familyInvolvementList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
         </option>
       </select>
+      <div class="field-error">{{ familyInvolvementError }}</div>
     </div>
   </div>
 

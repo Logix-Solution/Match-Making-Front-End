@@ -11,6 +11,12 @@ interface CareerPreferenceInterface {
   careerPrefrence: string; // 2
 }
 
+interface CareerPreferenceTouchedState {
+  minEducation: boolean;
+  minIncome:    boolean;
+  occupations:  boolean;
+}
+
 @Component({
   selector: 'app-preferences-career',
   templateUrl: './preferences-career.component.html',
@@ -31,6 +37,13 @@ export class PreferencesCareerComponent implements OnInit {
 
   // ─── Pill Selections (ordered array of subTypeIDs; index 0 = priority 1) ───
   selectedOccupations: number[] = [];
+
+  // ─── Validation: touched state per required field ──────────────────────────
+  touched: CareerPreferenceTouchedState = {
+    minEducation: false,
+    minIncome:    false,
+    occupations:  false,
+  };
 
   // ─── Page Fields (API payload) ────────────────────────────────────────────
   pageFields: CareerPreferenceInterface = {
@@ -71,6 +84,7 @@ export class PreferencesCareerComponent implements OnInit {
       }
       this.selectedOccupations.push(subTypeID);
     }
+    this.markTouched('occupations');
     this.onFieldChange();
   }
 
@@ -95,6 +109,47 @@ export class PreferencesCareerComponent implements OnInit {
   // ─── Alias ────────────────────────────────────────────────────────────────
   onFieldChange(): void {
     this.syncFormFields();
+  }
+
+  // ─── Touched Helpers ────────────────────────────────────────────────────
+  markTouched(field: keyof CareerPreferenceTouchedState): void {
+    this.touched[field] = true;
+  }
+
+  private markAllTouched(): void {
+    (
+      Object.keys(this.touched) as (keyof CareerPreferenceTouchedState)[]
+    ).forEach((key) => (this.touched[key] = true));
+  }
+
+  // ─── Inline Error Getters (template-only, no toastr) ──────────────────────
+  get minEducationError(): string {
+    if (!this.touched.minEducation) return '';
+    return this.selectedMinEducation
+      ? ''
+      : 'Preferred minimum education level is required';
+  }
+
+  get minIncomeError(): string {
+    if (!this.touched.minIncome) return '';
+    return this.selectedMinIncome
+      ? ''
+      : 'Preferred minimum monthly income is required';
+  }
+
+  get occupationsError(): string {
+    if (!this.touched.occupations) return '';
+    return this.selectedOccupations.length > 0
+      ? ''
+      : 'Please select at least one occupation preference';
+  }
+
+  private isFormValid(): boolean {
+    return (
+      !this.minEducationError &&
+      !this.minIncomeError &&
+      !this.occupationsError
+    );
   }
 
   // ─── Sync bound fields → formFields[] ────────────────────────────────────
@@ -137,17 +192,10 @@ export class PreferencesCareerComponent implements OnInit {
 
   // ─── SAVE ─────────────────────────────────────────────────────────────────
   save(): void {
-    // ─── Manual validations ───────────────────────────────────────────────
-    if (!this.selectedMinEducation) {
-      this.toastr.warning('Please select preferred minimum education level');
-      return;
-    }
-    if (!this.selectedMinIncome) {
-      this.toastr.warning('Please select preferred minimum monthly income');
-      return;
-    }
-    if (this.selectedOccupations.length === 0) {
-      this.toastr.warning('Please select at least one occupation preference');
+    this.markAllTouched();
+
+    if (!this.isFormValid()) {
+      this.toastr.warning('Fill All Required Fields');
       return;
     }
 

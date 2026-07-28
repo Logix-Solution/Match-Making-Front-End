@@ -39,6 +39,22 @@ interface PersonalProfileInterface {
   galleryImages:     string;
   profileID:         number;
 }
+interface TouchedState {
+  fullName:       boolean;
+  gender:         boolean;
+  dob:            boolean;
+  phone:          boolean;
+  cnic:           boolean;
+  country:        boolean;
+  city:           boolean;
+  nationality:    boolean;
+  cast:           boolean;
+  ethnicity:      boolean;
+  aboutMe:        boolean;
+  document:       boolean;
+  gallery:        boolean;
+  profilePicture: boolean;
+}
 
 @Component({
   selector: 'app-profile-personal-info-input',
@@ -49,7 +65,7 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
 
   // ─── Inputs from Parent ───────────────────────────────────────────────────
   @Input() castList:        any[] = [];
-  @Input() nationalityList: any[] = [];
+  // @Input() nationalityList: any[] = [];
   @Input() ethnicityList:   any[] = [];
   @Input() genderList:      any[] = [];
   @Input() countryList:     any[] = [];
@@ -69,13 +85,13 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
   hidePhoto:   boolean = false;
   profileID:   number  = 0;
 
-  // ─── Dropdown Selections ──────────────────────────────────────────────────
-  selectedGender:      any    = '';
-  selectedNationality: any    = '';
-  selectedCast:        any    = '';
-  selectedEthnicity:   any    = '';
-  selectedCountry:     any    = '';
-  selectedCity:        any    = '';
+  // ─── Dropdown Selections (null = "nothing selected", so ng-select shows placeholder) ──
+  selectedGender:      any    = null;
+  selectedNationality: any    = null;
+  selectedCast:        any    = null;
+  selectedEthnicity:   any    = null;
+  selectedCountry:     any    = null;
+  selectedCity:        any    = null;
   selectedCountryCode: string = '';
 
   // ─── Document Fields ──────────────────────────────────────────────────────
@@ -104,16 +120,34 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
   passportPreview:       string    = '';
 
   // ─── Gallery ──────────────────────────────────────────────────────────────
-galleryImages: {
-  galleryImageID:  number;
-  galleryEdoc:     string;
-  galleryEdocPath: string;
-  galleryEdocExt:  string;
-  preview:         string;
-}[] = [];
+  galleryImages: {
+    galleryImageID:  number;
+    galleryEdoc:     string;
+    galleryEdocPath: string;
+    galleryEdocExt:  string;
+    preview:         string;
+  }[] = [];
 
-//  Snapshot of IDs as loaded from server — used to detect "no changes"
-originalGalleryImageIDs: number[] = [];
+  // Snapshot of IDs as loaded from server — used to detect "no changes"
+  originalGalleryImageIDs: number[] = [];
+
+  // ─── Validation: touched state per field (checkbox intentionally excluded) ─
+ touched: TouchedState = {
+  fullName:       false,
+  gender:         false,
+  dob:            false,
+  phone:          false,
+  cnic:           false,
+  country:        false,
+  city:           false,
+  nationality:    false,
+  cast:           false,
+  ethnicity:      false,
+  aboutMe:        false,
+  document:       false,
+  gallery:        false,
+  profilePicture: false,
+};
 
   // ─── Page Fields (API payload) ────────────────────────────────────────────
   personalPageFields: PersonalProfileInterface = {
@@ -205,7 +239,6 @@ originalGalleryImageIDs: number[] = [];
         // ── Profile picture — build URL from filename ─────────────────────
         if (user.eDoc && user.eDoc.trim() !== '') {
           this.profilePicturePreview = environment.productUrl + 'assets/user-images/userProfile/' + user.eDoc;
-          console.log('✅ Profile Picture URL:', this.profilePicturePreview);
           this.eDoc     = '';
           this.eDocPath = '';
           this.eDocExt  = '';
@@ -214,7 +247,7 @@ originalGalleryImageIDs: number[] = [];
         // ── CNIC Front ───────────────────────────────────────────────────
         if (user.cnicFrontEDoc && user.cnicFrontEDoc.trim() !== '') {
           this.cnicFrontPreview = environment.productUrl + 'assets/user-images/userCNICF/' + user.cnicFrontEDoc;
-           console.log('✅ CNIC Front URL:', this.cnicFrontPreview);
+          console.log( this.cnicFrontPreview ,'cnic F')
           this.documentType     = 'cnic';
           this.cnicFrontDoc     = '';
           this.cnicFrontDocPath = '';
@@ -224,7 +257,6 @@ originalGalleryImageIDs: number[] = [];
         // ── CNIC Back ────────────────────────────────────────────────────
         if (user.cnicBackEDoc && user.cnicBackEDoc.trim() !== '') {
           this.cnicBackPreview = environment.productUrl + 'assets/user-images/userCNICB/' + user.cnicBackEDoc;
-           console.log('✅ CNIC Back URL:', this.cnicBackPreview);
           this.documentType    = 'cnic';
           this.cnicBackDoc     = '';
           this.cnicBackDocPath = '';
@@ -234,35 +266,33 @@ originalGalleryImageIDs: number[] = [];
         // ── Passport ─────────────────────────────────────────────────────
         if (user.passportEDoc && user.passportEDoc.trim() !== '' && !user.passportEDoc.endsWith('/')) {
           this.passportPreview = environment.productUrl + 'assets/user-images/userPassport/' + user.passportEDoc;
-           console.log('✅ Passport URL:', this.passportPreview);
           this.documentType    = 'passport';
           this.passportDoc     = '';
           this.passportDocPath = '';
           this.passportDocExt  = '';
         }
 
-       // ── Gallery images — build each URL from filename ─────────────────
-if (user.galleryImages) {
-  try {
-    const serverGallery = JSON.parse(user.galleryImages);
-    this.galleryImages = serverGallery
-      .filter((img: any) => img.galleryeDoc && img.galleryeDoc.trim() !== '')
-      .map((img: any) => ({
-        galleryImageID:  img.galleryImageID ?? 0,
-        galleryEdoc:     '',
-        galleryEdocPath: '',
-        galleryEdocExt:  '',
-        preview:         environment.productUrl + 'assets/user-images/Galleryimages/' + img.galleryeDoc
-      }));
+        // ── Gallery images — build each URL from filename ─────────────────
+        if (user.galleryImages) {
+          try {
+            const serverGallery = JSON.parse(user.galleryImages);
+            this.galleryImages = serverGallery
+              .filter((img: any) => img.galleryeDoc && img.galleryeDoc.trim() !== '')
+              .map((img: any) => ({
+                galleryImageID:  img.galleryImageID ?? 0,
+                galleryEdoc:     '',
+                galleryEdocPath: '',
+                galleryEdocExt:  '',
+                preview:         environment.productUrl + 'assets/user-images/Galleryimages/' + img.galleryeDoc
+              }));
 
-    // remember original IDs to detect if nothing changed at save time
-    this.originalGalleryImageIDs = this.galleryImages.map(img => img.galleryImageID);
+            this.originalGalleryImageIDs = this.galleryImages.map(img => img.galleryImageID);
 
-  } catch (e) {
-    this.galleryImages = [];
-    this.originalGalleryImageIDs = [];
-  }
-}
+          } catch (e) {
+            this.galleryImages = [];
+            this.originalGalleryImageIDs = [];
+          }
+        }
 
         // ── Parse userProfile subtypes ───────────────────────────────────
         let profileItems: any[] = [];
@@ -271,43 +301,43 @@ if (user.galleryImages) {
         const getSubTypeID = (typeID: number) =>
           profileItems.find((p: any) => p.typeID === typeID && p.isPreference === 0)?.subTypeID;
 
-        this.selectedGender    = getSubTypeID(22) || '';
-        this.selectedCast      = getSubTypeID(1)  || '';
-        this.selectedEthnicity = getSubTypeID(3)  || '';
+        this.selectedGender    = getSubTypeID(22) ?? null;
+        this.selectedCast      = getSubTypeID(1)  ?? null;
+        this.selectedEthnicity = getSubTypeID(3)  ?? null;
 
         // ── Location object (holds cityID, countryID, and the "nationality" string) ──
         const locationItem = profileItems.find(
           (p: any) => p.cityID !== undefined && p.isPreference === 0
         );
 
-        // ── Nationality — comes from locationItem.nationality (a string like "Pakistani"),
-        // NOT a typeID/subTypeID pair, so match it against nationalityList by title ──
-        if (locationItem?.nationality) {
-          const matchedNationality = this.nationalityList.find(
-            (n: any) => n.subTypeTitle === locationItem.nationality
-          );
-          this.selectedNationality = matchedNationality ? matchedNationality.subTypeID : '';
-        } else {
-          this.selectedNationality = '';
-        }
+        // ── Nationality — match against nationalityList by title ──────────
+  // ── Nationality — match against countryList's "nationality" field ──────
+if (locationItem?.nationality) {
+  const matchedNationality = this.countryList.find(
+    (c: any) => c.nationality === locationItem.nationality
+  );
+  this.selectedNationality = matchedNationality ? matchedNationality.country_id : null;
+} else {
+  this.selectedNationality = null;
+}
 
         // ── Country — use countryCodeID directly from user object ─────────
-        const countryID = user.countryCodeID || locationItem?.countryID || '';
+        const countryID = user.countryCodeID || locationItem?.countryID || null;
         this.selectedCountry = countryID;
 
         if (this.selectedCountry) {
-          // Find matching country code string for phone display
           const matchedCountry = this.countryList.find(
             (c: any) => c.country_id == this.selectedCountry
           );
-          if (matchedCountry) this.selectedCountryCode = matchedCountry.country_code;
+          if (matchedCountry) {
+            this.selectedCountryCode = matchedCountry.country_code;
+          }
 
-          // Emit to parent to load city list, then set city after short delay
           this.countrySelected.emit(Number(this.selectedCountry));
           setTimeout(() => {
-            this.selectedCity = locationItem?.cityID || '';
+            this.selectedCity = locationItem?.cityID || null;
             this.syncFormFields();
-          }, 600);  // Wait for parent to load city list
+          }, 600);
         }
 
         this.syncFormFields();
@@ -324,59 +354,160 @@ if (user.galleryImages) {
   onCountryChange(): void {
     const country = this.countryList.find((c) => c.country_id == this.selectedCountry);
     this.selectedCountryCode = country ? country.country_code : '';
-    this.selectedCity = '';
+
+    this.selectedCity = null;
     this.countrySelected.emit(this.selectedCountry);
+    this.markTouched('country');
     this.syncFormFields();
   }
 
-  // ─── CNIC Formatter ───────────────────────────────────────────────────────
+  // ─── CNIC Formatter (exact length lock — no typing past 13 digits) ────────
   formatCNIC(): void {
-    let value = this.cnic.replace(/\D/g, '');
+    let value = (this.cnic || '').replace(/\D/g, '');
+    value = value.slice(0, 13); // hard stop at 13 digits — no extra typing allowed
     if (value.length > 5)  value = value.slice(0, 5)  + '-' + value.slice(5);
     if (value.length > 13) value = value.slice(0, 13) + '-' + value.slice(13);
-    this.cnic = value.slice(0, 15);
-    this.syncFormFields();
-  }
-
-  // ─── Phone Formatter ──────────────────────────────────────────────────────
-  formatPhone(): void {
-    let value = this.phoneNumber.replace(/\D/g, '');
-    if (value.length > 4) value = value.slice(0, 4) + '-' + value.slice(4);
-    this.phoneNumber = value.slice(0, 12);
+    this.cnic = value;
     this.syncFormFields();
   }
 
   onFieldChange(): void { this.syncFormFields(); }
 
+  // ─── Touched Helpers ────────────────────────────────────────────────────
+ markTouched(field: keyof TouchedState): void {
+  this.touched[field] = true;
+}
+
+private markAllTouched(): void {
+  (Object.keys(this.touched) as (keyof TouchedState)[])
+    .forEach((key) => (this.touched[key] = true));
+}
+
+  // ─── Inline Error Getters (never shown as toastr, template-only) ─────────
+  get fullNameError(): string {
+    if (!this.touched.fullName) return '';
+    return this.fullName?.trim() ? '' : 'Full name is required';
+  }
+
+  get genderError(): string {
+    if (!this.touched.gender) return '';
+    return this.selectedGender ? '' : 'Gender is required';
+  }
+
+  get dobError(): string {
+    if (!this.touched.dob) return '';
+    return this.dob ? '' : 'Date of birth is required';
+  }
+
+  get phoneError(): string {
+    if (!this.touched.phone) return '';
+    const digits = (this.phoneNumber || '').replace(/\D/g, '');
+    if (!digits) return 'Phone number is required';
+    return '';
+  }
+
+  get cnicError(): string {
+    if (!this.touched.cnic) return '';
+    const digits = (this.cnic || '').replace(/\D/g, '');
+    if (!digits) return 'CNIC number is required';
+    if (digits.length !== 13) return 'CNIC must be exactly 13 digits (xxxxx-xxxxxxx-x)';
+    return '';
+  }
+
+  get countryError(): string {
+    if (!this.touched.country) return '';
+    return this.selectedCountry ? '' : 'Country is required';
+  }
+
+  get cityError(): string {
+    if (!this.touched.city) return '';
+    return this.selectedCity ? '' : 'City is required';
+  }
+
+  get nationalityError(): string {
+    if (!this.touched.nationality) return '';
+    return this.selectedNationality ? '' : 'Nationality is required';
+  }
+
+  get castError(): string {
+    if (!this.touched.cast) return '';
+    return this.selectedCast ? '' : 'Cast is required';
+  }
+
+  get ethnicityError(): string {
+    if (!this.touched.ethnicity) return '';
+    return this.selectedEthnicity ? '' : 'Ethnicity is required';
+  }
+
+  get aboutMeError(): string {
+    if (!this.touched.aboutMe) return '';
+    return this.aboutMe?.trim() ? '' : 'About Me is required';
+  }
+
+  get profilePictureError(): string {
+    if (!this.touched.profilePicture) return '';
+    const hasPicture = !!(this.eDoc || this.profilePicturePreview);
+    return hasPicture ? '' : 'Profile picture is required';
+  }
+
+  get documentError(): string {
+    if (!this.touched.document) return '';
+    const hasCnic     = (this.cnicFrontDoc && this.cnicBackDoc) || (this.cnicFrontPreview && this.cnicBackPreview);
+    const hasPassport = !!(this.passportDoc || this.passportPreview);
+
+    if (!hasCnic && !hasPassport) return 'Please upload your CNIC (front & back) or Passport';
+    if (this.documentType === 'cnic' && !(this.cnicFrontDoc || this.cnicFrontPreview)) {
+      return 'Please upload the front side of your CNIC';
+    }
+    if (this.documentType === 'cnic' && !(this.cnicBackDoc || this.cnicBackPreview)) {
+      return 'Please upload the back side of your CNIC';
+    }
+    if (this.documentType === 'passport' && !(this.passportDoc || this.passportPreview)) {
+      return 'Please upload your passport';
+    }
+    return '';
+  }
+
+  get galleryError(): string {
+    if (!this.touched.gallery) return '';
+    return this.galleryImages.length >= 3 ? '' : 'Please upload at least 3 gallery images';
+  }
+
+  private isFormValid(): boolean {
+    return !this.fullNameError && !this.genderError && !this.dobError && !this.phoneError &&
+           !this.cnicError && !this.countryError && !this.cityError && !this.nationalityError &&
+           !this.castError && !this.ethnicityError && !this.aboutMeError &&
+           !this.documentError && !this.galleryError && !this.profilePictureError;
+  }
+
   // ─── Sync ─────────────────────────────────────────────────────────────────
   syncFormFields(): void {
     this.personalFormFields[2].value  = this.fullName;
     this.personalFormFields[4].value  = this.email;
-    this.personalFormFields[5].value  = this.phoneNumber;         
+    this.personalFormFields[5].value  = this.phoneNumber;
     this.personalFormFields[7].value  = this.dob;
     this.personalFormFields[8].value  = this.cnic;
     this.personalFormFields[9].value  = Number(this.selectedCountry)     || 0;
     this.personalFormFields[10].value = Number(this.selectedCity)        || 0;
-    this.personalFormFields[11].value = Number(this.selectedNationality) || 0;
+this.personalFormFields[11].value = Number(this.selectedNationality) || 0;
     this.personalFormFields[12].value = this.aboutMe;
     this.personalFormFields[13].value = this.eDoc;
     this.personalFormFields[14].value = environment.imageUrl + 'userProfile';
-    this.personalFormFields[15].value = this.eDocExt;             // no dot (set in handler)
+    this.personalFormFields[15].value = this.eDocExt;
     this.personalFormFields[16].value = this.documentType === 'selection' ? 'CNIC' : this.documentType.toUpperCase();
     this.personalFormFields[17].value = this.cnicFrontDoc;
     this.personalFormFields[18].value = environment.imageUrl + 'userCNICF';
-    this.personalFormFields[19].value = this.cnicFrontDocExt;     // no dot
+    this.personalFormFields[19].value = this.cnicFrontDocExt;
     this.personalFormFields[20].value = this.cnicBackDoc;
     this.personalFormFields[21].value = environment.imageUrl + 'userCNICB';
-    this.personalFormFields[22].value = this.cnicBackDocExt;      // no dot
+    this.personalFormFields[22].value = this.cnicBackDocExt;
     this.personalFormFields[23].value = this.passportDoc;
     this.personalFormFields[24].value = environment.imageUrl + 'userPassport';
-    this.personalFormFields[25].value = this.passportDocExt;      // no dot
+    this.personalFormFields[25].value = this.passportDocExt;
     this.personalFormFields[26].value = this.hidePhoto ? 1 : 0;
-    this.personalFormFields[27].value = this.phoneNumber;         // ← raw phone
+    this.personalFormFields[27].value = this.phoneNumber;
     this.personalFormFields[30].value = this.profileID;
 
-    // subTypeJson — includes countryCode as part of entries
     const subTypeEntries = [
       { typeID: 22, subTypeID: this.selectedGender    },
       { typeID: 1,  subTypeID: this.selectedCast      },
@@ -387,64 +518,41 @@ if (user.galleryImages) {
 
     this.personalFormFields[28].value = JSON.stringify(subTypeEntries);
 
-  // ── Determine if gallery has any actual changes (add/remove) ──────────
-const currentGalleryIDs = this.galleryImages.map(img => img.galleryImageID);
-const hasNewImage = currentGalleryIDs.includes(0);
-const idsUnchanged =
-  currentGalleryIDs.length === this.originalGalleryImageIDs.length &&
-  [...currentGalleryIDs].sort().every(
-    (id, i) => id === [...this.originalGalleryImageIDs].sort()[i]
-  );
+    // ── Determine if gallery has any actual changes (add/remove) ──────────
+    const currentGalleryIDs = this.galleryImages.map(img => img.galleryImageID);
+    const hasNewImage = currentGalleryIDs.includes(0);
+    const idsUnchanged =
+      currentGalleryIDs.length === this.originalGalleryImageIDs.length &&
+      [...currentGalleryIDs].sort().every(
+        (id, i) => id === [...this.originalGalleryImageIDs].sort()[i]
+      );
 
-if (!hasNewImage && idsUnchanged) {
-  // nothing added, nothing removed, nothing changed
-  this.personalFormFields[29].value = '';
-} else {
-  const gallery = this.galleryImages.map((img) => ({
-    galleryImageID:  img.galleryImageID,
-    galleryEdoc:     img.galleryImageID === 0 ? img.galleryEdoc : '',
-    galleryEdocExt:  img.galleryImageID === 0 ? img.galleryEdocExt : '',   // no dot
-    galleryEdocPath: img.galleryImageID === 0 ? (environment.imageUrl + 'Galleryimages') : '',
-  }));
-  this.personalFormFields[29].value = JSON.stringify(gallery);
-}
+    if (!hasNewImage && idsUnchanged) {
+      this.personalFormFields[29].value = '';
+    } else {
+      const gallery = this.galleryImages.map((img) => ({
+        galleryImageID:  img.galleryImageID,
+        galleryEdoc:     img.galleryImageID === 0 ? img.galleryEdoc : '',
+        galleryEdocExt:  img.galleryImageID === 0 ? img.galleryEdocExt : '',
+        galleryEdocPath: img.galleryImageID === 0 ? (environment.imageUrl + 'Galleryimages') : '',
+      }));
+      this.personalFormFields[29].value = JSON.stringify(gallery);
+    }
   }
 
   // ─── Save ─────────────────────────────────────────────────────────────────
   save(): void {
-      // console.log('profileID at save time:', this.profileID);
-    if (!this.selectedCast) {
-      this.toastr.warning('Please select your cast'); return;
-    }
-    if (!this.selectedEthnicity) {
-      this.toastr.warning('Please select your ethnicity'); return;
-    }
-    // if (!this.eDoc) {
-    //   this.toastr.warning('Please upload your profile picture'); return;
-    // }
-    // if (this.galleryImages.length < 3) {
-    //   this.toastr.warning('Please upload at least 3 gallery images'); return;
-    // }
+    this.markAllTouched();
 
-    const hasCnic     = (this.cnicFrontDoc && this.cnicBackDoc) || (this.cnicFrontPreview && this.cnicBackPreview);
-    const hasPassport = this.passportDoc || this.passportPreview;
-
-    if (!hasCnic && !hasPassport) {
-      this.toastr.warning('Please upload your CNIC (front & back) or Passport'); return;
-    }
-    if (this.documentType === 'cnic' && !this.cnicFrontDoc && !this.cnicFrontPreview) {
-      this.toastr.warning('Please upload the front side of your CNIC'); return;
-    }
-    if (this.documentType === 'cnic' && !this.cnicBackDoc && !this.cnicBackPreview) {
-      this.toastr.warning('Please upload the back side of your CNIC'); return;
-    }
-    if (this.documentType === 'passport' && !this.passportDoc && !this.passportPreview) {
-      this.toastr.warning('Please upload your passport'); return;
+    if (!this.isFormValid()) {
+      this.toastr.warning('Fill All Required Fields');
+      return;
     }
 
     const userID = this.sharedGlobalService.getUserID();
     if (!userID) {
-      this.toastr.error('User session not found. Please login again.'); return;
+      this.toastr.error('User session not found. Please login again.');
+      return;
     }
 
     this.syncFormFields();
@@ -456,7 +564,7 @@ if (!hasNewImage && idsUnchanged) {
     this.personalPageFields.fullName          = this.personalFormFields[2].value;
     this.personalPageFields.lastName          = this.personalFormFields[3].value;
     this.personalPageFields.email             = this.personalFormFields[4].value || '';
-    this.personalPageFields.phoneNumber       = this.phoneNumber;                // ← raw phone only
+    this.personalPageFields.phoneNumber       = this.phoneNumber;
     this.personalPageFields.adress            = this.personalFormFields[6].value;
     this.personalPageFields.dob               = this.personalFormFields[7].value;
     this.personalPageFields.userCNIC          = this.personalFormFields[8].value;
@@ -466,25 +574,22 @@ if (!hasNewImage && idsUnchanged) {
     this.personalPageFields.aboutMe           = this.personalFormFields[12].value;
     this.personalPageFields.eDoc              = this.personalFormFields[13].value;
     this.personalPageFields.eDocPath          = environment.imageUrl + 'userProfile';
-    this.personalPageFields.eDocExt           = this.personalFormFields[15].value;   
+    this.personalPageFields.eDocExt           = this.personalFormFields[15].value;
     this.personalPageFields.documentType      = this.personalFormFields[16].value;
     this.personalPageFields.cnicFronteDoc     = this.personalFormFields[17].value;
     this.personalPageFields.cnicFronteDocPath = environment.imageUrl + 'userCNICF';
-    this.personalPageFields.cnicFronteDocExt  = this.personalFormFields[19].value;   
+    this.personalPageFields.cnicFronteDocExt  = this.personalFormFields[19].value;
     this.personalPageFields.cnicBackeDoc      = this.personalFormFields[20].value;
     this.personalPageFields.cnicBackeDocPath  = environment.imageUrl + 'userCNICB';
-    this.personalPageFields.cnicBackeDocExt   = this.personalFormFields[22].value;   
+    this.personalPageFields.cnicBackeDocExt   = this.personalFormFields[22].value;
     this.personalPageFields.passporteDoc      = this.personalFormFields[23].value;
     this.personalPageFields.passporteDocPath  = environment.imageUrl + 'userPassport';
-    this.personalPageFields.passporteDocExt   = this.personalFormFields[25].value;   
+    this.personalPageFields.passporteDocExt   = this.personalFormFields[25].value;
     this.personalPageFields.hidePhoto         = this.personalFormFields[26].value;
-    this.personalPageFields.parentPhoneNo     = this.phoneNumber;                
+    this.personalPageFields.parentPhoneNo     = this.phoneNumber;
     this.personalPageFields.subTypeJson       = this.personalFormFields[28].value;
     this.personalPageFields.galleryImages     = this.personalFormFields[29].value;
     this.personalPageFields.profileID         = this.personalFormFields[30].value;
-
-    console.log('Personal PageFields:', this.personalPageFields);
-    console.log('Personal FormFields:', this.personalFormFields);
 
     this.dataService.saveHttp(
       this.personalPageFields,
@@ -514,7 +619,8 @@ if (!hasNewImage && idsUnchanged) {
       this.profilePicturePreview = e.target.result;
       this.eDoc     = e.target.result.split(',')[1];
       this.eDocPath = environment.imageUrl + 'userProfile';
-      this.eDocExt  = file.name.split('.').pop() || '';           // ← no dot
+      this.eDocExt  = file.name.split('.').pop() || '';
+      this.markTouched('profilePicture');
       this.syncFormFields();
     };
     reader.readAsDataURL(file);
@@ -524,6 +630,7 @@ if (!hasNewImage && idsUnchanged) {
     this.profilePicturePreview = '';
     this.profilePictureFile    = null;
     this.eDoc = ''; this.eDocPath = ''; this.eDocExt = '';
+    this.markTouched('profilePicture');
     this.syncFormFields();
   }
 
@@ -536,7 +643,8 @@ if (!hasNewImage && idsUnchanged) {
       this.cnicFrontPreview = e.target.result;
       this.cnicFrontDoc     = e.target.result.split(',')[1];
       this.cnicFrontDocPath = environment.imageUrl + 'userCNICF';
-      this.cnicFrontDocExt  = file.name.split('.').pop() || '';   // ← no dot
+      this.cnicFrontDocExt  = file.name.split('.').pop() || '';
+      this.markTouched('document');
       this.syncFormFields();
     };
     reader.readAsDataURL(file);
@@ -557,7 +665,8 @@ if (!hasNewImage && idsUnchanged) {
       this.cnicBackPreview = e.target.result;
       this.cnicBackDoc     = e.target.result.split(',')[1];
       this.cnicBackDocPath = environment.imageUrl + 'userCNICB';
-      this.cnicBackDocExt  = file.name.split('.').pop() || '';    // ← no dot
+      this.cnicBackDocExt  = file.name.split('.').pop() || '';
+      this.markTouched('document');
       this.syncFormFields();
     };
     reader.readAsDataURL(file);
@@ -578,7 +687,8 @@ if (!hasNewImage && idsUnchanged) {
       this.passportPreview = e.target.result;
       this.passportDoc     = e.target.result.split(',')[1];
       this.passportDocPath = environment.imageUrl + 'userPassport';
-      this.passportDocExt  = file.name.split('.').pop() || '';    // ← no dot
+      this.passportDocExt  = file.name.split('.').pop() || '';
+      this.markTouched('document');
       this.syncFormFields();
     };
     reader.readAsDataURL(file);
@@ -590,27 +700,29 @@ if (!hasNewImage && idsUnchanged) {
     this.syncFormFields();
   }
 
-onGallerySelected(event: Event): void {
-  const files = (event.target as HTMLInputElement).files;
-  if (!files) return;
-  Array.from(files).forEach((file) => {
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      this.galleryImages.push({
-        galleryImageID:  0,
-        galleryEdoc:     e.target.result.split(',')[1],
-        galleryEdocPath: environment.imageUrl + 'Galleryimages',
-        galleryEdocExt:  file.name.split('.').pop() || '',
-        preview:         e.target.result,
-      });
-      this.syncFormFields();
-    };
-    reader.readAsDataURL(file);
-  });
-}
+  onGallerySelected(event: Event): void {
+    const files = (event.target as HTMLInputElement).files;
+    if (!files) return;
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.galleryImages.push({
+          galleryImageID:  0,
+          galleryEdoc:     e.target.result.split(',')[1],
+          galleryEdocPath: environment.imageUrl + 'Galleryimages',
+          galleryEdocExt:  file.name.split('.').pop() || '',
+          preview:         e.target.result,
+        });
+        this.markTouched('gallery');
+        this.syncFormFields();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
 
   removeGalleryImage(index: number): void {
     this.galleryImages.splice(index, 1);
+    this.markTouched('gallery');
     this.syncFormFields();
   }
 }

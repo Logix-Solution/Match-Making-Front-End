@@ -11,6 +11,14 @@ interface AppearanceProfileInterface {
   appearanceJson: string; // 3
 }
 
+interface AppearanceTouchedState {
+  height:                 boolean;
+  bodyType:               boolean;
+  skinTone:               boolean;
+  disability:             boolean;
+  disabilityDescription:  boolean;
+}
+
 @Component({
   selector: 'app-profile-appearance-info-input',
   templateUrl: './profile-appearance-info-input.component.html',
@@ -32,6 +40,15 @@ export class ProfileAppearanceInfoInputComponent implements OnInit {
   selectedSkinTone: any = '';
   selectedDisability: any = '';
   disabilityDescription: string = '';
+
+  // ─── Validation: touched state per field ───────────────────────────────────
+  touched: AppearanceTouchedState = {
+    height:                false,
+    bodyType:               false,
+    skinTone:               false,
+    disability:             false,
+    disabilityDescription:  false,
+  };
 
   // ─── Page Fields (API Payload Template) ───────────────────────────────────
   appearancePageFields: AppearanceProfileInterface = {
@@ -77,6 +94,56 @@ export class ProfileAppearanceInfoInputComponent implements OnInit {
     return activeItem?.subTypeTitle?.trim().toLowerCase() === 'yes';
   }
 
+  // ─── Touched Helpers ────────────────────────────────────────────────────
+  markTouched(field: keyof AppearanceTouchedState): void {
+    this.touched[field] = true;
+  }
+
+  private markAllTouched(): void {
+    (Object.keys(this.touched) as (keyof AppearanceTouchedState)[]).forEach(
+      (key) => (this.touched[key] = true),
+    );
+  }
+
+  // ─── Inline Error Getters (template-only, no toastr) ──────────────────────
+  get heightError(): string {
+    if (!this.touched.height) return '';
+    return this.selectedHeight ? '' : 'Height is required';
+  }
+
+  get bodyTypeError(): string {
+    if (!this.touched.bodyType) return '';
+    return this.selectedBodyType ? '' : 'Body type is required';
+  }
+
+  get skinToneError(): string {
+    if (!this.touched.skinTone) return '';
+    return this.selectedSkinTone ? '' : 'Skin tone is required';
+  }
+
+  get disabilityError(): string {
+    if (!this.touched.disability) return '';
+    return this.selectedDisability ? '' : 'Disability status is required';
+  }
+
+  get disabilityDescriptionError(): string {
+    if (!this.isDisabilityYes()) return '';
+    if (!this.touched.disabilityDescription) return '';
+    return this.disabilityDescription?.trim()
+      ? ''
+      : 'Please describe your disabilities';
+  }
+
+  private isFormValid(): boolean {
+    return (
+      !this.heightError &&
+      !this.bodyTypeError &&
+      !this.skinToneError &&
+      !this.disabilityError &&
+      !this.disabilityDescriptionError
+    );
+  }
+
   // ─── Synchronize Variables with Payload Arrays ────────────────────────────
   syncFormFields(): void {
     // Determine context value for description property
@@ -111,28 +178,10 @@ export class ProfileAppearanceInfoInputComponent implements OnInit {
 
   // ─── Save Implementation Method ───────────────────────────────────────────
   save(): void {
-    // ─── Frontend Validations ───────────────────────────────────────────────
-    if (!this.selectedHeight) {
-      this.toastr.warning('Please select your height');
-      return;
-    }
-    if (!this.selectedBodyType) {
-      this.toastr.warning('Please select your body type');
-      return;
-    }
-    if (!this.selectedSkinTone) {
-      this.toastr.warning('Please select your skin tone');
-      return;
-    }
-    if (!this.selectedDisability) {
-      this.toastr.warning('Please select your disability status');
-      return;
-    }
-    if (
-      this.isDisabilityYes() &&
-      (!this.disabilityDescription || this.disabilityDescription.trim() === '')
-    ) {
-      this.toastr.warning('Please describe your disabilities');
+    this.markAllTouched();
+
+    if (!this.isFormValid()) {
+      this.toastr.warning('Fill All Required Fields');
       return;
     }
 

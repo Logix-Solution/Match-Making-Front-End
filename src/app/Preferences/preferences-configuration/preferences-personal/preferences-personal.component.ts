@@ -13,6 +13,16 @@ interface PersonalPreferenceInterface {
   cityID: number; // 4
 }
 
+interface PersonalPreferenceTouchedState {
+  country:     boolean;
+  city:        boolean;
+  minAge:      boolean;
+  maxAge:      boolean;
+  nationality: boolean;
+  cast:        boolean;
+  ethnicity:   boolean;
+}
+
 @Component({
   selector: 'app-preferences-personal',
   templateUrl: './preferences-personal.component.html',
@@ -40,6 +50,17 @@ export class PreferencesPersonalComponent implements OnInit {
   selectedNationality: any = ''; // → personalPrefrence JSON only
   selectedCast: any = ''; // → personalPrefrence JSON only
   selectedEthnicity: any = ''; // → personalPrefrence JSON only
+
+  // ─── Validation: touched state per required field ──────────────────────────
+  touched: PersonalPreferenceTouchedState = {
+    country:     false,
+    city:        false,
+    minAge:      false,
+    maxAge:      false,
+    nationality: false,
+    cast:        false,
+    ethnicity:   false,
+  };
 
   // ─── Page Fields (API payload) ────────────────────────────────────────────
   pageFields: PersonalPreferenceInterface = {
@@ -84,8 +105,75 @@ export class PreferencesPersonalComponent implements OnInit {
   // ─── Country change → emit for city load ─────────────────────────────────
   onCountryChange(): void {
     this.selectedCity = '';
+    this.markTouched('country');
     this.countrySelected.emit(this.selectedCountry);
     this.syncFormFields();
+  }
+
+  // ─── Touched Helpers ────────────────────────────────────────────────────
+  markTouched(field: keyof PersonalPreferenceTouchedState): void {
+    this.touched[field] = true;
+  }
+
+  private markAllTouched(): void {
+    (
+      Object.keys(this.touched) as (keyof PersonalPreferenceTouchedState)[]
+    ).forEach((key) => (this.touched[key] = true));
+  }
+
+  // ─── Inline Error Getters (template-only, no toastr) ──────────────────────
+  get countryError(): string {
+    if (!this.touched.country) return '';
+    return this.selectedCountry ? '' : 'Preferred country is required';
+  }
+
+  get cityError(): string {
+    if (!this.touched.city) return '';
+    return this.selectedCity ? '' : 'Preferred city is required';
+  }
+
+  get minAgeError(): string {
+    if (!this.touched.minAge) return '';
+    return this.selectedMinAge ? '' : 'Preferred minimum age is required';
+  }
+
+  get maxAgeError(): string {
+    if (!this.touched.maxAge) return '';
+    if (!this.selectedMaxAge) return 'Preferred maximum age is required';
+    if (
+      this.selectedMinAge &&
+      Number(this.selectedMinAge) >= Number(this.selectedMaxAge)
+    ) {
+      return 'Max age must be greater than min age';
+    }
+    return '';
+  }
+
+  get nationalityError(): string {
+    if (!this.touched.nationality) return '';
+    return this.selectedNationality ? '' : 'Preferred nationality is required';
+  }
+
+  get castError(): string {
+    if (!this.touched.cast) return '';
+    return this.selectedCast ? '' : 'Preferred caste is required';
+  }
+
+  get ethnicityError(): string {
+    if (!this.touched.ethnicity) return '';
+    return this.selectedEthnicity ? '' : 'Preferred ethnicity is required';
+  }
+
+  private isFormValid(): boolean {
+    return (
+      !this.countryError &&
+      !this.cityError &&
+      !this.minAgeError &&
+      !this.maxAgeError &&
+      !this.nationalityError &&
+      !this.castError &&
+      !this.ethnicityError
+    );
   }
 
   // ─── Sync bound fields → formFields[] ────────────────────────────────────
@@ -116,25 +204,10 @@ export class PreferencesPersonalComponent implements OnInit {
 
   // ─── SAVE ─────────────────────────────────────────────────────────────────
   save(): void {
-    // ─── Manual validations ───────────────────────────────────────────────
-    if (!this.selectedCountry) {
-      this.toastr.warning('Please select preferred country');
-      return;
-    }
-    if (!this.selectedCity) {
-      this.toastr.warning('Please select preferred city');
-      return;
-    }
-    if (!this.selectedMinAge) {
-      this.toastr.warning('Please select preferred minimum age');
-      return;
-    }
-    if (!this.selectedMaxAge) {
-      this.toastr.warning('Please select preferred maximum age');
-      return;
-    }
-    if (Number(this.selectedMinAge) >= Number(this.selectedMaxAge)) {
-      this.toastr.warning('Minimum age must be less than maximum age');
+    this.markAllTouched();
+
+    if (!this.isFormValid()) {
+      this.toastr.warning('Fill All Required Fields');
       return;
     }
 
@@ -186,7 +259,6 @@ export class PreferencesPersonalComponent implements OnInit {
   }
 
   loadUserDetails(): void {
-    debugger;
     const userID = this.sharedGlobalService.getUserID();
 
     if (!userID) return;

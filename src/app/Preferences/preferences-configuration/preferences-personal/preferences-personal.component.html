@@ -1,143 +1,157 @@
 <div class="fh-5 fw-bold mt-3">Personal preference</div>
 
 <!-- Row 1: Country, City, Min Age, Max Age -->
-<div class="row g-2 align-items-end mt-4">
+<div class="row g-2 align-items-start mt-4">
 
   <!-- Preferred Country -->
   <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Preferred Country<span class="text-danger">&nbsp;*</span>
       </label>
       <select
         class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedCountry"
         (change)="onCountryChange()"
+        (blur)="markTouched('country')"
         style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Country</option>
         <option *ngFor="let item of countryList" [value]="item.country_id">
           {{ item.country_name }}
         </option>
       </select>
+      <div class="field-error">{{ countryError }}</div>
     </div>
   </div>
 
   <!-- Preferred City -->
   <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Preferred City<span class="text-danger">&nbsp;*</span>
       </label>
       <select
         class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedCity"
-        (change)="onFieldChange()"
+        (change)="onFieldChange(); markTouched('city')"
+        (blur)="markTouched('city')"
         style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select City</option>
         <option *ngFor="let item of cityList" [value]="item.city_id">
           {{ item.city_name }}
         </option>
       </select>
+      <div class="field-error">{{ cityError }}</div>
     </div>
   </div>
 
   <!-- Preferred Min Age (typeID=31) -->
   <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Preferred Min Age<span class="text-danger">&nbsp;*</span>
       </label>
       <select
         class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedMinAge"
-        (change)="onFieldChange()"
+        (change)="onFieldChange(); markTouched('minAge')"
+        (blur)="markTouched('minAge')"
         style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Min Age</option>
         <option *ngFor="let item of minAgeList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
         </option>
       </select>
+      <div class="field-error">{{ minAgeError }}</div>
     </div>
   </div>
 
   <!-- Preferred Max Age (typeID=32) -->
   <div class="col-md-3">
     <div class="form-group">
-      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Preferred Max Age<span class="text-danger">&nbsp;*</span>
       </label>
       <select
         class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedMaxAge"
-        (change)="onFieldChange()"
+        (change)="onFieldChange(); markTouched('maxAge')"
+        (blur)="markTouched('maxAge')"
         style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select Max Age</option>
         <option *ngFor="let item of maxAgeList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
         </option>
       </select>
+      <div class="field-error">{{ maxAgeError }}</div>
     </div>
   </div>
 
 </div>
 
 <!-- Row 2: Nationality, Caste, Ethnicity -->
-<div class="row g-2 align-items-end mt-4">
+<div class="row g-2 align-items-start mt-4">
 
   <!-- Preferred Nationality (→ personalPrefrence JSON only) -->
   <div class="col-md-4">
     <div class="form-group">
-      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
-        Preferred Nationality
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
+        Preferred Nationality<span class="text-danger">&nbsp;*</span>
       </label>
       <select
         class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedNationality"
-        (change)="onFieldChange()"
+        (change)="onFieldChange(); markTouched('nationality')"
+        (blur)="markTouched('nationality')"
         style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select a nationality</option>
         <option *ngFor="let item of nationalityList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
         </option>
       </select>
+      <div class="field-error">{{ nationalityError }}</div>
     </div>
   </div>
 
   <!-- Preferred Caste (→ personalPrefrence JSON only) -->
   <div class="col-md-4">
     <div class="form-group">
-      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
-        Preferred Caste
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
+        Preferred Caste<span class="text-danger">&nbsp;*</span>
       </label>
       <select
         class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedCast"
-        (change)="onFieldChange()"
+        (change)="onFieldChange(); markTouched('cast')"
+        (blur)="markTouched('cast')"
         style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select a caste</option>
         <option *ngFor="let item of castList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
         </option>
       </select>
+      <div class="field-error">{{ castError }}</div>
     </div>
   </div>
 
   <!-- Preferred Ethnicity (→ personalPrefrence JSON only) -->
   <div class="col-md-4">
     <div class="form-group">
-      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
-        Preferred Ethnicity
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
+        Preferred Ethnicity<span class="text-danger">&nbsp;*</span>
       </label>
       <select
         class="form-select border-0 px-3 rounded-pill"
         [(ngModel)]="selectedEthnicity"
-        (change)="onFieldChange()"
+        (change)="onFieldChange(); markTouched('ethnicity')"
+        (blur)="markTouched('ethnicity')"
         style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select an ethnicity</option>
         <option *ngFor="let item of ethnicityList" [value]="item.subTypeID">
           {{ item.subTypeTitle }}
         </option>
       </select>
+      <div class="field-error">{{ ethnicityError }}</div>
     </div>
   </div>
 

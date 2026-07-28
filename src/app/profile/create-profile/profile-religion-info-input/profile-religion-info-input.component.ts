@@ -11,6 +11,12 @@ interface ReligionProfileInterface {
   religionJson: string; // 2 -> [religionID, sectID, religionImportanceID]
 }
 
+interface ReligionTouchedState {
+  religion:           boolean;
+  sect:               boolean;
+  religionImportance: boolean;
+}
+
 @Component({
   selector: 'app-profile-religion-info-input',
   templateUrl: './profile-religion-info-input.component.html',
@@ -29,6 +35,13 @@ export class ProfileReligionInfoInputComponent implements OnInit {
   selectedReligion: any = '';
   selectedSect: any = '';
   selectedReligionImportance: any = '';
+
+  // ─── Validation: touched state per field ───────────────────────────────────
+  touched: ReligionTouchedState = {
+    religion:           false,
+    sect:               false,
+    religionImportance: false,
+  };
 
   // ─── Page Fields (API payload) ────────────────────────────────────────────
   religionPageFields: ReligionProfileInterface = {
@@ -60,6 +73,43 @@ export class ProfileReligionInfoInputComponent implements OnInit {
     this.syncFormFields();
   }
 
+  // ─── Touched Helpers ────────────────────────────────────────────────────
+  markTouched(field: keyof ReligionTouchedState): void {
+    this.touched[field] = true;
+  }
+
+  private markAllTouched(): void {
+    (Object.keys(this.touched) as (keyof ReligionTouchedState)[]).forEach(
+      (key) => (this.touched[key] = true),
+    );
+  }
+
+  // ─── Inline Error Getters (template-only, no toastr) ──────────────────────
+  get religionError(): string {
+    if (!this.touched.religion) return '';
+    return this.selectedReligion ? '' : 'Religion is required';
+  }
+
+  get sectError(): string {
+    if (!this.touched.sect) return '';
+    return this.selectedSect ? '' : 'Sect is required';
+  }
+
+  get religionImportanceError(): string {
+    if (!this.touched.religionImportance) return '';
+    return this.selectedReligionImportance
+      ? ''
+      : 'Religious importance is required';
+  }
+
+  private isFormValid(): boolean {
+    return (
+      !this.religionError &&
+      !this.sectError &&
+      !this.religionImportanceError
+    );
+  }
+
   // ─── Sync bound fields → formFields[] ────────────────────────────────────
   syncFormFields(): void {
     // Collect dropdown values and filter empty/null choices out
@@ -84,17 +134,10 @@ export class ProfileReligionInfoInputComponent implements OnInit {
 
   // ─── SAVE ─────────────────────────────────────────────────────────────────
   save(): void {
-    // ─── Manual validations ─────────────────────────────────────────────────
-    if (!this.selectedReligion) {
-      this.toastr.warning('Please select your religion');
-      return;
-    }
-    if (!this.selectedSect) {
-      this.toastr.warning('Please select your sect');
-      return;
-    }
-    if (!this.selectedReligionImportance) {
-      this.toastr.warning('Please prioritize your religious importance');
+    this.markAllTouched();
+
+    if (!this.isFormValid()) {
+      this.toastr.warning('Fill All Required Fields');
       return;
     }
 
