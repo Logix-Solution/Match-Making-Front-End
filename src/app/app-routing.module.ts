@@ -37,6 +37,7 @@ import { PrivacyPolicyComponent } from './home-page/privacy-policy/privacy-polic
 import { CookiePolicyComponent } from './home-page/cookie-policy/cookie-policy.component';
 import { ConsultationComponent } from './home-page/consultation/consultation.component';
 import { RequestSubmitedComponent } from './Preferences/request-submited/request-submited.component';
+import { AppointmentsComponent } from './Admin/appointments/appointments.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -180,7 +181,10 @@ const routes: Routes = [
      path: 'lockProfile',
     component: LockProfilesComponent,
   },
-  
+  {
+     path: 'appointments',
+    component: AppointmentsComponent,
+  },
   /////////////////////Account setting/////////////
  {
      path: 'Account-Setting',

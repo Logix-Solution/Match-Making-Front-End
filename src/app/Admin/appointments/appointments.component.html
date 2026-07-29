@@ -1,0 +1,107 @@
+
+<div class="appointments-page p-4 h-100  no-scroll   ">
+    <!-- <div class="flex-grow-1 scroll-verticle style-1"></div> -->
+
+  <!-- ───── Header ───── -->
+  <div class="page-header">
+    <h1 class="ft-7 m-0">Appointments</h1>
+    <p class="mt-1 mb-0" style="color: #6c727a">Here are the clients who wants to connect</p>
+  </div>
+
+  <!-- ───── Tabs ───── -->
+  <div class="tabs-row">
+    <button
+      class="tab-pill"
+      [class.active]="activeTab === 'appointments'"
+      (click)="setTab('appointments')"
+    >Appointments</button>
+    <button
+      class="tab-pill"
+      [class.active]="activeTab === 'completed'"
+      (click)="setTab('completed')"
+    >Completed</button>
+    <button
+      class="tab-pill"
+      [class.active]="activeTab === 'expired'"
+      (click)="setTab('expired')"
+    >Expired</button>
+  </div>
+
+  <!-- ───── Empty state ───── -->
+  <div class="empty-state" *ngIf="!isLoading && visibleList.length === 0">
+    No clients here yet.
+  </div>
+
+  <!-- ───── Cards grid ───── -->
+  <div class="cards-grid flex-grow-1 scroll-verticle style-1" *ngIf="!isLoading && visibleList.length > 0">
+    <div class="appt-card" *ngFor="let item of visibleList">
+
+      <div class="card-top">
+        <h3>{{ fullName(item) }}</h3>
+        <button class="eye-btn" (click)="openDetail(item)" aria-label="View details">
+          <i class="bi bi-eye"></i>
+        </button>
+      </div>
+
+      <div class="card-row">
+        <i class="bi bi-envelope"></i> <span>{{ item.email }}</span>
+      </div>
+
+      <div class="card-row two-col">
+        <span><i class="bi bi-telephone"></i> {{ item.countryCode }} {{ item.phoneNo }}</span>
+        <span><i class="bi bi-globe"></i> {{ item.countryName }}</span>
+      </div>
+
+      <div class="card-row two-col">
+        <span><i class="bi bi-calendar3"></i> {{ displayDate(item) }}</span>
+        <span class="time-pill"><i class="bi bi-clock-fill"></i> {{ item.timeSlot }}</span>
+      </div>
+
+      <!-- Appointments tab: action button -->
+      <button
+        class="action-btn mark-done"
+        *ngIf="activeTab === 'appointments'"
+        [disabled]="isUpdating(item)"
+        (click)="markDone(item)"
+      >
+        <span *ngIf="!isUpdating(item)"><i class="bi bi-check-circle"></i> Mark Done</span>
+        <span *ngIf="isUpdating(item)" class="d-flex align-items-center justify-content-center gap-2">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Updating...
+        </span>
+      </button>
+
+      <!-- Completed tab: disabled label button -->
+      <button class="action-btn completed-label" *ngIf="activeTab === 'completed'" disabled>
+        <i class="bi bi-check-circle"></i> Completed
+      </button>
+
+      <!-- Expired tab: no button -->
+    </div>
+  </div>
+
+  <!-- ───── Detail Modal ───── -->
+  <div class="detail-modal-overlay" *ngIf="showDetailModal" (click)="closeDetail()">
+    <div class="detail-modal" *ngIf="selectedAppointment as sel" (click)="$event.stopPropagation()">
+      <button class="detail-close" (click)="closeDetail()" aria-label="Close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+      <div class="detail-head">
+        <h3>{{ fullName(sel) }}</h3>
+        <span class="detail-pill"><i class="bi bi-calendar3"></i> {{ displayDate(sel) }}</span>
+        <span class="detail-pill accent"><i class="bi bi-clock-fill"></i> {{ sel.timeSlot }}</span>
+      </div>
+
+      <div class="detail-grid">
+        <span><i class="bi bi-envelope"></i> {{ sel.email }}</span>
+        <span><i class="bi bi-telephone"></i> {{ sel.countryCode }} {{ sel.phoneNo }}</span>
+        <span><i class="bi bi-translate"></i> {{ sel.languageName }}</span>
+        <span><i class="bi bi-globe"></i> {{ sel.countryName }}</span>
+      </div>
+
+      <p class="detail-desc">{{ sel.topicsTodiscuss || 'Description will be displayed here.' }}</p>
+    </div>
+  </div>
+
+</div>

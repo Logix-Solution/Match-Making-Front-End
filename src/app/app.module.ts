@@ -79,6 +79,7 @@ import { CookiePolicyComponent } from './home-page/cookie-policy/cookie-policy.c
 import { ConsultationComponent } from './home-page/consultation/consultation.component';
 import { RequestSubmitedComponent } from './Preferences/request-submited/request-submited.component';
 import { OneStepAwayComponent } from './home-page/one-step-away/one-step-away.component';
+import { AppointmentsComponent } from './Admin/appointments/appointments.component';
 
 
 @NgModule({
@@ -147,6 +148,7 @@ import { OneStepAwayComponent } from './home-page/one-step-away/one-step-away.co
     ConsultationComponent,
     RequestSubmitedComponent,
     OneStepAwayComponent,
+    AppointmentsComponent,
 
   ],
   imports: [

@@ -203,7 +203,7 @@ export class RegisterationFeeComponent implements OnInit {
           const response = Array.isArray(res) ? res[0] : res;
           if (response?.includes('Success')) {
             this.valid.apiInfoResponse('Profile Registered Successfully');
-            this.router.navigate(['/user-Pricing-Plans']);
+            this.navigateAfterRegistration();
           } else {
             this.valid.apiErrorResponse(response);
           }
@@ -215,5 +215,28 @@ export class RegisterationFeeComponent implements OnInit {
       });
     };
     reader.readAsDataURL(this.selectedFile);
+  }
+
+  // ── After a successful registration save, check current status and route accordingly ──
+  private navigateAfterRegistration(): void {
+    const userID = this.sharedGlobalService.getUserID();
+
+    this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${userID}`, {}).subscribe({
+      next: (res: any) => {
+        const user = Array.isArray(res) ? res[0] : res;
+        const statusTitle = user?.statusTitle;
+
+        if (statusTitle === 'Pending') {
+          this.router.navigate(['/reguestSubmited']);
+        } else if (statusTitle === 'Approved') {
+          this.router.navigate(['/user-Pricing-Plans']);
+        }
+      },
+      error: (err) => {
+        console.error('getUserDetails (post-save status check) error:', err);
+        // Fall back to the original destination if the status check fails
+        this.router.navigate(['/user-Pricing-Plans']);
+      },
+    });
   }
 }

@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { forkJoin } from 'rxjs';
+import { SharedDataService } from '../../../shared/services/shared-data.service';
+import { SharedGlobalService } from '../../../shared/services/shared-global.service';
+
 
 interface CalendarDay {
   date: Date;
@@ -10,10 +14,35 @@ interface CalendarDay {
   isSelected: boolean;
 }
 
-interface CountryCode {
-  code: string;
-  label: string;
+interface Country {
+  country_id: number;
+  country_name: string;
+  country_code: string;
+  nationality: string;
+  currencyTypeID: number;
 }
+
+interface Language {
+  languageID: number;
+  languageName: string;
+}
+
+interface TimeSlot {
+  timeslotID: number;
+  timeSlot: string;
+}
+
+interface FieldErrors {
+  firstName: boolean;
+  surname: boolean;
+  email: boolean;
+  phone: boolean;
+  country: boolean;
+  language: boolean;
+  specialRequests: boolean;
+  slot: boolean;
+}
+
 @Component({
   selector: 'app-consultation',
   templateUrl: './consultation.component.html',
@@ -26,45 +55,94 @@ export class ConsultationComponent implements OnInit {
   calendarWeeks: CalendarDay[][] = [];
   selectedDate: Date = new Date();
 
-  // ─── Time slots ───────────────────────────────────────────────────
-  timeSlots: string[] = [
-    '09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM', '11:00 AM',
-    '11:30 AM', '12:00 PM', '12:30 PM', '01:00 PM', '01:30 PM',
-    '02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM', '04:00 PM',
-  ];
-  selectedSlot: string = '09:30 AM';
+  // ─── API-driven lists ───────────────────────────────────────────────
+  countries: Country[] = [];
+  languages: Language[] = [];
+  timeSlots: TimeSlot[] = [];
+
+  // ─── Time slot selection ────────────────────────────────────────────
+  selectedSlotId: number | null = null;
+  selectedSlotLabel: string = '';
 
   // ─── Form fields ──────────────────────────────────────────────────
   firstName = '';
   surname = '';
   email = '';
   phone = '';
-  selectedCountryCode = '+92';
-  country = '';
-  consultationLanguage = 'English';
+  selectedCountryCode = '+92';               // phone dial code
+  selectedCountryId: number | null = null;   // Country select -> countryID
+  consultationLanguageId: number | null = null;
   specialRequests = '';
 
-  countryCodes: CountryCode[] = [
-    { code: '+92', label: 'PK +92' },
-    { code: '+1', label: 'US +1' },
-    { code: '+44', label: 'UK +44' },
-    { code: '+971', label: 'UAE +971' },
-    { code: '+966', label: 'KSA +966' },
-  ];
-
-  countryList: string[] = [
-    'Pakistan', 'United States', 'United Kingdom',
-    'United Arab Emirates', 'Saudi Arabia', 'Canada', 'Germany',
-  ];
-
-  languageList: string[] = ['English', 'Urdu', 'Arabic'];
-
   isSubmitting = false;
+  isLoadingLookups = false;
 
-  constructor(private toastr: ToastrService) {}
+  // ─── Inline field validation state ─────────────────────────────────
+  fieldErrors: FieldErrors = {
+    firstName: false,
+    surname: false,
+    email: false,
+    phone: false,
+    country: false,
+    language: false,
+    specialRequests: false,
+    slot: false,
+  };
+
+  // ─── OTP Verification Modal ────────────────────────────────────────
+  showOtpModal = false;
+  otpDigits: string[] = ['', '', '', ''];
+  readonly OTP_LENGTH = 4;
+  isSendingOtp = false;
+  isVerifyingOtp = false;
+  otpErrorMessage = '';
+  private pendingPayload: any = null;
+
+  constructor(
+    private toastr: ToastrService,
+    private sharedDataService: SharedDataService,
+    private sharedGlobalService: SharedGlobalService
+  ) {}
 
   ngOnInit(): void {
     this.buildCalendar(this.currentMonthDate);
+    this.loadLookups();
+  }
+
+  // ─── Load dropdown data ─────────────────────────────────────────────
+  private loadLookups(): void {
+    this.isLoadingLookups = true;
+
+    forkJoin({
+      countries: this.sharedDataService.getHttp('cmis-api/getCountry'),
+      languages: this.sharedDataService.getHttp('user-api/getLanguage'),
+      timeSlots: this.sharedDataService.getHttp('user-api/getTimeSlot'),
+    }).subscribe({
+      next: (res: any) => {
+        this.countries = res.countries || [];
+        this.languages = res.languages || [];
+        this.timeSlots = res.timeSlots || [];
+
+        // sensible defaults so the form isn't empty on first paint
+        // if (this.countries.length) {
+        //   this.selectedCountryCode = this.countries[0].country_code;
+        //   this.selectedCountryId = this.countries[0].country_id;
+        // }
+        // if (this.languages.length) {
+        //   this.consultationLanguageId = this.languages[0].languageID;
+        // }
+        // if (this.timeSlots.length) {
+        //   this.selectedSlotId = this.timeSlots[0].timeslotID;
+        //   this.selectedSlotLabel = this.timeSlots[0].timeSlot;
+        // }
+
+        this.isLoadingLookups = false;
+      },
+      error: () => {
+        this.isLoadingLookups = false;
+        this.toastr.error('Could not load consultation options, please refresh');
+      }
+    });
   }
 
   // ─── Calendar generation ──────────────────────────────────────────
@@ -116,6 +194,14 @@ export class ConsultationComponent implements OnInit {
     );
   }
 
+  // Local YYYY-MM-DD (avoids toISOString() UTC day-shift bug)
+  private formatDateLocal(date: Date): string {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
   get monthLabel(): string {
     return this.currentMonthDate.toLocaleDateString('en-US', {
       month: 'long',
@@ -151,80 +237,227 @@ export class ConsultationComponent implements OnInit {
     this.buildCalendar(this.currentMonthDate);
   }
 
-  selectSlot(slot: string): void {
-    this.selectedSlot = slot;
+  selectSlot(slot: TimeSlot): void {
+    this.selectedSlotId = slot.timeslotID;
+    this.selectedSlotLabel = slot.timeSlot;
   }
 
-  // ─── Submit ───────────────────────────────────────────────────────
-  confirmAppointment(): void {
-    if (!this.firstName.trim()) {
-      this.toastr.warning('Please enter your first name');
-      return;
-    }
-    if (!this.surname.trim()) {
-      this.toastr.warning('Please enter your surname');
-      return;
-    }
-    if (!this.email.trim()) {
-      this.toastr.warning('Please enter your email address');
-      return;
-    }
-    if (!this.phone.trim()) {
-      this.toastr.warning('Please enter your phone number');
-      return;
-    }
-    if (!this.country) {
-      this.toastr.warning('Please select your country');
-      return;
-    }
-    if (!this.consultationLanguage) {
-      this.toastr.warning('Please select a consultation language');
-      return;
-    }
-    if (!this.specialRequests.trim()) {
-      this.toastr.warning('Please share what you\'d like to discuss');
-      return;
-    }
-    if (!this.selectedSlot) {
-      this.toastr.warning('Please select a time slot');
-      return;
-    }
+  isTodayLike(day: CalendarDay): boolean {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    return this.isSameDate(day.date, yesterday);
+  }
 
-    const payload = {
-      date: this.selectedDate.toISOString().split('T')[0],
-      timeSlot: this.selectedSlot,
+  // ─── Step 1: Validate + stage payload + send OTP ───────────────────
+  confirmAppointment(): void {
+    console.log('confirmAppointment clicked', {
       firstName: this.firstName,
       surname: this.surname,
       email: this.email,
-      phoneCountryCode: this.selectedCountryCode,
       phone: this.phone,
-      country: this.country,
-      consultationLanguage: this.consultationLanguage,
+      selectedCountryId: this.selectedCountryId,
+      consultationLanguageId: this.consultationLanguageId,
       specialRequests: this.specialRequests,
+      selectedSlotId: this.selectedSlotId,
+    });
+    this.fieldErrors = {
+      firstName: !this.firstName.trim(),
+      surname: !this.surname.trim(),
+      email: !this.email.trim(),
+      phone: !this.phone.trim(),
+      country: !this.selectedCountryId,
+      language: !this.consultationLanguageId,
+      specialRequests: !this.specialRequests.trim(),
+      slot: !this.selectedSlotId,
     };
 
-    console.log('Consultation booking payload:', payload);
+    const hasError = Object.values(this.fieldErrors).some(v => v);
+    if (hasError) {
+      this.toastr.warning('Please fill all fields');
+      return;
+    }
 
-    // TODO: wire to real endpoint once provided, e.g.:
-    // this.isSubmitting = true;
-    // this.dataService.postDirect('core-api/Consultation/bookAppointment', payload).subscribe({
-    //   next: (res: any) => {
-    //     this.isSubmitting = false;
-    //     this.toastr.success('Appointment confirmed successfully');
-    //   },
-    //   error: (err: any) => {
-    //     this.isSubmitting = false;
-    //     this.toastr.error('Something went wrong, please try again');
-    //   },
-    // });
-
-    this.toastr.success('Appointment confirmed successfully');
+    this.pendingPayload = {
+      consultationID: 0,
+      date: this.formatDateLocal(this.selectedDate),
+      firstName: this.firstName,
+      surName: this.surname,
+      email: this.email,
+      phoneNo: this.phone,
+      countryCode: this.selectedCountryCode,
+      topicToDiscuss: this.specialRequests,
+      countryID: this.selectedCountryId,
+      languageID: this.consultationLanguageId,
+      timeslotID: this.selectedSlotId,
+      flag: 0,
+      userID: this.sharedGlobalService.getUserID() || 0,
+      spType: 'insert',
+    };
+console.log(this.pendingPayload,'sending object');
+    // Open the modal right away — don't gate it on the network call.
+    this.openOtpModal();
+    this.requestOtp();
   }
-  isTodayLike(day: CalendarDay): boolean {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  return this.isSameDate(day.date, yesterday);
-}
+
+  // ─── Step 2: Send OTP (runs while modal is already open) ───────────
+  private requestOtp(): void {
+    this.isSendingOtp = true;
+    this.sharedDataService.sendOTP(this.email).subscribe({
+      next: (res: any) => {
+        console.log('sendOTP response:', res);
+        this.isSendingOtp = false;
+      },
+      error: (err: any) => {
+        console.error('sendOTP error:', err);
+        this.isSendingOtp = false;
+        this.toastr.error('Could not send verification code, please try again');
+      }
+    });
+  }
+
+  private openOtpModal(): void {
+    this.otpDigits = ['', '', '', ''];
+    this.otpErrorMessage = '';
+    this.showOtpModal = true;
+    setTimeout(() => {
+      const first = document.getElementById('otp-box-0') as HTMLInputElement;
+      if (first) first.focus();
+    });
+  }
+
+  trackByIndex(index: number): number {
+    return index;
+  }
+
+  closeOtpModal(): void {
+    this.showOtpModal = false;
+    this.pendingPayload = null;
+  }
+
+  // ─── OTP box handling ────────────────────────────────────────────────
+  onOtpInput(event: any, index: number): void {
+    const input = event.target as HTMLInputElement;
+    const cleaned = input.value.replace(/\D/g, '').slice(-1); // keep only the last digit typed
+    input.value = cleaned;
+    this.otpDigits[index] = cleaned;
+    this.otpErrorMessage = '';
+
+    if (cleaned && index < this.OTP_LENGTH - 1) {
+      const next = document.getElementById(`otp-box-${index + 1}`) as HTMLInputElement;
+      if (next) next.focus();
+    }
+
+    if (index === this.OTP_LENGTH - 1 && cleaned && this.otpDigits.every(d => d)) {
+      this.verifyOtpAndSave();
+    }
+  }
+
+  onOtpKeyDown(event: KeyboardEvent, index: number): void {
+    const input = event.target as HTMLInputElement;
+    if (event.key === 'Backspace' && !input.value && index > 0) {
+      const prev = document.getElementById(`otp-box-${index - 1}`) as HTMLInputElement;
+      if (prev) prev.focus();
+    }
+  }
+
+  resendOtp(): void {
+    if (this.isSendingOtp) return;
+    this.otpDigits = ['', '', '', ''];
+    this.otpErrorMessage = '';
+    this.isSendingOtp = true;
+    this.sharedDataService.sendOTP(this.email).subscribe({
+      next: () => {
+        this.isSendingOtp = false;
+        this.toastr.success('Verification code resent');
+        const first = document.getElementById('otp-box-0') as HTMLInputElement;
+        if (first) first.focus();
+      },
+      error: () => {
+        this.isSendingOtp = false;
+        this.toastr.error('Failed to resend code, please try again');
+      }
+    });
+  }
+
+  // ─── Step 3: Verify OTP, then save ──────────────────────────────────
+  verifyOtpAndSave(): void {
+    const otp = this.otpDigits.join('');
+    if (otp.length !== this.OTP_LENGTH) {
+      this.otpErrorMessage = `Please enter the ${this.OTP_LENGTH}-digit code`;
+      return;
+    }
+
+    this.isVerifyingOtp = true;
+    this.otpErrorMessage = '';
+
+    this.sharedDataService.verifyOTP(otp).subscribe({
+      next: (response: any) => {
+        this.isVerifyingOtp = false;
+        if (response && response.length > 0) {
+          this.saveConsultation();
+        } else {
+          this.otpErrorMessage = 'Invalid code, please try again';
+          this.otpDigits = ['', '', '', ''];
+        }
+      },
+      error: (err: any) => {
+        this.isVerifyingOtp = false;
+        this.otpErrorMessage = (err?.status === 400 || err?.status === 404)
+          ? 'Invalid or expired code'
+          : 'Failed to verify code, please try again';
+        this.otpDigits = ['', '', '', ''];
+      }
+    });
+  }
+
+  // ─── Step 4: Save consultation ──────────────────────────────────────
+  private saveConsultation(): void {
+    if (!this.pendingPayload) return;
+    this.isSubmitting = true;
+
+    this.sharedDataService.postDirect('user-api/saveUserConsultation', this.pendingPayload).subscribe({
+      next: () => {
+        this.isSubmitting = false;
+        this.showOtpModal = false;
+        this.pendingPayload = null;
+        this.toastr.success('Appointment confirmed successfully');
+        this.resetForm();
+      },
+      error: () => {
+        this.isSubmitting = false;
+        this.toastr.error('Something went wrong, please try again');
+      }
+    });
+  }
+
+  // ─── Reset form back to defaults after a successful booking ─────────
+  private resetForm(): void {
+    this.firstName = '';
+    this.surname = '';
+    this.email = '';
+    this.phone = '';
+    this.specialRequests = '';
+    this.fieldErrors = {
+      firstName: false,
+      surname: false,
+      email: false,
+      phone: false,
+      country: false,
+      language: false,
+      specialRequests: false,
+      slot: false,
+    };
+
+    this.selectedCountryCode = this.countries.length ? this.countries[0].country_code : '+92';
+    this.selectedCountryId = this.countries.length ? this.countries[0].country_id : null;
+    this.consultationLanguageId = this.languages.length ? this.languages[0].languageID : null;
+    this.selectedSlotId = this.timeSlots.length ? this.timeSlots[0].timeslotID : null;
+    this.selectedSlotLabel = this.timeSlots.length ? this.timeSlots[0].timeSlot : '';
+
+    this.selectedDate = new Date();
+    this.currentMonthDate = new Date();
+    this.buildCalendar(this.currentMonthDate);
+  }
 }
