@@ -9,11 +9,19 @@ import {
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { SharedGlobalService } from '../services/shared-global.service';
+import { SharedAuthService } from '../services/shared-auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor(private router: Router) {}
+  private isHandlingExpiry = false;
+
+  constructor(
+    private router: Router,
+    private global: SharedGlobalService,
+    private authService: SharedAuthService,
+  ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
@@ -34,10 +42,22 @@ export class AuthInterceptor implements HttpInterceptor {
         () => {},
         (err: any) => {
           if (err instanceof HttpErrorResponse && err.status === 401) {
-            this.router.navigate(['/login']);
+            this.handleSessionExpired();
           }
         }
       )
     );
+  }
+
+  private handleSessionExpired(): void {
+    if (this.isHandlingExpiry) return;
+    this.isHandlingExpiry = true;
+
+    this.global.clearSession();
+    this.authService.logout();
+
+    this.router.navigate(['/login']).then(() => {
+      this.isHandlingExpiry = false;
+    });
   }
 }

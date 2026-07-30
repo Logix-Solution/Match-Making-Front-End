@@ -38,6 +38,7 @@ import { CookiePolicyComponent } from './home-page/cookie-policy/cookie-policy.c
 import { ConsultationComponent } from './home-page/consultation/consultation.component';
 import { RequestSubmitedComponent } from './Preferences/request-submited/request-submited.component';
 import { AppointmentsComponent } from './Admin/appointments/appointments.component';
+import { AuthGuard } from '../shared/services/auth.guard';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -139,51 +140,62 @@ const routes: Routes = [
  {
     path: 'adminDashboard',
     component: AdminDashboardComponent,
+    canActivate: [AuthGuard],
   },
 
    {
     path: 'adminRequestManagement',
     component: AdminRequestManagementComponent,
+    canActivate: [AuthGuard],
   },
   
    {
     path: 'adminUserManagement',
     component: AdminUserManagementComponent,
+    canActivate: [AuthGuard],
   },
     {
     path: 'adminServicesRequests',
     component: AdminServicesRequestsComponent,
+    canActivate: [AuthGuard],
   },
 
      {
     path: 'adminEventsGallery',
     component: AdminEventGalleryComponent,
+    canActivate: [AuthGuard],
   },
       {
     path: 'adminMatchComparison',
     component: AdminMatchComparisonComponent,
+    canActivate: [AuthGuard],
   },
 {
      path: 'adminbestMatch',
     component: AdminBestMatchComponent,
+    canActivate: [AuthGuard],
   },
 
   {
      path: 'testimonials',
     component: TestimonialsComponent,
+    canActivate: [AuthGuard],
   },
 
    {
      path: 'pricingConfig',
     component: PricingPlanConfigurationComponent,
+    canActivate: [AuthGuard],
   },
     {
      path: 'lockProfile',
     component: LockProfilesComponent,
+    canActivate: [AuthGuard],
   },
   {
      path: 'appointments',
     component: AppointmentsComponent,
+    canActivate: [AuthGuard],
   },
   /////////////////////Account setting/////////////
  {

@@ -179,6 +179,8 @@ export class LoginComponent implements OnInit {
             this.isLoading = false;
             this.valid.apiSuccessResponse('Login Successful!');
 
+            this.global.saveUserSession(data);
+
             const roleId = this.global.getRoleId();
             this.getMenu(roleId);
 

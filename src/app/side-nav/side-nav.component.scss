@@ -1,12 +1,12 @@
 // ─── Menu Items ───────────────────────────────────────
 .menu-item {
   color: #444;
-  font-size: 14px;
+  font-size: 12px !important;
   transition: background 0.2s, color 0.2s;
   cursor: pointer;
 
   .menu-icon {
-    font-size: 16px;
+    font-size: 12px;
     width: 20px;
     text-align: center;
     color: #666;
@@ -15,7 +15,7 @@
 
   .menu-label {
     color: #333;
-    font-size: 14px;
+    font-size: 12px;
     transition: color 0.2s;
   }
 
