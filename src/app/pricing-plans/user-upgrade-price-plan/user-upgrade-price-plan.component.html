@@ -26,6 +26,18 @@
 
           <h3 class="card-inner-title text-uppercase mb-4">Bank Transfer Details</h3>
 
+            <!-- Bank Selection Dropdown -->
+            <div class="mb-3">
+              <label class="form-label text-uppercase">Select Bank Account</label>
+              <select class="form-select bank-select rounded-3 p-3"
+                      [(ngModel)]="selectedBankDetailID"
+                      (ngModelChange)="onBankSelect($event)">
+                <option *ngFor="let bank of bankDetailsList" [ngValue]="bank.bankDetailID">
+                  {{ bank.bankName }}
+                </option>
+              </select>
+            </div>
+
             <!-- Account Holder -->
             <div class="mb-3">
               <label class="form-label text-uppercase">Account Holder</label>
@@ -66,7 +78,7 @@
             </div>
 
             <!-- Reference No + Paid Amount — side by side inside the card -->
-            <div class="row g-3 mb-4">
+            <div class="row g-3 mb-1">
               <div class="col-7">
                 <label class="form-label text-uppercase">Reference No#</label>
                 <div class="display-data-field d-flex align-items-center justify-content-between p-3 rounded-3">
@@ -81,6 +93,9 @@
                     <i class="bi bi-copy"></i>
                   </button>
                 </div>
+                <small class="field-error" *ngIf="formSubmitted && !referenceNumber">
+                  Reference number is required
+                </small>
               </div>
               <div class="col-5">
                 <label class="form-label text-uppercase">Paid Amount</label>
@@ -89,10 +104,18 @@
                          class="data-text border-0 bg-transparent w-100 outline-none"
                          placeholder="---------"
                          [(ngModel)]="paidAmount"
+                         (ngModelChange)="onPaidAmountChange($event)"
                          style="outline:none;" />
                 </div>
+                <small class="field-error" *ngIf="formSubmitted && !paidAmount">
+                  Paid amount is required
+                </small>
+                <small class="field-error" *ngIf="paidAmountError">
+                  {{ paidAmountError }}
+                </small>
               </div>
             </div>
+            <div class="mb-3"></div>
 
             <!-- Info Alert -->
             <div class="info-alert-box d-flex align-items-start gap-3 p-3 rounded-3 mt-auto">
@@ -117,6 +140,7 @@
               </p>
 
               <div class="dropzone-area rounded-4 p-4 text-center d-flex flex-column align-items-center justify-content-center"
+                   [class.has-preview]="isImageFile && filePreviewUrl"
                    (click)="fileInput.click()"
                    (dragover)="$event.preventDefault()"
                    (drop)="onFileDropped($event)">
@@ -124,17 +148,42 @@
                        accept="image/png, image/jpeg, application/pdf"
                        (change)="onFileSelected($event)" />
 
-                <div class="upload-icon-wrap mb-3">
-                  <i class="bi bi-upload fs-4 text-muted"></i>
+                <!-- No file selected yet -->
+                <ng-container *ngIf="!selectedFile">
+                  <div class="upload-icon-wrap mb-3">
+                    <i class="bi bi-upload fs-4 text-muted"></i>
+                  </div>
+                  <h3 class="upload-main-text mb-1">Drop your screenshot here</h3>
+                  <p class="upload-sub-text text-muted mb-0">or click to browse · PNG, JPG, PDF</p>
+                </ng-container>
+
+                <!-- Image preview -->
+                <div class="image-preview-box" *ngIf="selectedFile && isImageFile && filePreviewUrl">
+                  <button type="button" class="remove-file-btn" (click)="removeSelectedFile($event)">
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                  <img [src]="filePreviewUrl" alt="Payment screenshot preview" class="preview-img" />
+                  <p class="upload-sub-text text-muted mt-2 mb-0 text-truncate w-100">
+                    <i class="bi bi-file-earmark-check-fill text-success me-1"></i>{{ selectedFile.name }}
+                  </p>
                 </div>
 
-                <h3 class="upload-main-text mb-1" *ngIf="!selectedFile">Drop your screenshot here</h3>
-                <p class="upload-sub-text text-muted mb-0" *ngIf="!selectedFile">or click to browse · PNG, JPG, PDF</p>
-
-                <h3 class="upload-main-text mb-1 text-success text-truncate w-100 p-2" *ngIf="selectedFile">
-                  <i class="bi bi-file-earmark-check-fill me-1"></i> {{ selectedFile.name }}
-                </h3>
+                <!-- PDF selected (no visual preview possible) -->
+                <ng-container *ngIf="selectedFile && !isImageFile">
+                  <div class="upload-icon-wrap mb-3">
+                    <i class="bi bi-file-earmark-pdf fs-4 text-danger"></i>
+                  </div>
+                  <h3 class="upload-main-text mb-1 text-success text-truncate w-100 px-2">
+                    <i class="bi bi-file-earmark-check-fill me-1"></i>{{ selectedFile.name }}
+                  </h3>
+                  <button type="button" class="btn remove-file-link" (click)="removeSelectedFile($event)">
+                    Remove file
+                  </button>
+                </ng-container>
               </div>
+              <small class="field-error d-block mt-1" *ngIf="formSubmitted && !selectedFile">
+                Please upload the payment screenshot
+              </small>
             </div>
 
             <!-- Upgrade Button + Disclaimer -->

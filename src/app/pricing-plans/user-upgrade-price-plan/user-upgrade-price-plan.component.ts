@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedDataService } from '../../../shared/services/shared-data.service';
 import { SharedGlobalService } from '../../../shared/services/shared-global.service';
@@ -10,6 +10,7 @@ interface BankDetailsAPIResponse {
   bankName?: string;
   accountNumber?: string;
   accountHolderName?: string;
+  active?: number;
 }
 
 @Component({
@@ -17,18 +18,29 @@ interface BankDetailsAPIResponse {
   templateUrl: './user-upgrade-price-plan.component.html',
   styleUrls: ['./user-upgrade-price-plan.component.scss']
 })
-export class UserUpgradePricePlanComponent implements OnInit {
+export class UserUpgradePricePlanComponent implements OnInit, OnDestroy {
   planName: string = '';
   planFee: number = 0;
 
   planID: number | null = null;
   profileID: number | null = null;
 
+  // ── Bank selection ─────────────────────────────────────────────────────
+  bankDetailsList: BankDetailsAPIResponse[] = [];
+  selectedBankDetailID: number | null = null;
   bankDetails: BankDetailsAPIResponse = {};
 
   referenceNumber: string = '';
   paidAmount: number | null = null;
   selectedFile: File | null = null;
+
+  // ── Image preview ────────────────────────────────────────────────────
+  filePreviewUrl: string | null = null;
+  isImageFile = false;
+
+  // ── Validation state ───────────────────────────────────────────────────
+  formSubmitted = false;
+  paidAmountError = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -52,14 +64,25 @@ export class UserUpgradePricePlanComponent implements OnInit {
   fetchSystemBankDetails(): void {
     this.dataService.getHttp('core-api/Payment/getBankDetails').subscribe({
       next: (res: any) => {
-        const response = Array.isArray(res) ? res[0] : res;
-        this.bankDetails = response || {};
+        const response: BankDetailsAPIResponse[] = Array.isArray(res) ? res : (res ? [res] : []);
+        this.bankDetailsList = response.filter(b => b.active === 1 || b.active === undefined);
+
+        if (this.bankDetailsList.length > 0) {
+          this.onBankSelect(this.bankDetailsList[0].bankDetailID!);
+        }
       },
       error: (err) => {
         this.valid.apiErrorResponse('Unable to load bank details.');
         console.error(err);
       },
     });
+  }
+
+  onBankSelect(bankDetailID: number | string): void {
+    const id = Number(bankDetailID);
+    this.selectedBankDetailID = id;
+    const found = this.bankDetailsList.find(b => b.bankDetailID === id);
+    this.bankDetails = found || {};
   }
 
   copyToClipboard(value: string | undefined): void {
@@ -89,13 +112,48 @@ export class UserUpgradePricePlanComponent implements OnInit {
     const allowedTypes = ['image/png', 'image/jpeg', 'application/pdf'];
     if (allowedTypes.includes(file.type)) {
       this.selectedFile = file;
+      this.isImageFile = file.type === 'image/png' || file.type === 'image/jpeg';
+
+      if (this.filePreviewUrl) {
+        URL.revokeObjectURL(this.filePreviewUrl);
+        this.filePreviewUrl = null;
+      }
+
+      if (this.isImageFile) {
+        this.filePreviewUrl = URL.createObjectURL(file);
+      }
     } else {
       alert('Invalid file format. Please upload a PNG, JPG, or PDF file.');
     }
   }
 
+  removeSelectedFile(event: Event): void {
+    event.stopPropagation();
+    if (this.filePreviewUrl) {
+      URL.revokeObjectURL(this.filePreviewUrl);
+    }
+    this.selectedFile = null;
+    this.filePreviewUrl = null;
+    this.isImageFile = false;
+  }
+
+  // ── Paid amount: numbers only ────────────────────────────────────────
+  onPaidAmountChange(value: string): void {
+    if (value && !/^\d+(\.\d+)?$/.test(value)) {
+      this.paidAmountError = 'Please enter a valid number';
+    } else {
+      this.paidAmountError = '';
+    }
+  }
+
   submitUpgradeRequest(): void {
-    if (!this.referenceNumber || !this.paidAmount || !this.selectedFile || !this.planID) {
+    this.formSubmitted = true;
+
+    if (this.paidAmount !== null && !/^\d+(\.\d+)?$/.test(String(this.paidAmount))) {
+      this.paidAmountError = 'Please enter a valid number';
+    }
+
+    if (!this.referenceNumber || !this.paidAmount || !this.selectedFile || !this.planID || this.paidAmountError) {
       return;
     }
 
@@ -138,5 +196,11 @@ export class UserUpgradePricePlanComponent implements OnInit {
       });
     };
     reader.readAsDataURL(this.selectedFile);
+  }
+
+  ngOnDestroy(): void {
+    if (this.filePreviewUrl) {
+      URL.revokeObjectURL(this.filePreviewUrl);
+    }
   }
 }
