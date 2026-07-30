@@ -1,0 +1,336 @@
+.manage-accounts {
+  padding: 32px;
+
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 0 0 4px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #8a8a8a;
+      margin: 0;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--2nd, #c84b31);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 22px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.15s ease;
+
+      &:hover { background: var(--primary, #590117); }
+      &:active { transform: scale(0.97); }
+    }
+  }
+
+  .accounts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .account-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 14px;
+    padding: 20px 22px;
+    position: relative;
+    transition: box-shadow 0.2s ease;
+    overflow: visible !important;
+
+    &:hover { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06); }
+
+    &.menu-open {
+      z-index: 10; // Ensures card stays above cards below when menu is open
+    }
+
+    .account-info {
+      h4 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0 0 10px;
+      }
+
+      p {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13.5px;
+        color: #6b6b6b;
+        margin: 0 0 6px;
+
+        i { width: 14px; color: #a3a3a3; font-size: 13px; }
+      }
+    }
+
+    .account-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+  }
+
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #9a9a9a;
+    padding: 40px 0;
+    font-size: 14px;
+  }
+}
+
+// ─── Toggle switch ──────────────────────────────────────────────────────
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:checked + .slider { background: var(--2nd, #c84b31); }
+    &:checked + .slider::before { transform: translateX(18px); }
+  }
+
+  .slider {
+    position: absolute;
+    inset: 0;
+    background: #d9d9d9;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &::before {
+      content: '';
+      position: absolute;
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      top: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+
+// ─── ⋮ dropdown menu ────────────────────────────────────────────────────
+.menu-wrap {
+  position: relative;
+
+  .dots-btn {
+    background: transparent;
+    border: none;
+    padding: 6px;
+    cursor: pointer;
+    color: #6b6b6b;
+    font-size: 15px;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+
+    &:hover {
+      color: #1a1a1a;
+      background: #f0f0f0;
+    }
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;           // Displays right below the 3 dots
+    right: 0;            // Aligns to the right edge
+    margin-top: 4px;
+    
+    /* Ensure high contrast and high z-index so it stands out */
+    background: #ffffff !important; 
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2) !important;
+    min-width: 140px;
+    z-index: 9999 !important; // Force it above all other card elements
+    display: block !important;
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+
+      i { width: 14px; font-size: 13px; }
+
+      &:hover { background: #ffffff; }
+
+      &.edit {
+        color: #2563eb;
+      }
+
+      &.danger {
+        color: #e0294a;
+      }
+    }
+  }
+}
+
+// ─── Add/Edit Modal ─────────────────────────────────────────────────────
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 20, 20, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+.modal-box {
+  width: 100%;
+  max-width: 420px;
+  background: #e9e9e9;
+  border-radius: 18px;
+  padding: 20px;
+  animation: modalPop 0.18s ease-out;
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    h3 { font-size: 19px; font-weight: 700; color: #1a1a1a; margin: 0; }
+
+    i.fa-times {
+      cursor: pointer;
+      color: #8a8a8a;
+      font-size: 16px;
+      padding: 4px;
+
+      &:hover { color: #1a1a1a; }
+    }
+  }
+
+  .modal-body {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 16px;
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #b5b5b5;
+      text-transform: uppercase;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #a3a3a3;
+      margin-bottom: 8px;
+
+      &:not(:first-of-type) { margin-top: 18px; }
+    }
+
+    input {
+      width: 100%;
+      background: #f2f2f2;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: #1a1a1a;
+      outline: none;
+      transition: border-color 0.15s ease, background 0.15s ease;
+      box-sizing: border-box;
+
+      &::placeholder { color: #b0b0b0; }
+
+      &:focus {
+        background: #fff;
+        border-color: var(--2nd, #c84b31);
+      }
+    }
+  }
+
+  .btn-save {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--2nd, #c84b31);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+
+    &:hover { background: var(--primary, #590117); }
+    &:active { transform: scale(0.98); }
+  }
+}
+
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.96) translateY(6px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+// ─── Mobile ───────────────────────────────────────────────────────────
+@media (max-width: 600px) {
+  .manage-accounts {
+    padding: 20px;
+
+    .accounts-grid { grid-template-columns: 1fr; }
+  }
+}
+
+.account-card.menu-open {
+  z-index: 10; // Elevates active card above adjacent cards
+}

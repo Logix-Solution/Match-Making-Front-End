@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { SharedDataService } from '../../../shared/services/shared-data.service';
 import { SharedGlobalService } from '../../../shared/services/shared-global.service';
@@ -24,6 +24,7 @@ interface BankDetailsAPIResponse {
   bankName?: string;
   accountNumber?: string;
   accountHolderName?: string;
+  active?: number;
 }
 
 @Component({
@@ -31,7 +32,7 @@ interface BankDetailsAPIResponse {
   templateUrl: './registeration-fee.component.html',
   styleUrls: ['./registeration-fee.component.scss']
 })
-export class RegisterationFeeComponent implements OnInit {
+export class RegisterationFeeComponent implements OnInit , OnDestroy{
   userName = '';
   matchedProfiles = 10; // TODO: wire to real endpoint once provided
 
@@ -41,11 +42,22 @@ export class RegisterationFeeComponent implements OnInit {
   registrationPlan: ApiUserPlan | null = null;
   isLoadingPlan = true;
 
+  // ── Bank selection ─────────────────────────────────────────────────────
+  bankDetailsList: BankDetailsAPIResponse[] = [];
+  selectedBankDetailID: number | null = null;
   bankDetails: BankDetailsAPIResponse = {};
 
   referenceNumber = '';
   paidAmount: number | null = null;
   selectedFile: File | null = null;
+
+  // ── Image preview ────────────────────────────────────────────────────
+  filePreviewUrl: string | null = null;
+  isImageFile = false;
+
+  // ── Validation state ───────────────────────────────────────────────────
+  formSubmitted = false;
+  paidAmountError = '';
 
   constructor(
     private dataService: SharedDataService,
@@ -110,7 +122,6 @@ export class RegisterationFeeComponent implements OnInit {
         next: (res: any) => {
           const data: ApiUserPlan[] = Array.isArray(res) ? res : [];
 
-          // Pull the "Registration" plan specifically — no query params needed
           this.registrationPlan =
             data.find((p) => (p.planName || '').toLowerCase().includes('registration')) || null;
 
@@ -126,14 +137,25 @@ export class RegisterationFeeComponent implements OnInit {
   fetchSystemBankDetails(): void {
     this.dataService.getHttp('core-api/Payment/getBankDetails').subscribe({
       next: (res: any) => {
-        const response = Array.isArray(res) ? res[0] : res;
-        this.bankDetails = response || {};
+        const response: BankDetailsAPIResponse[] = Array.isArray(res) ? res : (res ? [res] : []);
+        this.bankDetailsList = response.filter(b => b.active === 1 || b.active === undefined);
+
+        if (this.bankDetailsList.length > 0) {
+          this.onBankSelect(this.bankDetailsList[0].bankDetailID!);
+        }
       },
       error: (err) => {
         this.valid.apiErrorResponse('Unable to load bank details.');
         console.error(err);
       },
     });
+  }
+
+  onBankSelect(bankDetailID: number | string): void {
+    const id = Number(bankDetailID);
+    this.selectedBankDetailID = id;
+    const found = this.bankDetailsList.find(b => b.bankDetailID === id);
+    this.bankDetails = found || {};
   }
 
   get formattedFee(): string {
@@ -169,13 +191,49 @@ export class RegisterationFeeComponent implements OnInit {
     const allowedTypes = ['image/png', 'image/jpeg', 'application/pdf'];
     if (allowedTypes.includes(file.type)) {
       this.selectedFile = file;
+      this.isImageFile = file.type === 'image/png' || file.type === 'image/jpeg';
+
+      // Revoke any previous preview URL to avoid memory leaks
+      if (this.filePreviewUrl) {
+        URL.revokeObjectURL(this.filePreviewUrl);
+        this.filePreviewUrl = null;
+      }
+
+      if (this.isImageFile) {
+        this.filePreviewUrl = URL.createObjectURL(file);
+      }
     } else {
       alert('Invalid file format. Please upload a PNG, JPG, or PDF file.');
     }
   }
 
+  removeSelectedFile(event: Event): void {
+    event.stopPropagation();
+    if (this.filePreviewUrl) {
+      URL.revokeObjectURL(this.filePreviewUrl);
+    }
+    this.selectedFile = null;
+    this.filePreviewUrl = null;
+    this.isImageFile = false;
+  }
+
+  // ── Paid amount: numbers only ────────────────────────────────────────
+  onPaidAmountChange(value: string): void {
+    if (value && !/^\d+(\.\d+)?$/.test(value)) {
+      this.paidAmountError = 'Please enter a valid number';
+    } else {
+      this.paidAmountError = '';
+    }
+  }
+
   submitRegistration(): void {
-    if (!this.referenceNumber || !this.paidAmount || !this.selectedFile || !this.registrationPlan) {
+    this.formSubmitted = true;
+
+    if (this.paidAmount !== null && !/^\d+(\.\d+)?$/.test(String(this.paidAmount))) {
+      this.paidAmountError = 'Please enter a valid number';
+    }
+
+    if (!this.referenceNumber || !this.paidAmount || !this.selectedFile || !this.registrationPlan || this.paidAmountError) {
       return;
     }
 
@@ -197,6 +255,7 @@ export class RegisterationFeeComponent implements OnInit {
         userID: this.sharedGlobalService.getUserID(),
         spType: 'INSERT',
       };
+      console.log(payload,'register fee');
 
       this.dataService.postDirect('core-api/Payment/saveUpgradePlan', payload).subscribe({
         next: (res: any) => {
@@ -217,7 +276,6 @@ export class RegisterationFeeComponent implements OnInit {
     reader.readAsDataURL(this.selectedFile);
   }
 
-  // ── After a successful registration save, check current status and route accordingly ──
   private navigateAfterRegistration(): void {
     const userID = this.sharedGlobalService.getUserID();
 
@@ -234,9 +292,14 @@ export class RegisterationFeeComponent implements OnInit {
       },
       error: (err) => {
         console.error('getUserDetails (post-save status check) error:', err);
-        // Fall back to the original destination if the status check fails
         this.router.navigate(['/user-Pricing-Plans']);
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.filePreviewUrl) {
+      URL.revokeObjectURL(this.filePreviewUrl);
+    }
   }
 }

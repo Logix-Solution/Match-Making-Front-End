@@ -55,7 +55,7 @@
         <span class="text-white fw-semibold" style="font-size: 13px;">{{ roleTitle }}</span>
       </div>
 
-      <i class="bi bi-list text-white fs-5" style="cursor: pointer;"></i>
+      <!-- <i class="bi bi-list text-white fs-5" style="cursor: pointer;"></i> -->
 
     </div>
   </div>
@@ -63,7 +63,7 @@
   <div class="d-flex" style="height: 100vh; padding-top: 52px;">
 
     <div class="sidebar d-flex flex-column"
-         style="width: 260px; min-width: 240px; height: calc(100vh - 52px);
+         style="width: 250px; min-width: 240px; height: calc(100vh - 52px);
                 position: fixed; top: 52px; left: 0; z-index: 1000;
                 background: #fff; border-right: 1px solid #ebebeb; overflow-y: auto;">
 
@@ -71,7 +71,7 @@
         <div class="mb-1" *ngFor="let item of menuList">
 
           <a *ngIf="item.menuIcon && item.routeTitle"
-             class="d-flex align-items-center text-decoration-none px-3 py-2 rounded-2 menu-item"
+             class="d-flex align-items-center text-decoration-none px-3 py-1 rounded-2 menu-item"
              [routerLink]="['/' + item.routeTitle]"
              routerLinkActive="active-link"
              [routerLinkActiveOptions]="{ exact: false }">
@@ -140,7 +140,7 @@
     </div>
 
     <div class="flex-grow-1 bg-light"
-         style="margin-left: 240px; height: calc(100vh - 52px); overflow-y: auto; padding: 20px;">
+         style="margin-left: 220px; height: calc(100vh - 52px); overflow-y: auto; padding: 20px;">
       <router-outlet />
     </div>
 

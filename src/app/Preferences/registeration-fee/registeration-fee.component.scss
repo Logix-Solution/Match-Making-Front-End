@@ -92,6 +92,20 @@
       margin-bottom: 6px;
     }
 
+    .bank-select {
+      background: #f2eff0;
+      border: 1px solid transparent;
+      font-size: 14px;
+      color: #1a1a1a;
+      cursor: pointer;
+
+      &:focus {
+        background: #fff;
+        border-color: var(--primary);
+        box-shadow: none;
+      }
+    }
+
     .display-data-field {
       background: #f2eff0;
 
@@ -112,6 +126,13 @@
           color: #b8b8b8;
         }
       }
+    }
+
+    .field-error {
+      display: block;
+      color: #d64545;
+      font-size: 12px;
+      margin-top: 6px;
     }
 
     .info-alert-box {
@@ -136,10 +157,17 @@
     min-height: 200px;
     cursor: pointer;
     transition: border-color 0.2s ease, background 0.2s ease;
+    position: relative;
 
     &:hover {
       border-color: var(--primary);
       background: #faf6f6;
+    }
+
+    &.has-preview {
+      background: #fff;
+      border-style: solid;
+      padding: 16px !important;
     }
 
     .upload-icon-wrap {
@@ -160,6 +188,58 @@
 
     .upload-sub-text {
       font-size: 12px;
+    }
+
+    .remove-file-link {
+      font-size: 12px;
+      color: #d64545;
+      text-decoration: underline;
+      padding: 4px 0;
+
+      &:hover {
+        color: #b03a22;
+      }
+    }
+  }
+
+  // ── Image preview box ─────────────────────────────────
+  .image-preview-box {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .preview-img {
+      max-width: 100%;
+      max-height: 160px;
+      object-fit: contain;
+      border-radius: 10px;
+      border: 1px solid #ececec;
+    }
+
+    .remove-file-btn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      color: #6b6b6b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      z-index: 2;
+
+      &:hover {
+        color: #d64545;
+        border-color: #d64545;
+      }
     }
   }
 

@@ -1,0 +1,92 @@
+<div class="manage-accounts">
+  <div class="header-row">
+    <div>
+      <h2>Manage Accounts</h2>
+      <p class="subtitle">
+        Here you can active and de-active all your configure accounts
+      </p>
+    </div>
+    <button class="btn-primary" (click)="openAddModal()">
+      <i class="fa fa-plus"></i> Add Accounts
+    </button>
+  </div>
+
+  <div class="accounts-grid" *ngIf="!isLoading">
+    <div
+      class="account-card"
+      *ngFor="let acc of accounts"
+      [class.menu-open]="activeMenuId === acc.bankDetailID"
+    >
+      <div class="account-info">
+        <h4>{{ acc.accountHolderName }}</h4>
+        <p><i class="fa fa-university"></i> {{ acc.bankName }}</p>
+        <p><i class="fa fa-credit-card"></i> IBAN#{{ acc.accountNumber }}</p>
+      </div>
+
+      <div class="account-actions">
+        <label class="switch">
+          <input
+            type="checkbox"
+            [checked]="acc.active === 1"
+            (change)="toggleStatus(acc)"
+          />
+          <span class="slider"></span>
+        </label>
+
+        <div class="menu-wrap">
+          <button
+            type="button"
+            class="dots-btn"
+            (click)="console.log('HTML CLICK FIRED!'); toggleMenu(acc, $event)"
+          >
+            <i class="fa fa-ellipsis-v"></i>
+          </button>
+
+          <div class="dropdown-menu" *ngIf="activeMenuId === acc.bankDetailID">
+            <button class="edit" (click)="openEditModal(acc)">
+              <i class="fa fa-pen"></i> Edit
+            </button>
+            <button class="danger" (click)="deleteAccount(acc)">
+              <i class="fa fa-trash"></i> Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p *ngIf="accounts.length === 0" class="empty-state">
+      No accounts added yet.
+    </p>
+  </div>
+</div>
+
+<!-- ─── Add / Edit Modal ─────────────────────────────────────────────── -->
+<div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ isEditMode ? "Edit Account" : "Add New Account" }}</h3>
+      <i class="fa fa-times" (click)="closeModal()"></i>
+    </div>
+
+    <div class="modal-body">
+      <div class="section-label">BANK DETAILS</div>
+
+      <label>ACCOUNT HOLDER</label>
+      <input
+        type="text"
+        [(ngModel)]="form.accountHolderName"
+        placeholder="Account Holder Name"
+      />
+
+      <label>IBAN</label>
+      <input type="text" [(ngModel)]="form.accountNumber" placeholder="IBAN" />
+
+      <label>BANK NAME</label>
+      <input type="text" [(ngModel)]="form.bankName" placeholder="Bank Name" />
+    </div>
+
+    <button class="btn-save" (click)="saveAccount()">
+      <i class="fa fa-save"></i> Save
+    </button>
+  </div>
+</div>

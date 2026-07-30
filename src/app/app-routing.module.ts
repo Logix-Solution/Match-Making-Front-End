@@ -39,6 +39,7 @@ import { ConsultationComponent } from './home-page/consultation/consultation.com
 import { RequestSubmitedComponent } from './Preferences/request-submited/request-submited.component';
 import { AppointmentsComponent } from './Admin/appointments/appointments.component';
 import { AuthGuard } from '../shared/services/auth.guard';
+import { AccountsComponent } from './Admin/accounts/accounts.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -195,6 +196,11 @@ const routes: Routes = [
   {
      path: 'appointments',
     component: AppointmentsComponent,
+    canActivate: [AuthGuard],
+  },
+   {
+     path: 'accounts',
+    component: AccountsComponent,
     canActivate: [AuthGuard],
   },
   /////////////////////Account setting/////////////
