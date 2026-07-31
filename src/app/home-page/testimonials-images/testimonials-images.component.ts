@@ -30,7 +30,8 @@ export class TestimonialsImagesComponent implements OnInit, OnDestroy {
   // Holds the image that is currently animating IN from the right
   incomingImage: TestimonialImage | null = null;
 
-  // dots — purely decorative, matches design
+  // ── Dots — ALWAYS exactly 4, cycling regardless of how many images exist ──
+  private readonly DOT_COUNT = 4;
   dots = [0, 1, 2, 3];
   activeDot = 0;
 
@@ -60,6 +61,7 @@ export class TestimonialsImagesComponent implements OnInit, OnDestroy {
           }))
           .filter((f: TestimonialImage) => !!f.imageUrl);
 
+        // dots stay fixed at 4 — no longer tied to images.length
         if (this.images.length > 1) {
           this.startAutoSlide();
         }
@@ -95,6 +97,7 @@ export class TestimonialsImagesComponent implements OnInit, OnDestroy {
     this.incomingImage = this.images[nextIndex];
 
     this.currentIndex = nextIndex;
+    this.activeDot = nextIndex % this.DOT_COUNT;   // cycles through 4 dots regardless of image count
 
     // Clear the outgoing image once its exit animation finishes
     clearTimeout(this.outgoingTimer);

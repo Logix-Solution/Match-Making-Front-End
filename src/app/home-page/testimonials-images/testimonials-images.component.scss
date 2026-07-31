@@ -1,17 +1,29 @@
+// .bgtestimonail {
+//   background: url("../assets/images/bgtestimonail.png");
+//   background-repeat: no-repeat;
+//   background-size: cover;
+//   background-position: center;
+// }
+
 $primary-hex: #590117;
 
-// ─── Background ──────────────────────────────────────────────────────────────
-// .bgtestimonail {
-//   background-image: url('/assets/images/testimonial-bg.png'); // your existing bg class image
-//   background-repeat: no-repeat;
-//   background-position: top right, top left;
-//   background-size: contain;
-// }
+// ─── Constrain the whole section so zooming out (wider effective viewport)
+// doesn't stretch the gap between text and image ─────────────────────────
+.testimonial-section {
+  .container-fluid {
+    max-width: 1320px;   // caps growth at very wide / zoomed-out viewports
+    margin: 0 auto;
+  }
+
+  .row {
+    max-width: 100%;
+  }
+}
 
 // ─── Left Text Content ───────────────────────────────────────────────────────
 .testimonial-heading {
   font-family: 'Marcellus', serif;
-  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-size: clamp(1.5rem, 2.2vw + 1rem, 2.4rem);
   color: #1a1a2e;
   font-weight: 400;
   line-height: 1.25;
@@ -20,12 +32,12 @@ $primary-hex: #590117;
 .testimonial-subheading {
   color: $primary-hex;
   font-weight: 600;
-  font-size: 1.15rem;
+  font-size: clamp(0.95rem, 1vw + 0.7rem, 1.15rem);
 }
 
 .testimonial-paragraph {
   color: #4b5563;
-  font-size: 0.98rem;
+  font-size: clamp(0.85rem, 0.4vw + 0.75rem, 0.98rem);
   line-height: 1.7;
   max-width: 560px;
 
@@ -34,37 +46,35 @@ $primary-hex: #590117;
   }
 }
 
-// ─── Slider Container — fixed box, content swaps inside it ───────────────────
+// ─── Slider Container ────────────────────────────────────────────────────
 .slider-wrapper {
   width: 100%;
-  max-width: 300px;
-  height: 460px;
+  max-width: min(300px, 80vw);
+  aspect-ratio: 300 / 460;
+  height: auto;
   margin: 0 auto;
   overflow: hidden;
   position: relative;
-  border-radius: 24px;
+  border-radius: clamp(14px, 1.5vw, 24px);
 }
 
-// ─── Slide Item — base box style ─────────────────────────────────────────────
 .slide-item {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 24px;
+  border-radius: clamp(14px, 1.5vw, 24px);
   overflow: hidden;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
   border: 3px solid $primary-hex;
 }
 
-// Incoming container — enters from the right edge of the page
 .slide-item.slide-in {
   animation: slideInFromRight 0.7s ease-out forwards;
   z-index: 2;
 }
 
-// Outgoing container — exits toward the left, into the text section
 .slide-item.slide-out {
   animation: slideOutToLeft 0.7s ease-in forwards;
   z-index: 1;
@@ -80,9 +90,8 @@ $primary-hex: #590117;
   100% { transform: translateX(-100%); opacity: 0; }
 }
 
-// ─── Image fills container exactly — width/height matches box size ──────────
 .slide-img {
-  width: auto;
+  width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
@@ -92,33 +101,58 @@ $primary-hex: #590117;
   width: 100%;
   height: 100%;
   background-color: #f3f4f6;
-  border-radius: 24px;
+  border-radius: clamp(14px, 1.5vw, 24px);
 }
 
-// ─── Dots ──────────────────────────────────────────────────────────────────────
+// ─── Dots — fixed 4-dot row, never stretches wide ────────────────────────
 .testimonial-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
   background-color: #f3d4c2;
   display: inline-block;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.7s ease, transform 0.7s ease, width 0.7s ease;
+  transform: scale(1);
 
   &.active {
     background-color: $primary-hex;
+    transform: scale(1.15);
+    width: 22px;
+    border-radius: 5px;
   }
 }
 
-// ─── Responsive ──────────────────────────────────────────────────────────────
+// The dots wrapper — capped width so it can never spread edge-to-edge
+.testimonial-dots-row {
+  max-width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// ─── Responsive ──────────────────────────────────────────────────────────
 @media (max-width: 991px) {
   .slider-wrapper {
-    max-width: 240px;
-    height: 360px;
+    max-width: min(240px, 70vw);
   }
 }
 
+@media (max-width: 575px) {
+  .testimonial-section {
+    text-align: center;
+  }
 
-// ─── Lightbox ────────────────────────────────────────────────────────────────
+  .testimonial-paragraph {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .slider-wrapper {
+    max-width: min(220px, 60vw);
+  }
+}
+
+// ─── Lightbox ──────────────────────────────────────────────────────────
 .testimonial-lightbox-overlay {
   position: fixed;
   inset: 0;
@@ -128,13 +162,15 @@ $primary-hex: #590117;
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(3px);
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 .testimonial-lightbox-box {
   position: relative;
   max-width: 90vw;
   max-height: 90vh;
-  border-radius: 16px;
+  border-radius: clamp(10px, 1.2vw, 16px);
   overflow: hidden;
   background: #000;
   border: 3px solid $primary-hex;
@@ -153,7 +189,7 @@ $primary-hex: #590117;
   color: #fff;
   text-align: center;
   padding: 8px 12px;
-  font-size: 0.85rem;
+  font-size: clamp(0.75rem, 0.5vw + 0.65rem, 0.85rem);
   font-weight: 600;
   letter-spacing: 0.4px;
 }

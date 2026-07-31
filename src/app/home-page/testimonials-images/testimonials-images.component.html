@@ -76,14 +76,23 @@
     </div>
 
     <!-- Decorative Dots -->
-    <div class="d-flex justify-content-center gap-2 mt-5">
+    <!-- <div class="d-flex justify-content-center gap-2 mt-5">
       <span
         class="testimonial-dot"
         *ngFor="let d of dots; let i = index"
         [class.active]="i === activeDot"
       ></span>
     </div>
-  </div>
+  </div> -->
+  <!-- Decorative Dots -->
+    <div class="testimonial-dots-row d-flex justify-content-center gap-2 mt-5">
+      <span
+        class="testimonial-dot"
+        *ngFor="let d of dots; let i = index"
+        [class.active]="i === activeDot"
+      ></span>
+    </div>
+    </div>
 
   <!-- Lightbox -->
   <div
