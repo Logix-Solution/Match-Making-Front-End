@@ -7,8 +7,8 @@ export const environment = {
   envName: 'prod',
   // // //////localhost //////////////
 
-   apiUrl: 'http://localhost:11011/',
-  apiUrlauth: 'http://localhost:11011/',
+  //  apiUrl: 'http://localhost:11011/',
+  // apiUrlauth: 'http://localhost:11011/',
 
 
 //   /////for live server api//////////
