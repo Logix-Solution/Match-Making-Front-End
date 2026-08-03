@@ -366,13 +366,18 @@
       border: 1px solid var(--border);
       background: #fff;
       border-radius: 999px;
-      padding: 12px 10px;
+      padding: 10px 10px;
       font-size: .85rem;
       color: var(--ink);
       cursor: pointer;
       transition: all .12s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      line-height: 1.2;
 
-      &:hover { border-color: var(--tan-deep); }
+      &:hover:not(:disabled) { border-color: var(--tan-deep); }
 
       &.active {
         background: var(--tan);
@@ -380,6 +385,28 @@
         color: var(--maroon-deep);
         font-weight: 700;
       }
+
+      &.booked,
+      &:disabled {
+        background: #F1EDE7;
+        border-color: var(--border);
+        color: #B7ADA0;
+        cursor: not-allowed;
+      }
+
+      .slot-status {
+        font-size: .65rem;
+        font-weight: 700;
+        letter-spacing: .03em;
+        text-transform: uppercase;
+        color: #C0392B;
+      }
+    }
+
+    .slots-empty {
+      font-size: .85rem;
+      color: var(--ink-soft);
+      margin: 0;
     }
   }
 
@@ -475,118 +502,3 @@
   }
 }
 
-/* ───── OTP Verification Modal (top-level, sibling to .consult-page) ───── */
-.otp-modal-overlay {
-  position: fixed !important;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(43, 35, 32, 0.55);
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  padding: 20px;
-}
-
-.otp-modal {
-  --accent: #C84B31;
-
-  background: #fff;
-  border-radius: 20px;
-  padding: 40px 36px 32px;
-  width: 100%;
-  max-width: 420px;
-  position: relative;
-  text-align: center;
-  box-shadow: 0 20px 60px rgba(0,0,0,.25);
-
-  .otp-modal-close {
-    position: absolute;
-    top: 18px;
-    right: 18px;
-    background: none;
-    border: none;
-    color: #7A6F63;
-    font-size: 1rem;
-    cursor: pointer;
-
-    &:hover { color: #2B2320; }
-  }
-
-  .otp-title {
-    font-family: 'DM Serif Display' !important;
-    font-weight: 400;
-    font-size: 1.6rem !important;
-    color: #2B2320;
-    margin-bottom: 10px;
-  }
-
-  .otp-subtitle {
-    font-size: .88rem;
-    color: #7A6F63;
-    line-height: 22px;
-    margin-bottom: 26px;
-
-    strong { color: #2B2320; font-weight: 600; }
-  }
-
-  .otp-boxes {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-
-  .otp-box {
-    width: 52px;
-    height: 52px;
-    border: 1px solid #E7DED3;
-    border-radius: 12px;
-    text-align: center;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #2B2320;
-    outline: none;
-
-    &:focus { border-color: var(--accent); }
-    &:disabled { background: #F6F2EC; }
-  }
-
-  .otp-error {
-    font-size: .8rem;
-    color: #C0554A;
-    margin-bottom: 8px;
-  }
-
-  .otp-resend {
-    font-size: .85rem;
-    color: #7A6F63;
-    margin-bottom: 24px;
-
-    a {
-      color: var(--accent);
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-
-      &:hover { text-decoration: underline; }
-    }
-  }
-
-  .otp-verify-btn {
-    width: 100%;
-    background: var(--accent);
-    border: none;
-    color: #fff;
-    font-weight: 700;
-    font-size: .95rem;
-    padding: 15px;
-    border-radius: 999px;
-    cursor: pointer;
-
-    &:hover:not(:disabled) { background: #b5432b; }
-    &:disabled { opacity: .6; cursor: default; }
-  }
-}

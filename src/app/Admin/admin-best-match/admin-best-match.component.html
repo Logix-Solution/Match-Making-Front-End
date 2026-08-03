@@ -3,7 +3,7 @@
   <ng-container *ngIf="currentView === 'grid'">
     <header class="mb-3">
       <h1 class="ft-7 m-0">Best Match</h1>
-      <p class="mt-1 mb-0" style="font-weight: 400; color: #6C727A;">Select 2-3 profiles to compare side-by-side.</p>
+      <p class="mt-1 mb-0" style="font-weight: 400; color: #6C727A;">Select a profile to view their matches.</p>
     </header>
 
     <section class="mb-3 col-md-3">
@@ -39,17 +39,10 @@
 
           <div class="d-flex justify-content-between align-items-center mt-2">
             <div>
-              <span class="ft-5 txt-7th d-block text-muted">Matched Profile</span>
-              <span class="ft-3 text-success fw-bold">{{ profile.matchPercentage }}%</span>
+              <span class="ft-5 txt-7th d-block text-muted">Best Match</span>
+              <span class="ft-3 text-success fw-bold">{{ profile.maxMatchPercentage }}%</span>
             </div>
-            <div class="avatar-stack d-flex align-items-center bg-light px-2 py-1 rounded-pill border">
-              <div class="stack-thumbs-wrap d-flex align-items-center me-1">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=30&h=30" class="stack-thumb rounded-circle">
-                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=30&h=30" class="stack-thumb rounded-circle">
-                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=30&h=30" class="stack-thumb rounded-circle">
-              </div>
-              <i class="bi bi-plus text-muted fs-5 line-height-1"></i>
-            </div>
+            <span class="badge-count-pill">{{ profile.matches.length }} matches</span>
           </div>
 
         </div>
@@ -67,99 +60,64 @@
       </div>
     </header>
 
-    <section class="bg-white rounded-4 p-3 p-xl-4 shadow-sm border border-light-subtle mb-4 main-profile-dashboard">
-      <div class="profile-layout-grid">
-        
-        <div class="info-column">
-          <h5 class="column-title"><i class="bi bi-person"></i> Personal Information</h5>
-          <div class="data-row"><span>City</span><strong>Islamabad</strong></div>
-          <div class="data-row"><span>Phone Number</span><strong>+92 3040695071</strong></div>
-          <div class="data-row"><span>Nationality</span><strong>Pakistani</strong></div>
-          <div class="data-row"><span>Caste</span><strong>Arain</strong></div>
-        </div>
+ <section class="bg-white rounded-4 p-3 p-xl-4 shadow-sm border border-light-subtle mb-4 main-profile-dashboard flex-shrink-0">
+  <div class="profile-layout-grid">
 
-        <div class="info-column">
-          <h5 class="column-title"><i class="bi bi-moon-stars"></i> Religion / Appearance</h5>
-          <div class="data-row"><span>Religion</span><strong>Islam</strong></div>
-          <div class="data-row"><span>Sect</span><strong>Sunni</strong></div>
-          <div class="data-row"><span>Height</span><strong>5'11</strong></div>
-          <div class="data-row"><span>Disabilities</span><strong>No</strong></div>
-        </div>
-
-        <div class="center-avatar-block text-center">
-          <div class="avatar-wrapper position-relative mx-auto mb-2">
-            <img [src]="selectedProfile?.image || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150'" alt="Active Profile Portrait" class="rounded-circle main-avatar">
-          </div>
-          <h2 class="profile-display-name font-marcellus text-uppercase m-0">{{ selectedProfile?.name }}</h2>
-          <p class="profile-display-sub m-0 mt-1">{{ selectedProfile?.age }} years</p>
-          <div class="marital-pill mt-1 d-inline-flex align-items-center gap-1">
-            <i class="bi bi-gender-female"></i> UN MARRIED
-          </div>
-        </div>
-
-        <div class="info-column">
-          <h5 class="column-title"><i class="bi bi-heart"></i> Lifestyle</h5>
-          <div class="data-row"><span>Smoke</span><strong>No</strong></div>
-          <div class="data-row"><span>Drink Alcohol</span><strong>No</strong></div>
-          <div class="data-row"><span>Want Kids</span><strong>Yes</strong></div>
-          <div class="data-row"><span>Kids from previous marriage</span><strong>No</strong></div>
-        </div>
-
-        <div class="info-column">
-          <h5 class="column-title"><i class="bi bi-mortarboard"></i> Education & Career</h5>
-          <div class="data-row"><span>Education Level</span><strong class="text-truncate">Bachelor's</strong></div>
-          <div class="data-row"><span>University</span><strong class="text-truncate">Comsats University</strong></div>
-          <div class="data-row"><span>Occupation</span><strong class="text-truncate">Engineer</strong></div>
-          <div class="data-row"><span>Monthly Income</span><strong class="text-truncate">PKR 50k-100k</strong></div>
-        </div>
-
-      </div>
-    </section>
-
-    <div class="mb-3">
-      <h3 class="fh-4 txt-8th fw-bold m-0 section-main-heading">Best Matches</h3>
+    <!-- info1 -->
+    <div class="info-column">
+      <h5 class="column-title"><i class="bi bi-person"></i> Personal Information</h5>
+      <div class="data-row"><span>City</span><strong class="text-truncate">{{ selectedProfile?.location }}</strong></div>
+      <div class="data-row"><span>Gender</span><strong>{{ selectedProfile?.gender }}</strong></div>
+      <div class="data-row"><span>Occupation</span><strong class="text-truncate">{{ selectedProfile?.occupation }}</strong></div>
     </div>
 
-    <section class="d-flex flex-column gap-3 best-matches-stack pb-4">
+    <!-- avatar (center) — only ONE of these now -->
+    <div class="center-avatar-block text-center">
+      <div class="avatar-wrapper position-relative mx-auto mb-2">
+        <img [src]="selectedProfile?.image" alt="Active Profile Portrait" class="rounded-circle main-avatar">
+      </div>
+      <h2 class="profile-display-name font-marcellus text-uppercase m-0">{{ selectedProfile?.name }}</h2>
+      <p class="profile-display-sub m-0 mt-1">{{ selectedProfile?.age }} years</p>
+    </div>
+
+    <!-- info2 -->
+    <div class="info-column">
+      <h5 class="column-title"><i class="bi bi-graph-up"></i> Match Summary</h5>
+      <div class="data-row"><span>Highest Match</span><strong class="text-success">{{ selectedProfile?.maxMatchPercentage }}%</strong></div>
+      <div class="data-row"><span>Total Matches</span><strong>{{ selectedProfile?.matches?.length }}</strong></div>
+    </div>
+
+  </div>
+</section>
+
+    <div class="mb-3 flex-shrink-0">
+      <h3 class="fh-4 txt-8th fw-bold m-0 section-main-heading">Matched Profiles</h3>
+    </div>
+
+    <section class="d-flex flex-column gap-3 best-matches-stack pb-4 flex-grow-1 scroll-verticle style-1">
       <div class="match-alignment-row bg-white rounded-3 p-3 shadow-sm border border-light-subtle" *ngFor="let match of bestMatchesList">
         
         <div class="identity-segment text-center">
           <img [src]="match.image" [alt]="match.name" class="rounded-circle match-thumb mb-2">
           <h4 class="match-name m-0 text-truncate">{{ match.name }}</h4>
           <p class="match-meta m-0">{{ match.age }} years</p>
-          <span class="match-status-badge mt-1"><i class="bi bi-ring"></i> UN MARRIED</span>
         </div>
 
         <div class="info-column">
           <h5 class="column-title"><i class="bi bi-person"></i> Personal Information</h5>
-          <div class="data-row"><span>City</span><strong>{{ match.city }}</strong></div>
-          <div class="data-row"><span>Phone</span><strong>{{ match.phone }}</strong></div>
+          <div class="data-row"><span>City</span><strong class="text-truncate">{{ match.city }}</strong></div>
+          <div class="data-row"><span>Gender</span><strong>{{ match.gender }}</strong></div>
           <div class="data-row"><span>Nationality</span><strong class="text-truncate">{{ match.nationality }}</strong></div>
-          <div class="data-row"><span>Caste</span><strong>{{ match.caste }}</strong></div>
         </div>
 
         <div class="info-column">
-          <h5 class="column-title"><i class="bi bi-moon-stars"></i> Religion / Appearance</h5>
-          <div class="data-row"><span>Religion</span><strong>{{ match.religion }}</strong></div>
-          <div class="data-row"><span>Sect</span><strong>{{ match.sect }}</strong></div>
-          <div class="data-row"><span>Height</span><strong>{{ match.height }}</strong></div>
-          <div class="data-row"><span>Disabilities</span><strong>{{ match.disabilities }}</strong></div>
-        </div>
-
-        <div class="info-column">
-          <h5 class="column-title"><i class="bi bi-heart"></i> Lifestyle</h5>
-          <div class="data-row"><span>Smoke</span><strong>{{ match.smoke }}</strong></div>
-          <div class="data-row"><span>Drink</span><strong>{{ match.drink }}</strong></div>
-          <div class="data-row"><span>Want Kids</span><strong>{{ match.wantKids }}</strong></div>
-          <div class="data-row"><span>Previous Mar.</span><strong>{{ match.kidsFromPrev }}</strong></div>
+          <h5 class="column-title"><i class="bi bi-graph-up"></i> Match Score</h5>
+          <div class="data-row"><span>Match %</span><strong class="text-success">{{ match.matchPercentage }}%</strong></div>
         </div>
 
         <div class="info-column position-relative target-career-column">
-          <h5 class="column-title"><i class="bi bi-mortarboard"></i> Education & Career</h5>
-          <div class="data-row"><span>Education</span><strong class="text-truncate" [title]="match.education">{{ match.education }}</strong></div>
-          <div class="data-row"><span>University</span><strong class="text-truncate" [title]="match.university">{{ match.university }}</strong></div>
+          <h5 class="column-title"><i class="bi bi-mortarboard"></i> Career</h5>
           <div class="data-row"><span>Occupation</span><strong class="text-truncate" [title]="match.occupation">{{ match.occupation }}</strong></div>
-          <div class="data-row"><span>Income</span><strong class="text-truncate" [title]="match.income">{{ match.income }}</strong></div>
           
           <button type="button" class="btn floating-action-arrow rounded-circle d-flex align-items-center justify-content-center" (click)="onRedirectToFullProfile(match)">
             <i class="bi bi-arrow-up-right text-white"></i>

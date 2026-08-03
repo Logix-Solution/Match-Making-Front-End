@@ -27,15 +27,13 @@
 
 // Fluid, Self-Adjusting Professional Columns
 .comparison-column {
-  // Uses a fluid calculation: comfortable on 100% zoom, expands naturally on 80% zoom
   flex: 1 1 calc(28vw - 16px); 
-  min-width: 290px;  // Guarantees it won't squash text fields on tight zooms
-  max-width: 360px;  // Prevents it from becoming too wide on huge ultra-wide monitors
+  min-width: 290px;
+  max-width: 360px;
   display: flex;
   flex-direction: column;
 }
 
-// Card structure alignment
 .comparison-column > .bg-white {
   display: flex;
   flex-direction: column;
@@ -46,7 +44,7 @@
 .column-placeholder {
   background-color: #f8fafc !important;
   border: 2px dashed #cbd5e1 !important;
-  min-height: 495px; // Matches the active data card vertical profile height
+  min-height: 495px;
   align-self: stretch;
 
   .add-slot-btn {
@@ -62,12 +60,11 @@
   }
 }
 
-// Inner typography stabilization for clean rows across zoom scales
 .attribute-group-box {
   background-color: #fafbfc;
   
   .d-flex {
-    min-height: 38px; // Keeps row baselines strictly aligned across cards
+    min-height: 38px;
     align-items: center;
   }
 }
@@ -84,8 +81,8 @@
   transition: border-color 0.2s ease, background-color 0.2s ease;
 
   &.card-selected {
-    background-color: #fdf0f2 !important;   /* light pink fill */
-    border-color: var(--2nd) !important;    /* primary red/maroon border */
+    background-color: #fdf0f2 !important;
+    border-color: var(--2nd) !important;
   }
 
   &:hover:not(.card-selected) {
@@ -94,7 +91,6 @@
   }
 }
 
-// ─── Checkbox Marker ──────────────────────────────────────────────────────
 .custom-checkbox-marker {
   width: 22px;
   height: 22px;
@@ -104,7 +100,7 @@
   flex-shrink: 0;
 
   &.checked {
-    background-color: var(--2nd) !important;   /* filled maroon when selected */
+    background-color: var(--2nd) !important;
     border-color: var(--2nd) !important;
   }
 
@@ -112,4 +108,22 @@
     font-size: 13px;
     font-weight: 700;
   }
+}
+
+// ─── Profile avatar sizing ──────────────────────────────────────────────
+// Fixed square size + object-fit: cover so real (variable-size) profile
+// photos never stretch or distort inside the selection/comparison cards.
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  object-position: center;
+  flex-shrink: 0;
+  background-color: #f1f5f9; // shows while the image loads
+}
+
+.stack-thumb {
+  width: 28px;
+  height: 28px;
+  object-fit: cover;
 }

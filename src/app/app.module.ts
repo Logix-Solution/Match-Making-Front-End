@@ -81,6 +81,7 @@ import { RequestSubmitedComponent } from './Preferences/request-submited/request
 import { OneStepAwayComponent } from './home-page/one-step-away/one-step-away.component';
 import { AppointmentsComponent } from './Admin/appointments/appointments.component';
 import { AccountsComponent } from './Admin/accounts/accounts.component';
+import { GalleryComponent } from './home-page/gallery/gallery.component';
 
 
 @NgModule({
@@ -151,6 +152,7 @@ import { AccountsComponent } from './Admin/accounts/accounts.component';
     OneStepAwayComponent,
     AppointmentsComponent,
     AccountsComponent,
+    GalleryComponent,
 
   ],
   imports: [

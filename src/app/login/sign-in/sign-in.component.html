@@ -42,10 +42,7 @@
               color: #4a4a4a;
             "
           >
-            <span
-              *ngIf="!isGoogleLoading"
-              class="d-flex align-items-center gap-2"
-            >
+            <span *ngIf="!isGoogleLoading" class="d-flex align-items-center gap-2">
               <img
                 src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
                 alt="Google"
@@ -54,150 +51,140 @@
               />
               Sign up with Google
             </span>
-            <span
-              *ngIf="isGoogleLoading"
-              class="d-flex align-items-center gap-2"
-            >
-              <span
-                class="spinner-border spinner-border-sm"
-                role="status"
-                aria-hidden="true"
-              ></span>
+            <span *ngIf="isGoogleLoading" class="d-flex align-items-center gap-2">
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
               Connecting...
             </span>
           </button>
 
           <div class="d-flex align-items-center mb-2">
             <hr class="flex-grow-1 border-top m-0" />
-            <span
-              class="px-3 text-muted"
-              style="font-size: 0.7rem; white-space: nowrap"
-            >
+            <span class="px-3 text-muted" style="font-size: 0.7rem; white-space: nowrap">
               Or sign up with email
             </span>
             <hr class="flex-grow-1 border-top m-0" />
           </div>
 
-        <form>
-  <div class="mb-2">
-    <label class="form-label fw-medium mb-1" style="font-size: 0.8rem; color: #1a1a1a">
-      Full Name
-    </label>
-    <div class="input-group custom-input-group">
-      <span class="input-group-text border-end-0">
-        <i class="bi bi-person text-muted"></i>
-      </span>
-      <input
-        type="text"
-        class="form-control border-start-0 ps-1"
-        [class.is-invalid]="fullNameError"
-        placeholder="Enter your full name"
-        name="fullName"
-        [(ngModel)]="fullName"
-        (blur)="markTouched('fullName')"
-        style="background-color: #fbf9f6"
-      />
-    </div>
-    <div class="text-danger mt-1" style="font-size: 0.75rem" *ngIf="fullNameError">
-      {{ fullNameError }}
-    </div>
-  </div>
+          <form>
+            <div class="mb-2">
+              <label class="form-label fw-medium mb-1" style="font-size: 0.8rem; color: #1a1a1a">
+                Full Name
+              </label>
+              <div class="input-group custom-input-group">
+                <span class="input-group-text border-end-0">
+                  <i class="bi bi-person text-muted"></i>
+                </span>
+                <input
+                  type="text"
+                  class="form-control border-start-0 ps-1"
+                  [class.is-invalid]="fullNameError"
+                  placeholder="Enter your full name"
+                  name="fullName"
+                  [(ngModel)]="fullName"
+                  (blur)="markTouched('fullName')"
+                  style="background-color: #fbf9f6"
+                />
+              </div>
+              <div class="text-danger mt-1" style="font-size: 0.75rem" *ngIf="fullNameError">
+                {{ fullNameError }}
+              </div>
+            </div>
 
-  <div class="mb-2">
-    <label class="form-label fw-medium mb-1" style="font-size: 0.8rem; color: #1a1a1a">
-      Email Address
-    </label>
-    <div class="input-group custom-input-group">
-      <span class="input-group-text border-end-0">
-        <i class="bi bi-envelope text-muted"></i>
-      </span>
-      <input
-        type="email"
-        class="form-control border-start-0 ps-1"
-        [class.is-invalid]="emailError"
-        placeholder="Enter your official Email"
-        name="email"
-        [(ngModel)]="email"
-        (blur)="markTouched('email')"
-        style="background-color: #fbf9f6"
-      />
-    </div>
-    <div class="text-danger mt-1" style="font-size: 0.75rem" *ngIf="emailError">
-      {{ emailError }}
-    </div>
-  </div>
+            <div class="mb-2">
+              <label class="form-label fw-medium mb-1" style="font-size: 0.8rem; color: #1a1a1a">
+                Email Address
+              </label>
+              <div class="input-group custom-input-group">
+                <span class="input-group-text border-end-0">
+                  <i class="bi bi-envelope text-muted"></i>
+                </span>
+                <input
+                  type="email"
+                  class="form-control border-start-0 ps-1"
+                  [class.is-invalid]="emailError"
+                  placeholder="Enter your official Email"
+                  name="email"
+                  [(ngModel)]="email"
+                  (blur)="markTouched('email')"
+                  style="background-color: #fbf9f6"
+                />
+              </div>
+              <div class="text-danger mt-1" style="font-size: 0.75rem" *ngIf="emailError">
+                {{ emailError }}
+              </div>
+            </div>
 
-  <div class="mb-2">
-    <label class="form-label fw-medium mb-1" style="font-size: 0.8rem; color: #1a1a1a">
-      Phone Number
-    </label>
-    <div class="input-group custom-input-group">
-      <span class="input-group-text border-end-0">
-        <i class="bi bi-telephone text-muted"></i>
-      </span>
-      <input
-        type="tel"
-        class="form-control border-start-0 ps-1"
-        [class.is-invalid]="phoneError"
-        placeholder="+92 300 1234567"
-        name="phone"
-        [(ngModel)]="phone"
-        (blur)="markTouched('phone')"
-        style="background-color: #fbf9f6"
-      />
-    </div>
-    <div class="text-danger mt-1" style="font-size: 0.75rem" *ngIf="phoneError">
-      {{ phoneError }}
-    </div>
-  </div>
+            <div class="mb-2">
+              <label class="form-label fw-medium mb-1" style="font-size: 0.8rem; color: #1a1a1a">
+                Phone Number
+              </label>
+              <div class="input-group custom-input-group">
+                <span class="input-group-text border-end-0">
+                  <i class="bi bi-telephone text-muted"></i>
+                </span>
+                <input
+                  type="tel"
+                  class="form-control border-start-0 ps-1"
+                  [class.is-invalid]="phoneError"
+                  placeholder="+92 300 1234567"
+                  name="phone"
+                  [(ngModel)]="phone"
+                  (blur)="markTouched('phone')"
+                  style="background-color: #fbf9f6"
+                />
+              </div>
+              <div class="text-danger mt-1" style="font-size: 0.75rem" *ngIf="phoneError">
+                {{ phoneError }}
+              </div>
+            </div>
 
-  <div class="mb-3">
-    <label class="form-label fw-medium mb-1" style="font-size: 0.8rem; color: #1a1a1a">
-      Password
-    </label>
-    <div class="input-group custom-input-group">
-      <span class="input-group-text border-end-0">
-        <i class="bi bi-lock text-muted"></i>
-      </span>
-      <input
-        [type]="hidePassword ? 'password' : 'text'"
-        class="form-control border-start-0 border-end-0 ps-1"
-        [class.is-invalid]="passwordError"
-        placeholder="Create a strong password"
-        name="password"
-        [(ngModel)]="password"
-        (blur)="markTouched('password')"
-        style="background-color: #fbf9f6"
-      />
-      <span class="input-group-text border-start-0 cursor-pointer" (click)="togglePasswordVisibility()">
-        <i [class]="hidePassword ? 'bi bi-eye-slash text-muted' : 'bi bi-eye text-muted'"></i>
-      </span>
-    </div>
-    <div class="text-danger mt-1" style="font-size: 0.75rem" *ngIf="passwordError">
-      {{ passwordError }}
-    </div>
-  </div>
+            <div class="mb-3">
+              <label class="form-label fw-medium mb-1" style="font-size: 0.8rem; color: #1a1a1a">
+                Password
+              </label>
+              <div class="input-group custom-input-group">
+                <span class="input-group-text border-end-0">
+                  <i class="bi bi-lock text-muted"></i>
+                </span>
+                <input
+                  [type]="hidePassword ? 'password' : 'text'"
+                  class="form-control border-start-0 border-end-0 ps-1"
+                  [class.is-invalid]="passwordError"
+                  placeholder="Create a strong password"
+                  name="password"
+                  [(ngModel)]="password"
+                  (blur)="markTouched('password')"
+                  style="background-color: #fbf9f6"
+                />
+                <span class="input-group-text border-start-0 cursor-pointer" (click)="togglePasswordVisibility()">
+                  <i [class]="hidePassword ? 'bi bi-eye-slash text-muted' : 'bi bi-eye text-muted'"></i>
+                </span>
+              </div>
+              <div class="text-danger mt-1" style="font-size: 0.75rem" *ngIf="passwordError">
+                {{ passwordError }}
+              </div>
+            </div>
 
-  <button
-    class="btn btn-primary-brand w-100 rounded-pill py-2 fw-semibold mb-2"
-    (click)="createProfile()"
-    [disabled]="isLoading"
-    style="font-size: 0.9rem"
-  >
-    <span *ngIf="!isLoading">Create Profile</span>
-    <span *ngIf="isLoading" class="d-flex align-items-center justify-content-center gap-2">
-      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      Creating Profile...
-    </span>
-  </button>
-</form>
+            <button
+              class="btn btn-primary-brand w-100 rounded-pill py-2 fw-semibold mb-2"
+              (click)="createProfile()"
+              [disabled]="isLoading"
+              style="font-size: 0.9rem"
+            >
+              <span *ngIf="!isLoading">Create Profile</span>
+              <span *ngIf="isLoading" class="d-flex align-items-center justify-content-center gap-2">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Creating Profile...
+              </span>
+            </button>
+          </form>
 
           <div class="text-center">
             <span class="text-muted" style="font-size: 0.8rem">
               Already have an account?
             </span>
-            <a
-              class="txt-primary text-decoration-none fw-semibold cursor-pointer ms-1"
+            
+            <a  class="txt-primary text-decoration-none fw-semibold cursor-pointer ms-1"
               routerLink="/login"
               style="font-size: 0.8rem; color: #6b1a52"
             >
@@ -207,5 +194,54 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ───── OTP Verification Modal (same pattern as consultation component) ───── -->
+<div class="otp-modal-overlay" *ngIf="showOtpModal">
+  <div class="otp-modal">
+    <button class="otp-modal-close" (click)="closeOtpModal()" aria-label="Close">
+      <i class="bi bi-x-lg"></i>
+    </button>
+
+    <h3 class="otp-title">Check your email</h3>
+    <p class="otp-subtitle">
+      <span *ngIf="isSendingOtp">Sending verification code...</span>
+      <span *ngIf="!isSendingOtp">
+        Enter the verification code sent to<br />
+        <strong>{{ email }}</strong>
+      </span>
+    </p>
+
+    <div class="otp-boxes">
+      <input
+        *ngFor="let digit of otpDigits; let i = index; trackBy: trackByIndex"
+        [id]="'signup-otp-box-' + i"
+        type="text"
+        inputmode="numeric"
+        pattern="[0-9]"
+        maxlength="1"
+        class="otp-box"
+        [value]="digit"
+        [disabled]="isVerifyingOtp"
+        (input)="onOtpInput($event, i)"
+        (keydown)="onOtpKeyDown($event, i)"
+      />
+    </div>
+
+    <p class="otp-error" *ngIf="otpErrorMessage">{{ otpErrorMessage }}</p>
+
+    <p class="otp-resend">
+      Didn't get a code?
+      <a (click)="resendOtp()">Resend</a>
+    </p>
+
+    <button class="otp-verify-btn" [disabled]="isVerifyingOtp" (click)="verifyOtpAndSave()">
+      <span *ngIf="!isVerifyingOtp">Verify Email</span>
+      <span *ngIf="isVerifyingOtp" class="d-flex align-items-center justify-content-center gap-2">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Verifying...
+      </span>
+    </button>
   </div>
 </div>

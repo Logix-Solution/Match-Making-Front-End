@@ -1,0 +1,116 @@
+<main class="container-fluid ps-3 d-flex flex-column h-100 no-scroll position-relative gallery-public-page">
+
+  <!-- Header -->
+  <header class="mb-3">
+    <h1 class="ft-7 m-0">Gallery</h1>
+    <p class="mt-1 mb-0" style="font-weight: 400; color: #6C727A;">Browse moments from our matchmaking events.</p>
+  </header>
+
+  <!-- Filters -->
+  <section class="filters-bar mb-4">
+
+    <div class="position-relative search-box">
+      <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 txt-7th ft-3"></i>
+      <input type="text"
+             class="form-control ps-5 py-2 ft-3 border bg-6th rounded-3 custom-search-input"
+             placeholder="Search events or cities"
+             [(ngModel)]="searchQuery"
+             (input)="onSearchChange()">
+    </div>
+
+    <button *ngIf="hasActiveFilters"
+            type="button"
+            class="btn clear-filters-btn"
+            (click)="clearFilters()">
+      <i class="bi bi-x-circle"></i> Clear
+    </button>
+
+  </section>
+
+  <!-- Event Type Pills -->
+  <section class="type-pills-row mb-4">
+    <button type="button"
+            class="type-pill"
+            [class.active]="selectedEventTypeID === 0"
+            (click)="onEventTypeFilterChange(0)">
+      All Events
+    </button>
+    <button type="button"
+            class="type-pill"
+            *ngFor="let type of eventTypeList"
+            [class.active]="selectedEventTypeID === type.eventTypeID"
+            (click)="onEventTypeFilterChange(type.eventTypeID)">
+      {{ type.eventTypeTitle }}
+    </button>
+  </section>
+
+  <!-- Gallery Grid -->
+  <section class="gallery-masonry flex-grow-1 scroll-verticle style-1">
+
+    <div class="masonry-item" *ngFor="let event of filteredEvents"
+         (click)="openLightbox(event)">
+      <div class="gallery-card-view position-relative overflow-hidden rounded-3">
+
+        <img [src]="event.imageUrl"
+             [alt]="event.title"
+             class="gallery-img w-100 h-100 object-fit-cover"
+             onerror="this.src='assets/images/default-event.png'">
+
+        <div class="gradient-overlay position-absolute bottom-0 start-0 w-100 p-3 d-flex flex-column justify-content-end">
+          <span class="type-badge mb-1">{{ event.eventTypeTitle }}</span>
+          <h3 class="fh-6 text-white m-0 mb-1 font-title-card">{{ event.title }}</h3>
+          <p class="ft-4 text-white-50 m-0 d-flex align-items-center gap-1">
+            <i class="bi bi-geo-alt-fill text-white-50"></i> {{ event.city }}, {{ event.country }}
+          </p>
+        </div>
+
+        <div class="view-icon-hint">
+          <i class="bi bi-arrows-fullscreen"></i>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state-full" *ngIf="!isLoading && filteredEvents.length === 0">
+      <i class="bi bi-images"></i>
+      <p class="ft-2 txt-7th m-0 mt-2">No events found matching your filters.</p>
+      <button type="button" class="btn clear-filters-btn mt-2" (click)="clearFilters()" *ngIf="hasActiveFilters">
+        Clear filters
+      </button>
+    </div>
+
+    <!-- Loading skeletons -->
+    <ng-container *ngIf="isLoading">
+      <div class="masonry-item skeleton-item" *ngFor="let s of [1,2,3,4,5,6,7,8]"></div>
+    </ng-container>
+
+  </section>
+
+</main>
+
+<!-- Lightbox / Full Preview (view-only, no edit/delete) -->
+<div class="lightbox-backdrop" *ngIf="isLightboxOpen" (click)="closeLightbox()">
+  <div class="lightbox-panel" (click)="$event.stopPropagation()">
+
+    <button type="button" class="lightbox-close" (click)="closeLightbox()" aria-label="Close">
+      <i class="bi bi-x-lg"></i>
+    </button>
+
+    <div class="lightbox-image-wrap">
+      <img [src]="activeEvent?.imageUrl" [alt]="activeEvent?.title" class="lightbox-img">
+    </div>
+
+    <div class="lightbox-info">
+      <span class="type-badge-solid mb-2">{{ activeEvent?.eventTypeTitle }}</span>
+      <h2 class="lightbox-title">{{ activeEvent?.title }}</h2>
+      <p class="lightbox-location">
+        <i class="bi bi-geo-alt-fill"></i> {{ activeEvent?.city }}, {{ activeEvent?.country }}
+      </p>
+      <p class="lightbox-desc" *ngIf="activeEvent?.eventDescription">
+        {{ activeEvent?.eventDescription }}
+      </p>
+    </div>
+
+  </div>
+</div>

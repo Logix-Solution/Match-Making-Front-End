@@ -1,0 +1,319 @@
+.gallery-public-page {
+  --brand-maroon: #590117;
+}
+
+/* ==========================================================================
+   FILTERS BAR
+   ========================================================================== */
+.filters-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  .search-box {
+    flex: 1 1 280px;
+    min-width: 220px;
+    max-width: 380px;
+  }
+
+  .custom-search-input {
+    height: 44px;
+  }
+
+  .clear-filters-btn {
+    height: 44px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    color: #64748b;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 14px;
+    transition: all 0.15s ease;
+
+    &:hover {
+      border-color: #cbd5e1;
+      color: #1a202c;
+    }
+  }
+}
+
+/* ==========================================================================
+   EVENT TYPE PILLS
+   ========================================================================== */
+.type-pills-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  row-gap: 10px;
+  column-gap: 8px;
+
+  .type-pill {
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    align-self: center;
+    line-height: 1.2;
+    vertical-align: middle;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    color: #475569;
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    outline: none;
+
+    &:hover {
+      border-color: var(--brand-maroon);
+      color: var(--brand-maroon);
+    }
+
+    &.active {
+      background: var(--brand-maroon) !important;
+      border-color: var(--brand-maroon) !important;
+      color: #fff !important;
+      text-decoration: none !important;
+    }
+  }
+}
+
+/* ==========================================================================
+   GALLERY GRID
+   Uniform, fixed-size tiles (replaces the old column-masonry + random "tall"
+   variant, which produced inconsistent crops and made some images barely
+   visible). Every card now has the same aspect ratio so images always
+   render fully and consistently.
+   ========================================================================== */
+.gallery-masonry {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.masonry-item {
+  cursor: pointer;
+}
+
+.gallery-card-view {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 16px !important;
+  background-color: #edf2f7; // shows while image loads
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+
+    .view-icon-hint {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .gallery-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .gradient-overlay {
+    height: 65%;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.85) 0%,
+      rgba(0, 0, 0, 0.35) 55%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+  }
+
+  .type-badge {
+    display: inline-block;
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+
+  .font-title-card {
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.1px;
+  }
+
+  .view-icon-hint {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1a202c;
+    font-size: 0.85rem;
+    opacity: 0;
+    transform: scale(0.85);
+    transition: all 0.2s ease;
+    z-index: 2;
+  }
+}
+
+/* Loading skeletons */
+.skeleton-item {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #edf2f7 25%, #f7fafc 37%, #edf2f7 63%);
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+/* Empty state */
+.empty-state-full {
+  width: 100%;
+  text-align: center;
+  padding: 80px 20px;
+
+  i {
+    font-size: 2.5rem;
+    color: #cbd5e1;
+  }
+}
+
+/* ==========================================================================
+   LIGHTBOX (view-only preview — no edit/delete)
+   ========================================================================== */
+.lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3vh 3vw;
+}
+
+.lightbox-panel {
+  background: #ffffff;
+  border-radius: 20px;
+  width: min(900px, 96vw);
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+  transition: background 0.15s ease;
+
+  &:hover { background: rgba(0, 0, 0, 0.7); }
+}
+
+.lightbox-image-wrap {
+  flex: 1 1 60%;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  max-height: 60vh;
+
+  @media (min-width: 768px) {
+    max-height: 92vh;
+  }
+
+  .lightbox-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+.lightbox-info {
+  flex: 1 1 40%;
+  padding: 1.75rem;
+  overflow-y: auto;
+
+  .type-badge-solid {
+    display: inline-block;
+    background: rgba(89, 1, 23, 0.08);
+    color: var(--brand-maroon);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 999px;
+  }
+
+  .lightbox-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin: 0.5rem 0 0.75rem;
+  }
+
+  .lightbox-location {
+    font-size: 0.9rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 1rem;
+  }
+
+  .lightbox-desc {
+    font-size: 0.9rem;
+    color: #475569;
+    line-height: 1.6;
+  }
+}

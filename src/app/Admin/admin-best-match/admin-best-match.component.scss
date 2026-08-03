@@ -26,18 +26,13 @@
   cursor: pointer;
   border: 1px solid transparent;
   background-color: #f8fafc;
-  max-width: 100%; // Blocks scaling overflow containers when zoomed out
+  max-width: 100%;
 
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06) !important;
     border: 1px solid rgba(89, 1, 23, 0.1);
   }
-}
-
-.profile-avatar {
-  width: 3.375rem;
-  height: 3.375rem;
 }
 
 .txt-maroon-accent {
@@ -65,6 +60,17 @@
   .line-height-1 { line-height: 1; }
 }
 
+.badge-count-pill {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 /* ==========================================================================
    REUSABLE INFO COLUMN ARCHITECTURE
    ========================================================================== */
@@ -72,7 +78,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  min-w: 0; // Guardrail against text truncation grid distortion
+  min-width: 0; // Guardrail against text truncation grid distortion
 
   .column-title {
     font-size: 0.825rem;
@@ -114,33 +120,79 @@
       color: #1a202c; 
       font-weight: 600;
       text-align: right;
-      min-w: 0;
+      min-width: 0;
     }
   }
 }
 
 /* ==========================================================================
-   VIEW 2: PROFILE DASHBOARD & ALIGNMENT ROW GRID MATRICES
+   FIXED IMAGE SIZES — prevents layout shift when real API images load
+   at different native dimensions
+   ========================================================================== */
+.profile-avatar {
+  width: 3.375rem;
+  height: 3.375rem;
+  object-fit: cover;
+  flex-shrink: 0;
+  background-color: #edf2f7;
+}
+
+.main-avatar {
+  width: 6.5rem;
+  height: 6.5rem;
+  object-fit: cover;
+  border: 4px solid #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  background-color: #edf2f7;
+  flex-shrink: 0;
+}
+
+.match-thumb {
+  width: 4rem;
+  height: 4rem;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background-color: #edf2f7;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   VIEW 2: PROFILE DASHBOARD — avatar explicitly pinned to center column
+   via named grid-template-areas, so it never drifts regardless of
+   container width or zoom level.
    ========================================================================== */
 .main-profile-dashboard {
   background-color: #ffffff;
   border-radius: 16px !important;
+  border-top: 1px solid #e2e8f0;
+  container-type: inline-size;
+  position: relative;
+  overflow: visible; // lets the avatar image poke above the card
+  padding-top: 2.5rem !important; // room for the image to overlap upward
 
   .profile-layout-grid {
     display: grid;
-    // Uses fluid minimum bounds combined with fractional columns to stay consistent at 80% or 100% zoom
-    grid-template-columns: repeat(2, minmax(140px, 1fr)) minmax(160px, 1.2fr) repeat(2, minmax(140px, 1fr));
+    grid-template-columns: minmax(150px, 1fr) minmax(150px, 0.85fr) minmax(150px, 1fr);
+    grid-template-areas: "info1 avatar info2";
     gap: 1.25rem;
-    align-items: center;
+    align-items: start;
+
+    .info-column:nth-of-type(1) { grid-area: info1; }
+    .info-column:nth-of-type(2) { grid-area: info2; }
   }
 
   .center-avatar-block {
-    .main-avatar {
-      width: 6.5rem;
-      height: 6.5rem;
-      object-fit: cover;
-      border: 4px solid #ffffff;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    grid-area: avatar; // stays in normal grid flow — this fixes the overlap bug
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+
+    .avatar-wrapper {
+      margin: -3.75rem auto 0.5rem; // ONLY the image pulls up to straddle the border
+      position: relative;
+      z-index: 2;
     }
 
     .profile-display-name {
@@ -148,31 +200,150 @@
       font-weight: 700;
       color: #000000;
       letter-spacing: 0.5px;
+      white-space: nowrap;
     }
 
     .profile-display-sub {
       font-size: 0.825rem;
       color: #718096;
     }
+  }
+}
 
-    .marital-pill {
-      font-size: 0.65rem;
-      font-weight: 700;
-      color: #a0aec0;
-      letter-spacing: 0.4px;
+@container (max-width: 640px) {
+  .main-profile-dashboard {
+    padding-top: 1rem !important;
+  }
+
+  .main-profile-dashboard .profile-layout-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "avatar"
+      "info1"
+      "info2" !important;
+  }
+
+  .main-profile-dashboard .center-avatar-block .avatar-wrapper {
+    margin: 0 auto 0.5rem; // no border-straddle on mobile, just normal stacked avatar
+  }
+
+  .main-profile-dashboard .center-avatar-block {
+    border-bottom: 1px solid #edf2f7;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@supports not (container-type: inline-size) {
+  @media (max-width: 900px) {
+    .main-profile-dashboard {
+      padding-top: 1rem !important;
+    }
+
+    .main-profile-dashboard .profile-layout-grid {
+      grid-template-columns: 1fr !important;
+      grid-template-areas:
+        "avatar"
+        "info1"
+        "info2" !important;
+    }
+
+    .main-profile-dashboard .center-avatar-block .avatar-wrapper {
+      margin: 0 auto 0.5rem;
+    }
+
+    .main-profile-dashboard .center-avatar-block {
+      border-bottom: 1px solid #edf2f7;
+      padding-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+}
+
+@container (max-width: 640px) {
+  .main-profile-dashboard .profile-layout-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "avatar"
+      "info1"
+      "info2" !important;
+  }
+
+  .main-profile-dashboard .center-avatar-block {
+    border-bottom: 1px solid #edf2f7;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@supports not (container-type: inline-size) {
+  @media (max-width: 900px) {
+    .main-profile-dashboard .profile-layout-grid {
+      grid-template-columns: 1fr !important;
+      grid-template-areas:
+        "avatar"
+        "info1"
+        "info2" !important;
+    }
+
+    .main-profile-dashboard .center-avatar-block {
+      border-bottom: 1px solid #edf2f7;
+      padding-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+}
+
+/* Narrow container: avatar moves to top, stacked above the info columns,
+   still centered, all columns become full-width */
+@container (max-width: 640px) {
+  .main-profile-dashboard .profile-layout-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "avatar"
+      "info1"
+      "info2"
+      "info3"
+      "info4" !important;
+  }
+
+  .main-profile-dashboard .center-avatar-block {
+    border-bottom: 1px solid #edf2f7;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@supports not (container-type: inline-size) {
+  @media (max-width: 900px) {
+    .main-profile-dashboard .profile-layout-grid {
+      grid-template-columns: 1fr !important;
+      grid-template-areas:
+        "avatar"
+        "info1"
+        "info2"
+        "info3"
+        "info4" !important;
+    }
+
+    .main-profile-dashboard .center-avatar-block {
+      border-bottom: 1px solid #edf2f7;
+      padding-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
     }
   }
 }
 
 .match-alignment-row {
   display: grid;
-  grid-template-columns: minmax(120px, 1fr) repeat(4, minmax(140px, 1.5fr));
+  grid-template-columns: minmax(140px, 1fr) repeat(3, minmax(160px, 1.4fr));
   gap: 1.25rem;
   align-items: start;
   position: relative;
-  padding: 1rem 3.5rem 1rem 1rem !important; // Padded to elegantly absorb floating button space
+  padding: 1rem 3.5rem 1rem 1rem !important;
   background: #ffffff;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
+  container-type: inline-size; // enables container queries below
 
   &:hover {
     transform: translateY(-1px);
@@ -187,13 +358,6 @@
     border-right: 1px solid #edf2f7;
     padding-right: 0.75rem;
     height: 100%;
-
-    .match-thumb {
-      width: 4rem;
-      height: 4rem;
-      object-fit: cover;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
 
     .match-name {
       font-size: 0.9rem;
@@ -251,22 +415,23 @@
 }
 
 /* ==========================================================================
-   ZOOM ENGINE & SCREEN VIEWPORT RE-FLOW BREAKPOINTS
+   RESPONSIVE COLLAPSE — driven by the CARD'S OWN width via container query,
+   not the viewport. This is what makes it correct at every zoom level:
+   zoom changes effective viewport width, but container queries respond to
+   the actual rendered width of the element itself, so there's no mismatch.
    ========================================================================== */
-@media (max-width: 1400px) {
-  .main-profile-dashboard .profile-layout-grid,
+@container (max-width: 640px) {
+  .profile-layout-grid,
   .match-alignment-row {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1rem;
+    grid-template-columns: 1fr !important;
   }
-  
-  .main-profile-dashboard .center-avatar-block,
-  .match-alignment-row .identity-segment {
-    grid-column: 1 / -1; // Snaps to horizontal dashboard header card banner when space collapses
-    border-right: none;
+
+  .center-avatar-block,
+  .identity-segment {
+    border-right: none !important;
     border-bottom: 1px solid #edf2f7;
     padding-bottom: 0.75rem;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
   }
 
   .match-alignment-row {
@@ -274,10 +439,10 @@
   }
 
   .floating-action-arrow {
-    position: relative;
-    top: 0;
-    right: 0;
-    transform: none;
+    position: relative !important;
+    top: 0 !important;
+    right: 0 !important;
+    transform: none !important;
     margin-top: 0.75rem;
     width: 100%;
     border-radius: 6px !important;
@@ -285,6 +450,36 @@
 
     &:hover {
       transform: scale(1.01);
+    }
+  }
+}
+
+/* Fallback for browsers without container query support (older Safari/Firefox) —
+   viewport-based fallback so layout never fully breaks */
+@supports not (container-type: inline-size) {
+  @media (max-width: 900px) {
+    .profile-layout-grid,
+    .match-alignment-row {
+      grid-template-columns: 1fr !important;
+    }
+
+    .center-avatar-block,
+    .identity-segment {
+      border-right: none !important;
+      border-bottom: 1px solid #edf2f7;
+      padding-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .floating-action-arrow {
+      position: relative !important;
+      top: 0 !important;
+      right: 0 !important;
+      transform: none !important;
+      margin-top: 0.75rem;
+      width: 100%;
+      border-radius: 6px !important;
+      height: 2.25rem;
     }
   }
 }

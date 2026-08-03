@@ -2,14 +2,14 @@ $brand-primary: #590117;
 $input-bg: #fbf9f6;      
 
 .custom-input-group {
-  border-radius: 10px !important; // Slightly more compact rounding matching shorter inputs
+  border-radius: 10px !important;
   overflow: hidden;
   
   .input-group-text, .form-control {
     border-color: #e5e7eb;
     background-color: $input-bg;
-    padding-top: 0.5rem;    // Reduced from 0.65rem to fit better under 100% zoom
-    padding-bottom: 0.5rem;  // Reduced from 0.65rem to fit better under 100% zoom
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
     font-size: 0.85rem;
   }
 
@@ -54,5 +54,138 @@ $input-bg: #fbf9f6;
 @media (max-width: 576px) {
   .bgLogin {
     align-items: flex-end !important; 
+  }
+}
+
+/* ==========================================================================
+   OTP VERIFICATION MODAL — same structure/behavior as the consultation
+   component's OTP modal, restyled to match this page's maroon brand color
+   ========================================================================== */
+.otp-modal-overlay {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(26, 26, 26, 0.55);
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.otp-modal {
+  --accent: #{$brand-primary};
+
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px 36px 32px;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+
+  .otp-modal-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: none;
+    border: none;
+    color: #7a6f63;
+    font-size: 1rem;
+    cursor: pointer;
+
+    &:hover { color: #1a1a1a; }
+  }
+
+  .otp-title {
+    font-family: "Playfair Display", serif;
+    font-weight: 400;
+    font-size: 1.6rem !important;
+    color: #1a1a1a;
+    margin-bottom: 10px;
+  }
+
+  .otp-subtitle {
+    font-size: 0.88rem;
+    color: #7a6f63;
+    line-height: 22px;
+    margin-bottom: 26px;
+
+    strong { color: #1a1a1a; font-weight: 600; }
+  }
+
+  .otp-boxes {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .otp-box {
+    width: 52px;
+    height: 52px;
+    border: 1px solid #e5e7eb;
+    background-color: $input-bg;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    outline: none;
+
+    &:focus { border-color: var(--accent); background: #fff; }
+    &:disabled { background: #f6f2ec; }
+  }
+
+  .otp-error {
+    font-size: 0.8rem;
+    color: #c0392b;
+    margin-bottom: 8px;
+  }
+
+  .otp-resend {
+    font-size: 0.85rem;
+    color: #7a6f63;
+    margin-bottom: 24px;
+
+    a {
+      color: var(--accent);
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+
+      &:hover { text-decoration: underline; }
+    }
+  }
+
+  .otp-verify-btn {
+    width: 100%;
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 15px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &:hover:not(:disabled) { background-color: darken($brand-primary, 7%); }
+    &:disabled { opacity: 0.6; cursor: default; }
+  }
+}
+
+@media (max-width: 480px) {
+  .otp-modal {
+    padding: 32px 24px 26px;
+
+    .otp-box {
+      width: 44px;
+      height: 44px;
+      font-size: 1.05rem;
+    }
   }
 }

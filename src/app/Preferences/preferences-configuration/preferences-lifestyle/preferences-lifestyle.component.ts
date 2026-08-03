@@ -168,7 +168,7 @@ export class PreferencesLifestyleComponent implements OnInit {
             : !!response; // handles a single object being returned instead of an array
 
           if (!hasPlan) {
-            this.router.navigate(['/registerationFee']);
+            this.router.navigate(['/Consultation']);
           }
         },
         error: (err: any) => {

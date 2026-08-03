@@ -82,14 +82,29 @@
           <i class="bi bi-clock"></i>
           <span>AVAILABLE SLOTS FOR {{ selectedDateLabel }}.</span>
         </div>
-        <div class="slots-grid">
+
+        <div class="slots-grid" *ngIf="!isLoadingSlots && timeSlots.length">
           <button
             *ngFor="let slot of timeSlots"
+            type="button"
             class="slot-pill"
             [class.active]="selectedSlotId === slot.timeslotID"
+            [class.booked]="slot.slotStatus !== 'Available'"
+            [disabled]="slot.slotStatus !== 'Available'"
             (click)="selectSlot(slot)"
-          >{{ slot.timeSlot }}</button>
+          >
+            <span class="slot-time">{{ slot.timeSlot }}</span>
+            <span class="slot-status" *ngIf="slot.slotStatus !== 'Available'">Booked</span>
+          </button>
         </div>
+
+        <p class="slots-empty" *ngIf="!isLoadingSlots && !timeSlots.length">
+          No slots available for this date.
+        </p>
+
+        <p class="slots-empty" *ngIf="isLoadingSlots">
+          Loading slots...
+        </p>
       </div>
 
       <!-- Booking form -->
@@ -98,41 +113,6 @@
         <p class="form-sub">Please provide your information to finalize the booking.</p>
 
         <div class="form-grid">
-          <div class="field">
-            <label>First Name <span class="req">*</span></label>
-            <input type="text" placeholder="Salif" [(ngModel)]="firstName" [class.input-error]="fieldErrors.firstName" />
-            <span class="field-error" *ngIf="fieldErrors.firstName">First name is required</span>
-          </div>
-          <div class="field">
-            <label>Surname <span class="req">*</span></label>
-            <input type="text" placeholder="Saif" [(ngModel)]="surname" [class.input-error]="fieldErrors.surname" />
-            <span class="field-error" *ngIf="fieldErrors.surname">Surname is required</span>
-          </div>
-
-          <div class="field">
-            <label>Email Address <span class="req">*</span></label>
-            <input type="email" placeholder="hello@xyz.com" [(ngModel)]="email" [class.input-error]="fieldErrors.email" />
-            <span class="field-error" *ngIf="fieldErrors.email">Email address is required</span>
-          </div>
-          <div class="field">
-            <label>Phone Number <span class="req">*</span></label>
-            <div class="phone-group">
-              <select [(ngModel)]="selectedCountryCode">
-                <option *ngFor="let c of countries" [value]="c.country_code">{{ c.country_code }} </option>
-              </select>
-              <input type="tel" placeholder="300 1234567" [(ngModel)]="phone" [class.input-error]="fieldErrors.phone" />
-            </div>
-            <span class="field-error" *ngIf="fieldErrors.phone">Phone number is required</span>
-          </div>
-
-          <div class="field">
-            <label>Country <span class="req">*</span></label>
-            <select [(ngModel)]="selectedCountryId" [class.input-error]="fieldErrors.country">
-              <option [ngValue]="null" disabled selected>Select Country</option>
-              <option *ngFor="let c of countries" [ngValue]="c.country_id">{{ c.country_name }}</option>
-            </select>
-            <span class="field-error" *ngIf="fieldErrors.country">Country is required</span>
-          </div>
           <div class="field">
             <label>Consultation Language <span class="req">*</span></label>
             <select [(ngModel)]="consultationLanguageId" [class.input-error]="fieldErrors.language">
@@ -157,60 +137,16 @@
         <span class="field-error" *ngIf="fieldErrors.slot">Please select a time slot above</span>
 
         <button class="confirm-btn" [disabled]="isSubmitting" (click)="confirmAppointment()">
-          <i class="bi bi-calendar-check"></i> Confirm Appointment
+          <i class="bi bi-calendar-check"></i>
+          <span *ngIf="!isSubmitting">Confirm Appointment</span>
+          <span *ngIf="isSubmitting" class="d-flex align-items-center justify-content-center gap-2">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Booking...
+          </span>
         </button>
       </div>
 
     </main>
-  </div>
-
-  <!-- ───── OTP Verification Modal ───── -->
-  <div class="otp-modal-overlay" *ngIf="showOtpModal">
-    <div class="otp-modal">
-      <button class="otp-modal-close" (click)="closeOtpModal()" aria-label="Close">
-        <i class="bi bi-x-lg"></i>
-      </button>
-
-      <h3 class="otp-title">Check your email</h3>
-      <p class="otp-subtitle">
-        <span *ngIf="isSendingOtp">Sending verification code...</span>
-        <span *ngIf="!isSendingOtp">
-          Enter the verification code sent to<br />
-          <strong>{{ email }}</strong>
-        </span>
-      </p>
-
-      <div class="otp-boxes">
-        <input
-          *ngFor="let digit of otpDigits; let i = index; trackBy: trackByIndex"
-          [id]="'otp-box-' + i"
-          type="text"
-          inputmode="numeric"
-          pattern="[0-9]"
-          maxlength="1"
-          class="otp-box"
-          [value]="digit"
-          [disabled]="isVerifyingOtp"
-          (input)="onOtpInput($event, i)"
-          (keydown)="onOtpKeyDown($event, i)"
-        />
-      </div>
-
-      <p class="otp-error" *ngIf="otpErrorMessage">{{ otpErrorMessage }}</p>
-
-      <p class="otp-resend">
-        Didn't get a code?
-        <a (click)="resendOtp()">Resend</a>
-      </p>
-
-      <button class="otp-verify-btn" [disabled]="isVerifyingOtp" (click)="verifyOtpAndSave()">
-        <span *ngIf="!isVerifyingOtp">Verify Email</span>
-        <span *ngIf="isVerifyingOtp" class="d-flex align-items-center justify-content-center gap-2">
-          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-          Verifying...
-        </span>
-      </button>
-    </div>
   </div>
 
 </div>

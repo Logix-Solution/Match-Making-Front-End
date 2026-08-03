@@ -5,17 +5,17 @@ import { SharedDataService } from 'src/shared/services/shared-data.service';
 import { SharedFormFieldValidationService } from 'src/shared/services/shared-form-field-validation.service';
 import { environment } from 'src/envirnment/environment';
 
-// ─── Interface ────────────────────────────────────────────────────────────────
 interface SaveUserLoginInterface {
-  fullName:    string; // 0
-  spType:      string; // 1
-  email:       string; // 2
-  phoneNumber: string; // 3
-  password:    string; // 4
+  fullName:    string;
+  spType:      string;
+  email:       string;
+  phoneNumber: string;
+  password:    string;
 }
 
-// Declare Google global so TypeScript doesn't complain
 declare const google: any;
+
+type TouchedField = 'fullName' | 'email' | 'phone' | 'password';
 
 @Component({
   selector: 'app-sign-in',
@@ -24,18 +24,17 @@ declare const google: any;
 })
 export class SignInComponent implements OnInit {
 
-  // ─── Form Field Models ────────────────────────────────────────────────────
+  // ─── Form Field Models ────────────────────────────────────────────────
   fullName: string  = '';
   email:    string  = '';
   phone:    string  = '';
   password: string  = '';
 
-  // ─── UI State ─────────────────────────────────────────────────────────────
+  // ─── UI State ───────────────────────────────────────────────────────
   hidePassword: boolean = true;
   isLoading:    boolean = false;
   isGoogleLoading: boolean = false;
 
-  // ─── Touched state (per field, set true on blur OR on save attempt) ──────
   touched = {
     fullName: false,
     email:    false,
@@ -43,9 +42,12 @@ export class SignInComponent implements OnInit {
     password: false,
   };
 
+  markTouched(field: TouchedField): void {
+    this.touched[field] = true;
+  }
+
   private readonly emailPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // ─── Page Fields (API payload) ────────────────────────────────────────────
   pageFields: SaveUserLoginInterface = {
     fullName:    '',
     spType:      'insert',
@@ -54,14 +56,21 @@ export class SignInComponent implements OnInit {
     password:    '',
   };
 
-  // ─── Form Fields (for saveHttp validation) ────────────────────────────────
   formFields: any[] = [
-    { value: '',       msg: ' Enter Your Full Name',    type: 'textbox', required: true  }, // 0
-    { value: 'insert', msg: '',                         type: 'hidden',  required: false }, // 1
-    { value: '',       msg: ' Enter Your Email',        type: 'textbox', required: true  }, // 2
-    { value: '',       msg: ' Enter Your Phone Number', type: 'textbox', required: true  }, // 3
-    { value: '',       msg: ' Enter Your Password',     type: 'textbox', required: true  }, // 4
+    { value: '',       msg: ' Enter Your Full Name',    type: 'textbox', required: true  },
+    { value: 'insert', msg: '',                         type: 'hidden',  required: false },
+    { value: '',       msg: ' Enter Your Email',        type: 'textbox', required: true  },
+    { value: '',       msg: ' Enter Your Phone Number', type: 'textbox', required: true  },
+    { value: '',       msg: ' Enter Your Password',     type: 'textbox', required: true  },
   ];
+
+  // ─── OTP Verification Modal ─────────────────────────────────────────
+  showOtpModal = false;
+  otpDigits: string[] = ['', '', '', ''];
+  readonly OTP_LENGTH = 4;
+  isSendingOtp = false;
+  isVerifyingOtp = false;
+  otpErrorMessage = '';
 
   constructor(
     private router:      Router,
@@ -74,30 +83,29 @@ export class SignInComponent implements OnInit {
     this.loadGoogleScript();
   }
 
-  // ─── Load Google Identity Services Script ────────────────────────────────
+  // ─── Google Sign-In (unchanged) ──────────────────────────────────────
   loadGoogleScript(): void {
     if (typeof google !== 'undefined') {
       this.initGoogleSignIn();
       return;
     }
-    const script   = document.createElement('script');
-    script.src     = 'https://accounts.google.com/gsi/client';
-    script.async   = true;
-    script.defer   = true;
-    script.onload  = () => this.initGoogleSignIn();
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => this.initGoogleSignIn();
     document.head.appendChild(script);
   }
 
   initGoogleSignIn(): void {
     google.accounts.id.initialize({
-      client_id:        environment.googleClientId,
-      callback:         (response: any) => this.handleGoogleResponse(response),
-      auto_select:      false,
+      client_id: environment.googleClientId,
+      callback: (response: any) => this.handleGoogleResponse(response),
+      auto_select: false,
       cancel_on_tap_outside: true,
     });
   }
 
-  // ─── Trigger Google One-Tap / Popup ──────────────────────────────────────
   signUpWithGoogle(): void {
     if (typeof google === 'undefined') {
       this.toastr.error('Google Sign-In is not available. Please try again.');
@@ -106,36 +114,30 @@ export class SignInComponent implements OnInit {
     google.accounts.id.prompt();
   }
 
-  // ─── Handle Google Credential Response ───────────────────────────────────
   handleGoogleResponse(response: any): void {
     try {
-      const credential  = response.credential;
-      const payload     = JSON.parse(atob(credential.split('.')[1]));
-
-      const userName = payload.name  || '';
-      const email    = payload.email || '';
+      const credential = response.credential;
+      const payload = JSON.parse(atob(credential.split('.')[1]));
+      const userName = payload.name || '';
+      const email = payload.email || '';
 
       this.isGoogleLoading = true;
 
       const googlePayload = {
-        userID:    0,
+        userID: 0,
         userRoleID: 0,
-        userName:  userName,
-        contact:   '',
-        email:     email,
-        roleID:    3,
-        spType:    'insert'
+        userName: userName,
+        contact: '',
+        email: email,
+        roleID: 3,
+        spType: 'insert'
       };
-
-      console.log('Google Sign-Up Payload:', googlePayload);
 
       (this.dataService.postDirect('auth-api/GoogleSaveUser', googlePayload) as any)
         .subscribe({
           next: (res: any) => {
             this.isGoogleLoading = false;
             const apiResponse = Array.isArray(res) ? res[0] : res;
-            console.log('Google Save Response:', apiResponse);
-
             if (apiResponse?.includes('Success') || apiResponse?.includes('success')) {
               this.valid.apiInfoResponse('Account created successfully with Google!');
               this.router.navigate(['/login']);
@@ -145,34 +147,24 @@ export class SignInComponent implements OnInit {
           },
           error: (err: any) => {
             this.isGoogleLoading = false;
-            console.error('Google Save Error:', err);
             this.valid.apiErrorResponse('Google sign-up failed. Please try again.');
           }
         });
 
     } catch (e) {
       this.isGoogleLoading = false;
-      console.error('Google credential decode error:', e);
       this.toastr.error('Failed to process Google Sign-In. Please try again.');
     }
   }
 
-  // ─── Toggle Password Visibility ───────────────────────────────────────────
   togglePasswordVisibility(): void {
     this.hidePassword = !this.hidePassword;
   }
 
-  // ─── Close Modal ──────────────────────────────────────────────────────────
   closeModal(): void {
     this.router.navigate(['/login']);
   }
 
-  // ─── Mark a single field as touched (called on blur) ─────────────────────
-  markTouched(field: keyof typeof this.touched): void {
-    this.touched[field] = true;
-  }
-
-  // ─── Mark all fields touched (called on save attempt) ─────────────────────
   private markAllTouched(): void {
     this.touched.fullName = true;
     this.touched.email    = true;
@@ -180,7 +172,6 @@ export class SignInComponent implements OnInit {
     this.touched.password = true;
   }
 
-  // ─── Per-field error checks (used by template) ────────────────────────────
   get fullNameError(): string {
     if (!this.touched.fullName) return '';
     if (!this.fullName?.trim()) return 'Full name is required';
@@ -212,12 +203,12 @@ export class SignInComponent implements OnInit {
       && !!this.phone?.trim() && !!this.password?.trim();
   }
 
-  // ─── Create Profile (Save) ────────────────────────────────────────────────
+  // ─── Step 1: Validate → open OTP modal → send OTP ────────────────────
   createProfile(): void {
     this.markAllTouched();
 
     if (!this.isFormValid) {
-      return; // red messages are now visible; stop here
+      return;
     }
 
     this.formFields[0].value = this.fullName;
@@ -234,10 +225,122 @@ export class SignInComponent implements OnInit {
 
     if (!this.valid.validateToastr(this.formFields)) return;
 
-    this.isLoading = true;
+    // Open the modal immediately, don't wait on the network call
+    this.openOtpModal();
+    this.requestOtp();
+  }
 
-    console.log('PageFields:', this.pageFields);
-    console.log('FormFields:', this.formFields);
+  // ─── Step 2: Send OTP (runs while modal is already open) ─────────────
+  private requestOtp(): void {
+    this.isSendingOtp = true;
+    this.dataService.sendOTP(this.email).subscribe({
+      next: (res: any) => {
+        this.isSendingOtp = false;
+      },
+      error: (err: any) => {
+        this.isSendingOtp = false;
+        this.toastr.error('Could not send verification code, please try again');
+      }
+    });
+  }
+
+  private openOtpModal(): void {
+    this.otpDigits = ['', '', '', ''];
+    this.otpErrorMessage = '';
+    this.showOtpModal = true;
+    setTimeout(() => {
+      const first = document.getElementById('signup-otp-box-0') as HTMLInputElement;
+      if (first) first.focus();
+    });
+  }
+
+  trackByIndex(index: number): number {
+    return index;
+  }
+
+  closeOtpModal(): void {
+    this.showOtpModal = false;
+  }
+
+  // ─── OTP box handling ─────────────────────────────────────────────────
+  onOtpInput(event: any, index: number): void {
+    const input = event.target as HTMLInputElement;
+    const cleaned = input.value.replace(/\D/g, '').slice(-1);
+    input.value = cleaned;
+    this.otpDigits[index] = cleaned;
+    this.otpErrorMessage = '';
+
+    if (cleaned && index < this.OTP_LENGTH - 1) {
+      const next = document.getElementById(`signup-otp-box-${index + 1}`) as HTMLInputElement;
+      if (next) next.focus();
+    }
+
+    if (index === this.OTP_LENGTH - 1 && cleaned && this.otpDigits.every(d => d)) {
+      this.verifyOtpAndSave();
+    }
+  }
+
+  onOtpKeyDown(event: KeyboardEvent, index: number): void {
+    const input = event.target as HTMLInputElement;
+    if (event.key === 'Backspace' && !input.value && index > 0) {
+      const prev = document.getElementById(`signup-otp-box-${index - 1}`) as HTMLInputElement;
+      if (prev) prev.focus();
+    }
+  }
+
+  resendOtp(): void {
+    if (this.isSendingOtp) return;
+    this.otpDigits = ['', '', '', ''];
+    this.otpErrorMessage = '';
+    this.isSendingOtp = true;
+    this.dataService.sendOTP(this.email).subscribe({
+      next: () => {
+        this.isSendingOtp = false;
+        this.toastr.success('Verification code resent');
+        const first = document.getElementById('signup-otp-box-0') as HTMLInputElement;
+        if (first) first.focus();
+      },
+      error: () => {
+        this.isSendingOtp = false;
+        this.toastr.error('Failed to resend code, please try again');
+      }
+    });
+  }
+
+  // ─── Step 3: Verify OTP, then save ─────────────────────────────────────
+  verifyOtpAndSave(): void {
+    const otp = this.otpDigits.join('');
+    if (otp.length !== this.OTP_LENGTH) {
+      this.otpErrorMessage = `Please enter the ${this.OTP_LENGTH}-digit code`;
+      return;
+    }
+
+    this.isVerifyingOtp = true;
+    this.otpErrorMessage = '';
+
+    this.dataService.verifyOTP(otp).subscribe({
+      next: (response: any) => {
+        this.isVerifyingOtp = false;
+        if (response && response.length > 0) {
+          this.saveProfile();
+        } else {
+          this.otpErrorMessage = 'Invalid code, please try again';
+          this.otpDigits = ['', '', '', ''];
+        }
+      },
+      error: (err: any) => {
+        this.isVerifyingOtp = false;
+        this.otpErrorMessage = (err?.status === 400 || err?.status === 404)
+          ? 'Invalid or expired code'
+          : 'Failed to verify code, please try again';
+        this.otpDigits = ['', '', '', ''];
+      }
+    });
+  }
+
+  // ─── Step 4: Actual save (was old createProfile body) ─────────────────
+  private saveProfile(): void {
+    this.isLoading = true;
 
     this.dataService
       .saveHttp(this.pageFields, this.formFields, 'auth-api/saveUserLogin')
@@ -246,6 +349,7 @@ export class SignInComponent implements OnInit {
           this.isLoading = false;
           const apiResponse = Array.isArray(response) ? response[0] : response;
           if (apiResponse?.includes('Success')) {
+            this.showOtpModal = false;
             this.valid.apiInfoResponse('User Created Successfully');
             this.router.navigate(['/login']);
           } else {

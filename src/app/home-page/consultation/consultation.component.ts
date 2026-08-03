@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin } from 'rxjs';
 import { SharedDataService } from '../../../shared/services/shared-data.service';
 import { SharedGlobalService } from '../../../shared/services/shared-global.service';
 
@@ -14,14 +14,6 @@ interface CalendarDay {
   isSelected: boolean;
 }
 
-interface Country {
-  country_id: number;
-  country_name: string;
-  country_code: string;
-  nationality: string;
-  currencyTypeID: number;
-}
-
 interface Language {
   languageID: number;
   languageName: string;
@@ -30,14 +22,10 @@ interface Language {
 interface TimeSlot {
   timeslotID: number;
   timeSlot: string;
+  slotStatus: string; // 'Available' | 'Booked' (or any other non-'Available' value returned by the API)
 }
 
 interface FieldErrors {
-  firstName: boolean;
-  surname: boolean;
-  email: boolean;
-  phone: boolean;
-  country: boolean;
   language: boolean;
   specialRequests: boolean;
   slot: boolean;
@@ -56,21 +44,15 @@ export class ConsultationComponent implements OnInit {
   selectedDate: Date = new Date();
 
   // ─── API-driven lists ───────────────────────────────────────────────
-  countries: Country[] = [];
   languages: Language[] = [];
   timeSlots: TimeSlot[] = [];
 
   // ─── Time slot selection ────────────────────────────────────────────
   selectedSlotId: number | null = null;
   selectedSlotLabel: string = '';
+  isLoadingSlots = false;
 
-  // ─── Form fields ──────────────────────────────────────────────────
-  firstName = '';
-  surname = '';
-  email = '';
-  phone = '';
-  selectedCountryCode = '+92';               // phone dial code
-  selectedCountryId: number | null = null;   // Country select -> countryID
+  // ─── Form fields (kept, still shown in UI) ─────────────────────────
   consultationLanguageId: number | null = null;
   specialRequests = '';
 
@@ -79,68 +61,56 @@ export class ConsultationComponent implements OnInit {
 
   // ─── Inline field validation state ─────────────────────────────────
   fieldErrors: FieldErrors = {
-    firstName: false,
-    surname: false,
-    email: false,
-    phone: false,
-    country: false,
     language: false,
     specialRequests: false,
     slot: false,
   };
 
-  // ─── OTP Verification Modal ────────────────────────────────────────
-  showOtpModal = false;
-  otpDigits: string[] = ['', '', '', ''];
-  readonly OTP_LENGTH = 4;
-  isSendingOtp = false;
-  isVerifyingOtp = false;
-  otpErrorMessage = '';
-  private pendingPayload: any = null;
-
   constructor(
     private toastr: ToastrService,
     private sharedDataService: SharedDataService,
-    private sharedGlobalService: SharedGlobalService
+    private sharedGlobalService: SharedGlobalService,
+    private  router: Router 
   ) {}
 
   ngOnInit(): void {
     this.buildCalendar(this.currentMonthDate);
     this.loadLookups();
+    this.loadTimeSlots(this.selectedDate);
   }
 
   // ─── Load dropdown data ─────────────────────────────────────────────
   private loadLookups(): void {
     this.isLoadingLookups = true;
 
-    forkJoin({
-      countries: this.sharedDataService.getHttp('cmis-api/getCountry'),
-      languages: this.sharedDataService.getHttp('user-api/getLanguage'),
-      timeSlots: this.sharedDataService.getHttp('user-api/getTimeSlot'),
-    }).subscribe({
+    this.sharedDataService.getHttp('core-api/Consultation/getLanguage').subscribe({
       next: (res: any) => {
-        this.countries = res.countries || [];
-        this.languages = res.languages || [];
-        this.timeSlots = res.timeSlots || [];
-
-        // sensible defaults so the form isn't empty on first paint
-        // if (this.countries.length) {
-        //   this.selectedCountryCode = this.countries[0].country_code;
-        //   this.selectedCountryId = this.countries[0].country_id;
-        // }
-        // if (this.languages.length) {
-        //   this.consultationLanguageId = this.languages[0].languageID;
-        // }
-        // if (this.timeSlots.length) {
-        //   this.selectedSlotId = this.timeSlots[0].timeslotID;
-        //   this.selectedSlotLabel = this.timeSlots[0].timeSlot;
-        // }
-
+        this.languages = res || [];
         this.isLoadingLookups = false;
       },
       error: () => {
         this.isLoadingLookups = false;
         this.toastr.error('Could not load consultation options, please refresh');
+      }
+    });
+  }
+
+  // ─── Load time slots for the currently selected date ────────────────
+  private loadTimeSlots(date: Date): void {
+    this.isLoadingSlots = true;
+    this.selectedSlotId = null;
+    this.selectedSlotLabel = '';
+
+    const dateStr = this.formatDateLocal(date);
+    this.sharedDataService.getHttp(`core-api/Consultation/getTimeSlot?date=${dateStr}`).subscribe({
+      next: (res: any) => {
+        this.timeSlots = res || [];
+        this.isLoadingSlots = false;
+      },
+      error: () => {
+        this.timeSlots = [];
+        this.isLoadingSlots = false;
+        this.toastr.error('Could not load time slots for this date');
       }
     });
   }
@@ -235,11 +205,14 @@ export class ConsultationComponent implements OnInit {
     if (day.isPast) return;
     this.selectedDate = day.date;
     this.buildCalendar(this.currentMonthDate);
+    this.loadTimeSlots(this.selectedDate);
   }
 
   selectSlot(slot: TimeSlot): void {
+    if (slot.slotStatus !== 'Available') return; // booked slots aren't selectable
     this.selectedSlotId = slot.timeslotID;
     this.selectedSlotLabel = slot.timeSlot;
+    this.fieldErrors.slot = false;
   }
 
   isTodayLike(day: CalendarDay): boolean {
@@ -250,24 +223,9 @@ export class ConsultationComponent implements OnInit {
     return this.isSameDate(day.date, yesterday);
   }
 
-  // ─── Step 1: Validate + stage payload + send OTP ───────────────────
+  // ─── Validate + save directly (no OTP step) ─────────────────────────
   confirmAppointment(): void {
-    console.log('confirmAppointment clicked', {
-      firstName: this.firstName,
-      surname: this.surname,
-      email: this.email,
-      phone: this.phone,
-      selectedCountryId: this.selectedCountryId,
-      consultationLanguageId: this.consultationLanguageId,
-      specialRequests: this.specialRequests,
-      selectedSlotId: this.selectedSlotId,
-    });
     this.fieldErrors = {
-      firstName: !this.firstName.trim(),
-      surname: !this.surname.trim(),
-      email: !this.email.trim(),
-      phone: !this.phone.trim(),
-      country: !this.selectedCountryId,
       language: !this.consultationLanguageId,
       specialRequests: !this.specialRequests.trim(),
       slot: !this.selectedSlotId,
@@ -279,150 +237,37 @@ export class ConsultationComponent implements OnInit {
       return;
     }
 
-    this.pendingPayload = {
+    const payload = {
       consultationID: 0,
       date: this.formatDateLocal(this.selectedDate),
-      firstName: this.firstName,
-      surName: this.surname,
-      email: this.email,
-      phoneNo: this.phone,
-      countryCode: this.selectedCountryCode,
+      // These fields are no longer collected in the UI but the save
+      // endpoint still expects them, so they're sent through empty.
+      firstName: '',
+      surName: '',
+      email: '',
+      phoneNo: '',
+      countryCode: '',
+      countryID: null,
       topicToDiscuss: this.specialRequests,
-      countryID: this.selectedCountryId,
       languageID: this.consultationLanguageId,
       timeslotID: this.selectedSlotId,
       flag: 0,
       userID: this.sharedGlobalService.getUserID() || 0,
       spType: 'insert',
     };
-console.log(this.pendingPayload,'sending object');
-    // Open the modal right away — don't gate it on the network call.
-    this.openOtpModal();
-    this.requestOtp();
+    console.log('Payload for saving consultation:', payload);
+    this.saveConsultation(payload);
   }
 
-  // ─── Step 2: Send OTP (runs while modal is already open) ───────────
-  private requestOtp(): void {
-    this.isSendingOtp = true;
-    this.sharedDataService.sendOTP(this.email).subscribe({
-      next: (res: any) => {
-        console.log('sendOTP response:', res);
-        this.isSendingOtp = false;
-      },
-      error: (err: any) => {
-        console.error('sendOTP error:', err);
-        this.isSendingOtp = false;
-        this.toastr.error('Could not send verification code, please try again');
-      }
-    });
-  }
-
-  private openOtpModal(): void {
-    this.otpDigits = ['', '', '', ''];
-    this.otpErrorMessage = '';
-    this.showOtpModal = true;
-    setTimeout(() => {
-      const first = document.getElementById('otp-box-0') as HTMLInputElement;
-      if (first) first.focus();
-    });
-  }
-
-  trackByIndex(index: number): number {
-    return index;
-  }
-
-  closeOtpModal(): void {
-    this.showOtpModal = false;
-    this.pendingPayload = null;
-  }
-
-  // ─── OTP box handling ────────────────────────────────────────────────
-  onOtpInput(event: any, index: number): void {
-    const input = event.target as HTMLInputElement;
-    const cleaned = input.value.replace(/\D/g, '').slice(-1); // keep only the last digit typed
-    input.value = cleaned;
-    this.otpDigits[index] = cleaned;
-    this.otpErrorMessage = '';
-
-    if (cleaned && index < this.OTP_LENGTH - 1) {
-      const next = document.getElementById(`otp-box-${index + 1}`) as HTMLInputElement;
-      if (next) next.focus();
-    }
-
-    if (index === this.OTP_LENGTH - 1 && cleaned && this.otpDigits.every(d => d)) {
-      this.verifyOtpAndSave();
-    }
-  }
-
-  onOtpKeyDown(event: KeyboardEvent, index: number): void {
-    const input = event.target as HTMLInputElement;
-    if (event.key === 'Backspace' && !input.value && index > 0) {
-      const prev = document.getElementById(`otp-box-${index - 1}`) as HTMLInputElement;
-      if (prev) prev.focus();
-    }
-  }
-
-  resendOtp(): void {
-    if (this.isSendingOtp) return;
-    this.otpDigits = ['', '', '', ''];
-    this.otpErrorMessage = '';
-    this.isSendingOtp = true;
-    this.sharedDataService.sendOTP(this.email).subscribe({
-      next: () => {
-        this.isSendingOtp = false;
-        this.toastr.success('Verification code resent');
-        const first = document.getElementById('otp-box-0') as HTMLInputElement;
-        if (first) first.focus();
-      },
-      error: () => {
-        this.isSendingOtp = false;
-        this.toastr.error('Failed to resend code, please try again');
-      }
-    });
-  }
-
-  // ─── Step 3: Verify OTP, then save ──────────────────────────────────
-  verifyOtpAndSave(): void {
-    const otp = this.otpDigits.join('');
-    if (otp.length !== this.OTP_LENGTH) {
-      this.otpErrorMessage = `Please enter the ${this.OTP_LENGTH}-digit code`;
-      return;
-    }
-
-    this.isVerifyingOtp = true;
-    this.otpErrorMessage = '';
-
-    this.sharedDataService.verifyOTP(otp).subscribe({
-      next: (response: any) => {
-        this.isVerifyingOtp = false;
-        if (response && response.length > 0) {
-          this.saveConsultation();
-        } else {
-          this.otpErrorMessage = 'Invalid code, please try again';
-          this.otpDigits = ['', '', '', ''];
-        }
-      },
-      error: (err: any) => {
-        this.isVerifyingOtp = false;
-        this.otpErrorMessage = (err?.status === 400 || err?.status === 404)
-          ? 'Invalid or expired code'
-          : 'Failed to verify code, please try again';
-        this.otpDigits = ['', '', '', ''];
-      }
-    });
-  }
-
-  // ─── Step 4: Save consultation ──────────────────────────────────────
-  private saveConsultation(): void {
-    if (!this.pendingPayload) return;
+  // ─── Save consultation ──────────────────────────────────────────────
+  private saveConsultation(payload: any): void {
     this.isSubmitting = true;
 
-    this.sharedDataService.postDirect('user-api/saveUserConsultation', this.pendingPayload).subscribe({
+    this.sharedDataService.postDirect('Core-api/Consultation/saveUserConsultation', payload).subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.showOtpModal = false;
-        this.pendingPayload = null;
         this.toastr.success('Appointment confirmed successfully');
+        this.router.navigate(['/registerationFee']);
         this.resetForm();
       },
       error: () => {
@@ -434,30 +279,18 @@ console.log(this.pendingPayload,'sending object');
 
   // ─── Reset form back to defaults after a successful booking ─────────
   private resetForm(): void {
-    this.firstName = '';
-    this.surname = '';
-    this.email = '';
-    this.phone = '';
     this.specialRequests = '';
     this.fieldErrors = {
-      firstName: false,
-      surname: false,
-      email: false,
-      phone: false,
-      country: false,
       language: false,
       specialRequests: false,
       slot: false,
     };
 
-    this.selectedCountryCode = this.countries.length ? this.countries[0].country_code : '+92';
-    this.selectedCountryId = this.countries.length ? this.countries[0].country_id : null;
     this.consultationLanguageId = this.languages.length ? this.languages[0].languageID : null;
-    this.selectedSlotId = this.timeSlots.length ? this.timeSlots[0].timeslotID : null;
-    this.selectedSlotLabel = this.timeSlots.length ? this.timeSlots[0].timeSlot : '';
 
     this.selectedDate = new Date();
     this.currentMonthDate = new Date();
     this.buildCalendar(this.currentMonthDate);
+    this.loadTimeSlots(this.selectedDate);
   }
 }

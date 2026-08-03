@@ -40,6 +40,7 @@ import { RequestSubmitedComponent } from './Preferences/request-submited/request
 import { AppointmentsComponent } from './Admin/appointments/appointments.component';
 import { AuthGuard } from '../shared/services/auth.guard';
 import { AccountsComponent } from './Admin/accounts/accounts.component';
+import { GalleryComponent } from './home-page/gallery/gallery.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -111,6 +112,11 @@ const routes: Routes = [
  {
     path: 'Consultation',
     component:  ConsultationComponent, 
+  },
+
+   {
+    path: 'Gallery',
+    component:  GalleryComponent, 
   },
   
 ////////////////preferences ///////////////////////
