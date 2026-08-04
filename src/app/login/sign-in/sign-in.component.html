@@ -1,5 +1,5 @@
 <div
-  class="bgLogin min-vh-100 w-100 d-flex align-items-center justify-content-end p-2 p-md-4 py-4"
+  class="bgLogin min-vh-100 w-100 d-flex align-items-center justify-content-end p-2 p-md-1 py-1"
 >
   <div class="container-fluid">
     <div class="row justify-content-end">
@@ -15,7 +15,7 @@
             aria-label="Close"
           ></button>
 
-          <div class="text-center mb-3 mt-1">
+          <div class="text-center mb-1 mt-1">
             <h2
               class="fw-normal mb-1"
               style="
@@ -32,7 +32,7 @@
           </div>
 
           <button
-            class="btn btn-outline-secondary w-100 rounded-pill py-2 mb-2 d-flex align-items-center justify-content-center gap-2"
+            class="btn btn-outline-secondary w-100 rounded-pill py-2 mb-1 d-flex align-items-center justify-content-center gap-2"
             (click)="signUpWithGoogle()"
             [disabled]="isGoogleLoading"
             style="
@@ -57,7 +57,7 @@
             </span>
           </button>
 
-          <div class="d-flex align-items-center mb-2">
+          <div class="d-flex align-items-center mb-0">
             <hr class="flex-grow-1 border-top m-0" />
             <span class="px-3 text-muted" style="font-size: 0.7rem; white-space: nowrap">
               Or sign up with email
@@ -66,7 +66,7 @@
           </div>
 
           <form>
-            <div class="mb-2">
+            <div class="mb-1">
               <label class="form-label fw-medium mb-1" style="font-size: 0.8rem; color: #1a1a1a">
                 Full Name
               </label>
@@ -90,7 +90,7 @@
               </div>
             </div>
 
-            <div class="mb-2">
+            <div class="mb-1">
               <label class="form-label fw-medium mb-1" style="font-size: 0.8rem; color: #1a1a1a">
                 Email Address
               </label>
@@ -114,24 +114,41 @@
               </div>
             </div>
 
-            <div class="mb-2">
+            <!-- Country Code + Phone Number — same row -->
+            <div class="mb-1">
               <label class="form-label fw-medium mb-1" style="font-size: 0.8rem; color: #1a1a1a">
                 Phone Number
               </label>
-              <div class="input-group custom-input-group">
-                <span class="input-group-text border-end-0">
-                  <i class="bi bi-telephone text-muted"></i>
-                </span>
-                <input
-                  type="tel"
-                  class="form-control border-start-0 ps-1"
-                  [class.is-invalid]="phoneError"
-                  placeholder="+92 300 1234567"
-                  name="phone"
-                  [(ngModel)]="phone"
+              <div class="d-flex gap-2 phone-code-row">
+                <select
+                  class="form-select country-code-select"
+                  [class.is-invalid]="phoneError && !selectedCountryCodeID"
+                  [(ngModel)]="selectedCountryCodeID"
+                  name="countryCode"
+                  (change)="onCountryCodeChange()"
                   (blur)="markTouched('phone')"
-                  style="background-color: #fbf9f6"
-                />
+                >
+                  <option [ngValue]="null" disabled selected>Code</option>
+                  <option *ngFor="let c of countries" [ngValue]="c.country_id">
+                    {{ c.country_code }}
+                  </option>
+                </select>
+
+                <div class="input-group custom-input-group flex-grow-1">
+                  <span class="input-group-text border-end-0">
+                    <i class="bi bi-telephone text-muted"></i>
+                  </span>
+                  <input
+                    type="tel"
+                    class="form-control border-start-0 ps-1"
+                    [class.is-invalid]="phoneError"
+                    placeholder="300 1234567"
+                    name="phone"
+                    [(ngModel)]="phone"
+                    (blur)="markTouched('phone')"
+                    style="background-color: #fbf9f6"
+                  />
+                </div>
               </div>
               <div class="text-danger mt-1" style="font-size: 0.75rem" *ngIf="phoneError">
                 {{ phoneError }}
@@ -166,7 +183,7 @@
             </div>
 
             <button
-              class="btn btn-primary-brand w-100 rounded-pill py-2 fw-semibold mb-2"
+              class="btn btn-primary-brand w-100 rounded-pill py-2 fw-semibold mb-1"
               (click)="createProfile()"
               [disabled]="isLoading"
               style="font-size: 0.9rem"
@@ -183,7 +200,7 @@
             <span class="text-muted" style="font-size: 0.8rem">
               Already have an account?
             </span>
-            
+
             <a  class="txt-primary text-decoration-none fw-semibold cursor-pointer ms-1"
               routerLink="/login"
               style="font-size: 0.8rem; color: #6b1a52"

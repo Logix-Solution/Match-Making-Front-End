@@ -60,14 +60,16 @@
 
   <section class="row g-3 flex-grow-1 scroll-verticle style-1">
     <div class="col-12 col-md-6 col-xl-4" *ngFor="let user of filteredUsers">
-      <div class="card bg-6th border-6th rounded-3 p-3 shadow-sm">
+      <div
+        class="card bg-6th border-6th rounded-3 p-3 shadow-sm"
+        (click)="onOpenActivityModal(user)"
+      >
         <div class="d-flex align-items-start gap-3 mb-3">
           <img
             [src]="user.image"
             [alt]="user.name"
             class="user-avatar rounded-2 object-fit-cover"
             style="cursor: pointer"
-            (click)="onOpenActivityModal(user)"
             onerror="this.src = 'assets/images/profile1.png'"
           />
           <div class="flex-grow-1 min-w-0">
@@ -132,7 +134,8 @@
         <!-- ── ACCEPTED actions ────────────────────────────────────────── -->
         <ng-container *ngIf="user.status === 'accepted'">
           <div class="ft-6 txt-7th text-uppercase mb-2">
-            Member Since <strong class=" ms-1txt-8th">{{ user.dateValue }}</strong>
+            Member Since
+            <strong class="ms-1txt-8th">{{ user.dateValue }}</strong>
           </div>
           <div class="row g-2">
             <div class="col-7">
@@ -494,7 +497,8 @@
                   <th>Plan</th>
                   <th>Reference No#</th>
                   <th>Expiry Date</th>
-                  <th class="text-end">Amount</th>
+                  <th class="">Amount</th>
+                  <th></th>
                   <th class="text-center">Action</th>
                 </tr>
               </thead>
@@ -503,15 +507,34 @@
                   <td class="ft-5 txt-7th text-uppercase">{{ a.planName }}</td>
                   <td class="ft-5 txt-8th">{{ a.referenceNo }}</td>
                   <td class="ft-5 txt-8th">{{ formatDate(a.toDate) }}</td>
-                  <td class="ft-5 txt-8th text-end">€ {{ a.paidAmount }}</td>
-                  <td class="text-center">
+                  <td class="ft-5 txt-8th text-end"> {{a.paidAmount | number}}</td>
+                  <td></td>
+                  <!-- <td class="text-center gap-2">
+                    <button
+                      class=" actions border-0 bg-transparent"
+                      [disabled]="!a.eDoc"
+                      (click)="onViewActivityDoc(a)"
+                    >
+                    </button>
+                    <i
+                      class="mb-3 bi bi-check-circle"
+                      [ngClass]="a.isActive === 1 ? 'text-success' : 'text-muted'"
+                      style="cursor: pointer"
+                      (click)="openVerifyConfirm(a)"
+                    ></i>
+                  </td> -->
+                  <td class="text-center gap-2 me-1">
                     <button
                       class="actions border-0 bg-transparent"
                       [disabled]="!a.eDoc"
                       (click)="onViewActivityDoc(a)"
-                    >
-                     
-                    </button>
+                    ></button>
+                    <span
+                      class="d-inline-block"
+                      [ngClass]="a.isActive === 1 ? 'check' : 'uncheck'"
+                      style="cursor: pointer"
+                      (click)="openVerifyConfirm(a)"
+                    ></span>
                   </td>
                 </tr>
                 <tr *ngIf="activities.length === 0">
@@ -574,57 +597,6 @@
             </table>
           </div>
         </div>
-
-        <!-- Matches Profiles -->
-        <!-- <div class="activity-section rounded-4 p-3 mb-3">
-          <div class="ft-5 fw-bold text-uppercase txt-7th mb-2">
-            Matches Profiles ({{ matchProfiles.length }})
-          </div>
-          <div class="table-responsive">
-            <table class="w-100 activity-table">
-              <thead>
-                <tr class="ft-6 text-uppercase txt-7th">
-                  <th>Names</th>
-                  <th>%Match</th>
-                  <th class="text-end">Profiles</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let m of matchProfiles">
-                  <td class="ft-5 txt-8th">
-                    {{ m.fullName }} / {{ m.subTypeTitle }} / {{ m.address }}
-                  </td>
-                  <td class="ft-5 txt-8th">{{ m.match }}%</td>
-                  <td class="text-end">
-                    <div class="btn-group-toggle d-inline-flex gap-2">
-                      <button
-                        type="button"
-                        class="toggle-btn hide-btn"
-                        [class.active]="m.pendingStatusID === 3"
-                        (click)="toggleMatchStatus(m, 3)"
-                      >
-                        Hide
-                      </button>
-                      <button
-                        type="button"
-                        class="toggle-btn show-btn"
-                        [class.active]="m.pendingStatusID === 4"
-                        (click)="toggleMatchStatus(m, 4)"
-                      >
-                        Show
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr *ngIf="matchProfiles.length === 0">
-                  <td colspan="3" class="text-center ft-5 txt-7th py-3">
-                    No match profiles found.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div> -->
       </ng-container>
     </div>
 
@@ -667,5 +639,67 @@
       class="doc-preview-img rounded-3"
       alt="Payment document"
     />
+  </div>
+</div>
+
+<!-- ─── Verify Plan Confirmation Modal ───────────────────────────────────── -->
+<div
+  *ngIf="isVerifyModalOpen"
+  class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+  style="z-index: 1085; background: rgba(0, 0, 0, 0.5)"
+  (click)="closeVerifyModal()"
+>
+  <div
+    class="bg-6th rounded-4 p-4 shadow text-center"
+    style="max-width: 380px; width: 90%"
+    (click)="$event.stopPropagation()"
+  >
+  <div
+  class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+  style="width: 56px; height: 56px; background: rgba(89, 1, 23, 0.08)"
+>
+  <span
+    [ngClass]="verifyTargetActivity?.isActive === 1 ? 'uncheck' : 'check'"
+    style="width: 28px; height: 28px;"
+  ></span>
+</div>
+
+    <h5 class="fh-6 txt-8th fw-bold mb-2">
+      {{
+        verifyTargetActivity?.isActive === 1
+          ? "Remove Verification?"
+          : "Verify this Plan?"
+      }}
+    </h5>
+    <p class="ft-4 txt-7th mb-4">
+      {{ verifyTargetActivity?.planName }} — Ref#
+      {{ verifyTargetActivity?.referenceNo }}
+      <br />
+      {{
+        verifyTargetActivity?.isActive === 1
+          ? "This will mark the plan as unverified."
+          : "This will mark the plan as verified and active."
+      }}
+    </p>
+
+    <div class="d-flex gap-2">
+      <button
+        type="button"
+        class="w-50 py-2 rounded-2 border-6th bg-6th txt-8th ft-4 fw-medium"
+        (click)="closeVerifyModal()"
+        [disabled]="verifyModalLoading"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="w-50 py-2 rounded-2 border-0 bg-2nd txt-6th ft-4 fw-medium"
+        (click)="verifyplan()"
+        [disabled]="verifyModalLoading"
+      >
+        <span *ngIf="!verifyModalLoading">Confirm</span>
+        <span *ngIf="verifyModalLoading">Saving...</span>
+      </button>
+    </div>
   </div>
 </div>

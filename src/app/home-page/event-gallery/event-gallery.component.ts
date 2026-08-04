@@ -19,6 +19,7 @@ export class EventGalleryComponent implements OnInit, OnDestroy {
   activeIndex: number = 0;
   lightboxImage: GalleryImage | null = null;
   private galleryInterval!: ReturnType<typeof setInterval>;
+  private readonly AUTOPLAY_SPEED_MS = 4000; 
 
   constructor(private dataService: SharedDataService) {}
 
@@ -32,9 +33,7 @@ export class EventGalleryComponent implements OnInit, OnDestroy {
         console.log(res,'event images')
         const data = Array.isArray(res) ? res : [];
         this.images = data.map((event: any) => ({
-          // src:            event.eDoc,
-           src:        environment.productUrl + 'assets/user-images/Events/' +    event.eDoc,
-          // environment.productUrl + 'assets/user-images/Galleryimages/' + img.galleryeDoc
+          src:        environment.productUrl + 'assets/user-images/Events/' +    event.eDoc,
           alt:            event.eventTitle      || 'Event Image',
           eventTypeTitle: event.eventTypeTitle  || ''
         }));
@@ -43,9 +42,18 @@ export class EventGalleryComponent implements OnInit, OnDestroy {
   }
 
   startAutoPlay(): void {
+    clearInterval(this.galleryInterval); // guard against duplicate intervals stacking
     this.galleryInterval = setInterval(() => {
       this.activeIndex = (this.activeIndex + 1) % this.images.length;
-    }, 3000);
+    }, this.AUTOPLAY_SPEED_MS);
+  }
+
+  pauseAutoPlay(): void {
+    clearInterval(this.galleryInterval);
+  }
+
+  resumeAutoPlay(): void {
+    this.startAutoPlay();
   }
 
   setActive(i: number): void {

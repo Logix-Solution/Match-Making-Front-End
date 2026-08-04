@@ -46,6 +46,7 @@ interface ActivityItem {
   eDoc: string | null;
   eDocPath: string | null;
   toDate: string | null;
+  isActive: number; // 0 = not verified, 1 = verified
 }
 
 interface MatchProfileItem {
@@ -72,9 +73,9 @@ export class AdminUserManagementComponent implements OnInit {
   allUsers: UserItem[] = [];
   filteredUsers: UserItem[] = [];
 
-isDocPreviewOpen = false;
-docPreviewUrl = '';
-docPreviewLabel = '';
+  isDocPreviewOpen = false;
+  docPreviewUrl = '';
+  docPreviewLabel = '';
 
   // ─── Full Profile ("View Details") Modal ───────────────────────────────────
   isDetailModalOpen = false;
@@ -94,6 +95,11 @@ docPreviewLabel = '';
   activities: ActivityItem[] = [];
   matchProfiles: MatchProfileItem[] = [];
   savingMatches = false;
+
+  // ─── Verify Plan (Activate/Deactivate) Modal ────────────────────────────────
+  isVerifyModalOpen = false;
+  verifyTargetActivity: ActivityItem | null = null;
+  verifyModalLoading = false;
 
   constructor(
     private dataService: SharedDataService,
@@ -163,12 +169,12 @@ docPreviewLabel = '';
   }
 
   // ── Derives status from statusTitle string (e.g. "Reject", "Accept", "Pending") ──
- private mapStatusTitle(statusTitle: string | null | undefined): 'pending' | 'accepted' | 'rejected' {
-  const title = (statusTitle || '').trim().toLowerCase();
-  if (title.startsWith('accept') || title.startsWith('approv')) return 'accepted';
-  if (title.startsWith('reject')) return 'rejected';
-  return 'pending';
-}
+  private mapStatusTitle(statusTitle: string | null | undefined): 'pending' | 'accepted' | 'rejected' {
+    const title = (statusTitle || '').trim().toLowerCase();
+    if (title.startsWith('accept') || title.startsWith('approv')) return 'accepted';
+    if (title.startsWith('reject')) return 'rejected';
+    return 'pending';
+  }
 
   // Keeps a numeric statusID internally consistent with `status`, since the API's
   // own statusID/statusIS field isn't reliable for this purpose.
@@ -179,10 +185,11 @@ docPreviewLabel = '';
       default: return 1;
     }
   }
-formatDate(dob: string | null): string {
-  if (!dob) return 'N/A';
-  return new Date(dob).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-}
+
+  formatDate(dob: string | null): string {
+    if (!dob) return 'N/A';
+    return new Date(dob).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
 
   calculateAge(dob: string): number {
     if (!dob) return 0;
@@ -399,21 +406,21 @@ formatDate(dob: string | null): string {
         const u = Array.isArray(userDetails) ? userDetails[0] : userDetails;
         this.buildActivities(u);
 
-      const matchData = Array.isArray(matches) ? matches : [];
-this.matchProfiles = matchData.map((m: any) => {
-  const derivedStatus = this.mapMatchStatus(m.statusTitle);
-  return {
-    userProfileStatusID: +m.userProfileStatusID || 0,
-    statusID: derivedStatus,
-    sourceProfileID: +m.sourceProfileID,
-    destinationProfileID: +(m.destinationprofileID ?? m.destinationProfileID),
-    match: m.match,
-    fullName: m.fullName,
-    address: m.address,
-    subTypeTitle: m.subTypeTitle,
-    pendingStatusID: derivedStatus,
-  };
-});
+        const matchData = Array.isArray(matches) ? matches : [];
+        this.matchProfiles = matchData.map((m: any) => {
+          const derivedStatus = this.mapMatchStatus(m.statusTitle);
+          return {
+            userProfileStatusID: +m.userProfileStatusID || 0,
+            statusID: derivedStatus,
+            sourceProfileID: +m.sourceProfileID,
+            destinationProfileID: +(m.destinationprofileID ?? m.destinationProfileID),
+            match: m.match,
+            fullName: m.fullName,
+            address: m.address,
+            subTypeTitle: m.subTypeTitle,
+            pendingStatusID: derivedStatus,
+          };
+        });
 
         this.activityModalLoading = false;
       },
@@ -421,32 +428,33 @@ this.matchProfiles = matchData.map((m: any) => {
     });
   }
 
- private buildActivities(user: any): void {
-  let plans: any[] = [];
-  try { plans = JSON.parse(user?.userPlans || '[]'); } catch { plans = []; }
+  private buildActivities(user: any): void {
+    let plans: any[] = [];
+    try { plans = JSON.parse(user?.userPlans || '[]'); } catch { plans = []; }
 
-  const mapped: ActivityItem[] = plans.map((p: any) => ({
-    userPlanID: p.userPlanID,
-    planName: p.planName === 'Registration' ? 'Registration Fee' : `${p.planName} Plan`,
-    referenceNo: p.referenceNo,
-    paidAmount: p.paidAmount,
-    eDoc: p.eDoc || null,
-    eDocPath: p.eDocPath || null,
-    toDate: p.toDate || p.fromDate || p.effectDate || null,
-  }));
+    const mapped: ActivityItem[] = plans.map((p: any) => ({
+      userPlanID: p.userPlanID,
+      planName: p.planName === 'Registration' ? 'Registration Fee' : `${p.planName} Plan`,
+      referenceNo: p.referenceNo,
+      paidAmount: p.paidAmount,
+      eDoc: p.eDoc || null,
+      eDocPath: p.eDocPath || null,
+      toDate: p.toDate || p.fromDate || p.effectDate || null,
+      isActive: +p.isActive || 0,
+    }));
 
-  // Registration Fee always pinned first; everything else sorted by toDate,
-  // latest first — matches "show latest on top" requirement.
-  const registrationRows = mapped.filter((a) => a.planName === 'Registration Fee');
-  const otherRows = mapped
-    .filter((a) => a.planName !== 'Registration Fee')
-    .sort((a, b) => new Date(b.toDate || 0).getTime() - new Date(a.toDate || 0).getTime());
+    // Registration Fee always pinned first; everything else sorted by toDate,
+    // latest first — matches "show latest on top" requirement.
+    const registrationRows = mapped.filter((a) => a.planName === 'Registration Fee');
+    const otherRows = mapped
+      .filter((a) => a.planName !== 'Registration Fee')
+      .sort((a, b) => new Date(b.toDate || 0).getTime() - new Date(a.toDate || 0).getTime());
 
-  this.activities = [...registrationRows, ...otherRows];
+    this.activities = [...registrationRows, ...otherRows];
 
-  const current = plans.find((p: any) => p.CurrentPlan === 1);
-  this.activityPlanBadge = current?.planName ? `${current.planName} Plan` : '';
-}
+    const current = plans.find((p: any) => p.CurrentPlan === 1);
+    this.activityPlanBadge = current?.planName ? `${current.planName} Plan` : '';
+  }
 
   closeActivityModal(): void {
     this.isActivityModalOpen = false;
@@ -458,73 +466,120 @@ this.matchProfiles = matchData.map((m: any) => {
     match.pendingStatusID = statusID;
   }
 
- saveMatchStatuses(): void {
-  if (!this.activityUser) return;
-  const changed = this.matchProfiles.filter((m) => m.pendingStatusID !== m.statusID);
+  saveMatchStatuses(): void {
+    if (!this.activityUser) return;
+    const changed = this.matchProfiles.filter((m) => m.pendingStatusID !== m.statusID);
 
-  if (changed.length === 0) { this.closeActivityModal(); return; }
+    if (changed.length === 0) { this.closeActivityModal(); return; }
 
-  this.savingMatches = true;
-  const userID = this.activityUser.userID;
+    this.savingMatches = true;
+    const userID = this.activityUser.userID;
 
-  // Build payloads FIRST so you can actually see what's being sent —
-  // logging the Observable array (as before) only shows unexecuted streams.
-  const payloads = changed.map((m) => ({
-    userProfileStatusID: m.userProfileStatusID || 0,
-    statusID: m.pendingStatusID,
-    sourceProfileID: m.sourceProfileID,
-    destinationProfileID: m.destinationProfileID,
-    userID,
-    // spType: m.userProfileStatusID ? 'update' : 'insert',
-    spType: 'insert', 
-  }));
+    // Build payloads FIRST so you can actually see what's being sent —
+    // logging the Observable array (as before) only shows unexecuted streams.
+    const payloads = changed.map((m) => ({
+      userProfileStatusID: m.userProfileStatusID || 0,
+      statusID: m.pendingStatusID,
+      sourceProfileID: m.sourceProfileID,
+      destinationProfileID: m.destinationProfileID,
+      userID,
+      spType: 'insert',
+    }));
 
-  console.log('saveMatchProfileStatus payloads for userID:', userID, payloads);
+    console.log('saveMatchProfileStatus payloads for userID:', userID, payloads);
 
-  const calls = payloads.map((payload) =>
-    this.dataService.postDirect('core-api/Admin/saveMatchProfileStatus', payload),
-  );
+    const calls = payloads.map((payload) =>
+      this.dataService.postDirect('core-api/Admin/saveMatchProfileStatus', payload),
+    );
 
-  forkJoin(calls).subscribe({
-    next: () => {
-      this.valid.apiInfoResponse('Match visibility updated successfully');
-      this.savingMatches = false;
-      this.closeActivityModal();
-    },
-    error: (err) => {
-      this.valid.apiErrorResponse('Something went wrong while saving.');
-      console.error('saveMatchProfileStatus error:', err);
-      this.savingMatches = false;
-    },
-  });
-}
-private mapMatchStatus(statusTitle: string | null | undefined): number {
-  const title = (statusTitle || '').trim().toLowerCase();
-  if (title.startsWith('hide')) return 1;
-  if (title.startsWith('show')) return 2;
-  return 2; // default to Show if title is missing/unrecognized
-}
-
-
-// ─── Payment Doc Preview Modal (opens from Activities action icon) ─────────
-
-
-onViewActivityDoc(activity: ActivityItem): void {
-  if (!activity.eDoc) {
-    this.valid.apiInfoResponse('No document uploaded for this plan.');
-    return;
+    forkJoin(calls).subscribe({
+      next: () => {
+        this.valid.apiInfoResponse('Match visibility updated successfully');
+        this.savingMatches = false;
+        this.closeActivityModal();
+      },
+      error: (err) => {
+        this.valid.apiErrorResponse('Something went wrong while saving.');
+        console.error('saveMatchProfileStatus error:', err);
+        this.savingMatches = false;
+      },
+    });
   }
-  // Payment docs are uploaded separately from profile images —
-  // adjust the folder segment below if your backend serves them elsewhere.
-  this.docPreviewUrl = environment.productUrl + 'assets/user-images/PaymentImage/' + activity.eDoc;
-console.log('Opening doc preview for activity:', activity, 'with URL:', this.docPreviewUrl);
-  this.docPreviewLabel = activity.planName;
-  this.isDocPreviewOpen = true;
-}
 
-closeDocPreview(): void {
-  this.isDocPreviewOpen = false;
-  this.docPreviewUrl = '';
-}
+  private mapMatchStatus(statusTitle: string | null | undefined): number {
+    const title = (statusTitle || '').trim().toLowerCase();
+    if (title.startsWith('hide')) return 1;
+    if (title.startsWith('show')) return 2;
+    return 2; // default to Show if title is missing/unrecognized
+  }
 
+  // ─── Payment Doc Preview Modal (opens from Activities action icon) ─────────
+  onViewActivityDoc(activity: ActivityItem): void {
+    if (!activity.eDoc) {
+      this.valid.apiInfoResponse('No document uploaded for this plan.');
+      return;
+    }
+    // Payment docs are uploaded separately from profile images —
+    // adjust the folder segment below if your backend serves them elsewhere.
+    this.docPreviewUrl = environment.productUrl + 'assets/user-images/PaymentImage/' + activity.eDoc;
+    console.log('Opening doc preview for activity:', activity, 'with URL:', this.docPreviewUrl);
+    this.docPreviewLabel = activity.planName;
+    this.isDocPreviewOpen = true;
+  }
+
+  closeDocPreview(): void {
+    this.isDocPreviewOpen = false;
+    this.docPreviewUrl = '';
+  }
+
+  // ─── Verify Plan (Activate/Deactivate) — opens confirm modal, then saves ───
+  openVerifyConfirm(activity: ActivityItem): void {
+    this.verifyTargetActivity = activity;
+    this.isVerifyModalOpen = true;
+  }
+
+  closeVerifyModal(): void {
+    this.isVerifyModalOpen = false;
+    this.verifyTargetActivity = null;
+  }
+
+  verifyplan(): void {
+    if (!this.verifyTargetActivity || !this.activityUser) return;
+
+    const activity = this.verifyTargetActivity;
+    const newIsActive = activity.isActive === 1 ? 0 : 1;
+
+    const payload = {
+      userPlanID: activity.userPlanID,
+      isActive: newIsActive,
+      profileID: this.activityUser.id,
+      userID: this.activityUser.userID,
+      spType: 'update',
+    };
+
+    console.log('SaveVerifyUserPlan payload:', payload);
+
+    this.verifyModalLoading = true;
+
+    this.dataService.postDirect('core-api/Admin/SaveVerifyUserPlan', payload).subscribe({
+      next: (res: any) => {
+        const response = Array.isArray(res) ? res[0] : res;
+        this.verifyModalLoading = false;
+        if (response?.includes('Success')) {
+          activity.isActive = newIsActive;
+          this.valid.apiInfoResponse(
+            newIsActive === 1 ? 'Plan verified successfully' : 'Plan verification removed'
+          );
+          this.closeVerifyModal();
+        } else {
+          this.valid.apiErrorResponse(response);
+        }
+      },
+      error: (err) => {
+        this.verifyModalLoading = false;
+        this.valid.apiErrorResponse('Something went wrong. Please try again.');
+        console.error('SaveVerifyUserPlan error:', err);
+      },
+    });
+  }
 }

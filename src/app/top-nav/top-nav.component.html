@@ -158,11 +158,13 @@
         <ul class="dropdown-menu" [class.show]="isDropdownOpen">
                     <li>
             <a class="dropdown-item" href="javascript:void(0)" (click)="goToProfileMenu()">
+             <i class="bi bi-person-fill"></i>
               Profile
             </a>
           </li>
           <li>
             <a class="dropdown-item" href="javascript:void(0)" (click)="goToPreferencesMenu()">
+             <i class="bi bi-person-bounding-box"></i>
               Preferences
             </a>
           </li>
@@ -191,6 +193,7 @@
               routerLink="/Pricing-Plans"
               (click)="isDropdownOpen = false"
             >
+            <i class="bi bi-tags-fill"></i>
               Pricing Plans
             </a>
           </li>
@@ -200,12 +203,15 @@
               routerLink="/Account-Setting"
               (click)="isDropdownOpen = false"
             >
+            <i class="bi bi-gear-fill"></i>
               Settings
             </a>
           </li>
           <li><hr class="dropdown-divider" /></li>
           <li>
-            <a class="dropdown-item text-danger" (click)="logout()"> Logout </a>
+            <a class="dropdown-item text-danger" (click)="logout()">
+              <i class="bi bi-box-arrow-in-right"></i>
+               Logout </a>
           </li>
         </ul>
       </div>

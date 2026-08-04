@@ -37,6 +37,6 @@ export class OneStepAwayComponent implements OnInit, OnDestroy {
   }
 
   onCreateAccount(): void {
-    this.router.navigate(['/sign-in']);
+    this.router.navigate(['/signIn']);
   }
 }

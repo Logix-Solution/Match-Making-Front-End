@@ -15,7 +15,8 @@
         *ngFor="let img of images; let i = index"
         class="gallery-item"
         [class.active]="activeIndex === i"
-        (mouseenter)="setActive(i)"
+        (mouseenter)="setActive(i); pauseAutoPlay()"
+        (mouseleave)="resumeAutoPlay()"
         (click)="openLightbox(img)"
         style="cursor: pointer;"
       >

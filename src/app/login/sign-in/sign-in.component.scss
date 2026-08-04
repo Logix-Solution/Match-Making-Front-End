@@ -32,6 +32,34 @@ $input-bg: #fbf9f6;
   }
 }
 
+/* ==========================================================================
+   Country Code + Phone Number row
+   ========================================================================== */
+.phone-code-row {
+  align-items: stretch;
+
+  .country-code-select {
+    flex: 0 0 100px;
+    max-width: 100px;
+    border-radius: 10px !important;
+    border-color: #e5e7eb;
+    background-color: $input-bg;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-size: 0.85rem;
+    box-shadow: none !important;
+
+    &:focus {
+      border-color: $brand-primary !important;
+      outline: 2px solid rgba(107, 26, 82, 0.2);
+    }
+
+    &.is-invalid {
+      border-color: #dc3545 !important;
+    }
+  }
+}
+
 .btn-primary-brand {
   background-color: $brand-primary !important;
   border: none;
@@ -54,6 +82,11 @@ $input-bg: #fbf9f6;
 @media (max-width: 576px) {
   .bgLogin {
     align-items: flex-end !important; 
+  }
+
+  .country-code-select {
+    flex: 0 0 85px !important;
+    max-width: 85px !important;
   }
 }
 
