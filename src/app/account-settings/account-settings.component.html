@@ -12,7 +12,7 @@
     <div class="col-12 col-md-4">
       <div class="card border-0 bg-6th rounded-3 p-3 shadow-sm info-meta-card">
         <span class="ft-5 txt-7th d-block fw-medium mb-1">Email Address</span>
-        <strong class="ft-3 txt-8th fw-semibold text-truncate d-block">muhammadamad147@gmail.com</strong>
+        <strong class="ft-3 txt-8th fw-semibold text-truncate d-block">{{ email }}</strong>
       </div>
     </div>
 
@@ -20,7 +20,7 @@
     <div class="col-12 col-md-4">
       <div class="card border-0 bg-6th rounded-3 p-3 shadow-sm info-meta-card">
         <span class="ft-5 txt-7th d-block fw-medium mb-1">Profile Name</span>
-        <strong class="ft-3 txt-8th fw-semibold text-truncate d-block">Ali</strong>
+        <strong class="ft-3 txt-8th fw-semibold text-truncate d-block">{{ profileName }}</strong>
       </div>
     </div>
 
@@ -28,7 +28,7 @@
     <div class="col-12 col-md-4">
       <div class="card border-0 bg-6th rounded-3 p-3 shadow-sm info-meta-card">
         <span class="ft-5 txt-7th d-block fw-medium mb-1">Member Since</span>
-        <strong class="ft-3 txt-8th fw-semibold text-truncate d-block">April 2026</strong>
+        <strong class="ft-3 txt-8th fw-semibold text-truncate d-block">{{ memberSince}} </strong>
       </div>
     </div>
 
@@ -59,3 +59,50 @@
   </section>
 
 </main>
+
+<!-- ─── Delete Account Confirmation Modal ────────────────────────────────── -->
+<div
+  *ngIf="isDeleteModalOpen"
+  class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+  style="z-index: 1080; background: rgba(0, 0, 0, 0.5)"
+  (click)="closeDeleteModal()"
+>
+  <div
+    class="bg-6th rounded-4 p-4 shadow text-center"
+    style="max-width: 400px; width: 90%"
+    (click)="$event.stopPropagation()"
+  >
+    <div
+      class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+      style="width: 56px; height: 56px; background: rgba(224, 41, 74, 0.1)"
+    >
+      <i class="bi bi-exclamation-triangle-fill text-danger fs-3"></i>
+    </div>
+
+    <h5 class="fh-6 txt-8th fw-bold mb-2">Delete your account?</h5>
+    <p class="ft-4 txt-7th mb-4">
+      This action is permanent and cannot be undone. All your profile data, preferences,
+      matches, and payment plans will be permanently deleted.
+    </p>
+
+    <div class="d-flex gap-2">
+      <button
+        type="button"
+        class="w-50 py-2 rounded-2 border-6th bg-6th txt-8th ft-4 fw-medium"
+        (click)="closeDeleteModal()"
+        [disabled]="isDeleting"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="w-50 py-2 rounded-2 border-0 btnPrimary ft-4 fw-medium"
+        (click)="confirmDeleteAccount()"
+        [disabled]="isDeleting"
+      >
+        <span *ngIf="!isDeleting">Yes, Delete</span>
+        <span *ngIf="isDeleting">Deleting...</span>
+      </button>
+    </div>
+  </div>
+</div>
