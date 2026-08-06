@@ -165,7 +165,6 @@ export class LockProfilesComponent implements OnInit {
   }
 
   // ─── View Details (full page modal) ──────────────────────────────────────
-  // Pass whichever side (source or destination) card was clicked
   onViewDetails(side: ProfileSide): void {
     this.isDetailModalOpen = true;
     this.detailLoading = true;
@@ -364,6 +363,18 @@ export class LockProfilesComponent implements OnInit {
     this.isConfirmModalOpen = false;
     this.pendingRecord = null;
     this.pendingOption = null;
+  }
+
+  // ─── Lock / Unlock icon toggle ────────────────────────────────────────────
+  // statusID 3 = Lock, statusID 2 = Show (unlocked). Reuses the same
+  // saveStatus() call used by the status dropdown, just with a fixed
+  // target option instead of whatever the user picked from the menu.
+  onToggleLock(record: LockProfileRecord): void {
+    const targetOption: StatusOption = record.isLocked
+      ? { statusID: 2, statusTitle: 'Show' }
+      : { statusID: 3, statusTitle: 'Lock' };
+
+    this.saveStatus(record, targetOption);
   }
 
   // TODO: confirm whether "userID" in the payload should be the admin's ID

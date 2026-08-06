@@ -1,4 +1,7 @@
-<main class="container-fluid ps-3 d-flex flex-column h-100 no-scroll" (click)="closeAllDropdowns()">
+<main
+  class="container-fluid ps-3 d-flex flex-column h-100 no-scroll"
+  (click)="closeAllDropdowns()"
+>
   <header class="dashboard-header mb-3">
     <h1 class="ft-7 m-0">Lock Profiles</h1>
     <p class="mt-1 mb-0" style="color: #6c727a">
@@ -7,8 +10,10 @@
   </header>
 
   <section class="mb-4 max-w-search">
-    <div class="position-relative">
-      <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 txt-7th ft-3"></i>
+    <div class="position-relative col-4">
+      <i
+        class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 txt-7th ft-3"
+      ></i>
       <input
         type="text"
         class="form-control ps-5 py-2 ft-3 border bg-6th rounded-3 custom-search-input col-4"
@@ -20,15 +25,16 @@
   </section>
 
   <section class="d-flex flex-column gap-3 flex-grow-1 scroll-verticle style-1">
-    <div class="row g-3 align-items-stretch" *ngFor="let record of filteredProfiles">
-
+    <div
+      class="row g-3 align-items-stretch"
+      *ngFor="let record of filteredProfiles"
+    >
       <!-- SOURCE CARD -->
       <div class="col-12 col-lg-5">
-        <div class="card bg-6th border-6th rounded-3 p-3 shadow-sm h-100 position-relative">
-          <i
-            class="bi lock-icon lock-icon-corner"
-          
-          ></i>
+        <div
+          class="card bg-6th border-6th rounded-3 p-3 shadow-sm h-100 position-relative"
+        >
+          <i class="bi lock-icon lock-icon-corner"></i>
           <div class="d-flex align-items-center gap-3">
             <img
               [src]="record.source.image"
@@ -38,10 +44,14 @@
             />
             <div class="flex-grow-1">
               <h3 class="fh-6 txt-8th m-0 mb-1">
-                {{ record.source.name }}<ng-container *ngIf="record.source.age > 0">, {{ record.source.age }}</ng-container>
+                {{ record.source.name
+                }}<ng-container *ngIf="record.source.age > 0"
+                  >, {{ record.source.age }}</ng-container
+                >
               </h3>
               <p class="ft-4 txt-7th m-0 d-flex align-items-center gap-1 mb-2">
-                <i class="bi bi-geo-alt-fill text-muted"></i> {{ record.source.location }}
+                <i class="bi bi-geo-alt-fill text-muted"></i>
+                {{ record.source.location }}
               </p>
               <div class="ft-6 txt-7th text-uppercase">
                 Locked At <strong class="txt-8th">{{ record.lockedAt }}</strong>
@@ -50,7 +60,7 @@
           </div>
           <button
             type="button"
-            class="w-50 justify-content-end  mt-3 py-2 px-3 rounded-2 border-0 bg-5th txt-8th ft-4 fw-medium d-flex align-items-center justify-content-center gap-1"
+            class="w-50 justify-content-end mt-3 py-2 px-3 rounded-2 border-0 bg-5th txt-8th ft-4 fw-medium d-flex align-items-center justify-content-center gap-1"
             (click)="onViewDetails(record.source)"
           >
             <i class="bi bi-eye"></i> View Details
@@ -59,10 +69,18 @@
       </div>
 
       <!-- STATUS COLUMN (middle) -->
-      <div class="col-12 col-lg-2 d-flex flex-column align-items-center justify-content-center gap-2">
+      <div
+        class="col-12 col-lg-2 d-flex flex-column align-items-center justify-content-center gap-2"
+      >
         <i
           class="bi lock-icon-center"
-          [ngClass]="record.isLocked ? 'bi-lock-fill locked-icon' : 'bi-unlock-fill unlocked-icon'"
+          [ngClass]="
+            record.isLocked
+              ? 'bi-lock-fill locked-icon'
+              : 'bi-unlock-fill unlocked-icon'
+          "
+          style="cursor: pointer"
+          (click)="$event.stopPropagation(); onToggleLock(record)"
         ></i>
 
         <div class="position-relative" (click)="$event.stopPropagation()">
@@ -75,7 +93,10 @@
             <i class="bi bi-chevron-down ft-6"></i>
           </button>
 
-          <div class="status-dropdown-menu rounded-3 shadow-sm" *ngIf="record.showDropdown">
+          <div
+            class="status-dropdown-menu rounded-3 shadow-sm"
+            *ngIf="record.showDropdown"
+          >
             <button
               type="button"
               *ngFor="let opt of statusOptions"
@@ -91,11 +112,10 @@
 
       <!-- DESTINATION CARD -->
       <div class="col-12 col-lg-5">
-        <div class="card bg-6th border-6th rounded-3 p-3 shadow-sm h-100 position-relative">
-          <i
-            class="bi lock-icon lock-icon-corner"
-         
-          ></i>
+        <div
+          class="card bg-6th border-6th rounded-3 p-3 shadow-sm h-100 position-relative"
+        >
+          <i class="bi lock-icon lock-icon-corner"></i>
           <div class="d-flex align-items-center gap-3">
             <img
               [src]="record.destination.image"
@@ -105,10 +125,14 @@
             />
             <div class="flex-grow-1">
               <h3 class="fh-6 txt-8th m-0 mb-1">
-                {{ record.destination.name }}<ng-container *ngIf="record.destination.age > 0">, {{ record.destination.age }}</ng-container>
+                {{ record.destination.name
+                }}<ng-container *ngIf="record.destination.age > 0"
+                  >, {{ record.destination.age }}</ng-container
+                >
               </h3>
               <p class="ft-4 txt-7th m-0 d-flex align-items-center gap-1 mb-2">
-                <i class="bi bi-geo-alt-fill text-muted"></i> {{ record.destination.location }}
+                <i class="bi bi-geo-alt-fill text-muted"></i>
+                {{ record.destination.location }}
               </p>
               <div class="ft-6 txt-7th text-uppercase">
                 Locked At <strong class="txt-8th">{{ record.lockedAt }}</strong>
@@ -124,10 +148,12 @@
           </button>
         </div>
       </div>
-
     </div>
 
-    <div class="col-12 text-center py-5 border border-dashed rounded-3 bg-5th mt-4" *ngIf="filteredProfiles.length === 0">
+    <div
+      class="col-12 text-center py-5 border border-dashed rounded-3 bg-5th mt-4"
+      *ngIf="filteredProfiles.length === 0"
+    >
       <p class="ft-2 txt-7th m-0">No profiles found.</p>
     </div>
   </section>
@@ -140,9 +166,16 @@
   style="z-index: 1080; background: rgba(0, 0, 0, 0.5)"
   (click)="cancelMarriedConfirm()"
 >
-  <div class="married-confirm-card rounded-4 p-4 text-center" (click)="$event.stopPropagation()">
+  <div
+    class="married-confirm-card rounded-4 p-4 text-center"
+    (click)="$event.stopPropagation()"
+  >
     <div class="d-flex justify-content-end mb-1">
-      <i class="bi bi-x-lg txt-7th" style="cursor: pointer" (click)="cancelMarriedConfirm()"></i>
+      <i
+        class="bi bi-x-lg txt-7th"
+        style="cursor: pointer"
+        (click)="cancelMarriedConfirm()"
+      ></i>
     </div>
 
     <div class="married-icon-wrap mx-auto mb-3">
@@ -155,10 +188,18 @@
     </p>
 
     <div class="d-flex gap-2">
-      <button type="button" class="btn-cancel-married flex-grow-1 py-3 rounded-3 border-0 fw-semibold" (click)="cancelMarriedConfirm()">
+      <button
+        type="button"
+        class="btn-cancel-married flex-grow-1 py-3 rounded-3 border-0 fw-semibold"
+        (click)="cancelMarriedConfirm()"
+      >
         Cancel
       </button>
-      <button type="button" class="btn-confirm-married flex-grow-1 py-3 rounded-3 border-0 fw-semibold" (click)="confirmMarried()">
+      <button
+        type="button"
+        class="btn-confirm-married flex-grow-1 py-3 rounded-3 border-0 fw-semibold"
+        (click)="confirmMarried()"
+      >
         Yes, They Got Married
       </button>
     </div>
