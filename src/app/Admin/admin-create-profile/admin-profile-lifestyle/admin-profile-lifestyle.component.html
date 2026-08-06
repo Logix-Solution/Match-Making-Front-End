@@ -1,0 +1,145 @@
+<div class="fh-5 fw-bold mt-3">Lifestyle</div>
+
+<div class="row mt-4 align-items-start">
+
+  <div class="col-md-3">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
+        Do you smoke?
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedSmoke"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select Option</option>
+        <option *ngFor="let item of smokeList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
+        Do you drink Alcohol?
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedAlcohol"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select Option</option>
+        <option *ngFor="let item of alcoholList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
+        Do you want Kids?
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedWantKids"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select Option</option>
+        <option *ngFor="let item of wantKidsList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
+        Partner Status
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedMaritalStatus"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select Status</option>
+        <option *ngFor="let item of maritalStatusList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-12">
+    <label class="txt-7th fw-normal text-muted mb-2" style="font-size: 12px; line-height: 1.6;">
+      Any Social Media Handler Link (This helps admins verify your profile more
+      quickly. You can share your Instagram, Facebook, or other social media
+      handles. It will only be shared with people you match with)
+    </label>
+  </div>
+</div>
+
+<div class="row mt-1">
+  <div class="col-md-6 mb-3">
+    <div class="social-input d-flex align-items-center bg-white rounded-pill px-3" style="height: 42px;">
+      <i class="facebookIcon me-2 text-primary"></i>
+      <input
+        type="text"
+        class="form-control border-0 bg-transparent p-0"
+        placeholder="Facebook Link..........."
+        [(ngModel)]="facebookLink"
+        (ngModelChange)="onFieldChange()"
+        style="font-size: 13px; shadow: none;"
+      />
+    </div>
+  </div>
+  <div class="col-md-6 mb-3">
+    <div class="social-input d-flex align-items-center bg-white rounded-pill px-3" style="height: 42px;">
+      <i class="instaIcon me-2 text-danger"></i>
+      <input
+        type="text"
+        class="form-control border-0 bg-transparent p-0"
+        placeholder="Instagram Link..........."
+        [(ngModel)]="instagramLink"
+        (ngModelChange)="onFieldChange()"
+        style="font-size: 13px; shadow: none;"
+      />
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6 mb-3">
+    <div class="social-input d-flex align-items-center bg-white rounded-pill px-3" style="height: 42px;">
+      <i class="tiktokIcon me-2 text-dark"></i>
+      <input
+        type="text"
+        class="form-control border-0 bg-transparent p-0"
+        placeholder="Tiktok Link..........."
+        [(ngModel)]="tiktokLink"
+        (ngModelChange)="onFieldChange()"
+        style="font-size: 13px; shadow: none;"
+      />
+    </div>
+  </div>
+  <div class="col-md-6 mb-3">
+    <div class="social-input d-flex align-items-center bg-white rounded-pill px-3" style="height: 42px;">
+      <i class="snapchatIcon me-2 text-warning"></i>
+      <input
+        type="text"
+        class="form-control border-0 bg-transparent p-0"
+        placeholder="Snapchat Link..........."
+        [(ngModel)]="snapchatLink"
+        (ngModelChange)="onFieldChange()"
+        style="font-size: 13px; shadow: none;"
+      />
+    </div>
+  </div>
+</div>

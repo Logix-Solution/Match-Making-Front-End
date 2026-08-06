@@ -82,6 +82,20 @@ import { OneStepAwayComponent } from './home-page/one-step-away/one-step-away.co
 import { AppointmentsComponent } from './Admin/appointments/appointments.component';
 import { AccountsComponent } from './Admin/accounts/accounts.component';
 import { GalleryComponent } from './home-page/gallery/gallery.component';
+import { AdminCreateProfileComponent } from './Admin/admin-create-profile/admin-create-profile.component';
+import { AdminProfileInfoComponent } from './Admin/admin-create-profile/admin-profile-info/admin-profile-info.component';
+import { AdminProfileCareerComponent } from './Admin/admin-create-profile/admin-profile-career/admin-profile-career.component';
+import { AdminProfileReligionComponent } from './Admin/admin-create-profile/admin-profile-religion/admin-profile-religion.component';
+import { AdminProfileFamilyComponent } from './Admin/admin-create-profile/admin-profile-family/admin-profile-family.component';
+import { AdminProfileAppereanceComponent } from './Admin/admin-create-profile/admin-profile-appereance/admin-profile-appereance.component';
+import { AdminProfileLifestyleComponent } from './Admin/admin-create-profile/admin-profile-lifestyle/admin-profile-lifestyle.component';
+import { AdminPreferncesConfigurationComponent } from './Admin/admin-prefernces-configuration/admin-prefernces-configuration.component';
+import { AdminPreferncesInfoComponent } from './Admin/admin-prefernces-configuration/admin-prefernces-info/admin-prefernces-info.component';
+import { AdminPreferncesCareerComponent } from './Admin/admin-prefernces-configuration/admin-prefernces-career/admin-prefernces-career.component';
+import { AdminPreferncesFamilyComponent } from './Admin/admin-prefernces-configuration/admin-prefernces-family/admin-prefernces-family.component';
+import { AdminPreferncesReligionComponent } from './Admin/admin-prefernces-configuration/admin-prefernces-religion/admin-prefernces-religion.component';
+import { AdminPreferncesAppeareanceComponent } from './Admin/admin-prefernces-configuration/admin-prefernces-appeareance/admin-prefernces-appeareance.component';
+import { AdminPreferncesLifeSyleComponent } from './Admin/admin-prefernces-configuration/admin-prefernces-life-syle/admin-prefernces-life-syle.component';
 
 
 @NgModule({
@@ -153,6 +167,20 @@ import { GalleryComponent } from './home-page/gallery/gallery.component';
     AppointmentsComponent,
     AccountsComponent,
     GalleryComponent,
+    AdminCreateProfileComponent,
+    AdminProfileInfoComponent,
+    AdminProfileCareerComponent,
+    AdminProfileReligionComponent,
+    AdminProfileFamilyComponent,
+    AdminProfileAppereanceComponent,
+    AdminProfileLifestyleComponent,
+    AdminPreferncesConfigurationComponent,
+    AdminPreferncesInfoComponent,
+    AdminPreferncesCareerComponent,
+    AdminPreferncesFamilyComponent,
+    AdminPreferncesReligionComponent,
+    AdminPreferncesAppeareanceComponent,
+    AdminPreferncesLifeSyleComponent,
 
   ],
   imports: [

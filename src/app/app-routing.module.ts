@@ -41,6 +41,20 @@ import { AppointmentsComponent } from './Admin/appointments/appointments.compone
 import { AuthGuard } from '../shared/services/auth.guard';
 import { AccountsComponent } from './Admin/accounts/accounts.component';
 import { GalleryComponent } from './home-page/gallery/gallery.component';
+import { AdminCreateProfileComponent } from './Admin/admin-create-profile/admin-create-profile.component';
+import { AdminProfileInfoComponent } from './Admin/admin-create-profile/admin-profile-info/admin-profile-info.component';
+import { AdminProfileCareerComponent } from './Admin/admin-create-profile/admin-profile-career/admin-profile-career.component';
+import { AdminProfileReligionComponent } from './Admin/admin-create-profile/admin-profile-religion/admin-profile-religion.component';
+import { AdminProfileFamilyComponent } from './Admin/admin-create-profile/admin-profile-family/admin-profile-family.component';
+import { AdminProfileAppereanceComponent } from './Admin/admin-create-profile/admin-profile-appereance/admin-profile-appereance.component';
+import { AdminProfileLifestyleComponent } from './Admin/admin-create-profile/admin-profile-lifestyle/admin-profile-lifestyle.component';
+import { AdminPreferncesConfigurationComponent } from './Admin/admin-prefernces-configuration/admin-prefernces-configuration.component';
+import { AdminPreferncesInfoComponent } from './Admin/admin-prefernces-configuration/admin-prefernces-info/admin-prefernces-info.component';
+import { AdminPreferncesCareerComponent } from './Admin/admin-prefernces-configuration/admin-prefernces-career/admin-prefernces-career.component';
+import { AdminPreferncesReligionComponent } from './Admin/admin-prefernces-configuration/admin-prefernces-religion/admin-prefernces-religion.component';
+import { AdminPreferncesAppeareanceComponent } from './Admin/admin-prefernces-configuration/admin-prefernces-appeareance/admin-prefernces-appeareance.component';
+import { AdminPreferncesLifeSyleComponent } from './Admin/admin-prefernces-configuration/admin-prefernces-life-syle/admin-prefernces-life-syle.component';
+import { AdminPreferncesFamilyComponent } from './Admin/admin-prefernces-configuration/admin-prefernces-family/admin-prefernces-family.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -209,6 +223,79 @@ const routes: Routes = [
     component: AccountsComponent,
     canActivate: [AuthGuard],
   },
+/////////////////////admin profle---////////////
+     {
+     path: 'admin-create-profile',
+    component: AdminCreateProfileComponent,
+    canActivate: [AuthGuard],
+  },
+    {
+     path: 'admin-profile-info',
+    component: AdminProfileInfoComponent,
+    canActivate: [AuthGuard],
+  },
+   {
+     path: 'admin-profile-career',
+    component: AdminProfileCareerComponent,
+    canActivate: [AuthGuard],
+  },
+   {
+     path: 'admin-profile-religion',
+    component: AdminProfileReligionComponent,
+    canActivate: [AuthGuard],
+  },
+     {
+     path: 'admin-profile-family',
+    component: AdminProfileFamilyComponent,
+    canActivate: [AuthGuard],
+  },
+    {
+     path: 'admin-profile-apperance',
+    component: AdminProfileAppereanceComponent,
+    canActivate: [AuthGuard],
+  },
+ {
+     path: 'admin-profile-lifeStyle',
+    component: AdminProfileLifestyleComponent,
+    canActivate: [AuthGuard],
+  },
+/////////////////admin Prefernce---/////
+   {
+     path: 'admin-prefernces-configuration',
+    component:  AdminPreferncesConfigurationComponent,
+    canActivate: [AuthGuard],
+  },
+    {
+     path: 'admin-prefernces-info',
+    component: AdminPreferncesInfoComponent,
+    canActivate: [AuthGuard],
+  },
+   {
+     path: 'admin-prefernces-career',
+    component: AdminPreferncesCareerComponent,
+    canActivate: [AuthGuard],
+  },
+   {
+     path: 'admin-prefernces-religion',
+    component: AdminPreferncesReligionComponent,
+    canActivate: [AuthGuard],
+  },
+     {
+     path: 'admin-prefernces-family',
+    component:  AdminPreferncesFamilyComponent,
+    canActivate: [AuthGuard],
+  },
+    {
+     path: 'admin-prefernces-apperance',
+    component:  AdminPreferncesAppeareanceComponent,
+    canActivate: [AuthGuard],
+  },
+ {
+     path: 'admin-prefernces-lifeStyle',
+    component: AdminPreferncesLifeSyleComponent,
+    canActivate: [AuthGuard],
+  },
+
   /////////////////////Account setting/////////////
  {
      path: 'Account-Setting',

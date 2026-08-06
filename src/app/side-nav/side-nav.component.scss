@@ -69,8 +69,10 @@
 .active-link .testimonials,
 .active-link .PricingPlanConfig,
 .active-link .lockProfile,
-.active-link.appointments,
-.active-link.accounts21{
+.active-link .appointments,
+.active-link .accounts,
+.active-link .adminProfile,
+.active-link .adminPrefernces{
   filter: brightness(0) invert(1);
   /* This converts black SVG icons to white */
 }

@@ -1,0 +1,81 @@
+<div class="fh-5 fw-bold mt-3">Education & Career</div>
+
+<!-- Row 1: Education + Institution -->
+<div class="row mt-4 align-items-start">
+
+  <div class="col-md-3">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
+        Education Level
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedEducation"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select Education Level</option>
+        <option *ngFor="let item of educationList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="col-md-9">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
+        Institution Name
+      </label>
+      <input
+        type="text"
+        class="form-control border-0 px-3 rounded-pill"
+        placeholder="Enter your institution name"
+        [(ngModel)]="instituteName"
+        (ngModelChange)="onFieldChange()"
+        style="height: 42px; font-size: 13px;"
+      />
+    </div>
+  </div>
+
+</div>
+
+<!-- Row 2: Occupation + Income -->
+<div class="row mt-4 align-items-start">
+
+  <div class="col-md-3">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
+        Occupation
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedOccupation"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select Occupation</option>
+        <option *ngFor="let item of occupationList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
+        Monthly Income
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedMonthlyIncome"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select Monthly Income</option>
+        <option *ngFor="let item of monthlyIncomeList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,117 @@
+<div class="fh-5 fw-bold mt-3">Education & Career</div>
+
+<!-- row-01 -->
+<div class="row g-2 align-items-start mt-4">
+
+  <div class="col-md-6">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
+        Minimum Education Level
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedMinEducation"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select education level</option>
+        <option *ngFor="let item of educationList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
+        Minimum Monthly Income
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedMinIncome"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select income range</option>
+        <option *ngFor="let item of monthlyIncomeList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+</div>
+
+<!-- row-02 (Preferred Occupations Tags Selection) -->
+<div class="row mt-4">
+  <div class="col-md-12">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
+        Preferred Occupations
+        <span class="ft-6 txt-7th text-lowercase">&nbsp;(select up to 3, in priority order)</span>
+      </label>
+
+      <div class="d-flex flex-wrap gap-2 mt-3">
+        <span
+          *ngFor="let item of occupationList"
+          class="badge p-2 border rounded-pill"
+          [ngClass]="isOccupationSelected(item.subTypeID)
+            ? 'bg-light text-danger border-danger'
+            : 'bg-light text-dark'"
+          style="cursor: pointer; font-size: 13px;"
+          (click)="toggleOccupation(item.subTypeID)">
+          {{ item.subTypeTitle }}
+          <span *ngIf="isOccupationSelected(item.subTypeID)">
+            &nbsp;({{ getOccupationPriority(item.subTypeID) }})
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- row-03 (Occupation Priority Selectors — auto-filled from pill selection order) -->
+<div class="row g-2 align-items-start mt-4">
+
+  <div class="col-md-4">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
+        First Priority
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        disabled
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option>{{ getOccupationTitle(selectedOccupations[0]) || 'Not selected yet' }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
+        Second Priority
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        disabled
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option>{{ getOccupationTitle(selectedOccupations[1]) || 'Not selected yet' }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
+        Third Priority
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        disabled
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option>{{ getOccupationTitle(selectedOccupations[2]) || 'Not selected yet' }}</option>
+      </select>
+    </div>
+  </div>
+
+</div>

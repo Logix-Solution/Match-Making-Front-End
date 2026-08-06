@@ -48,7 +48,8 @@ export class AppComponent implements OnInit {
     '/lockProfile',
     '/appointments',
     '/accounts',
-   
+    '/admin-create-profile',
+    '/admin-prefernces-configuration'
  
   ];
 

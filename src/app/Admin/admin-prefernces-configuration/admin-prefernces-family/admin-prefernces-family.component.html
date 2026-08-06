@@ -1,0 +1,176 @@
+<div class="fh-5 fw-bold mt-3">Family</div>
+
+<!-- row-01 -->
+<div class="row g-2 align-items-end mt-4">
+
+  <div class="col-md-4">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Accept Partner with Kids?
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedAcceptKids"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select option</option>
+        <option *ngFor="let item of acceptKidsList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Willing to Relocate
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedRelocate"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select option</option>
+        <option *ngFor="let item of relocateList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Timeline for a Marriage
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedTimeline"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select timeline</option>
+        <option *ngFor="let item of marriageTimelineList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+</div>
+
+<!-- row-02 (Preferred Marital Status Tags Selection) -->
+<div class="row mt-4">
+  <div class="col-md-12">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Preferred Marital Status
+        <span class="ft-6 txt-7th text-lowercase">&nbsp;(select up to 3, in priority order)</span>
+      </label>
+
+      <div class="d-flex flex-wrap gap-2 mt-3">
+        <span
+          *ngFor="let item of maritalStatusList"
+          class="badge p-2 border rounded-pill"
+          [ngClass]="isMaritalStatusSelected(item.subTypeID)
+            ? 'bg-light text-danger border-danger'
+            : 'bg-light text-dark'"
+          style="cursor: pointer; font-size: 13px;"
+          (click)="toggleMaritalStatus(item.subTypeID)">
+          {{ item.subTypeTitle }}
+          <span *ngIf="isMaritalStatusSelected(item.subTypeID)">
+            &nbsp;({{ getMaritalStatusPriority(item.subTypeID) }})
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- row-03 (Marital Status Priority Selectors — auto-filled from pill selection order) -->
+<div class="row g-2 align-items-end mt-4">
+
+  <div class="col-md-4">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        First Priority
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        disabled
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option>{{ getMaritalStatusTitle(selectedMaritalStatuses[0]) || 'Not selected yet' }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Second Priority
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        disabled
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option>{{ getMaritalStatusTitle(selectedMaritalStatuses[1]) || 'Not selected yet' }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Third Priority
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        disabled
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option>{{ getMaritalStatusTitle(selectedMaritalStatuses[2]) || 'Not selected yet' }}</option>
+      </select>
+    </div>
+  </div>
+
+</div>
+
+<!-- row-04 -->
+<div class="row g-2 align-items-end mt-4">
+
+  <div class="col-md-6">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Housing Status Preference
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedHousingSituation"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select status</option>
+        <option *ngFor="let item of housingSituationList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="form-group">
+      <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px;">
+        Family Involvement Preference
+      </label>
+      <select
+        class="form-select border-0 px-3 rounded-pill"
+        [(ngModel)]="selectedFamilyInvolvement"
+        (change)="onFieldChange()"
+        style="height: 42px; font-size: 13px; appearance: none !important;">
+        <option value="">Select family involvement</option>
+        <option *ngFor="let item of familyInvolvementList" [value]="item.subTypeID">
+          {{ item.subTypeTitle }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+</div>

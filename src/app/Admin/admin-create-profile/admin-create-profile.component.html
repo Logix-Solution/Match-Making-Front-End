@@ -1,0 +1,134 @@
+<div class="container-fluid d-flex flex-column h-100 no-scroll bg-light mx-1">
+
+  <!-- Heading -->
+  <div class="d-flex flex-column align-items-center mt-3">
+    <div class="fh-4">Create User Profile</div>
+    <div class="ft-3 pt-2 ls-3 txt-7th">Let's get to know you better</div>
+  </div>
+
+  <!-- Step Buttons Row -->
+  <div class="row mt-3 align-items-around pe-3">
+    <div class="col-md-10 d-flex flex-row gap-3">
+
+      <div class="d-flex flex-row align-items-center mat-elevation-z1"
+           (click)="stepper = 1"
+           [ngClass]="{ btnPrimary: stepper === 1, 'btn-6th': stepper !== 1 }">
+        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">1</div>
+        <div>Personal</div>
+      </div>
+
+      <div class="d-flex flex-row align-items-center mat-elevation-z1"
+           (click)="stepper = 2"
+           [ngClass]="{ btnPrimary: stepper === 2, 'btn-6th': stepper !== 2 }">
+        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">2</div>
+        <div>Career</div>
+      </div>
+
+      <div class="d-flex flex-row align-items-center mat-elevation-z1"
+           (click)="stepper = 3"
+           [ngClass]="{ btnPrimary: stepper === 3, 'btn-6th': stepper !== 3 }">
+        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">3</div>
+        <div>Religion</div>
+      </div>
+
+      <div class="d-flex flex-row align-items-center mat-elevation-z1"
+           (click)="stepper = 4"
+           [ngClass]="{ btnPrimary: stepper === 4, 'btn-6th': stepper !== 4 }">
+        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">4</div>
+        <div>Family</div>
+      </div>
+
+      <div class="d-flex flex-row align-items-center mat-elevation-z1"
+           (click)="stepper = 5"
+           [ngClass]="{ btnPrimary: stepper === 5, 'btn-6th': stepper !== 5 }">
+        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">5</div>
+        <div>Appearance</div>
+      </div>
+
+      <div class="d-flex flex-row align-items-center mat-elevation-z1"
+           (click)="stepper = 6"
+           [ngClass]="{ btnPrimary: stepper === 6, 'btn-6th': stepper !== 6 }">
+        <div class="rounded-circle bg-6th px-2 text-center txt-8th me-2 ft-4">6</div>
+        <div>Lifestyle</div>
+      </div>
+
+    </div>
+
+    <!-- Save & Continue Button -->
+    <div class="col-md-2 text-end">
+      <div class="btn-6th d-flex flex-row align-items-center mat-elevation-z1" (click)="save()">
+        <div class="rounded-circle bg-2nd px-2 text-center txt-6th me-2 ft-4">{{ stepper }}</div>
+        <div>Save & Next</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Step 1: Personal Profile ──────────────────────────────────────── -->
+  <!--
+      saveSuccess output: child emits after successful API call
+      → parent calls onPersonalSaveSuccess() which sets stepper = 2
+  -->
+ <app-admin-profile-info
+  *ngIf="stepper === 1"
+  class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+  [castList]="castList"
+  [ethnicityList]="ethnicityList"
+  [genderList]="genderList"
+  [countryList]="countryList"
+  [cityList]="cityList"
+  (countrySelected)="getCities($event)"
+  (saveSuccess)="onPersonalSaveSuccess()"
+></app-admin-profile-info>
+
+<app-admin-profile-career
+  *ngIf="stepper === 2"
+  class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+  [educationList]="educationList"
+  [occupationList]="occupationList"
+  [monthlyIncomeList]="monthlyIncomeList"
+  (saveSuccess)="onCareerSaveSuccess()">
+</app-admin-profile-career>
+
+<app-admin-profile-religion
+  *ngIf="stepper === 3"
+  class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+  [religionList]="religionList"
+  [sectList]="sectList"
+  [religionImportanceList]="religionImportanceList"
+  (saveSuccess)="onReligionSaveSuccess()"
+></app-admin-profile-religion>
+
+<app-admin-profile-family
+  *ngIf="stepper === 4"
+  class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+  [maritalStatusList]="maritalStatusList"
+  [housingSituationList]="housingSituationList"
+  [fatherOccupationList]="fatherOccupationList"
+  [motherOccupationList]="motherOccupationList"
+  [noOfSiblingsList]="noOfSiblingsList"
+  [familyInvolvementList]="familyInvolvementList"
+  [countryList]="countryList"
+  (saveSuccess)="onFamilySaveSuccess()"
+></app-admin-profile-family>
+
+<app-admin-profile-appereance
+  *ngIf="stepper === 5"
+  class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+  [heightList]="appearanceHeightList"
+  [bodyTypeList]="bodyTypeList"
+  [skinToneList]="skinToneList"
+  [disabilityList]="disabilityList"
+  (saveSuccess)="onAppearanceSaveSuccess()">
+</app-admin-profile-appereance>
+
+<app-admin-profile-lifestyle
+  *ngIf="stepper === 6"
+  class="flex-grow-1 scroll-verticle style-1 pb-5 mb-5 pe-2"
+  [smokeList]="smokeList"
+  [alcoholList]="alcoholList"
+  [wantKidsList]="wantKidsList"
+  [maritalStatusList]="maritalStatusList"
+  (saveSuccess)="onLifestyleSaveSuccess()">
+</app-admin-profile-lifestyle>
+
+</div>
