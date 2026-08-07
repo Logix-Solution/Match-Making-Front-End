@@ -458,21 +458,34 @@ onOpenActivityModal(item: UserItem): void {
       }
 
       const baseProfileID = +matchResult?.baseProfileID || item.id;
-
-      this.matchProfiles = matchedList.map((m: any) => ({
-        // New API doesn't return an existing show/hide status per match,
-        // so default to Show (2) — same fallback behavior as before when
-        // statusTitle was missing/unrecognized.
-        userProfileStatusID: 0,
-        statusID: 2,
-        sourceProfileID: baseProfileID,
-        destinationProfileID: +m.MatchedProfileID,
-        match: (m.MatchPercentage ?? 0).toString(),
-        fullName: m.MatchedProfileName || 'Unknown',
-        address: [m.CityName, m.CountryName].filter(Boolean).join(', '),
-        subTypeTitle: m.Gender || '',
-        pendingStatusID: 2,
-      }));
+  this.matchProfiles = matchedList.map((m: any) => {
+        const derivedStatus = this.mapMatchStatus(m.statusTitle);
+        return {
+          userProfileStatusID: 0,
+          statusID: derivedStatus,
+          sourceProfileID: baseProfileID,
+          destinationProfileID: +m.MatchedProfileID,
+          match: (m.MatchPercentage ?? 0).toString(),
+          fullName: m.MatchedProfileName || 'Unknown',
+          address: [m.CityName, m.CountryName].filter(Boolean).join(', '),
+          subTypeTitle: m.Gender || '',
+          pendingStatusID: derivedStatus,
+        };
+      });
+      // this.matchProfiles = matchedList.map((m: any) => ({
+      //   // New API doesn't return an existing show/hide status per match,
+      //   // so default to Show (2) — same fallback behavior as before when
+      //   // statusTitle was missing/unrecognized.
+      //   userProfileStatusID: 0,
+      //   statusID: 2,
+      //   sourceProfileID: baseProfileID,
+      //   destinationProfileID: +m.MatchedProfileID,
+      //   match: (m.MatchPercentage ?? 0).toString(),
+      //   fullName: m.MatchedProfileName || 'Unknown',
+      //   address: [m.CityName, m.CountryName].filter(Boolean).join(', '),
+      //   subTypeTitle: m.Gender || '',
+      //   pendingStatusID: 2,
+      // }));
 
       this.activityModalLoading = false;
     },
