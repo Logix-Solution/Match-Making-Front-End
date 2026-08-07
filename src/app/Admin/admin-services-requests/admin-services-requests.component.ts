@@ -4,12 +4,12 @@ import { SharedGlobalService } from '../../../shared/services/shared-global.serv
 import { environment } from 'src/envirnment/environment';
 
 interface ServiceRequest {
-  id: number;
+  id: number;           // userID (not unique per row anymore — see note below)
   name: string;
   location: string;
   image: string;
   phone: string;
-  category: string;
+  category: string;     // single eventTypeTitle — drives the card + filter
   serviceType: string;
 }
 
@@ -37,24 +37,62 @@ export class AdminServicesRequestsComponent implements OnInit {
     this.dataService.getHttp('core-api/Admin/getServices', {}).subscribe({
       next: (res: any) => {
         const data = Array.isArray(res) ? res : [];
-        this.allRequests = data.map((s: any) => ({
-          id: s.serviceID,
-          name: s.firstName || 'Unknown',
-          location:
-            [s.cityName, s.countryName].filter(Boolean).join(', ') || 'N/A',
-          //  const hasImage = s.eDoc && s.eDoc.trim() !== '';
-          //    const image = hasImage
-          //             ? environment.productUrl + 'assets/user-images/userProfile/' + s.eDoc
-          //             : 'assets/images/profile1.png';
+        const mapped: ServiceRequest[] = [];
 
-          image:
+        data.forEach((s: any) => {
+          let events: any[] = [];
+          try {
+            events = JSON.parse(s.userEvents || '[]');
+          } catch {
+            events = [];
+          }
+
+          const image =
             environment.productUrl +
               'assets/user-images/userProfile/' +
-              s.eDoc || 'assets/images/profile1.png',
-          phone: s.phoneNumber || '',
-          category: s.eventTypeTitle || 'Other',
-          serviceType: s.eventTypeTitle || 'Other',
-        }));
+              s.eDoc || 'assets/images/profile1.png';
+          const location =
+            [s.cityName, s.countryName].filter(Boolean).join(', ') || 'N/A';
+
+          if (events.length === 0) {
+            // No events at all — still show one card, category falls back to "Other"
+            mapped.push({
+              id: s.userID,
+              name: s.firstName || 'Unknown',
+              location,
+              image,
+              phone: s.phoneNumber || '',
+              category: 'Other',
+              serviceType: 'Other',
+            });
+            return;
+          }
+
+          // One card PER event type — a user with 2 events becomes 2 cards
+          events.forEach((e: any) => {
+            mapped.push({
+              id: s.userID,
+              name: s.firstName || 'Unknown',
+              location,
+              image,
+              phone: s.phoneNumber || '',
+              category: e.eventTypeTitle || 'Other',
+              serviceType: e.eventTypeTitle || 'Other',
+            });
+          });
+        });
+
+        // API can send duplicate raw rows for the same user (as in your sample,
+        // userID 18 appeared twice) — dedupe on userID + category combo so we
+        // don't show the same person/event card twice.
+        const seen = new Set<string>();
+        this.allRequests = mapped.filter((r) => {
+          const key = `${r.id}-${r.category}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+
         this.applyFilter(this.activeFilter);
       },
       error: (err) => console.error('Services load error:', err),
@@ -62,12 +100,18 @@ export class AdminServicesRequestsComponent implements OnInit {
   }
 
   // ── Filter ────────────────────────────────────────────────────────────────
+ private filterToCategoryMap: Record<string, string> = {
+    Events: 'Event Planing',
+  };
+
   applyFilter(filterCriteria: string): void {
     this.activeFilter = filterCriteria;
+    const targetCategory = this.filterToCategoryMap[filterCriteria] ?? filterCriteria;
+
     this.filteredRequests =
       this.activeFilter === 'All'
         ? [...this.allRequests]
-        : this.allRequests.filter((req) => req.category === this.activeFilter);
+        : this.allRequests.filter((req) => req.category === targetCategory);
   }
 
   // ── WhatsApp Contact ──────────────────────────────────────────────────────
@@ -77,23 +121,18 @@ export class AdminServicesRequestsComponent implements OnInit {
       return;
     }
 
-    // Remove all non-digit characters except leading +
     let cleaned = request.phone.replace(/[^\d+]/g, '');
 
-    // If number starts with 0, replace with Pakistan code +92
     if (cleaned.startsWith('0')) {
       cleaned = '+92' + cleaned.slice(1);
     }
 
-    // If no + prefix at all, add +92 as default
     if (!cleaned.startsWith('+')) {
       cleaned = '+92' + cleaned;
     }
 
-    // Remove the + for wa.me URL (wa.me expects digits only)
     const waNumber = cleaned.replace('+', '');
 
-    // Opens WhatsApp direct message chat with that number
     window.open(`https://wa.me/${waNumber}`, '_blank');
   }
 }
