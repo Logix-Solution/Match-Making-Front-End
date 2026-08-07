@@ -389,44 +389,96 @@ export class AdminUserManagementComponent implements OnInit {
   }
 
   // ─── Activity Modal (Activities + Matches Profiles) — opens on avatar click ─
-  onOpenActivityModal(item: UserItem): void {
-    this.isActivityModalOpen = true;
-    this.activityModalLoading = true;
-    this.activityUser = item;
-    this.activities = [];
-    this.matchProfiles = [];
-    this.activityPlanBadge = '';
-    document.body.classList.add('modal-open');
+  // onOpenActivityModal(item: UserItem): void {
+  //   this.isActivityModalOpen = true;
+  //   this.activityModalLoading = true;
+  //   this.activityUser = item;
+  //   this.activities = [];
+  //   this.matchProfiles = [];
+  //   this.activityPlanBadge = '';
+  //   document.body.classList.add('modal-open');
 
-    forkJoin({
-      userDetails: this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${item.userID}`, {}),
-      matches: this.dataService.getHttp(`core-api/Admin/getUserMatchProfile?profileID=${item.id}`, {}),
-    }).subscribe({
-      next: ({ userDetails, matches }: any) => {
-        const u = Array.isArray(userDetails) ? userDetails[0] : userDetails;
-        this.buildActivities(u);
+  //   forkJoin({
+  //     userDetails: this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${item.userID}`, {}),
+  //     matches: this.dataService.getHttp(`core-api/Admin/getUserMatchProfile?profileID=${item.id}`, {}),
+  //   }).subscribe({
+  //     next: ({ userDetails, matches }: any) => {
+  //       const u = Array.isArray(userDetails) ? userDetails[0] : userDetails;
+  //       this.buildActivities(u);
 
-        const matchData = Array.isArray(matches) ? matches : [];
-        this.matchProfiles = matchData.map((m: any) => {
-          const derivedStatus = this.mapMatchStatus(m.statusTitle);
-          return {
-            userProfileStatusID: +m.userProfileStatusID || 0,
-            statusID: derivedStatus,
-            sourceProfileID: +m.sourceProfileID,
-            destinationProfileID: +(m.destinationprofileID ?? m.destinationProfileID),
-            match: m.match,
-            fullName: m.fullName,
-            address: m.address,
-            subTypeTitle: m.subTypeTitle,
-            pendingStatusID: derivedStatus,
-          };
-        });
+  //       const matchData = Array.isArray(matches) ? matches : [];
+  //       this.matchProfiles = matchData.map((m: any) => {
+  //         const derivedStatus = this.mapMatchStatus(m.statusTitle);
+  //         return {
+  //           userProfileStatusID: +m.userProfileStatusID || 0,
+  //           statusID: derivedStatus,
+  //           sourceProfileID: +m.sourceProfileID,
+  //           destinationProfileID: +(m.destinationprofileID ?? m.destinationProfileID),
+  //           match: m.match,
+  //           fullName: m.fullName,
+  //           address: m.address,
+  //           subTypeTitle: m.subTypeTitle,
+  //           pendingStatusID: derivedStatus,
+  //         };
+  //       });
 
-        this.activityModalLoading = false;
-      },
-      error: (err) => { console.error('Activity modal load error:', err); this.activityModalLoading = false; },
-    });
-  }
+  //       this.activityModalLoading = false;
+  //     },
+  //     error: (err) => { console.error('Activity modal load error:', err); this.activityModalLoading = false; },
+  //   });
+  // }
+
+  // ─── Activity Modal (Activities + Matches Profiles) — opens on avatar click ─
+onOpenActivityModal(item: UserItem): void {
+  this.isActivityModalOpen = true;
+  this.activityModalLoading = true;
+  this.activityUser = item;
+  this.activities = [];
+  this.matchProfiles = [];
+  this.activityPlanBadge = '';
+  document.body.classList.add('modal-open');
+
+  forkJoin({
+    userDetails: this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${item.userID}`, {}),
+    matches: this.dataService.getHttp(`core-api/Admin/getBestMatchProfiles?baseProfileID=${item.id}`, {}),
+  }).subscribe({
+    next: ({ userDetails, matches }: any) => {
+      const u = Array.isArray(userDetails) ? userDetails[0] : userDetails;
+      this.buildActivities(u);
+
+      // New endpoint returns a single wrapper object (or array-wrapped object)
+      // with matchedProfiles as a JSON string — needs to be parsed.
+      const matchResult = Array.isArray(matches) ? matches[0] : matches;
+
+      let matchedList: any[] = [];
+      try {
+        matchedList = JSON.parse(matchResult?.matchedProfiles || '[]');
+      } catch {
+        matchedList = [];
+      }
+
+      const baseProfileID = +matchResult?.baseProfileID || item.id;
+
+      this.matchProfiles = matchedList.map((m: any) => ({
+        // New API doesn't return an existing show/hide status per match,
+        // so default to Show (2) — same fallback behavior as before when
+        // statusTitle was missing/unrecognized.
+        userProfileStatusID: 0,
+        statusID: 2,
+        sourceProfileID: baseProfileID,
+        destinationProfileID: +m.MatchedProfileID,
+        match: (m.MatchPercentage ?? 0).toString(),
+        fullName: m.MatchedProfileName || 'Unknown',
+        address: [m.CityName, m.CountryName].filter(Boolean).join(', '),
+        subTypeTitle: m.Gender || '',
+        pendingStatusID: 2,
+      }));
+
+      this.activityModalLoading = false;
+    },
+    error: (err) => { console.error('Activity modal load error:', err); this.activityModalLoading = false; },
+  });
+}
 
   private buildActivities(user: any): void {
     let plans: any[] = [];
