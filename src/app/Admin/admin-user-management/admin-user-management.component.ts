@@ -461,7 +461,7 @@ onOpenActivityModal(item: UserItem): void {
   this.matchProfiles = matchedList.map((m: any) => {
         const derivedStatus = this.mapMatchStatus(m.statusTitle);
         return {
-          userProfileStatusID: 0,
+            userProfileStatusID: +m.userProfileStatusID || 0,
           statusID: derivedStatus,
           sourceProfileID: baseProfileID,
           destinationProfileID: +m.MatchedProfileID,
@@ -531,17 +531,15 @@ onOpenActivityModal(item: UserItem): void {
     match.pendingStatusID = statusID;
   }
 
-  saveMatchStatuses(): void {
+saveMatchStatuses(): void {
     if (!this.activityUser) return;
     const changed = this.matchProfiles.filter((m) => m.pendingStatusID !== m.statusID);
 
     if (changed.length === 0) { this.closeActivityModal(); return; }
 
     this.savingMatches = true;
-    const userID = this.activityUser.userID;
+    const userID = this.sharedGlobalService.getUserID(); // logged-in admin's ID, not activityUser.userID
 
-    // Build payloads FIRST so you can actually see what's being sent —
-    // logging the Observable array (as before) only shows unexecuted streams.
     const payloads = changed.map((m) => ({
       userProfileStatusID: m.userProfileStatusID || 0,
       statusID: m.pendingStatusID,
