@@ -119,7 +119,7 @@ getUserID(): any {
       return false;
     }
   }
-  private adminEmail: string = '';
+ private adminEmail: string = '';
 
 setAdminEmail(email: string): void {
   this.adminEmail = email;

@@ -41,9 +41,9 @@ export class AdminPreferncesLifeSyleComponent implements OnInit {
 
   // ─── Form Fields (structural shape only — no required flags) ──────────────
   formFields: any[] = [
-    { value: 0,        msg: '', type: 'hidden', required: false }, // 0 userID
+    { value: 0, msg: '', type: 'hidden', required: false }, // 0 userID
     { value: 'insert', msg: '', type: 'hidden', required: false }, // 1 spType
-    { value: '[]',     msg: '', type: 'hidden', required: false }, // 2 lifeStylePrefrence
+    { value: '[]', msg: '', type: 'hidden', required: false }, // 2 lifeStylePrefrence
   ];
 
   constructor(
@@ -65,7 +65,9 @@ export class AdminPreferncesLifeSyleComponent implements OnInit {
     if (!email) return;
 
     this.dataService
-      .getHttp(`Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`)
+      .getHttp(
+        `core-api/Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`,
+      )
       .subscribe({
         next: (response: any) => {
           const user = Array.isArray(response) ? response[0] : response;
@@ -85,11 +87,20 @@ export class AdminPreferncesLifeSyleComponent implements OnInit {
     const lifestyleArray: { typeID: number; subTypeID: number }[] = [];
 
     if (this.selectedSmoke)
-      lifestyleArray.push({ typeID: 17, subTypeID: Number(this.selectedSmoke) });
+      lifestyleArray.push({
+        typeID: 17,
+        subTypeID: Number(this.selectedSmoke),
+      });
     if (this.selectedAlcohol)
-      lifestyleArray.push({ typeID: 18, subTypeID: Number(this.selectedAlcohol) });
+      lifestyleArray.push({
+        typeID: 18,
+        subTypeID: Number(this.selectedAlcohol),
+      });
     if (this.selectedWantKids)
-      lifestyleArray.push({ typeID: 19, subTypeID: Number(this.selectedWantKids) });
+      lifestyleArray.push({
+        typeID: 19,
+        subTypeID: Number(this.selectedWantKids),
+      });
 
     this.formFields[2].value = JSON.stringify(lifestyleArray);
   }
@@ -97,15 +108,17 @@ export class AdminPreferncesLifeSyleComponent implements OnInit {
   // ─── SAVE ─────────────────────────────────────────────────────────────────
   save(): void {
     if (!this.userID) {
-      this.toastr.error('User not found. Please complete the Personal Info step first.');
+      this.toastr.error(
+        'User not found. Please complete the Personal Info step first.',
+      );
       return;
     }
 
     this.syncFormFields();
     this.formFields[0].value = this.userID;
 
-    this.pageFields.userID             = this.formFields[0].value;
-    this.pageFields.spType             = this.formFields[1].value;
+    this.pageFields.userID = this.formFields[0].value;
+    this.pageFields.spType = this.formFields[1].value;
     this.pageFields.lifeStylePrefrence = this.formFields[2].value;
 
     this.dataService
@@ -118,14 +131,17 @@ export class AdminPreferncesLifeSyleComponent implements OnInit {
         next: (response: any) => {
           const apiResponse = Array.isArray(response) ? response[0] : response;
           if (apiResponse?.includes('Success')) {
-            this.valid.apiInfoResponse('Lifestyle Preferences Saved Successfully');
+            this.valid.apiInfoResponse(
+              'Lifestyle Preferences Saved Successfully',
+            );
             this.saveSuccess.emit();
             this.checkRegistrationPlanAndNavigate(this.userID);
           } else {
             this.valid.apiErrorResponse(apiResponse);
           }
         },
-        error: (err: any) => console.log('Lifestyle Preference Save Error:', err),
+        error: (err: any) =>
+          console.log('Lifestyle Preference Save Error:', err),
       });
   }
 
@@ -137,7 +153,9 @@ export class AdminPreferncesLifeSyleComponent implements OnInit {
       .getHttp(`core-api/Profile/userRegistrationPlan?userID=${userID}`)
       .subscribe({
         next: (response: any) => {
-          const hasPlan = Array.isArray(response) ? response.length > 0 : !!response;
+          const hasPlan = Array.isArray(response)
+            ? response.length > 0
+            : !!response;
 
           if (!hasPlan) {
             this.router.navigate(['/Consultation']);

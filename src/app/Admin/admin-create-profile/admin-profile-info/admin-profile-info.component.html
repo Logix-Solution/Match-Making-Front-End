@@ -1,26 +1,39 @@
 <div class="">
-  <div class="fh-5 fw-bold mt-3">Personal Information</div>
 
-  <!-- ─── Row 0: Gmail + Password ─────── -->
-  <div class="row g-2 align-items-end mt-4">
-    <div class="col" style="flex: 0 0 40%">
-      <div class="form-group">
+  <!-- ═══════════════════════════════════════════════════════════════════
+       EMAIL GATE MODAL — opens first, on page load
+  ═══════════════════════════════════════════════════════════════════ -->
+ <div *ngIf="showEmailModal"
+     class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+     style="background: rgba(0,0,0,0.5); z-index: 1050;">
+  <div class="bg-6th rounded-3 mat-elevation-z2 p-4 position-relative" style="width: 400px; max-width: 90vw;">
+
+    <!-- Close Button -->
+    <button
+      class="btn btn-sm btn-danger rounded-circle position-absolute"
+      style="top: 10px; right: 10px; width: 26px; height: 26px; padding: 0; font-size: 12px;"
+      (click)="closeModal()"
+    >
+      x
+    </button>
+
+    <div class="fh-5 fw-bold mb-3">Enter User Credentials</div>
+    <!-- ...rest of modal unchanged -->
+
+      <div class="form-group mb-3">
         <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
-          Gmail<span class="text-danger">&nbsp;*</span>
+          Gmail
         </label>
         <input
           type="email"
           class="form-control border-0 px-3 rounded-pill"
           placeholder="Enter Gmail address"
-          [(ngModel)]="email"
-          (ngModelChange)="onFieldChange()"
+          [(ngModel)]="modalEmail"
           style="height: 42px; font-size: 13px"
         />
       </div>
-    </div>
 
-    <div class="col" style="flex: 0 0 40%">
-      <div class="form-group">
+      <div class="form-group mb-4">
         <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
           Password
         </label>
@@ -28,20 +41,31 @@
           type="password"
           class="form-control border-0 px-3 rounded-pill"
           placeholder="Enter password"
-          [(ngModel)]="password"
-          (ngModelChange)="onFieldChange()"
+          [(ngModel)]="modalPassword"
           style="height: 42px; font-size: 13px"
         />
+      </div>
+
+      <div class="btn-6th d-flex flex-row align-items-center justify-content-center mat-elevation-z1"
+           style="cursor: pointer; height: 42px;"
+           (click)="onModalSave()">
+        Continue
       </div>
     </div>
   </div>
 
+  <!-- ═══════════════════════════════════════════════════════════════════
+       MAIN FORM — no validation, no touched-state, no red error text
+  ═══════════════════════════════════════════════════════════════════ -->
+  <div class="fh-5 fw-bold mt-3">Personal Information</div>
+
   <!-- ─── Row 1: Name, Gender, DOB, Phone, CNIC/Passport ─────── -->
   <div class="row g-2 align-items-end mt-4">
+    <!-- Full Name -->
     <div class="col" style="flex: 0 0 24%">
       <div class="form-group">
         <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
-          Full Name
+          Full Name (Cannot be changed once approved)
         </label>
         <input
           type="text"
@@ -54,6 +78,7 @@
       </div>
     </div>
 
+    <!-- Gender -->
     <div class="col" style="flex: 0 0 14%">
       <div class="form-group">
         <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
@@ -73,10 +98,11 @@
       </div>
     </div>
 
+    <!-- Date of Birth -->
     <div class="col" style="flex: 0 0 20%">
       <div class="form-group">
         <label class="txt-7th fw-bold text-uppercase mb-1" style="font-size: 8px">
-          Date of Birth
+          Date of Birth (Cannot be changed once approved)
         </label>
         <input
           type="text"
@@ -91,6 +117,7 @@
       </div>
     </div>
 
+    <!-- Phone Number (no masking — plain input) -->
     <div class="col" style="flex: 0 0 24%">
       <div class="form-group">
         <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
@@ -124,6 +151,7 @@
       </div>
     </div>
 
+    <!-- CNIC / Passport — masking removed -->
     <div class="col" style="flex: 0 0 18%">
       <div class="form-group">
         <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
@@ -143,6 +171,7 @@
 
   <!-- ─── Row 2: Country, City, Nationality, Cast, Ethnicity ── -->
   <div class="row g-2 align-items-end mt-4">
+    <!-- Country -->
     <div class="col-md-2">
       <div class="form-group">
         <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
@@ -162,6 +191,7 @@
       </div>
     </div>
 
+    <!-- City -->
     <div class="col-md-2">
       <div class="form-group">
         <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
@@ -181,6 +211,7 @@
       </div>
     </div>
 
+    <!-- Nationality -->
     <div class="col-md-2">
       <div class="form-group">
         <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
@@ -200,6 +231,7 @@
       </div>
     </div>
 
+    <!-- Cast -->
     <div class="col-md-3">
       <div class="form-group">
         <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
@@ -219,6 +251,7 @@
       </div>
     </div>
 
+    <!-- Ethnicity -->
     <div class="col-md-3">
       <div class="form-group">
         <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
@@ -263,7 +296,12 @@
   <div class="row mt-2">
     <!-- Profile Picture -->
     <div class="col-md-3 px-3 d-flex flex-column">
-      <div class="txt-7th ft-5">Profile Picture</div>
+      <div class="txt-7th ft-5">
+        Profile Picture
+      </div>
+
+      <input #profilePicInput type="file" accept="image/*" style="display:none"
+       (change)="onProfilePictureSelected($event)" />
 
       <div
         *ngIf="profilePicturePreview; else profileUploadBox"
@@ -312,7 +350,9 @@
     <!-- Document Upload — CNIC / Passport Switcher -->
     <div class="col-md-3 px-2 d-flex flex-column" [ngSwitch]="documentType">
       <div *ngSwitchCase="'selection'" class="w-100 d-flex flex-column">
-        <div class="txt-7th ft-5">SELECT YOUR CHOICE</div>
+        <div class="txt-7th ft-5">
+          SELECT YOUR CHOICE
+        </div>
         <div class="d-flex flex-row gap-3 mt-1">
           <div
             (click)="setDocumentType('cnic')"
@@ -338,7 +378,9 @@
       </div>
 
       <div *ngSwitchCase="'cnic'" class="w-100 d-flex flex-column">
-        <div class="txt-7th ft-5">YOUR CNIC (Front & Back)</div>
+        <div class="txt-7th ft-5">
+          YOUR CNIC (Front & Back)
+        </div>
         <div class="d-flex flex-row gap-3 mt-1 position-relative">
           <button
             (click)="setDocumentType('selection')"
@@ -423,7 +465,9 @@
       </div>
 
       <div *ngSwitchCase="'passport'" class="w-100 d-flex flex-column">
-        <div class="txt-7th ft-5">YOUR PASSPORT</div>
+        <div class="txt-7th ft-5">
+          YOUR PASSPORT
+        </div>
         <div class="w-100 mt-1 position-relative">
           <button
             (click)="setDocumentType('selection')"
@@ -472,12 +516,14 @@
       </div>
     </div>
 
-    <!-- Note -->
+    <!-- Note panel (kept — informational, not validation) -->
     <div class="col-md-3 d-flex flex-column">
-      <div class="ft-5">&nbsp;</div>
+      <div class="ft-5"><span class="txt-2nd">&nbsp;</span></div>
       <div class="bg-6th border-6th rounded-3 d-flex flex-column py-1 px-2 mt-1">
         <div class="txt-2nd ft-5 fw-bold">NOTE:</div>
-        <div class="ft-5 mt-1">Your CNIC/ID Card/Passport Picture</div>
+        <div class="ft-5 mt-1">
+          Your CNIC/ID Card/Passport Picture
+        </div>
         <div class="ft-5 mt-1 txt-7th">
           This is required for verification purposes. It will only be visible to
           our admins and will be deleted after verification.
@@ -487,7 +533,7 @@
 
     <!-- Hide Photos Checkbox -->
     <div class="col-md-3 d-flex flex-column">
-      <div class="ft-5">&nbsp;</div>
+      <div class="ft-5"><span class="txt-2nd">&nbsp;</span></div>
       <div class="d-flex flex-row mt-1">
         <input
           class="form-check-input"
@@ -508,7 +554,7 @@
     </div>
   </div>
 
-  <!-- ─── Gallery Strip ───────────────────── -->
+  <!-- ─── Profile Pictures Strip ───────────────────── -->
   <input
     #galleryInput
     type="file"
@@ -560,4 +606,5 @@
       <div>Add Pictures</div>
     </div>
   </div>
+
 </div>

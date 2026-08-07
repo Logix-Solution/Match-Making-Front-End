@@ -45,10 +45,10 @@ export class AdminProfileAppereanceComponent implements OnInit {
 
   // ─── Form Fields (structural shape only — no required flags) ──────────────
   appearanceFormFields: any[] = [
-    { value: 0,        msg: '', type: 'hidden',  required: false }, // 0 userID
-    { value: 'insert', msg: '', type: 'hidden',  required: false }, // 1 spType
-    { value: 'No',     msg: '', type: 'textbox', required: false }, // 2 disabilityDescription
-    { value: '[]',     msg: '', type: 'hidden',  required: false }, // 3 appearanceJson
+    { value: 0, msg: '', type: 'hidden', required: false }, // 0 userID
+    { value: 'insert', msg: '', type: 'hidden', required: false }, // 1 spType
+    { value: 'No', msg: '', type: 'textbox', required: false }, // 2 disabilityDescription
+    { value: '[]', msg: '', type: 'hidden', required: false }, // 3 appearanceJson
   ];
 
   constructor(
@@ -69,7 +69,9 @@ export class AdminProfileAppereanceComponent implements OnInit {
     if (!email) return;
 
     this.dataService
-      .getHttp(`Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`)
+      .getHttp(
+        `core-api/Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`,
+      )
       .subscribe({
         next: (response: any) => {
           const user = Array.isArray(response) ? response[0] : response;
@@ -124,7 +126,9 @@ export class AdminProfileAppereanceComponent implements OnInit {
   // ─── Save Implementation Method ───────────────────────────────────────────
   save(): void {
     if (!this.userID) {
-      this.toastr.error('User not found. Please complete the Personal Info step first.');
+      this.toastr.error(
+        'User not found. Please complete the Personal Info step first.',
+      );
       return;
     }
 
@@ -134,8 +138,10 @@ export class AdminProfileAppereanceComponent implements OnInit {
 
     this.appearancePageFields.userID = this.appearanceFormFields[0].value;
     this.appearancePageFields.spType = this.appearanceFormFields[1].value;
-    this.appearancePageFields.disabilityDescription = this.appearanceFormFields[2].value;
-    this.appearancePageFields.appearanceJson = this.appearanceFormFields[3].value;
+    this.appearancePageFields.disabilityDescription =
+      this.appearanceFormFields[2].value;
+    this.appearancePageFields.appearanceJson =
+      this.appearanceFormFields[3].value;
 
     this.dataService
       .saveHttp(

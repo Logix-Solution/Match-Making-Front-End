@@ -53,11 +53,11 @@ export class AdminProfileFamilyComponent implements OnInit {
 
   // ─── Form Fields (structural shape only — no required flags) ──────────────
   familyFormFields: any[] = [
-    { value: 0,        msg: '', type: 'hidden',  required: false }, // 0 userID
-    { value: 'INSERT', msg: '', type: 'hidden',  required: false }, // 1 spType
-    { value: '',       msg: '', type: 'textbox', required: false }, // 2 parentPhoneNumber
-    { value: '[]',     msg: '', type: 'hidden',  required: false }, // 3 familyJson
-    { value: '',       msg: '', type: 'hidden',  required: false }, // 4 parentCountryCode
+    { value: 0, msg: '', type: 'hidden', required: false }, // 0 userID
+    { value: 'INSERT', msg: '', type: 'hidden', required: false }, // 1 spType
+    { value: '', msg: '', type: 'textbox', required: false }, // 2 parentPhoneNumber
+    { value: '[]', msg: '', type: 'hidden', required: false }, // 3 familyJson
+    { value: '', msg: '', type: 'hidden', required: false }, // 4 parentCountryCode
   ];
 
   constructor(
@@ -78,7 +78,9 @@ export class AdminProfileFamilyComponent implements OnInit {
     if (!email) return;
 
     this.dataService
-      .getHttp(`Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`)
+      .getHttp(
+        `core-api/Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`,
+      )
       .subscribe({
         next: (response: any) => {
           const user = Array.isArray(response) ? response[0] : response;
@@ -124,7 +126,9 @@ export class AdminProfileFamilyComponent implements OnInit {
   // ─── Save Action ──────────────────────────────────────────────────────────
   save(): void {
     if (!this.userID) {
-      this.toastr.error('User not found. Please complete the Personal Info step first.');
+      this.toastr.error(
+        'User not found. Please complete the Personal Info step first.',
+      );
       return;
     }
 
@@ -132,11 +136,11 @@ export class AdminProfileFamilyComponent implements OnInit {
     this.familyFormFields[0].value = this.userID;
     this.familyFormFields[1].value = 'INSERT';
 
-    this.familyPageFields.userID             = this.familyFormFields[0].value;
-    this.familyPageFields.spType              = this.familyFormFields[1].value;
-    this.familyPageFields.parentPhoneNumber   = this.familyFormFields[2].value;
-    this.familyPageFields.familyJson          = this.familyFormFields[3].value;
-    this.familyPageFields.parentCountryCode   = this.familyFormFields[4].value;
+    this.familyPageFields.userID = this.familyFormFields[0].value;
+    this.familyPageFields.spType = this.familyFormFields[1].value;
+    this.familyPageFields.parentPhoneNumber = this.familyFormFields[2].value;
+    this.familyPageFields.familyJson = this.familyFormFields[3].value;
+    this.familyPageFields.parentCountryCode = this.familyFormFields[4].value;
 
     this.dataService
       .saveHttp(

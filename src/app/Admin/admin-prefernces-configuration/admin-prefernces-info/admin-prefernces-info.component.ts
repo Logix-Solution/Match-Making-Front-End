@@ -13,16 +13,6 @@ interface PersonalPreferenceInterface {
   cityID: number; // 4
 }
 
-interface PersonalPreferenceTouchedState {
-  country:     boolean;
-  city:        boolean;
-  minAge:      boolean;
-  maxAge:      boolean;
-  nationality: boolean;
-  cast:        boolean;
-  ethnicity:   boolean;
-}
-
 @Component({
   selector: 'app-admin-prefernces-info',
   templateUrl: './admin-prefernces-info.component.html',
@@ -51,16 +41,7 @@ export class AdminPreferncesInfoComponent implements OnInit {
   selectedCast: any = ''; // → personalPrefrence JSON only
   selectedEthnicity: any = ''; // → personalPrefrence JSON only
 
-  // ─── Validation: touched state per required field ──────────────────────────
-  touched: PersonalPreferenceTouchedState = {
-    country:     false,
-    city:        false,
-    minAge:      false,
-    maxAge:      false,
-    nationality: false,
-    cast:        false,
-    ethnicity:   false,
-  };
+  private userID: number = 0;
 
   // ─── Page Fields (API payload) ────────────────────────────────────────────
   pageFields: PersonalPreferenceInterface = {
@@ -75,15 +56,9 @@ export class AdminPreferncesInfoComponent implements OnInit {
   formFields: any[] = [
     { value: 0, msg: '', type: 'hidden', required: false }, // 0 userID
     { value: 'INSERT', msg: '', type: 'hidden', required: false }, // 1 spType
-
     { value: 0, msg: '', type: 'hidden', required: false }, // 2 nationalityID (always 0)
     { value: '[]', msg: '', type: 'hidden', required: false }, // 3 personalPrefrence
-    {
-      value: 0,
-      msg: 'Please select your preferred city',
-      type: 'selectbox',
-      required: true,
-    }, // 4 cityID
+    { value: 0, msg: '', type: 'hidden', required: false }, // 4 cityID
   ];
 
   constructor(
@@ -94,7 +69,79 @@ export class AdminPreferncesInfoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadUserDetails();
+    this.loadUserIDByEmail();
+  }
+
+  // Look up the userID via the email captured in the Personal Info step,
+  // then prefill this step's fields from that user's existing preferences.
+  private loadUserIDByEmail(): void {
+    const email = this.sharedGlobalService.getAdminEmail();
+
+    if (!email) {
+      this.toastr.warning('User email not set. Please complete the profile first.');
+      this.userID = 0;
+      return;
+    }
+
+    this.dataService
+      .getHttp(`core-api/Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`)
+      .subscribe({
+        next: (response: any) => {
+          const user = Array.isArray(response) ? response[0] : response;
+          this.userID = user?.userID || 0;
+
+          if (!this.userID) {
+            this.toastr.warning('Could not resolve user from email. Please re-enter email in Personal Info.');
+            return;
+          }
+
+          this.applyUserPreferences(user);
+        },
+        error: (err) => {
+          console.log('Get userID by email error:', err);
+          this.toastr.error('Failed to fetch user by email.');
+        },
+      });
+  }
+
+  // ─── Populate selects from the resolved user's existing preferences ───────
+  private applyUserPreferences(user: any): void {
+    this.formFields[1].value = 'INSERT';
+    this.pageFields.spType = 'INSERT';
+
+    let prefItems: any[] = [];
+    try {
+      prefItems = JSON.parse(user.userPreference || '[]');
+    } catch {
+      prefItems = [];
+    }
+
+    const get = (typeID: number) =>
+      prefItems.find((p: any) => p.typeID === typeID && p.isPreference === 1)?.subTypeID;
+
+    this.selectedMinAge = get(31) ? String(get(31)) : '';
+    this.selectedMaxAge = get(32) ? String(get(32)) : '';
+    this.selectedNationality = get(2) ? String(get(2)) : '';
+    this.selectedCast = get(1) ? String(get(1)) : '';
+    this.selectedEthnicity = get(3) ? String(get(3)) : '';
+
+    // city/country — stored in userPreference with countryID key
+    const locationItem = prefItems.find(
+      (p: any) => p.cityID !== undefined && p.isPreference === 1,
+    );
+    if (locationItem) {
+      this.selectedCountry = String(locationItem.countryID || '');
+
+      if (this.selectedCountry) {
+        this.countrySelected.emit(Number(this.selectedCountry));
+        setTimeout(() => {
+          this.selectedCity = String(locationItem.cityID || '');
+          this.syncFormFields();
+        }, 600); // Wait for parent to load city list
+      }
+    }
+
+    this.syncFormFields();
   }
 
   // ─── Alias — HTML calls onFieldChange() ──────────────────────────────────
@@ -105,75 +152,8 @@ export class AdminPreferncesInfoComponent implements OnInit {
   // ─── Country change → emit for city load ─────────────────────────────────
   onCountryChange(): void {
     this.selectedCity = '';
-    this.markTouched('country');
     this.countrySelected.emit(this.selectedCountry);
     this.syncFormFields();
-  }
-
-  // ─── Touched Helpers ────────────────────────────────────────────────────
-  markTouched(field: keyof PersonalPreferenceTouchedState): void {
-    this.touched[field] = true;
-  }
-
-  private markAllTouched(): void {
-    (
-      Object.keys(this.touched) as (keyof PersonalPreferenceTouchedState)[]
-    ).forEach((key) => (this.touched[key] = true));
-  }
-
-  // ─── Inline Error Getters (template-only, no toastr) ──────────────────────
-  get countryError(): string {
-    if (!this.touched.country) return '';
-    return this.selectedCountry ? '' : 'Preferred country is required';
-  }
-
-  get cityError(): string {
-    if (!this.touched.city) return '';
-    return this.selectedCity ? '' : 'Preferred city is required';
-  }
-
-  get minAgeError(): string {
-    if (!this.touched.minAge) return '';
-    return this.selectedMinAge ? '' : 'Preferred minimum age is required';
-  }
-
-  get maxAgeError(): string {
-    if (!this.touched.maxAge) return '';
-    if (!this.selectedMaxAge) return 'Preferred maximum age is required';
-    if (
-      this.selectedMinAge &&
-      Number(this.selectedMinAge) >= Number(this.selectedMaxAge)
-    ) {
-      return 'Max age must be greater than min age';
-    }
-    return '';
-  }
-
-  get nationalityError(): string {
-    if (!this.touched.nationality) return '';
-    return this.selectedNationality ? '' : 'Preferred nationality is required';
-  }
-
-  get castError(): string {
-    if (!this.touched.cast) return '';
-    return this.selectedCast ? '' : 'Preferred caste is required';
-  }
-
-  get ethnicityError(): string {
-    if (!this.touched.ethnicity) return '';
-    return this.selectedEthnicity ? '' : 'Preferred ethnicity is required';
-  }
-
-  private isFormValid(): boolean {
-    return (
-      !this.countryError &&
-      !this.cityError &&
-      !this.minAgeError &&
-      !this.maxAgeError &&
-      !this.nationalityError &&
-      !this.castError &&
-      !this.ethnicityError
-    );
   }
 
   // ─── Sync bound fields → formFields[] ────────────────────────────────────
@@ -190,10 +170,7 @@ export class AdminPreferncesInfoComponent implements OnInit {
     if (this.selectedMaxAge)
       prefArray.push({ typeID: 32, subTypeID: Number(this.selectedMaxAge) });
     if (this.selectedNationality)
-      prefArray.push({
-        typeID: 2,
-        subTypeID: Number(this.selectedNationality),
-      });
+      prefArray.push({ typeID: 2, subTypeID: Number(this.selectedNationality) });
     if (this.selectedCast)
       prefArray.push({ typeID: 1, subTypeID: Number(this.selectedCast) });
     if (this.selectedEthnicity)
@@ -202,30 +179,18 @@ export class AdminPreferncesInfoComponent implements OnInit {
     this.formFields[3].value = JSON.stringify(prefArray);
   }
 
-  // ─── SAVE ─────────────────────────────────────────────────────────────────
+  // ─── SAVE (no field validation — sends whatever is currently in the form) ──
   save(): void {
-    this.markAllTouched();
-
-    if (!this.isFormValid()) {
-      this.toastr.warning('Fill All Required Fields');
+    if (!this.userID) {
+      this.toastr.error('User not found. Please complete the Personal Info step first.');
       return;
     }
 
-    // ─── Get userLoginId ──────────────────────────────────────────────────
-    const userID = this.sharedGlobalService.getUserID();
-    if (!userID) {
-      this.toastr.error('User session not found. Please login again.');
-      return;
-    }
-
-    // ─── Sync all fields ──────────────────────────────────────────────────
     this.syncFormFields();
-    this.formFields[0].value = userID;
+    this.formFields[0].value = this.userID;
 
-    // ─── Sync formFields → pageFields ────────────────────────────────────
     this.pageFields.userID = this.formFields[0].value;
     this.pageFields.spType = this.formFields[1].value;
-
     this.pageFields.nationalityID = this.formFields[2].value; // always 0
     this.pageFields.personalPrefrence = this.formFields[3].value;
     this.pageFields.cityID = this.formFields[4].value;
@@ -233,7 +198,6 @@ export class AdminPreferncesInfoComponent implements OnInit {
     console.log('Personal Preference PageFields:', this.pageFields);
     console.log('Personal Preference FormFields:', this.formFields);
 
-    // ─── API Call ─────────────────────────────────────────────────────────
     this.dataService
       .saveHttp(
         this.pageFields,
@@ -244,9 +208,7 @@ export class AdminPreferncesInfoComponent implements OnInit {
         next: (response: any) => {
           const apiResponse = Array.isArray(response) ? response[0] : response;
           if (apiResponse?.includes('Success')) {
-            this.valid.apiInfoResponse(
-              'Personal Preferences Saved Successfully',
-            );
+            this.valid.apiInfoResponse('Personal Preferences Saved Successfully');
             this.saveSuccess.emit();
           } else {
             this.valid.apiErrorResponse(apiResponse);
@@ -255,70 +217,6 @@ export class AdminPreferncesInfoComponent implements OnInit {
         error: (err: any) => {
           console.log('Personal Preference Save Error:', err);
         },
-      });
-  }
-
-  loadUserDetails(): void {
-    const userID = this.sharedGlobalService.getUserID();
-
-    if (!userID) return;
-
-    this.dataService
-      .getHttp(`core-api/Profile/getUserDetails?UserID=${userID}`)
-      .subscribe({
-        next: (response: any) => {
-          const user = Array.isArray(response) ? response[0] : response;
-          if (!user) return;
-
-          this.formFields[1].value = 'INSERT';
-          this.pageFields.spType = 'INSERT';
-
-          let prefItems: any[] = [];
-          try {
-            prefItems = JSON.parse(user.userPreference || '[]');
-          } catch {
-            prefItems = [];
-          }
-
-          const get = (typeID: number) =>
-            prefItems.find(
-              (p: any) => p.typeID === typeID && p.isPreference === 1,
-            )?.subTypeID;
-
-          this.selectedMinAge = get(31) ? String(get(31)) : '';
-          this.selectedMaxAge = get(32) ? String(get(32)) : '';
-          this.selectedNationality = get(2) ? String(get(2)) : '';
-          this.selectedCast = get(1) ? String(get(1)) : '';
-          this.selectedEthnicity = get(3) ? String(get(3)) : '';
-
-          console.log('Loaded Preferences', {
-            minAge: this.selectedMinAge,
-            maxAge: this.selectedMaxAge,
-            nationality: this.selectedNationality,
-            cast: this.selectedCast,
-            ethnicity: this.selectedEthnicity,
-          });
-
-          // city/country — now in userPreference with countryID key
-          const locationItem = prefItems.find(
-            (p: any) => p.cityID !== undefined && p.isPreference === 1,
-          );
-          if (locationItem) {
-            this.selectedCountry = String(locationItem.countryID || '');
-
-            if (this.selectedCountry) {
-              // Emit to parent to load city list, then set city after short delay
-              this.countrySelected.emit(Number(this.selectedCountry));
-              setTimeout(() => {
-                this.selectedCity = String(locationItem.cityID || '');
-                this.syncFormFields();
-              }, 600); // Wait for parent to load city list
-            }
-          }
-          this.syncFormFields();
-        },
-        error: (err: any) =>
-          console.log('Personal Preference Load Error:', err),
       });
   }
 }

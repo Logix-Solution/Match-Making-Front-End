@@ -56,13 +56,13 @@ export class AdminProfileLifestyleComponent implements OnInit {
 
   // ─── Form Fields (structural shape only — no required flags) ──────────────
   lifestyleFormFields: any[] = [
-    { value: 0,        msg: '', type: 'hidden',  required: false }, // 0 userID
-    { value: 'insert', msg: '', type: 'hidden',  required: false }, // 1 spType
-    { value: '',       msg: '', type: 'textbox', required: false }, // 2 facebooklink
-    { value: '',       msg: '', type: 'textbox', required: false }, // 3 instagramlink
-    { value: '',       msg: '', type: 'textbox', required: false }, // 4 tiktoklink
-    { value: '',       msg: '', type: 'textbox', required: false }, // 5 snapchatlink
-    { value: '[]',     msg: '', type: 'hidden',  required: false }, // 6 lifeStyleJson
+    { value: 0, msg: '', type: 'hidden', required: false }, // 0 userID
+    { value: 'insert', msg: '', type: 'hidden', required: false }, // 1 spType
+    { value: '', msg: '', type: 'textbox', required: false }, // 2 facebooklink
+    { value: '', msg: '', type: 'textbox', required: false }, // 3 instagramlink
+    { value: '', msg: '', type: 'textbox', required: false }, // 4 tiktoklink
+    { value: '', msg: '', type: 'textbox', required: false }, // 5 snapchatlink
+    { value: '[]', msg: '', type: 'hidden', required: false }, // 6 lifeStyleJson
   ];
 
   constructor(
@@ -70,7 +70,7 @@ export class AdminProfileLifestyleComponent implements OnInit {
     private sharedGlobalService: SharedGlobalService,
     private toastr: ToastrService,
     private valid: SharedFormFieldValidationService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -84,7 +84,9 @@ export class AdminProfileLifestyleComponent implements OnInit {
     if (!email) return;
 
     this.dataService
-      .getHttp(`Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`)
+      .getHttp(
+        `core-api/Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`,
+      )
       .subscribe({
         next: (response: any) => {
           const user = Array.isArray(response) ? response[0] : response;
@@ -100,10 +102,18 @@ export class AdminProfileLifestyleComponent implements OnInit {
 
   // ─── Synchronize Variables with Payload Arrays ────────────────────────────
   syncFormFields(): void {
-    this.lifestyleFormFields[2].value = this.facebookLink ? this.facebookLink.trim() : '';
-    this.lifestyleFormFields[3].value = this.instagramLink ? this.instagramLink.trim() : '';
-    this.lifestyleFormFields[4].value = this.tiktokLink ? this.tiktokLink.trim() : '';
-    this.lifestyleFormFields[5].value = this.snapchatLink ? this.snapchatLink.trim() : '';
+    this.lifestyleFormFields[2].value = this.facebookLink
+      ? this.facebookLink.trim()
+      : '';
+    this.lifestyleFormFields[3].value = this.instagramLink
+      ? this.instagramLink.trim()
+      : '';
+    this.lifestyleFormFields[4].value = this.tiktokLink
+      ? this.tiktokLink.trim()
+      : '';
+    this.lifestyleFormFields[5].value = this.snapchatLink
+      ? this.snapchatLink.trim()
+      : '';
 
     const lifestyleEntries = [
       { typeID: 17, subTypeID: this.selectedSmoke },
@@ -128,7 +138,9 @@ export class AdminProfileLifestyleComponent implements OnInit {
   // ─── Save Implementation Method ───────────────────────────────────────────
   save(): void {
     if (!this.userID) {
-      this.toastr.error('User not found. Please complete the Personal Info step first.');
+      this.toastr.error(
+        'User not found. Please complete the Personal Info step first.',
+      );
       return;
     }
 
@@ -136,12 +148,12 @@ export class AdminProfileLifestyleComponent implements OnInit {
     this.lifestyleFormFields[0].value = this.userID;
     this.lifestyleFormFields[1].value = 'insert';
 
-    this.lifestylePageFields.userID        = this.lifestyleFormFields[0].value;
-    this.lifestylePageFields.spType        = this.lifestyleFormFields[1].value;
-    this.lifestylePageFields.facebooklink  = this.lifestyleFormFields[2].value;
+    this.lifestylePageFields.userID = this.lifestyleFormFields[0].value;
+    this.lifestylePageFields.spType = this.lifestyleFormFields[1].value;
+    this.lifestylePageFields.facebooklink = this.lifestyleFormFields[2].value;
     this.lifestylePageFields.instagramlink = this.lifestyleFormFields[3].value;
-    this.lifestylePageFields.tiktoklink    = this.lifestyleFormFields[4].value;
-    this.lifestylePageFields.snapchatlink  = this.lifestyleFormFields[5].value;
+    this.lifestylePageFields.tiktoklink = this.lifestyleFormFields[4].value;
+    this.lifestylePageFields.snapchatlink = this.lifestyleFormFields[5].value;
     this.lifestylePageFields.lifeStyleJson = this.lifestyleFormFields[6].value;
 
     this.dataService
@@ -154,8 +166,10 @@ export class AdminProfileLifestyleComponent implements OnInit {
         next: (response: any) => {
           const apiResponse = Array.isArray(response) ? response[0] : response;
           if (apiResponse?.includes('Success')) {
-            this.valid.apiInfoResponse('Lifestyle Profile Completed Successfully');
-            this.router.navigate(['/admin-prefernces-info']);
+            this.valid.apiInfoResponse(
+              'Lifestyle Profile Completed Successfully',
+            );
+           this.router.navigate(['/admin-prefernces-configuration']);
             this.saveSuccess.emit();
           } else {
             this.valid.apiErrorResponse(apiResponse);

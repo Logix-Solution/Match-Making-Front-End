@@ -40,9 +40,9 @@ export class AdminProfileReligionComponent implements OnInit {
 
   // ─── Form Fields (structural shape only — no required flags) ──────────────
   religionFormFields: any[] = [
-    { value: 0,        msg: '', type: 'hidden', required: false }, // 0 userID
+    { value: 0, msg: '', type: 'hidden', required: false }, // 0 userID
     { value: 'insert', msg: '', type: 'hidden', required: false }, // 1 spType
-    { value: '[]',     msg: '', type: 'hidden', required: false }, // 2 religionJson
+    { value: '[]', msg: '', type: 'hidden', required: false }, // 2 religionJson
   ];
 
   constructor(
@@ -63,7 +63,9 @@ export class AdminProfileReligionComponent implements OnInit {
     if (!email) return;
 
     this.dataService
-      .getHttp(`Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`)
+      .getHttp(
+        `core-api/Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`,
+      )
       .subscribe({
         next: (response: any) => {
           const user = Array.isArray(response) ? response[0] : response;
@@ -102,7 +104,9 @@ export class AdminProfileReligionComponent implements OnInit {
   // ─── SAVE ─────────────────────────────────────────────────────────────────
   save(): void {
     if (!this.userID) {
-      this.toastr.error('User not found. Please complete the Personal Info step first.');
+      this.toastr.error(
+        'User not found. Please complete the Personal Info step first.',
+      );
       return;
     }
 
@@ -110,8 +114,8 @@ export class AdminProfileReligionComponent implements OnInit {
     this.religionFormFields[0].value = this.userID;
     this.religionFormFields[1].value = 'insert';
 
-    this.religionPageFields.userID       = this.religionFormFields[0].value;
-    this.religionPageFields.spType       = this.religionFormFields[1].value;
+    this.religionPageFields.userID = this.religionFormFields[0].value;
+    this.religionPageFields.spType = this.religionFormFields[1].value;
     this.religionPageFields.religionJson = this.religionFormFields[2].value;
 
     this.dataService

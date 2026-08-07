@@ -72,7 +72,7 @@ export class AdminPreferncesFamilyComponent implements OnInit {
     if (!email) return;
 
     this.dataService
-      .getHttp(`Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`)
+      .getHttp(`core-api/Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`)
       .subscribe({
         next: (response: any) => {
           const user = Array.isArray(response) ? response[0] : response;

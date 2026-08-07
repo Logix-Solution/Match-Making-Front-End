@@ -42,9 +42,9 @@ export class AdminPreferncesCareerComponent implements OnInit {
 
   // ─── Form Fields (structural shape only — no required flags) ──────────────
   formFields: any[] = [
-    { value: 0,        msg: '', type: 'hidden', required: false }, // 0 userID
+    { value: 0, msg: '', type: 'hidden', required: false }, // 0 userID
     { value: 'INSERT', msg: '', type: 'hidden', required: false }, // 1 spType
-    { value: '[]',     msg: '', type: 'hidden', required: false }, // 2 careerPrefrence
+    { value: '[]', msg: '', type: 'hidden', required: false }, // 2 careerPrefrence
   ];
 
   constructor(
@@ -65,7 +65,9 @@ export class AdminPreferncesCareerComponent implements OnInit {
     if (!email) return;
 
     this.dataService
-      .getHttp(`Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`)
+      .getHttp(
+        `core-api/Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`,
+      )
       .subscribe({
         next: (response: any) => {
           const user = Array.isArray(response) ? response[0] : response;
@@ -82,7 +84,9 @@ export class AdminPreferncesCareerComponent implements OnInit {
       this.selectedOccupations.splice(idx, 1);
     } else {
       if (this.selectedOccupations.length >= 3) {
-        this.toastr.warning('You can select up to 3 occupation preferences only');
+        this.toastr.warning(
+          'You can select up to 3 occupation preferences only',
+        );
         return;
       }
       this.selectedOccupations.push(subTypeID);
@@ -103,7 +107,8 @@ export class AdminPreferncesCareerComponent implements OnInit {
   getOccupationTitle(subTypeID: number | undefined): string {
     if (!subTypeID) return '';
     return (
-      this.occupationList.find((o) => o.subTypeID === subTypeID)?.subTypeTitle || ''
+      this.occupationList.find((o) => o.subTypeID === subTypeID)
+        ?.subTypeTitle || ''
     );
   }
 
@@ -114,7 +119,11 @@ export class AdminPreferncesCareerComponent implements OnInit {
 
   // ─── Sync bound fields → formFields[] ────────────────────────────────────
   syncFormFields(): void {
-    const careerArray: { typeID: number; subTypeID: number; priority: number }[] = [];
+    const careerArray: {
+      typeID: number;
+      subTypeID: number;
+      priority: number;
+    }[] = [];
 
     // Min Education Level — typeID 4
     if (this.selectedMinEducation) {
@@ -149,15 +158,17 @@ export class AdminPreferncesCareerComponent implements OnInit {
   // ─── SAVE ─────────────────────────────────────────────────────────────────
   save(): void {
     if (!this.userID) {
-      this.toastr.error('User not found. Please complete the Personal Info step first.');
+      this.toastr.error(
+        'User not found. Please complete the Personal Info step first.',
+      );
       return;
     }
 
     this.syncFormFields();
     this.formFields[0].value = this.userID;
 
-    this.pageFields.userID          = this.formFields[0].value;
-    this.pageFields.spType          = this.formFields[1].value;
+    this.pageFields.userID = this.formFields[0].value;
+    this.pageFields.spType = this.formFields[1].value;
     this.pageFields.careerPrefrence = this.formFields[2].value;
 
     this.dataService

@@ -40,9 +40,9 @@ export class AdminPreferncesReligionComponent implements OnInit {
 
   // ─── Form Fields (structural shape only — no required flags) ──────────────
   formFields: any[] = [
-    { value: 0,        msg: '', type: 'hidden', required: false }, // 0 userID
+    { value: 0, msg: '', type: 'hidden', required: false }, // 0 userID
     { value: 'insert', msg: '', type: 'hidden', required: false }, // 1 spType
-    { value: '[]',     msg: '', type: 'hidden', required: false }, // 2 religionJson
+    { value: '[]', msg: '', type: 'hidden', required: false }, // 2 religionJson
   ];
 
   constructor(
@@ -63,7 +63,9 @@ export class AdminPreferncesReligionComponent implements OnInit {
     if (!email) return;
 
     this.dataService
-      .getHttp(`Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`)
+      .getHttp(
+        `core-api/Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`,
+      )
       .subscribe({
         next: (response: any) => {
           const user = Array.isArray(response) ? response[0] : response;
@@ -83,11 +85,17 @@ export class AdminPreferncesReligionComponent implements OnInit {
     const religionArray: { typeID: number; subTypeID: number }[] = [];
 
     if (this.selectedReligion)
-      religionArray.push({ typeID: 7, subTypeID: Number(this.selectedReligion) });
+      religionArray.push({
+        typeID: 7,
+        subTypeID: Number(this.selectedReligion),
+      });
     if (this.selectedSect)
       religionArray.push({ typeID: 8, subTypeID: Number(this.selectedSect) });
     if (this.selectedReligionImportance)
-      religionArray.push({ typeID: 9, subTypeID: Number(this.selectedReligionImportance) });
+      religionArray.push({
+        typeID: 9,
+        subTypeID: Number(this.selectedReligionImportance),
+      });
 
     this.formFields[2].value = JSON.stringify(religionArray);
   }
@@ -95,15 +103,17 @@ export class AdminPreferncesReligionComponent implements OnInit {
   // ─── SAVE ─────────────────────────────────────────────────────────────────
   save(): void {
     if (!this.userID) {
-      this.toastr.error('User not found. Please complete the Personal Info step first.');
+      this.toastr.error(
+        'User not found. Please complete the Personal Info step first.',
+      );
       return;
     }
 
     this.syncFormFields();
     this.formFields[0].value = this.userID;
 
-    this.pageFields.userID       = this.formFields[0].value;
-    this.pageFields.spType       = this.formFields[1].value;
+    this.pageFields.userID = this.formFields[0].value;
+    this.pageFields.spType = this.formFields[1].value;
     this.pageFields.religionJson = this.formFields[2].value;
 
     this.dataService
@@ -116,13 +126,16 @@ export class AdminPreferncesReligionComponent implements OnInit {
         next: (response: any) => {
           const apiResponse = Array.isArray(response) ? response[0] : response;
           if (apiResponse?.includes('Success')) {
-            this.valid.apiInfoResponse('Religion Preferences Saved Successfully');
+            this.valid.apiInfoResponse(
+              'Religion Preferences Saved Successfully',
+            );
             this.saveSuccess.emit();
           } else {
             this.valid.apiErrorResponse(apiResponse);
           }
         },
-        error: (err: any) => console.log('Religion Preference Save Error:', err),
+        error: (err: any) =>
+          console.log('Religion Preference Save Error:', err),
       });
   }
 }

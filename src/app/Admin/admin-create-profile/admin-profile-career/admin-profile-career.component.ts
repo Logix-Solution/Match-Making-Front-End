@@ -38,10 +38,10 @@ export class AdminProfileCareerComponent implements OnInit {
   };
 
   careerFormFields: any[] = [
-    { value: 0,        msg: '', type: 'hidden',  required: false }, // 0 userID
-    { value: 'insert', msg: '', type: 'hidden',  required: false }, // 1 spType
-    { value: '',       msg: '', type: 'textbox', required: false }, // 2 instituteName
-    { value: '[]',     msg: '', type: 'hidden',  required: false }, // 3 careerJson
+    { value: 0, msg: '', type: 'hidden', required: false }, // 0 userID
+    { value: 'insert', msg: '', type: 'hidden', required: false }, // 1 spType
+    { value: '', msg: '', type: 'textbox', required: false }, // 2 instituteName
+    { value: '[]', msg: '', type: 'hidden', required: false }, // 3 careerJson
   ];
 
   constructor(
@@ -62,7 +62,9 @@ export class AdminProfileCareerComponent implements OnInit {
     if (!email) return;
 
     this.dataService
-      .getHttp(`Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`)
+      .getHttp(
+        `core-api/Admin/getUserDetailsByAdmin?email=${encodeURIComponent(email)}`,
+      )
       .subscribe({
         next: (response: any) => {
           const user = Array.isArray(response) ? response[0] : response;
@@ -84,15 +86,25 @@ export class AdminProfileCareerComponent implements OnInit {
       { typeID: 5, subTypeID: this.selectedOccupation },
       { typeID: 6, subTypeID: this.selectedMonthlyIncome },
     ]
-      .filter((item) => item.subTypeID !== '' && item.subTypeID !== null && item.subTypeID !== undefined)
-      .map((item) => ({ typeID: item.typeID, subTypeID: Number(item.subTypeID) }));
+      .filter(
+        (item) =>
+          item.subTypeID !== '' &&
+          item.subTypeID !== null &&
+          item.subTypeID !== undefined,
+      )
+      .map((item) => ({
+        typeID: item.typeID,
+        subTypeID: Number(item.subTypeID),
+      }));
 
     this.careerFormFields[3].value = JSON.stringify(careerEntries);
   }
 
   save(): void {
     if (!this.userID) {
-      this.toastr.error('User not found. Please complete the Personal Info step first.');
+      this.toastr.error(
+        'User not found. Please complete the Personal Info step first.',
+      );
       return;
     }
 
@@ -100,10 +112,10 @@ export class AdminProfileCareerComponent implements OnInit {
     this.careerFormFields[0].value = this.userID;
     this.careerFormFields[1].value = 'insert';
 
-    this.careerPageFields.userID       = this.careerFormFields[0].value;
-    this.careerPageFields.spType       = this.careerFormFields[1].value;
+    this.careerPageFields.userID = this.careerFormFields[0].value;
+    this.careerPageFields.spType = this.careerFormFields[1].value;
     this.careerPageFields.instituteName = this.careerFormFields[2].value;
-    this.careerPageFields.careerJson    = this.careerFormFields[3].value;
+    this.careerPageFields.careerJson = this.careerFormFields[3].value;
 
     this.dataService
       .saveHttp(
