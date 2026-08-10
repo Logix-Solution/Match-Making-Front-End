@@ -109,6 +109,7 @@ export class AdminUserManagementComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUsers();
+  
   }
 
   // ─── Load + Map (single endpoint feeds all 4 tabs) ─────────────────────────
@@ -149,7 +150,7 @@ export class AdminUserManagementComponent implements OnInit {
       dateLabel: status === 'pending' ? 'Requested At' : 'Member Since',
       dateValue: this.formatDate(status === 'pending' ? (u.requestedDate || u.dob) : u.dob),
       // TODO: no "profiles shared" field provided by API — defaulting until wired up
-      profilesSharedCount: u.profilesSharedCount ?? u.sharedProfileCount ?? 10,
+      profilesSharedCount: u.profilesSharedCount ?? u.sharedProfileCount ?? 0,
     };
   }
 
@@ -451,6 +452,7 @@ onOpenActivityModal(item: UserItem): void {
       const matchResult = Array.isArray(matches) ? matches[0] : matches;
 
       let matchedList: any[] = [];
+      // console.log('Raw matchResult:', matchResult, 'matchedProfiles:', matchResult?.matchedProfiles);
       try {
         matchedList = JSON.parse(matchResult?.matchedProfiles || '[]');
       } catch {

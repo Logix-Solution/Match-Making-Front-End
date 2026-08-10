@@ -64,23 +64,33 @@ interface ContactCard {
   target?: string;
 }
 
-interface ApiMatchProfile {
-  userProfileStatusID: number;
-  statusID: number;
-  statusTitle: string;
-  sourceProfileID: string;
-  destinationprofileID: string;
-  match: string;
-  fullName: string;
-  address: string;
-  maritalStatus: string;
-  height: string;
-  occupation: string;
-  dateofbirth: string;
-  destinationProfileName: string;
-  destinationprofileGender: string;
-  destinationprofileeDoc: string;
-  userInterest: string;
+// ---------- getBestMatchProfiles response shapes ----------
+
+interface ApiBestMatchResponse {
+  baseProfileID: number;
+  baseProfileName: string;
+  baseProfileInfo: string;
+  totalCount: number;
+  matchedProfiles: string; // JSON-stringified array of ApiBestMatchProfile
+}
+
+interface ApiBestMatchProfile {
+  MatchedProfileID: number;
+  MatchedProfileName: string;
+  userProfileStatusID?: number;
+  statusID?: number;
+  statusTitle?: string;
+  Age: number;
+  MatchedeDoc?: string;
+  Gender: string;
+  Occupation?: string;
+  CityID?: number;
+  CityName?: string;
+  CountryID?: number;
+  CountryName?: string;
+  MatchedAttributes: number;
+  TotalAttributeCount: number;
+  MatchPercentage: number;
 }
 
 interface MatchCard {
@@ -105,11 +115,9 @@ interface MatchCard {
 })
 export class UserActivePlanComponent implements OnInit {
 
-    // environment = environment;
-
-currentPlanLabel: string = 'Free Plan'; 
+  currentPlanLabel: string = 'Free Plan';
   userName = '';
-  matchedProfiles = 12;
+  matchedProfiles = 0; // now driven by totalCount from getBestMatchProfiles
 
   profileID: number | null = null;
 
@@ -123,7 +131,7 @@ currentPlanLabel: string = 'Free Plan';
   // Populated from core-api/Admin/getSupport
   contacts: ContactCard[] = [];
 
-  // Populated from core-api/Admin/getUserMatchProfile
+  // Populated from core-api/Admin/getBestMatchProfiles
   bestMatches: MatchCard[] = [];
 
   constructor(
@@ -146,12 +154,10 @@ currentPlanLabel: string = 'Free Plan';
       .getHttp(`core-api/Profile/getUserDashboardCounts?userID=${userID}`, {})
       .subscribe({
         next: (res: any) => {
-          // console.log('getUserDashboardCounts raw response:', res);
           const counts: ApiDashboardCounts = Array.isArray(res) ? res[0] : res;
           if (!counts) return;
 
           this.stats = this.mapCountsToStats(counts);
-          // console.log('Mapped stats:', this.stats);
         },
         error: (err) => console.error('getUserDashboardCounts error:', err),
       });
@@ -169,12 +175,10 @@ currentPlanLabel: string = 'Free Plan';
   private loadSupport(): void {
     this.dataService.getHttp('core-api/Admin/getSupport', {}).subscribe({
       next: (res: any) => {
-        console.log('getSupport raw response:', res);
         const support: ApiSupport = Array.isArray(res) ? res[0] : res;
         if (!support) return;
 
         this.contacts = this.mapSupportToContacts(support);
-        console.log('Mapped contacts:', this.contacts);
       },
       error: (err) => console.error('getSupport error:', err),
     });
@@ -273,41 +277,38 @@ currentPlanLabel: string = 'Free Plan';
     });
   }
 
- private loadPlans(profileID: number, currencyTypeID: number | string): void {
-  this.dataService
-    .getHttp(`core-api/Payment/getUserPlans?profileID=${profileID}&currencyTypeID=${currencyTypeID}`, {})
-    .subscribe({
-      next: (res: any) => {
-        const data: ApiUserPlan[] = Array.isArray(res) ? res : [];
+  private loadPlans(profileID: number, currencyTypeID: number | string): void {
+    this.dataService
+      .getHttp(`core-api/Payment/getUserPlans?profileID=${profileID}&currencyTypeID=${currencyTypeID}`, {})
+      .subscribe({
+        next: (res: any) => {
+          const data: ApiUserPlan[] = Array.isArray(res) ? res : [];
 
-        this.plans = data
-          .filter((p) => {
-            const nameLower = (p.planName || '').toLowerCase();
-            return !nameLower.includes('free') && !nameLower.includes('registration');
-          })
-          .map((p) => this.mapApiPlanToDisplay(p));
+          this.plans = data
+            .filter((p) => {
+              const nameLower = (p.planName || '').toLowerCase();
+              return !nameLower.includes('free') && !nameLower.includes('registration');
+            })
+            .map((p) => this.mapApiPlanToDisplay(p));
 
-        // Find the current plan from the FULL list (not the filtered `plans`),
-        // so Registration/Free still shows correctly in the badge even though
-        // it's excluded from the purchasable plans grid.
-        const currentItem = data.find((p) => p.currentPlan === 1);
+          const currentItem = data.find((p) => p.currentPlan === 1);
 
-        this.currentPlanId = currentItem && this.plans.some((dp) => dp.id === currentItem.planID)
-          ? currentItem.planID
-          : null; // only highlight a card as "selected" if it's actually shown in the grid
+          this.currentPlanId = currentItem && this.plans.some((dp) => dp.id === currentItem.planID)
+            ? currentItem.planID
+            : null;
 
-        if (this.currentPlanId) {
-          this.selectedPlanId = this.currentPlanId;
-        }
+          if (this.currentPlanId) {
+            this.selectedPlanId = this.currentPlanId;
+          }
 
-        // Badge text always reflects the real current plan, Registration included.
-        this.currentPlanLabel = currentItem
-          ? `${currentItem.planName} · ${currentItem.durationTitle}`
-          : 'Free Plan';
-      },
-      error: (err) => console.error('getUserPlans error:', err),
-    });
-}
+          this.currentPlanLabel = currentItem
+            ? `${currentItem.planName} · ${currentItem.durationTitle}`
+            : 'Free Plan';
+        },
+        error: (err) => console.error('getUserPlans error:', err),
+      });
+  }
+
   private mapApiPlanToDisplay(p: ApiUserPlan): PricingPlan {
     const fee = +p.planFee || 0;
     return {
@@ -340,48 +341,51 @@ currentPlanLabel: string = 'Free Plan';
     });
   }
 
-  // ---------- Best Matches ----------
+  // ---------- Best Matches (core-api/Admin/getBestMatchProfiles) ----------
 
   private loadBestMatches(profileID: number): void {
     this.dataService
-      .getHttp(`core-api/Admin/getUserMatchProfile?profileID=${profileID}`, {})
+      .getHttp(`core-api/Admin/getBestMatchProfiles?baseProfileID=${profileID}`, {})
       .subscribe({
         next: (res: any) => {
-          // console.log('getUserMatchProfile raw response:', res);
-          const data: ApiMatchProfile[] = Array.isArray(res) ? res : (res ? [res] : []);
-          this.bestMatches = data.map((m) => this.mapMatchProfileToCard(m));
-          console.log('Mapped bestMatches:', this.bestMatches);
+          const data: ApiBestMatchResponse = Array.isArray(res) ? res[0] : res;
+          if (!data) return;
+
+          // matchedProfiles / totalCount drives the "Profiles" stat shown in the banner
+          this.matchedProfiles = Number(data.totalCount) || 0;
+
+          let matches: ApiBestMatchProfile[] = [];
+          try {
+            matches = JSON.parse(data.matchedProfiles || '[]');
+          } catch {
+            matches = [];
+          }
+
+          this.bestMatches = matches.map((m) => this.mapBestMatchToCard(profileID, m));
         },
-        error: (err) => console.error('getUserMatchProfile error:', err),
+        error: (err) => console.error('getBestMatchProfiles error:', err),
       });
   }
-private mapMatchProfileToCard(m: ApiMatchProfile): MatchCard {
-  const imageDoc = environment.productUrl + 'assets/user-images/userProfile/' + (m.destinationprofileeDoc || '');
 
-  // console.log('Mapping match profile:', m, 'to card with imageDoc:', imageDoc, 'userInterest raw:', m.userInterest);
+  private mapBestMatchToCard(baseProfileID: number, m: ApiBestMatchProfile): MatchCard {
+    const imageDoc = environment.productUrl + 'assets/user-images/userProfile/' + (m.MatchedeDoc || '');
 
-  return {
-    sourceProfileID: +m.sourceProfileID || 0,
-    destinationProfileID: +m.destinationprofileID || 0,
-    name: m.destinationProfileName || '',
-    gender: m.destinationprofileGender || '',
-    age: this.calculateAge(m.dateofbirth),
-    height: m.height || '',
-    maritalStatus: m.maritalStatus || '',
-    occupation: m.occupation || '',
-    address: m.address || '',
-    imageDoc: imageDoc,
-    isInterested: String(m.userInterest ?? '0') === '1',
-    isTogglingInterest: false,
-  };
-}
-  private calculateAge(dob: string): number | null {
-    if (!dob) return null;
-    const parsed = new Date(dob);
-    if (isNaN(parsed.getTime())) return null;
-    const diff = Date.now() - parsed.getTime();
-    const ageDate = new Date(diff);
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
+    const address = [m.CityName, m.CountryName].filter(Boolean).join(', ');
+
+    return {
+      sourceProfileID: baseProfileID,
+      destinationProfileID: +m.MatchedProfileID || 0,
+      name: m.MatchedProfileName || '',
+      gender: m.Gender || '',
+      age: m.Age !== undefined && m.Age !== null && m.Age > 0 ? m.Age : null,
+      height: '',
+      maritalStatus: '',
+      occupation: m.Occupation || '',
+      address: address,
+      imageDoc: imageDoc,
+      isInterested: false,
+      isTogglingInterest: false,
+    };
   }
 
   // Toggles Send/Withdraw interest for a match card.
@@ -392,37 +396,33 @@ private mapMatchProfileToCard(m: ApiMatchProfile): MatchCard {
     const nextState = !match.isInterested;
     match.isTogglingInterest = true;
 
-    // const senderID = this.sharedGlobalService.getUserID();
-
     const payload = {
       senderID: match.sourceProfileID,
       receiverID: match.destinationProfileID,
       interestStatusID: nextState ? 1 : 0,
       spType: 'insert',
     };
-  // console.log('toggleInterest payload:', payload);  
 
-   this.dataService.postDirect('core-api/Admin/saveUserInterest', payload).subscribe({
-  next: (res: any) => {
-    match.isTogglingInterest = false;
+    this.dataService.postDirect('core-api/Admin/saveUserInterest', payload).subscribe({
+      next: (res: any) => {
+        match.isTogglingInterest = false;
 
-    if (res?.apiErrorResponse) {
-      this.validationService.validateToastr(res.apiErrorResponse);
-      return;
-    }
+        if (res?.apiErrorResponse) {
+          this.validationService.validateToastr(res.apiErrorResponse);
+          return;
+        }
 
-    match.isInterested = nextState;
+        match.isInterested = nextState;
 
-    const message = nextState
-      ? (res?.apiInfoResponse || 'Interest sent successfully')
-      : (res?.apiInfoResponse || 'Interest withdrawn successfully');
-    this.validationService.validateToastr(message);
-  },
-  error: (err) => {
-    match.isTogglingInterest = false;
-    console.error('saveUserInterest error:', err);
-    // this.validationService.validateToastr('Something went wrong, please try again');
-  },
-});
-}
+        const message = nextState
+          ? (res?.apiInfoResponse || 'Interest sent successfully')
+          : (res?.apiInfoResponse || 'Interest withdrawn successfully');
+        this.validationService.validateToastr(message);
+      },
+      error: (err) => {
+        match.isTogglingInterest = false;
+        console.error('saveUserInterest error:', err);
+      },
+    });
+  }
 }
