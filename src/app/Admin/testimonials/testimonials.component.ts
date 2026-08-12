@@ -147,6 +147,7 @@ export class TestimonialsComponent implements OnInit {
       spType:      'insert'
     };
 
+
     this.dataService.postDirect('core-api/Admin/SaveFeedBack', payload).subscribe({
       next: (res: any) => {
         const response = Array.isArray(res) ? res[0] : res;
@@ -180,6 +181,7 @@ export class TestimonialsComponent implements OnInit {
       userID:      userID,
       spType:      'delete'
     };
+  
 
     this.dataService.postDirect('core-api/Admin/SaveFeedBack', payload).subscribe({
       next: (res: any) => {
@@ -221,6 +223,7 @@ export class TestimonialsComponent implements OnInit {
     }
     window.open(url, '_blank');
   }
+  
 
   private resetForm(): void {
     this.newFeedback = { personName: '', date: '', videoLink: '' };
