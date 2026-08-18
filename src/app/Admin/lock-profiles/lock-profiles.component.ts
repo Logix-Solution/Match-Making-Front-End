@@ -413,6 +413,7 @@ export class LockProfilesComponent implements OnInit {
           record.statusTitle = option.statusTitle;
           record.isLocked = option.statusTitle === 'Lock';
           this.valid.apiInfoResponse(`Status updated to ${option.statusTitle}`);
+          this.loadLockProfiles();
         } else {
           this.valid.apiErrorResponse(response);
         }
