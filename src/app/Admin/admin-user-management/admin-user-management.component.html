@@ -107,7 +107,7 @@
             <div class="col-3">
               <button
                 class="w-100 py-2 rounded-2 border-0 bg-5th txt-8th d-flex align-items-center justify-content-center"
-                (click)="onViewDetails(user)"
+                (click)="onViewDetails(user); $event.stopPropagation()"
               >
                 <i class="bi bi-eye"></i>
               </button>
@@ -115,7 +115,7 @@
             <div class="col-4">
               <button
                 class="w-100 py-2 rounded-2 border-6th bg-6th txt-2nd ft-4 fw-medium reject-outline"
-                (click)="onReject(user)"
+                (click)="onReject(user); $event.stopPropagation()"
               >
                 <i class="bi bi-x-lg"></i> Reject
               </button>
@@ -123,7 +123,7 @@
             <div class="col-5">
               <button
                 class="w-100 py-2 rounded-2 border-0 bg-2nd txt-6th ft-4 fw-medium accept-solid"
-                (click)="onAccept(user)"
+                (click)="onAccept(user); $event.stopPropagation()"
               >
                 <i class="bi bi-check-lg"></i> Accept
               </button>
@@ -142,7 +142,7 @@
               <div
                 class="w-100 py-2 rounded-2 shared-pill text-center ft-4 fw-medium"
               >
-                {{ user.profilesSharedCount }} Profiles Shared
+                {{ user.profilesSharedCount }} Profiles Shared 
               </div>
             </div>
             <div class="col-5">
@@ -153,7 +153,7 @@
                   'bg-success-subtle text-success border-success-custom':
                     user.active !== 1,
                 }"
-                (click)="onBlockUser(user)"
+                (click)="onBlockUser(user); $event.stopPropagation()"
               >
                 {{ user.active === 1 ? "Block" : "Un Block" }}
               </button>
@@ -167,7 +167,7 @@
             <div class="col-4">
               <button
                 class="w-100 py-2 rounded-2 border-6th bg-6th txt-8th ft-5 fw-medium"
-                (click)="onUndo(user)"
+                (click)="onUndo(user); $event.stopPropagation()"
               >
                 <i class="bi bi-arrow-counterclockwise"></i> Undo
               </button>
@@ -175,7 +175,7 @@
             <div class="col-4">
               <button
                 class="w-100 py-2 rounded-2 border-6th bg-6th txt-8th ft-5 fw-medium"
-                (click)="onViewDetails(user)"
+                (click)="onViewDetails(user); $event.stopPropagation()"
               >
                 <i class="bi bi-eye"></i> View Details
               </button>
@@ -183,7 +183,7 @@
             <div class="col-4">
               <button
                 class="w-100 py-2 rounded-2 border-0 delete-pill ft-5 fw-medium"
-                (click)="onDeleteUser(user)"
+                (click)="onDeleteUser(user); $event.stopPropagation()"
               >
                 <i class="bi bi-trash"></i> Delete
               </button>
@@ -527,7 +527,7 @@
                     <button
                       class="actions border-0 bg-transparent"
                       [disabled]="!a.eDoc"
-                      (click)="onViewActivityDoc(a)"
+                      (click)="onViewActivityDoc(a);"
                     ></button>
                     <span
                       class="d-inline-block"
