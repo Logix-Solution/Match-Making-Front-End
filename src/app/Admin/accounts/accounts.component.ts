@@ -8,6 +8,14 @@ interface BankDetail {
   bankName: string;
   accountNumber: string;
   accountHolderName: string;
+  ibanNumber: string;
+  swiftBIC: string | null;
+  institutionNumber: string | null;
+  sortNumber: string | null;
+  bsbNumber: string | null;
+  transitNumber: string | null;
+  routingNumber: string | null;
+  address: string | null;
   active: number; // 0 | 1
 }
 
@@ -43,6 +51,14 @@ export class AccountsComponent implements OnInit {
       bankName: '',
       accountNumber: '',
       accountHolderName: '',
+      ibanNumber: '',
+      swiftBIC: '',
+      institutionNumber: '',
+      sortNumber: '',
+      bsbNumber: '',
+      transitNumber: '',
+      routingNumber: '',
+      address: '',
       active: 1
     };
   }
@@ -85,8 +101,9 @@ export class AccountsComponent implements OnInit {
   saveAccount(): void {
     const validate = [
       { value: this.form.accountHolderName, msg: 'Please enter account holder name', type: 'textBox', required: true },
-      { value: this.form.accountNumber,     msg: 'Please enter IBAN',                type: 'textBox', required: true },
+      { value: this.form.accountNumber,     msg: 'Please enter account number',      type: 'textBox', required: true },
       { value: this.form.bankName,          msg: 'Please enter bank name',           type: 'textBox', required: true },
+      { value: this.form.ibanNumber,        msg: 'Please enter IBAN number',         type: 'textBox', required: true },
     ];
 
     if (this.valid.validateToastr(validate) !== true) {
@@ -98,22 +115,39 @@ export class AccountsComponent implements OnInit {
       accountHolderName: this.form.accountHolderName,
       accountNumber: this.form.accountNumber,
       bankName: this.form.bankName,
+      ibanNumber: this.form.ibanNumber,
+      swiftBIC: this.form.swiftBIC,
+      institutionNumber: this.form.institutionNumber,
+      sortNumber: this.form.sortNumber,
+      bsbNumber: this.form.bsbNumber,
+      transitNumber: this.form.transitNumber,
+      routingNumber: this.form.routingNumber,
+      address: this.form.address,
       userID: this.global.getUserID(),
       spType: this.isEditMode ? 'update' : 'insert'
     };
+    console.log(payload,'save bank account');
 
-    (this.dataService.postDirect('core-api/Payment/saveBankDetails', payload) as any)
+     (this.dataService.postDirect('core-api/Payment/saveBankDetails', payload) as any)
       .subscribe({
-        next: () => {
-          this.valid.apiSuccessResponse(this.isEditMode ? 'Account updated successfully!' : 'Account added successfully!');
-          this.closeModal();
-          this.loadAccounts();
+        next: (res: any) => {
+          const response = Array.isArray(res) ? res[0] : res;
+
+          if (response?.includes && response.includes('Success')) {
+            this.valid.apiSuccessResponse(this.isEditMode ? 'Account updated successfully!' : 'Account added successfully!');
+            this.closeModal();
+            this.loadAccounts();
+          } else {
+            // Show the API's own message, e.g. "Account Already Exist"
+            this.valid.apiErrorResponse(response || 'Failed to save account. Please try again.');
+          }
         },
         error: (err: any) => {
           console.error('saveBankDetails error:', err);
           this.valid.apiErrorResponse('Failed to save account. Please try again.');
         }
       });
+ 
   }
 
   toggleStatus(account: BankDetail): void {

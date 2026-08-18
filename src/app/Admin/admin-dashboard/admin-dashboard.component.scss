@@ -226,3 +226,49 @@
     padding-bottom: 4rem !important;
   }
 }
+
+/* ==========================================================================
+   USER SIGNUPS GROWTH — Y AXIS LABELS
+   ========================================================================== */
+.chart-y-axis {
+  min-width: 34px;
+  text-align: right;
+  font-size: 11px;
+  line-height: 1;
+}
+
+/* ==========================================================================
+   USER SIGNUPS GROWTH — HOVER TOOLTIP
+   ========================================================================== */
+.chart-tooltip {
+  position: absolute;
+  transform: translate(-50%, -115%);
+  background: #2c2c2c;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #2c2c2c;
+  }
+
+  .chart-tooltip-value {
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .chart-tooltip-label {
+    font-size: 10px;
+    opacity: 0.75;
+  }
+}

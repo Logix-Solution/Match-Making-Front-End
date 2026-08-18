@@ -19,8 +19,16 @@
     >
       <div class="account-info">
         <h4>{{ acc.accountHolderName }}</h4>
-        <p><i class="fa fa-university"></i> {{ acc.bankName }}</p>
-        <p><i class="fa fa-credit-card"></i> IBAN#{{ acc.accountNumber }}</p>
+        <p *ngIf="acc.bankName"><i class="fa fa-university"></i> {{ acc.bankName }}</p>
+        <p *ngIf="acc.accountNumber"><i class="fa fa-credit-card"></i> A/C#{{ acc.accountNumber }}</p>
+        <p *ngIf="acc.ibanNumber"><i class="fa fa-credit-card"></i> IBAN#{{ acc.ibanNumber }}</p>
+        <p *ngIf="acc.swiftBIC"><i class="fa fa-globe"></i> SWIFT/BIC: {{ acc.swiftBIC }}</p>
+        <p *ngIf="acc.institutionNumber"><i class="fa fa-building"></i> Institution#: {{ acc.institutionNumber }}</p>
+        <p *ngIf="acc.sortNumber"><i class="fa fa-hashtag"></i> Sort Code: {{ acc.sortNumber }}</p>
+        <p *ngIf="acc.bsbNumber"><i class="fa fa-hashtag"></i> BSB: {{ acc.bsbNumber }}</p>
+        <p *ngIf="acc.transitNumber"><i class="fa fa-hashtag"></i> Transit#: {{ acc.transitNumber }}</p>
+        <p *ngIf="acc.routingNumber"><i class="fa fa-hashtag"></i> Routing#: {{ acc.routingNumber }}</p>
+        <p *ngIf="acc.address"><i class="fa fa-map-marker"></i> {{ acc.address }}</p>
       </div>
 
       <div class="account-actions">
@@ -71,18 +79,44 @@
     <div class="modal-body">
       <div class="section-label">BANK DETAILS</div>
 
-      <label>ACCOUNT HOLDER</label>
+      <label>ACCOUNT HOLDER *</label>
       <input
         type="text"
         [(ngModel)]="form.accountHolderName"
         placeholder="Account Holder Name"
       />
 
-      <label>IBAN</label>
-      <input type="text" [(ngModel)]="form.accountNumber" placeholder="IBAN" />
-
-      <label>BANK NAME</label>
+      <label>BANK NAME *</label>
       <input type="text" [(ngModel)]="form.bankName" placeholder="Bank Name" />
+
+      <label>ACCOUNT NUMBER *</label>
+      <input type="text" [(ngModel)]="form.accountNumber" placeholder="Account Number" />
+
+      <label>IBAN NUMBER *</label>
+      <input type="text" [(ngModel)]="form.ibanNumber" placeholder="IBAN Number" />
+
+      <div class="section-label">ADDITIONAL DETAILS (OPTIONAL)</div>
+
+      <label>SWIFT / BIC</label>
+      <input type="text" [(ngModel)]="form.swiftBIC" placeholder="SWIFT / BIC" />
+
+      <label>INSTITUTION NUMBER</label>
+      <input type="text" [(ngModel)]="form.institutionNumber" placeholder="Institution Number" />
+
+      <label>SORT NUMBER</label>
+      <input type="text" [(ngModel)]="form.sortNumber" placeholder="Sort Number" />
+
+      <label>BSB NUMBER</label>
+      <input type="text" [(ngModel)]="form.bsbNumber" placeholder="BSB Number" />
+
+      <label>TRANSIT NUMBER</label>
+      <input type="text" [(ngModel)]="form.transitNumber" placeholder="Transit Number" />
+
+      <label>ROUTING NUMBER</label>
+      <input type="text" [(ngModel)]="form.routingNumber" placeholder="Routing Number" />
+
+      <label>ADDRESS</label>
+      <input type="text" [(ngModel)]="form.address" placeholder="Address" />
     </div>
 
     <button class="btn-save" (click)="saveAccount()">

@@ -59,6 +59,10 @@ export class ConsultationComponent implements OnInit {
   isSubmitting = false;
   isLoadingLookups = false;
 
+  // ─── Logged-in user's country info (pulled from userProfile JSON) ──
+  userCountryCode: string = '';
+  userCountryID: number | null = null;
+
   // ─── Inline field validation state ─────────────────────────────────
   fieldErrors: FieldErrors = {
     language: false,
@@ -77,6 +81,28 @@ export class ConsultationComponent implements OnInit {
     this.buildCalendar(this.currentMonthDate);
     this.loadLookups();
     this.loadTimeSlots(this.selectedDate);
+    this.loadUserCountryInfo();
+  }
+
+  // ─── Load logged-in user's countryCode/countryID from their profile ─
+  private loadUserCountryInfo(): void {
+    const userID = this.sharedGlobalService.getUserID();
+    if (!userID) return;
+
+    this.sharedDataService.getHttp(`core-api/Profile/getUserDetails?UserID=${userID}`, {}).subscribe({
+      next: (res: any) => {
+        const u = Array.isArray(res) ? res[0] : res;
+        if (!u) return;
+
+        let profileItems: any[] = [];
+        try { profileItems = JSON.parse(u.userProfile || '[]'); } catch { profileItems = []; }
+
+        const locationItem = profileItems.find((p: any) => p.cityID !== undefined && p.isPreference === 0);
+        this.userCountryCode = locationItem?.countryCode || '';
+        this.userCountryID = locationItem?.countryID ?? null;
+      },
+      error: (err) => console.error('getUserDetails (country info) error:', err),
+    });
   }
 
   // ─── Load dropdown data ─────────────────────────────────────────────
@@ -246,8 +272,8 @@ export class ConsultationComponent implements OnInit {
       surName: '',
       email: '',
       phoneNo: '',
-      countryCode: '',
-      countryID: null,
+      countryCode: this.userCountryCode,
+      countryID: this.userCountryID,
       topicToDiscuss: this.specialRequests,
       languageID: this.consultationLanguageId,
       timeslotID: this.selectedSlotId,

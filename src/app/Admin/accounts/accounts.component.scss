@@ -209,6 +209,7 @@
 }
 
 // ─── Add/Edit Modal ─────────────────────────────────────────────────────
+// ─── Add/Edit Modal ─────────────────────────────────────────────────────
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -223,9 +224,14 @@
 .modal-box {
   width: 100%;
   max-width: 420px;
+  height: 560px;        // fixed size on all screens
+  max-height: 90vh;     // never overflow small viewports
   background: #e9e9e9;
   border-radius: 18px;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;      // outer box never scrolls, only modal-scroll-body does
   animation: modalPop 0.18s ease-out;
 
   .modal-header {
@@ -233,6 +239,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 16px;
+    flex-shrink: 0;       // header stays fixed
 
     h3 { font-size: 19px; font-weight: 700; color: #1a1a1a; margin: 0; }
 
@@ -252,6 +259,18 @@
     padding: 20px;
     margin-bottom: 16px;
 
+    flex: 1;              // takes remaining space between header and button
+    min-height: 0;        // required for overflow to work inside flex
+    overflow-y: auto;     // only this area scrolls
+
+    // nicer scrollbar
+    &::-webkit-scrollbar { width: 6px; }
+    &::-webkit-scrollbar-track { background: transparent; }
+    &::-webkit-scrollbar-thumb {
+      background: #d0d0d0;
+      border-radius: 999px;
+    }
+
     .section-label {
       font-size: 12px;
       font-weight: 700;
@@ -261,6 +280,8 @@
       padding-bottom: 12px;
       margin-bottom: 16px;
       border-bottom: 1px solid #f0f0f0;
+
+      &:not(:first-child) { margin-top: 18px; }
     }
 
     label {
@@ -298,6 +319,7 @@
 
   .btn-save {
     width: 100%;
+    flex-shrink: 0;       // save button stays fixed at bottom
     display: flex;
     align-items: center;
     justify-content: center;

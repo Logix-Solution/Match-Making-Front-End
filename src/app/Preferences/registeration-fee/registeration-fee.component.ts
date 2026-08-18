@@ -24,6 +24,14 @@ interface BankDetailsAPIResponse {
   bankName?: string;
   accountNumber?: string;
   accountHolderName?: string;
+  ibanNumber?: string | null;
+  swiftBIC?: string | null;
+  institutionNumber?: string | null;
+  sortNumber?: string | null;
+  bsbNumber?: string | null;
+  transitNumber?: string | null;
+  routingNumber?: string | null;
+  address?: string | null;
   active?: number;
 }
 
@@ -164,7 +172,12 @@ export class RegisterationFeeComponent implements OnInit , OnDestroy{
     return `${this.registrationPlan.currencyTypeTitle} ${fee.toLocaleString()}`;
   }
 
-  copyToClipboard(value: string | undefined): void {
+  // Numeric fee value used for exact paidAmount comparison
+  private get requiredFeeAmount(): number {
+    return this.registrationPlan ? (+this.registrationPlan.planFee || 0) : 0;
+  }
+
+  copyToClipboard(value: string | undefined | null): void {
     if (!value) return;
     navigator.clipboard.writeText(value).then(() => {
       console.log('Value successfully synced to system clipboard');
@@ -217,10 +230,23 @@ export class RegisterationFeeComponent implements OnInit , OnDestroy{
     this.isImageFile = false;
   }
 
-  // ── Paid amount: numbers only ────────────────────────────────────────
+  // ── Paid amount: numbers only + must equal the registration fee exactly ──
   onPaidAmountChange(value: string): void {
     if (value && !/^\d+(\.\d+)?$/.test(value)) {
       this.paidAmountError = 'Please enter a valid number';
+      return;
+    }
+
+    if (value && this.registrationPlan) {
+      const entered = +value;
+      const required = this.requiredFeeAmount;
+      if (entered > required) {
+        this.paidAmountError = `Paid amount cannot be greater than ${this.formattedFee}`;
+      } else if (entered < required) {
+        this.paidAmountError = `Paid amount cannot be less than ${this.formattedFee}`;
+      } else {
+        this.paidAmountError = '';
+      }
     } else {
       this.paidAmountError = '';
     }
@@ -231,6 +257,16 @@ export class RegisterationFeeComponent implements OnInit , OnDestroy{
 
     if (this.paidAmount !== null && !/^\d+(\.\d+)?$/.test(String(this.paidAmount))) {
       this.paidAmountError = 'Please enter a valid number';
+    } else if (this.paidAmount !== null && this.registrationPlan) {
+      const entered = +this.paidAmount;
+      const required = this.requiredFeeAmount;
+      if (entered > required) {
+        this.paidAmountError = `Paid amount cannot be greater than ${this.formattedFee}`;
+      } else if (entered < required) {
+        this.paidAmountError = `Paid amount cannot be less than ${this.formattedFee}`;
+      } else {
+        this.paidAmountError = '';
+      }
     }
 
     if (!this.referenceNumber || !this.paidAmount || !this.selectedFile || !this.registrationPlan || this.paidAmountError) {

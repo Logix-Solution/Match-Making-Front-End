@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { SeoBlockService } from './seo-block.service';
+// import { SeoBlockService } from './seo-block.service';
 import { SharedOneSignalService } from '../shared/services/shared-onesignal.service';
 
 
@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
   ];
 
   constructor(private router: Router,
-       private seoBlock: SeoBlockService,
+      //  private seoBlock: SeoBlockService,
        private oneSignal: SharedOneSignalService
   ) {}
 
@@ -64,7 +64,7 @@ export class AppComponent implements OnInit {
       if (event instanceof NavigationEnd && typeof window !== 'undefined') {
         window.scrollTo(0, 0);
       }
-      this.seoBlock.blockSearchEngines();
+      // this.seoBlock.blockSearchEngines();
           this.oneSignal.init();
     });
 

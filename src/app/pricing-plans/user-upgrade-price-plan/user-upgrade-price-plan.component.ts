@@ -10,6 +10,14 @@ interface BankDetailsAPIResponse {
   bankName?: string;
   accountNumber?: string;
   accountHolderName?: string;
+  ibanNumber?: string | null;
+  swiftBIC?: string | null;
+  institutionNumber?: string | null;
+  sortNumber?: string | null;
+  bsbNumber?: string | null;
+  transitNumber?: string | null;
+  routingNumber?: string | null;
+  address?: string | null;
   active?: number;
 }
 
@@ -85,7 +93,7 @@ export class UserUpgradePricePlanComponent implements OnInit, OnDestroy {
     this.bankDetails = found || {};
   }
 
-  copyToClipboard(value: string | undefined): void {
+  copyToClipboard(value: string | undefined | null): void {
     if (!value) return;
     navigator.clipboard.writeText(value).then(() => {
       console.log('Value successfully synced to system clipboard');
@@ -137,10 +145,22 @@ export class UserUpgradePricePlanComponent implements OnInit, OnDestroy {
     this.isImageFile = false;
   }
 
-  // ── Paid amount: numbers only ────────────────────────────────────────
+  // ── Paid amount: numbers only + must equal planFee exactly ──────────
   onPaidAmountChange(value: string): void {
     if (value && !/^\d+(\.\d+)?$/.test(value)) {
       this.paidAmountError = 'Please enter a valid number';
+      return;
+    }
+
+    if (value && this.planFee) {
+      const entered = +value;
+      if (entered > this.planFee) {
+        this.paidAmountError = `Paid amount cannot be greater than ${this.planFee}`;
+      } else if (entered < this.planFee) {
+        this.paidAmountError = `Paid amount cannot be less than ${this.planFee}`;
+      } else {
+        this.paidAmountError = '';
+      }
     } else {
       this.paidAmountError = '';
     }
@@ -151,6 +171,15 @@ export class UserUpgradePricePlanComponent implements OnInit, OnDestroy {
 
     if (this.paidAmount !== null && !/^\d+(\.\d+)?$/.test(String(this.paidAmount))) {
       this.paidAmountError = 'Please enter a valid number';
+    } else if (this.paidAmount !== null && this.planFee) {
+      const entered = +this.paidAmount;
+      if (entered > this.planFee) {
+        this.paidAmountError = `Paid amount cannot be greater than ${this.planFee}`;
+      } else if (entered < this.planFee) {
+        this.paidAmountError = `Paid amount cannot be less than ${this.planFee}`;
+      } else {
+        this.paidAmountError = '';
+      }
     }
 
     if (!this.referenceNumber || !this.paidAmount || !this.selectedFile || !this.planID || this.paidAmountError) {

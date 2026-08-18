@@ -122,7 +122,7 @@ export class AppointmentsComponent implements OnInit {
   }
 
   fullName(item: Appointment): string {
-    return `${item.firstName} ${item.surName}`.trim();
+    return `${item.firstName} `.trim();
   }
 
   // ─── Detail modal ────────────────────────────────────────────────

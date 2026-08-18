@@ -59,42 +59,131 @@
               </select>
             </div>
 
-            <!-- Account Holder -->
-            <div class="mb-3">
-              <label class="form-label text-uppercase">Account Holder</label>
-              <div class="display-data-field d-flex align-items-center justify-content-between p-3 rounded-3">
-                <span class="data-text">{{ bankDetails.accountHolderName || '---------' }}</span>
-                <button class="btn copy-btn p-0" type="button"
-                        (click)="copyToClipboard(bankDetails.accountHolderName)"
-                        [disabled]="!bankDetails.accountHolderName">
-                  <i class="bi bi-copy"></i>
-                </button>
+            <!-- Account Holder + Bank Name (same row) -->
+            <div class="row g-3 mb-3" *ngIf="bankDetails.accountHolderName || bankDetails.bankName">
+              <div class="col-6" *ngIf="bankDetails.accountHolderName">
+                <label class="form-label text-uppercase">Account Holder</label>
+                <div class="display-data-field d-flex align-items-center justify-content-between p-3 rounded-3">
+                  <span class="data-text">{{ bankDetails.accountHolderName }}</span>
+                  <button class="btn copy-btn p-0" type="button"
+                          (click)="copyToClipboard(bankDetails.accountHolderName)">
+                    <i class="bi bi-copy"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="col-6" *ngIf="bankDetails.bankName">
+                <label class="form-label text-uppercase">Bank Name</label>
+                <div class="display-data-field d-flex align-items-center justify-content-between p-3 rounded-3">
+                  <span class="data-text">{{ bankDetails.bankName }}</span>
+                  <button class="btn copy-btn p-0" type="button"
+                          (click)="copyToClipboard(bankDetails.bankName)">
+                    <i class="bi bi-copy"></i>
+                  </button>
+                </div>
               </div>
             </div>
 
             <!-- Account Number -->
-            <div class="mb-3">
+            <div class="mb-3" *ngIf="bankDetails.accountNumber">
               <label class="form-label text-uppercase">Account Number</label>
               <div class="display-data-field d-flex align-items-center justify-content-between p-3 rounded-3">
-                <span class="data-text font-monospace">{{ bankDetails.accountNumber || '---------' }}</span>
+                <span class="data-text font-monospace">{{ bankDetails.accountNumber }}</span>
                 <button class="btn copy-btn p-0" type="button"
-                        (click)="copyToClipboard(bankDetails.accountNumber)"
-                        [disabled]="!bankDetails.accountNumber">
+                        (click)="copyToClipboard(bankDetails.accountNumber)">
                   <i class="bi bi-copy"></i>
                 </button>
               </div>
             </div>
 
-            <!-- Bank Name -->
-            <div class="mb-4">
-              <label class="form-label text-uppercase">Bank Name</label>
+            <!-- IBAN Number -->
+            <div class="mb-3" *ngIf="bankDetails.ibanNumber">
+              <label class="form-label text-uppercase">IBAN Number</label>
               <div class="display-data-field d-flex align-items-center justify-content-between p-3 rounded-3">
-                <span class="data-text">{{ bankDetails.bankName || '---------' }}</span>
+                <span class="data-text font-monospace">{{ bankDetails.ibanNumber }}</span>
                 <button class="btn copy-btn p-0" type="button"
-                        (click)="copyToClipboard(bankDetails.bankName)"
-                        [disabled]="!bankDetails.bankName">
+                        (click)="copyToClipboard(bankDetails.ibanNumber)">
                   <i class="bi bi-copy"></i>
                 </button>
+              </div>
+            </div>
+
+            <!-- SWIFT / BIC -->
+            <div class="mb-3" *ngIf="bankDetails.swiftBIC">
+              <label class="form-label text-uppercase">SWIFT / BIC</label>
+              <div class="display-data-field d-flex align-items-center justify-content-between p-3 rounded-3">
+                <span class="data-text font-monospace">{{ bankDetails.swiftBIC }}</span>
+                <button class="btn copy-btn p-0" type="button"
+                        (click)="copyToClipboard(bankDetails.swiftBIC)">
+                  <i class="bi bi-copy"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Institution Number -->
+            <div class="mb-3" *ngIf="bankDetails.institutionNumber">
+              <label class="form-label text-uppercase">Institution Number</label>
+              <div class="display-data-field d-flex align-items-center justify-content-between p-3 rounded-3">
+                <span class="data-text font-monospace">{{ bankDetails.institutionNumber }}</span>
+                <button class="btn copy-btn p-0" type="button"
+                        (click)="copyToClipboard(bankDetails.institutionNumber)">
+                  <i class="bi bi-copy"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Sort Number -->
+            <div class="mb-3" *ngIf="bankDetails.sortNumber">
+              <label class="form-label text-uppercase">Sort Code</label>
+              <div class="display-data-field d-flex align-items-center justify-content-between p-3 rounded-3">
+                <span class="data-text font-monospace">{{ bankDetails.sortNumber }}</span>
+                <button class="btn copy-btn p-0" type="button"
+                        (click)="copyToClipboard(bankDetails.sortNumber)">
+                  <i class="bi bi-copy"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- BSB Number -->
+            <div class="mb-3" *ngIf="bankDetails.bsbNumber">
+              <label class="form-label text-uppercase">BSB Number</label>
+              <div class="display-data-field d-flex align-items-center justify-content-between p-3 rounded-3">
+                <span class="data-text font-monospace">{{ bankDetails.bsbNumber }}</span>
+                <button class="btn copy-btn p-0" type="button"
+                        (click)="copyToClipboard(bankDetails.bsbNumber)">
+                  <i class="bi bi-copy"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Transit Number -->
+            <div class="mb-3" *ngIf="bankDetails.transitNumber">
+              <label class="form-label text-uppercase">Transit Number</label>
+              <div class="display-data-field d-flex align-items-center justify-content-between p-3 rounded-3">
+                <span class="data-text font-monospace">{{ bankDetails.transitNumber }}</span>
+                <button class="btn copy-btn p-0" type="button"
+                        (click)="copyToClipboard(bankDetails.transitNumber)">
+                  <i class="bi bi-copy"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Routing Number -->
+            <div class="mb-3" *ngIf="bankDetails.routingNumber">
+              <label class="form-label text-uppercase">Routing Number</label>
+              <div class="display-data-field d-flex align-items-center justify-content-between p-3 rounded-3">
+                <span class="data-text font-monospace">{{ bankDetails.routingNumber }}</span>
+                <button class="btn copy-btn p-0" type="button"
+                        (click)="copyToClipboard(bankDetails.routingNumber)">
+                  <i class="bi bi-copy"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Address (no copy button, same field style as the rest) -->
+            <div class="mb-4" *ngIf="bankDetails.address">
+              <label class="form-label text-uppercase">Address</label>
+              <div class="display-data-field d-flex align-items-center justify-content-between p-3 rounded-3">
+                <span class="data-text">{{ bankDetails.address }}</span>
               </div>
             </div>
 

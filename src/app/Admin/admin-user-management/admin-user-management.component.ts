@@ -161,14 +161,23 @@ export class AdminUserManagementComponent implements OnInit {
     return locationItem ? `${locationItem.cityName}, ${locationItem.countryName}` : 'N/A';
   }
 
-  private extractPlanBadge(userPlansJson: string): string {
-    let plans: any[] = [];
-    try { plans = JSON.parse(userPlansJson || '[]'); } catch { plans = []; }
-    const current = plans.find((p: any) => p.CurrentPlan === 1);
-    if (!current?.planName) return '';
-    return current.planName === 'Registration' ? 'Registration' : `${current.planName} Plan`;
-  }
+  // private extractPlanBadge(userPlansJson: string): string {
+  //   let plans: any[] = [];
+  //   try { plans = JSON.parse(userPlansJson || '[]'); } catch { plans = []; }
+  //   const current = plans.find((p: any) => p.CurrentPlan === 1);
+  //   if (!current?.planName) return '';
+  //   return current.planName === 'Registration' ? 'Registration' : `${current.planName} Plan`;
+  // }
+private extractPlanBadge(userPlansJson: string): string {
+  let plans: any[] = [];
+  try { plans = JSON.parse(userPlansJson || '[]'); } catch { plans = []; }
 
+  // Only an active, non-Registration plan counts as the badge —
+  // Registration being isActive:1 should still fall through to "Free Plan".
+  const activePlan = plans.find((p: any) => +p.isActive === 1 && p.planName !== 'Registration');
+
+  return activePlan?.planName ? `${activePlan.planName} Plan` : '';
+}
   // ── Derives status from statusTitle string (e.g. "Reject", "Accept", "Pending") ──
   private mapStatusTitle(statusTitle: string | null | undefined): 'pending' | 'accepted' | 'rejected' {
     const title = (statusTitle || '').trim().toLowerCase();
@@ -284,10 +293,34 @@ export class AdminUserManagementComponent implements OnInit {
   }
 
   // TODO: no delete endpoint was provided — wire this up once you have one.
+  // onDeleteUser(item: UserItem): void {
+  //   console.log('Delete user requested (endpoint pending):', item);
+  // }
   onDeleteUser(item: UserItem): void {
-    console.log('Delete user requested (endpoint pending):', item);
-  }
+    const payload = {
+      userID: item.userID,
+      profileID: item.id,
+      spType: 'Delete',
+    };
 
+    console.log('Deleting user:', item.userID, 'with payload:', payload);
+
+    this.dataService.postDirect('core-api/Profile/DeleteUserAccount', payload).subscribe({
+      next: (res: any) => {
+        const response = Array.isArray(res) ? res[0] : res;
+        if (response?.includes('Success')) {
+          this.valid.apiInfoResponse('User deleted successfully');
+          this.loadUsers();
+        } else {
+          this.valid.apiErrorResponse(response);
+        }
+      },
+      error: (err) => {
+        this.valid.apiErrorResponse('Something went wrong. Please try again.');
+        console.error('DeleteUserAccount error:', err);
+      },
+    });
+  }
   // ─── Full Profile ("View Details") Modal ───────────────────────────────────
   onViewDetails(item: UserItem): void {
     this.isDetailModalOpen = true;
@@ -527,6 +560,8 @@ onOpenActivityModal(item: UserItem): void {
     this.isActivityModalOpen = false;
     this.activityUser = null;
     document.body.classList.remove('modal-open');
+       this.loadUsers();
+
   }
 
   toggleMatchStatus(match: MatchProfileItem, statusID: number): void {

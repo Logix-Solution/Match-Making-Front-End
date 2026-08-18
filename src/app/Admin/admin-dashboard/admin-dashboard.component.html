@@ -71,7 +71,7 @@
     </div>
 
     <div class="row g-1 ">
-      <div class="col-12 col-lg-8">
+     <div class="col-12 col-lg-8">
         <div class="dashboard-card h-100">
           <div class="d-flex justify-content-between align-items-start mb-1">
             <div>
@@ -81,22 +81,66 @@
             <button class="btn btn-light border btn-sm ft-4">Last 6 Months</button>
           </div>
           
-          <div style="height: 220px; position: relative;" class="mt-4">
-            <svg class="w-100 h-100" viewBox="0 0 600 200" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#2c2c2c" stop-opacity="0.1"/>
-                  <stop offset="100%" stop-color="#2c2c2c" stop-opacity="0"/>
-                </linearGradient>
-              </defs>
-              <path [attr.d]="signupChartPath" fill="none" stroke="#2c2c2c" stroke-width="3"></path>
-              <path [attr.d]="signupChartAreaPath" fill="url(#chartGrad)"></path>
-              <line x1="0" y1="50" x2="600" y2="50" stroke="#ebebeb" stroke-dasharray="4"></line>
-              <line x1="0" y1="100" x2="600" y2="100" stroke="#ebebeb" stroke-dasharray="4"></line>
-              <line x1="0" y1="150" x2="600" y2="150" stroke="#ebebeb" stroke-dasharray="4"></line>
-            </svg>
-            <div class="d-flex justify-content-between position-absolute bottom-0 w-100 ft-5 txt-7th pt-2">
-              <span *ngFor="let month of signupChartMonths">{{ month }}</span>
+          <div style="height: 220px; position: relative;" class="mt-4 d-flex">
+            <div class="d-flex flex-column justify-content-between ft-6 txt-7th chart-y-axis pe-2" style="height: 200px;">
+              <span *ngFor="let label of signupChartYAxisLabels">{{ label }}</span>
+            </div>
+            <div style="position: relative; flex: 1; min-width: 0;">
+              <svg class="w-100 h-100" viewBox="0 0 600 200" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#2c2c2c" stop-opacity="0.1"/>
+                    <stop offset="100%" stop-color="#2c2c2c" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path [attr.d]="signupChartPath" fill="none" stroke="#2c2c2c" stroke-width="3"></path>
+                <path [attr.d]="signupChartAreaPath" fill="url(#chartGrad)"></path>
+                <line x1="0" y1="50" x2="600" y2="50" stroke="#ebebeb" stroke-dasharray="4"></line>
+                <line x1="0" y1="100" x2="600" y2="100" stroke="#ebebeb" stroke-dasharray="4"></line>
+                <line x1="0" y1="150" x2="600" y2="150" stroke="#ebebeb" stroke-dasharray="4"></line>
+
+                <!-- Vertical guide line on hover -->
+                <line *ngIf="hoveredPointIndex !== null"
+                      [attr.x1]="signupChartPoints[hoveredPointIndex].x"
+                      [attr.x2]="signupChartPoints[hoveredPointIndex].x"
+                      y1="0" y2="200"
+                      stroke="#c9c9c9" stroke-width="1" stroke-dasharray="3"></line>
+
+                <!-- Invisible wider hit-area circles for easier hover + visible marker on hover -->
+                <g *ngFor="let point of signupChartPoints; let i = index">
+                  <circle
+                    [attr.cx]="point.x"
+                    [attr.cy]="point.y"
+                    r="10"
+                    fill="transparent"
+                    style="cursor: pointer;"
+                    (mouseenter)="onChartPointHover(point, i)"
+                    (mouseleave)="onChartPointLeave()">
+                  </circle>
+                  <circle
+                    *ngIf="hoveredPointIndex === i"
+                    [attr.cx]="point.x"
+                    [attr.cy]="point.y"
+                    r="5"
+                    fill="#fff"
+                    stroke="#2c2c2c"
+                    stroke-width="2.5">
+                  </circle>
+                </g>
+              </svg>
+
+              <!-- Tooltip -->
+              <div class="chart-tooltip"
+                   *ngIf="hoveredPointIndex !== null"
+                   [style.left.%]="tooltipLeftPct"
+                   [style.top.%]="tooltipTopPct">
+                <div class="chart-tooltip-value">{{ signupChartPoints[hoveredPointIndex].value }} Users</div>
+                <div class="chart-tooltip-label">{{ signupChartPoints[hoveredPointIndex].monthName }} {{ signupChartPoints[hoveredPointIndex].year }}</div>
+              </div>
+
+              <div class="d-flex justify-content-between position-absolute bottom-0 w-100 ft-5 txt-7th pt-2">
+                <span *ngFor="let month of signupChartMonths">{{ month }}</span>
+              </div>
             </div>
           </div>
         </div>

@@ -34,6 +34,14 @@ interface SignupGrowthPoint {
   totalUsers: string;
 }
 
+interface ChartPoint {
+  x: number;
+  y: number;
+  value: number;
+  monthName: string;
+  year: string;
+}
+
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
@@ -71,6 +79,15 @@ export class AdminDashboardComponent implements OnInit {
   signupChartPath = '';
   signupChartAreaPath = '';
   signupChartMonths: string[] = [];
+  // Left side Y-axis labels (top → bottom, matches gridlines)
+  signupChartYAxisLabels: number[] = [];
+  // Data points (in SVG coordinate space) used for hover markers + tooltip
+  signupChartPoints: ChartPoint[] = [];
+
+  // ─── Hover tooltip state ─────────────────────────────────────────────────
+  hoveredPointIndex: number | null = null;
+  tooltipLeftPct = 0;
+  tooltipTopPct = 0;
 
  ngOnInit(): void {
    
@@ -161,10 +178,27 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
+  // Rounds a max value up to a "nice" number so axis labels look clean
+  // (e.g. 26 -> 30, 1830 -> 2000, 550 -> 600)
+  private niceCeil(value: number): number {
+    if (value <= 0) return 1;
+    const magnitude = Math.pow(10, Math.floor(Math.log10(value)));
+    const normalized = value / magnitude;
+    let niceNormalized: number;
+    if (normalized <= 1) niceNormalized = 1;
+    else if (normalized <= 2) niceNormalized = 2;
+    else if (normalized <= 2.5) niceNormalized = 2.5;
+    else if (normalized <= 5) niceNormalized = 5;
+    else niceNormalized = 10;
+    return niceNormalized * magnitude;
+  }
+
   private buildSignupChart(): void {
     if (!this.signupGrowth.length) {
       this.signupChartPath = '';
       this.signupChartAreaPath = '';
+      this.signupChartYAxisLabels = [];
+      this.signupChartPoints = [];
       return;
     }
 
@@ -174,7 +208,11 @@ export class AdminDashboardComponent implements OnInit {
     const bottomPadding = 20;
 
     const values = this.signupGrowth.map((m) => +m.totalUsers || 0);
-    const maxVal = Math.max(...values, 1); // avoid divide-by-zero if all are 0
+    const rawMax = Math.max(...values, 1); // avoid divide-by-zero if all are 0
+    const maxVal = this.niceCeil(rawMax);
+
+    // 5 evenly spaced labels top→bottom: maxVal, 0.75, 0.5, 0.25, 0
+    this.signupChartYAxisLabels = [1, 0.75, 0.5, 0.25, 0].map((f) => Math.round(maxVal * f));
 
     const stepX = this.signupGrowth.length > 1 ? width / (this.signupGrowth.length - 1) : width;
 
@@ -195,6 +233,28 @@ export class AdminDashboardComponent implements OnInit {
 
     this.signupChartPath = line;
     this.signupChartAreaPath = `${line} L ${points[points.length - 1].x} ${height} L 0 ${height} Z`;
+
+    // Store hoverable points (pixel coords in the 600x200 viewBox, plus the raw value/month)
+    this.signupChartPoints = points.map((p, i) => ({
+      x: p.x,
+      y: p.y,
+      value: values[i],
+      monthName: this.signupGrowth[i].monthName,
+      year: this.signupGrowth[i].year,
+    }));
+  }
+
+  // ─── Hover handlers for chart tooltip ────────────────────────────────────
+  onChartPointHover(point: ChartPoint, index: number): void {
+    this.hoveredPointIndex = index;
+    // Convert SVG viewBox coords (600x200) to percentages so the tooltip
+    // positions correctly regardless of the rendered chart's actual size.
+    this.tooltipLeftPct = (point.x / 600) * 100;
+    this.tooltipTopPct = (point.y / 200) * 100;
+  }
+
+  onChartPointLeave(): void {
+    this.hoveredPointIndex = null;
   }
 
  openModalWithFilter(country: string, countryID: number = 0): void {
