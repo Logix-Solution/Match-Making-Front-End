@@ -325,7 +325,21 @@ export class LockProfilesComponent implements OnInit {
   }
 
   // ─── Status Dropdown ─────────────────────────────────────────────────────
-  toggleDropdown(record: LockProfileRecord): void {
+  // toggleDropdown(record: LockProfileRecord): void {
+  //   this.allProfiles.forEach((r) => {
+  //     if (r !== record) r.showDropdown = false;
+  //   });
+  //   record.showDropdown = !record.showDropdown;
+  // }
+
+   toggleDropdown(record: LockProfileRecord): void {
+    // Status (Married/Engaged/etc.) can only be changed on a locked profile —
+    // lock it first via the lock/unlock icon.
+    if (!record.isLocked) {
+      this.valid.apiInfoResponse('Please lock the profile first to change its status.');
+      return;
+    }
+
     this.allProfiles.forEach((r) => {
       if (r !== record) r.showDropdown = false;
     });

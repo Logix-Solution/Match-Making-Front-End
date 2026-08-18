@@ -86,3 +86,15 @@
   background: var(--2nd, #c84b31);
   color: #ffffff;
 }
+
+.status-dropdown-btn {
+  background: #eceef0;
+  color: #1a1a1a;
+  white-space: nowrap;
+  min-width: 110px;
+
+  &.dropdown-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

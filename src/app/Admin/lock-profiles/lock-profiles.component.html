@@ -84,14 +84,23 @@
         ></i>
 
         <div class="position-relative" (click)="$event.stopPropagation()">
-          <button
+          <!-- <button
             type="button"
             class="status-dropdown-btn d-flex align-items-center gap-1 px-3 py-2 rounded-2 border-0 ft-4 fw-medium"
             (click)="toggleDropdown(record)"
           >
             {{ record.statusTitle }}
             <i class="bi bi-chevron-down ft-6"></i>
-          </button>
+          </button> -->
+          <button
+  type="button"
+  class="status-dropdown-btn d-flex align-items-center gap-1 px-3 py-2 rounded-2 border-0 ft-4 fw-medium"
+  [class.dropdown-disabled]="!record.isLocked"
+  (click)="toggleDropdown(record)"
+>
+  {{ record.statusTitle }}
+  <i class="bi bi-chevron-down ft-6"></i>
+</button>
 
           <div
             class="status-dropdown-menu rounded-3 shadow-sm"
