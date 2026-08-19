@@ -6,6 +6,7 @@ import { SharedFormFieldValidationService } from 'src/shared/services/shared-for
 import { environment } from 'src/envirnment/environment.prod';
 
 type TabType = 'all' | 'pending' | 'accepted' | 'rejected';
+type ActionType = 'accept' | 'reject' | 'undo' | 'block' | 'unblock' | 'delete';
 
 interface UserItem {
   id: number;              // profileID
@@ -101,6 +102,12 @@ export class AdminUserManagementComponent implements OnInit {
   verifyTargetActivity: ActivityItem | null = null;
   verifyModalLoading = false;
 
+  // ─── Generic Action Confirm Modal (Accept/Reject/Undo/Block/UnBlock/Delete) ─
+  isActionConfirmOpen = false;
+  actionConfirmLoading = false;
+  pendingActionType: ActionType | null = null;
+  pendingActionUser: UserItem | null = null;
+
   constructor(
     private dataService: SharedDataService,
     private sharedGlobalService: SharedGlobalService,
@@ -109,7 +116,6 @@ export class AdminUserManagementComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUsers();
-  
   }
 
   // ─── Load + Map (single endpoint feeds all 4 tabs) ─────────────────────────
@@ -147,8 +153,10 @@ export class AdminUserManagementComponent implements OnInit {
       status,
       statusID: this.statusIDFromStatus(status),
       active: u.active,
-      dateLabel: status === 'pending' ? 'Requested At' : 'Member Since',
-      dateValue: this.formatDate(status === 'pending' ? (u.requestedDate || u.dob) : u.dob),
+      // "membersince" is a top-level field on the API response (e.g. "07/24/2026 00:00:00") —
+      // shown as "Member Since" across all/pending/accepted tabs; falls back to dob if missing.
+      dateLabel: 'Member Since',
+      dateValue: this.formatDate(u.membersince || u.dob),
       // TODO: no "profiles shared" field provided by API — defaulting until wired up
       profilesSharedCount: u.profilesSharedCount ?? u.sharedProfileCount ?? 0,
     };
@@ -161,23 +169,17 @@ export class AdminUserManagementComponent implements OnInit {
     return locationItem ? `${locationItem.cityName}, ${locationItem.countryName}` : 'N/A';
   }
 
-  // private extractPlanBadge(userPlansJson: string): string {
-  //   let plans: any[] = [];
-  //   try { plans = JSON.parse(userPlansJson || '[]'); } catch { plans = []; }
-  //   const current = plans.find((p: any) => p.CurrentPlan === 1);
-  //   if (!current?.planName) return '';
-  //   return current.planName === 'Registration' ? 'Registration' : `${current.planName} Plan`;
-  // }
-private extractPlanBadge(userPlansJson: string): string {
-  let plans: any[] = [];
-  try { plans = JSON.parse(userPlansJson || '[]'); } catch { plans = []; }
+  private extractPlanBadge(userPlansJson: string): string {
+    let plans: any[] = [];
+    try { plans = JSON.parse(userPlansJson || '[]'); } catch { plans = []; }
 
-  // Only an active, non-Registration plan counts as the badge —
-  // Registration being isActive:1 should still fall through to "Free Plan".
-  const activePlan = plans.find((p: any) => +p.isActive === 1 && p.planName !== 'Registration');
+    // Only an active, non-Registration plan counts as the badge —
+    // Registration being isActive:1 should still fall through to "Free Plan".
+    const activePlan = plans.find((p: any) => +p.isActive === 1 && p.planName !== 'Registration');
 
-  return activePlan?.planName ? `${activePlan.planName} Plan` : '';
-}
+    return activePlan?.planName ? `${activePlan.planName} Plan` : '';
+  }
+
   // ── Derives status from statusTitle string (e.g. "Reject", "Accept", "Pending") ──
   private mapStatusTitle(statusTitle: string | null | undefined): 'pending' | 'accepted' | 'rejected' {
     const title = (statusTitle || '').trim().toLowerCase();
@@ -196,9 +198,27 @@ private extractPlanBadge(userPlansJson: string): string {
     }
   }
 
+  // Browser Date parsing of "MM/DD/YYYY HH:mm:ss" strings (e.g. membersince) is
+  // inconsistent across browsers — fall back to manual parsing if native parse fails.
+  private parseFlexibleDate(value: string | null | undefined): Date | null {
+    if (!value) return null;
+
+    const direct = new Date(value);
+    if (!isNaN(direct.getTime())) return direct;
+
+    const match = value.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if (match) {
+      const [, month, day, year] = match;
+      const manual = new Date(+year, +month - 1, +day);
+      if (!isNaN(manual.getTime())) return manual;
+    }
+    return null;
+  }
+
   formatDate(dob: string | null): string {
-    if (!dob) return 'N/A';
-    return new Date(dob).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    const date = this.parseFlexibleDate(dob);
+    if (!date) return 'N/A';
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   }
 
   calculateAge(dob: string): number {
@@ -228,75 +248,143 @@ private extractPlanBadge(userPlansJson: string): string {
     });
   }
 
-  // ─── Accept / Reject / Undo ──────────────────────────────────────────────────
-  onAccept(item: UserItem): void {
-    this.saveStatus(item, 2, 'Request Accepted Successfully');
+  // ─── Accept / Reject / Undo — open confirm modal first ─────────────────────
+  onAccept(item: UserItem): void { this.openActionConfirm('accept', item); }
+  onReject(item: UserItem): void { this.openActionConfirm('reject', item); }
+  onUndo(item: UserItem): void { this.openActionConfirm('undo', item); }
+
+  // ─── Block / Un-Block (Accepted tab) — open confirm modal first ────────────
+  onBlockUser(item: UserItem): void {
+    this.openActionConfirm(item.active === 1 ? 'block' : 'unblock', item);
   }
 
-  onReject(item: UserItem): void {
-    this.saveStatus(item, 3, 'Request Rejected Successfully');
+  // ─── Delete — open confirm modal first ──────────────────────────────────────
+  onDeleteUser(item: UserItem): void { this.openActionConfirm('delete', item); }
+
+  // ─── Generic Action Confirm Modal ───────────────────────────────────────────
+  private openActionConfirm(type: ActionType, item: UserItem): void {
+    this.pendingActionType = type;
+    this.pendingActionUser = item;
+    this.isActionConfirmOpen = true;
   }
 
-  onUndo(item: UserItem): void {
-    this.saveStatus(item, 1, 'Request Restored Successfully');
+  closeActionConfirm(): void {
+    if (this.actionConfirmLoading) return;
+    this.isActionConfirmOpen = false;
+    this.pendingActionType = null;
+    this.pendingActionUser = null;
+  }
+
+  confirmPendingAction(): void {
+    if (!this.pendingActionType || !this.pendingActionUser) return;
+    const item = this.pendingActionUser;
+
+    switch (this.pendingActionType) {
+      case 'accept': this.performSaveStatus(item, 2, 'Request Accepted Successfully'); break;
+      case 'reject': this.performSaveStatus(item, 3, 'Request Rejected Successfully'); break;
+      case 'undo':   this.performSaveStatus(item, 1, 'Request Restored Successfully'); break;
+      case 'block':
+      case 'unblock': this.performBlockToggle(item); break;
+      case 'delete': this.performDelete(item); break;
+    }
+  }
+
+  get actionConfirmTitle(): string {
+    switch (this.pendingActionType) {
+      case 'accept': return 'Accept this Request?';
+      case 'reject': return 'Reject this Request?';
+      case 'undo': return 'Restore this Request?';
+      case 'block': return 'Block this User?';
+      case 'unblock': return 'Un Block this User?';
+      case 'delete': return 'Delete this User?';
+      default: return '';
+    }
+  }
+
+  get actionConfirmMessage(): string {
+    const name = this.pendingActionUser?.name || 'this user';
+    switch (this.pendingActionType) {
+      case 'accept': return `${name}'s request will be accepted and moved to the Accepted tab.`;
+      case 'reject': return `${name}'s request will be rejected and moved to the Rejected tab.`;
+      case 'undo': return `${name}'s request will be restored back to Pending.`;
+      case 'block': return `${name} will be blocked and won't be able to access their account.`;
+      case 'unblock': return `${name} will be un blocked and can access their account again.`;
+      case 'delete': return `${name}'s account will be permanently deleted. This cannot be undone.`;
+      default: return '';
+    }
+  }
+
+  get actionConfirmButtonLabel(): string {
+    switch (this.pendingActionType) {
+      case 'accept': return 'Accept';
+      case 'reject': return 'Reject';
+      case 'undo': return 'Restore';
+      case 'block': return 'Block';
+      case 'unblock': return 'Un Block';
+      case 'delete': return 'Delete';
+      default: return 'Confirm';
+    }
   }
 
   // Reloads the full list from the server after a successful save instead of
   // patching local state — guarantees the card lands under whatever tab the
   // API's statusTitle actually reports, avoiding drift between client and server.
-  private saveStatus(item: UserItem, statusID: number, successMsg: string): void {
+  private performSaveStatus(item: UserItem, statusID: number, successMsg: string): void {
     const adminID = this.sharedGlobalService.getUserID();
     const payload = { userID: item.userID, statusID, adminID, spType: 'update' };
     console.log('Saving status for user:', item.userID, 'to statusID:', statusID, 'with payload:', payload);
+    this.actionConfirmLoading = true;
 
     this.dataService.postDirect('user-api/User/saveUserRequest', payload).subscribe({
       next: (res: any) => {
         const response = Array.isArray(res) ? res[0] : res;
+        this.actionConfirmLoading = false;
         if (response?.includes('Success')) {
           this.valid.apiInfoResponse(successMsg);
+          this.closeActionConfirm();
           this.loadUsers();
         } else {
           this.valid.apiErrorResponse(response);
         }
       },
       error: (err) => {
+        this.actionConfirmLoading = false;
         this.valid.apiErrorResponse('Something went wrong.');
         console.error(err);
       },
     });
   }
 
-  // ─── Block / Un-Block (Accepted tab) ────────────────────────────────────────
-  onBlockUser(item: UserItem): void {
+  private performBlockToggle(item: UserItem): void {
     const isCurrentlyActive = item.active === 1;
     const spType = isCurrentlyActive ? 'Deactive' : 'Active';
     const adminID = this.sharedGlobalService.getUserID();
     const payload = { adminID, userID: item.userID, spType };
+    this.actionConfirmLoading = true;
 
     this.dataService.postDirect('core-api/Admin/SaveUserDeactive', payload).subscribe({
       next: (res: any) => {
         const response = Array.isArray(res) ? res[0] : res;
+        this.actionConfirmLoading = false;
         if (response?.includes('Success')) {
           item.active = isCurrentlyActive ? 0 : 1;
           this.valid.apiInfoResponse(
             isCurrentlyActive ? `${item.name} has been blocked` : `${item.name} has been activated`,
           );
+          this.closeActionConfirm();
         } else {
           this.valid.apiErrorResponse(response);
         }
       },
       error: (err) => {
+        this.actionConfirmLoading = false;
         this.valid.apiErrorResponse('Something went wrong. Please try again.');
         console.error('Block/Active error:', err);
       },
     });
   }
 
-  // TODO: no delete endpoint was provided — wire this up once you have one.
-  // onDeleteUser(item: UserItem): void {
-  //   console.log('Delete user requested (endpoint pending):', item);
-  // }
-  onDeleteUser(item: UserItem): void {
+  private performDelete(item: UserItem): void {
     const payload = {
       userID: item.userID,
       profileID: item.id,
@@ -304,23 +392,28 @@ private extractPlanBadge(userPlansJson: string): string {
     };
 
     console.log('Deleting user:', item.userID, 'with payload:', payload);
+    this.actionConfirmLoading = true;
 
     this.dataService.postDirect('core-api/Profile/DeleteUserAccount', payload).subscribe({
       next: (res: any) => {
         const response = Array.isArray(res) ? res[0] : res;
+        this.actionConfirmLoading = false;
         if (response?.includes('Success')) {
           this.valid.apiInfoResponse('User deleted successfully');
+          this.closeActionConfirm();
           this.loadUsers();
         } else {
           this.valid.apiErrorResponse(response);
         }
       },
       error: (err) => {
+        this.actionConfirmLoading = false;
         this.valid.apiErrorResponse('Something went wrong. Please try again.');
         console.error('DeleteUserAccount error:', err);
       },
     });
   }
+
   // ─── Full Profile ("View Details") Modal ───────────────────────────────────
   onViewDetails(item: UserItem): void {
     this.isDetailModalOpen = true;
@@ -423,110 +516,55 @@ private extractPlanBadge(userPlansJson: string): string {
   }
 
   // ─── Activity Modal (Activities + Matches Profiles) — opens on avatar click ─
-  // onOpenActivityModal(item: UserItem): void {
-  //   this.isActivityModalOpen = true;
-  //   this.activityModalLoading = true;
-  //   this.activityUser = item;
-  //   this.activities = [];
-  //   this.matchProfiles = [];
-  //   this.activityPlanBadge = '';
-  //   document.body.classList.add('modal-open');
+  onOpenActivityModal(item: UserItem): void {
+    this.isActivityModalOpen = true;
+    this.activityModalLoading = true;
+    this.activityUser = item;
+    this.activities = [];
+    this.matchProfiles = [];
+    this.activityPlanBadge = '';
+    document.body.classList.add('modal-open');
 
-  //   forkJoin({
-  //     userDetails: this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${item.userID}`, {}),
-  //     matches: this.dataService.getHttp(`core-api/Admin/getUserMatchProfile?profileID=${item.id}`, {}),
-  //   }).subscribe({
-  //     next: ({ userDetails, matches }: any) => {
-  //       const u = Array.isArray(userDetails) ? userDetails[0] : userDetails;
-  //       this.buildActivities(u);
+    forkJoin({
+      userDetails: this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${item.userID}`, {}),
+      matches: this.dataService.getHttp(`core-api/Admin/getBestMatchProfiles?baseProfileID=${item.id}`, {}),
+    }).subscribe({
+      next: ({ userDetails, matches }: any) => {
+        const u = Array.isArray(userDetails) ? userDetails[0] : userDetails;
+        this.buildActivities(u);
 
-  //       const matchData = Array.isArray(matches) ? matches : [];
-  //       this.matchProfiles = matchData.map((m: any) => {
-  //         const derivedStatus = this.mapMatchStatus(m.statusTitle);
-  //         return {
-  //           userProfileStatusID: +m.userProfileStatusID || 0,
-  //           statusID: derivedStatus,
-  //           sourceProfileID: +m.sourceProfileID,
-  //           destinationProfileID: +(m.destinationprofileID ?? m.destinationProfileID),
-  //           match: m.match,
-  //           fullName: m.fullName,
-  //           address: m.address,
-  //           subTypeTitle: m.subTypeTitle,
-  //           pendingStatusID: derivedStatus,
-  //         };
-  //       });
+        // New endpoint returns a single wrapper object (or array-wrapped object)
+        // with matchedProfiles as a JSON string — needs to be parsed.
+        const matchResult = Array.isArray(matches) ? matches[0] : matches;
 
-  //       this.activityModalLoading = false;
-  //     },
-  //     error: (err) => { console.error('Activity modal load error:', err); this.activityModalLoading = false; },
-  //   });
-  // }
+        let matchedList: any[] = [];
+        try {
+          matchedList = JSON.parse(matchResult?.matchedProfiles || '[]');
+        } catch {
+          matchedList = [];
+        }
 
-  // ─── Activity Modal (Activities + Matches Profiles) — opens on avatar click ─
-onOpenActivityModal(item: UserItem): void {
-  this.isActivityModalOpen = true;
-  this.activityModalLoading = true;
-  this.activityUser = item;
-  this.activities = [];
-  this.matchProfiles = [];
-  this.activityPlanBadge = '';
-  document.body.classList.add('modal-open');
-
-  forkJoin({
-    userDetails: this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${item.userID}`, {}),
-    matches: this.dataService.getHttp(`core-api/Admin/getBestMatchProfiles?baseProfileID=${item.id}`, {}),
-  }).subscribe({
-    next: ({ userDetails, matches }: any) => {
-      const u = Array.isArray(userDetails) ? userDetails[0] : userDetails;
-      this.buildActivities(u);
-
-      // New endpoint returns a single wrapper object (or array-wrapped object)
-      // with matchedProfiles as a JSON string — needs to be parsed.
-      const matchResult = Array.isArray(matches) ? matches[0] : matches;
-
-      let matchedList: any[] = [];
-      // console.log('Raw matchResult:', matchResult, 'matchedProfiles:', matchResult?.matchedProfiles);
-      try {
-        matchedList = JSON.parse(matchResult?.matchedProfiles || '[]');
-      } catch {
-        matchedList = [];
-      }
-
-      const baseProfileID = +matchResult?.baseProfileID || item.id;
-  this.matchProfiles = matchedList.map((m: any) => {
-        const derivedStatus = this.mapMatchStatus(m.statusTitle);
-        return {
+        const baseProfileID = +matchResult?.baseProfileID || item.id;
+        this.matchProfiles = matchedList.map((m: any) => {
+          const derivedStatus = this.mapMatchStatus(m.statusTitle);
+          return {
             userProfileStatusID: +m.userProfileStatusID || 0,
-          statusID: derivedStatus,
-          sourceProfileID: baseProfileID,
-          destinationProfileID: +m.MatchedProfileID,
-          match: (m.MatchPercentage ?? 0).toString(),
-          fullName: m.MatchedProfileName || 'Unknown',
-          address: [m.CityName, m.CountryName].filter(Boolean).join(', '),
-          subTypeTitle: m.Gender || '',
-          pendingStatusID: derivedStatus,
-        };
-      });
-      // this.matchProfiles = matchedList.map((m: any) => ({
-      //   // New API doesn't return an existing show/hide status per match,
-      //   // so default to Show (2) — same fallback behavior as before when
-      //   // statusTitle was missing/unrecognized.
-      //   userProfileStatusID: 0,
-      //   statusID: 2,
-      //   sourceProfileID: baseProfileID,
-      //   destinationProfileID: +m.MatchedProfileID,
-      //   match: (m.MatchPercentage ?? 0).toString(),
-      //   fullName: m.MatchedProfileName || 'Unknown',
-      //   address: [m.CityName, m.CountryName].filter(Boolean).join(', '),
-      //   subTypeTitle: m.Gender || '',
-      //   pendingStatusID: 2,
-      // }));
+            statusID: derivedStatus,
+            sourceProfileID: baseProfileID,
+            destinationProfileID: +m.MatchedProfileID,
+            match: (m.MatchPercentage ?? 0).toString(),
+            fullName: m.MatchedProfileName || 'Unknown',
+            address: [m.CityName, m.CountryName].filter(Boolean).join(', '),
+            subTypeTitle: m.Gender || '',
+            pendingStatusID: derivedStatus,
+          };
+        });
 
-      this.activityModalLoading = false;
-    },
-    error: (err) => { console.error('Activity modal load error:', err); this.activityModalLoading = false; },
-  });
-}
+        this.activityModalLoading = false;
+      },
+      error: (err) => { console.error('Activity modal load error:', err); this.activityModalLoading = false; },
+    });
+  }
 
   private buildActivities(user: any): void {
     let plans: any[] = [];
@@ -560,15 +598,14 @@ onOpenActivityModal(item: UserItem): void {
     this.isActivityModalOpen = false;
     this.activityUser = null;
     document.body.classList.remove('modal-open');
-       this.loadUsers();
-
+    this.loadUsers();
   }
 
   toggleMatchStatus(match: MatchProfileItem, statusID: number): void {
     match.pendingStatusID = statusID;
   }
 
-saveMatchStatuses(): void {
+  saveMatchStatuses(): void {
     if (!this.activityUser) return;
     const changed = this.matchProfiles.filter((m) => m.pendingStatusID !== m.statusID);
 

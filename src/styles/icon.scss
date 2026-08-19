@@ -379,36 +379,34 @@
   height: 17px;
 }
 
-.actions{
-
-   background: url("../assets/icons/actions.svg");
+.actions {
+  background: url("../assets/icons/actions.svg");
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: contain;
   background-position: center;
-
-  width: 17px;
-  height: 17px;
+  width: 8px;
+  height: 8px;
+  display: inline-block;
 }
 
-.check{
-
-   background: url("../assets/icons/check.svg");
+.check {
+  background: url("../assets/icons/check.svg");
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: contain;
   background-position: center;
-
-  width: 17px;
-  height: 17px;
+  width: 8px;
+  height: 8px;
+  display: inline-block;
 }
-.uncheck{
 
-   background: url("../assets/icons/uncheck.svg");
+.uncheck {
+  background: url("../assets/icons/uncheck.svg");
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: contain;
   background-position: center;
-
-  width: 17px;
-  height: 17px;
+  width: 8px;
+  height: 8px;
+  display: inline-block;
 }
 
 

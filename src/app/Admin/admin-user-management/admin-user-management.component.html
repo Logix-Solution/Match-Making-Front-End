@@ -101,7 +101,8 @@
         <!-- ── PENDING actions ─────────────────────────────────────────── -->
         <ng-container *ngIf="user.status === 'pending'">
           <div class="ft-6 txt-7th text-uppercase mb-2">
-            Requested At <strong class="txt-8th">{{ user.dateValue }}</strong>
+            Member Since
+            <strong class="txt-8th">&nbsp; {{ user.dateValue }}</strong>
           </div>
           <div class="row g-2">
             <div class="col-3">
@@ -132,20 +133,57 @@
         </ng-container>
 
         <!-- ── ACCEPTED actions ────────────────────────────────────────── -->
-        <ng-container *ngIf="user.status === 'accepted'">
+        <!-- <ng-container *ngIf="user.status === 'accepted'">
           <div class="ft-6 txt-7th text-uppercase mb-2">
             Member Since
-            <strong class="ms-1txt-8th">{{ user.dateValue }}</strong>
+            <strong class="ms-1txt-8th">&nbsp;{{ user.dateValue }}</strong>
           </div>
           <div class="row g-2">
             <div class="col-7">
               <div
                 class="w-100 py-2 rounded-2 shared-pill text-center ft-4 fw-medium"
               >
-                {{ user.profilesSharedCount }} Profiles Shared 
+                {{ user.profilesSharedCount }} Profiles Shared
               </div>
             </div>
             <div class="col-5">
+              <button
+                class="w-100 py-2 rounded-2 ft-4 fw-medium block-hover"
+                [ngClass]="{
+                  'bg-6th txt-2nd border-danger-custom': user.active === 1,
+                  'bg-success-subtle text-success border-success-custom':
+                    user.active !== 1,
+                }"
+                (click)="onBlockUser(user); $event.stopPropagation()"
+              >
+                {{ user.active === 1 ? "Block" : "Un Block" }}
+              </button>
+            </div>
+          </div>
+        </ng-container> -->
+        <!-- ── ACCEPTED actions ────────────────────────────────────────── -->
+        <ng-container *ngIf="user.status === 'accepted'">
+          <div class="ft-6 txt-7th text-uppercase mb-2">
+            Member Since
+            <strong class="ms-1txt-8th">&nbsp;{{ user.dateValue }}</strong>
+          </div>
+          <div class="row g-2">
+            <div class="col-4">
+              <button
+                class="w-100 py-2 rounded-2 border-6th bg-6th txt-8th ft-5 fw-medium"
+                (click)="onUndo(user); $event.stopPropagation()"
+              >
+                <i class="bi bi-arrow-counterclockwise"></i> Undo
+              </button>
+            </div>
+            <div class="col-4">
+              <div
+                class="w-100 h-100 py-2 rounded-2 shared-pill text-center ft-4 fw-medium d-flex align-items-center justify-content-center"
+              >
+                {{ user.profilesSharedCount }} Shared
+              </div>
+            </div>
+            <div class="col-4">
               <button
                 class="w-100 py-2 rounded-2 ft-4 fw-medium block-hover"
                 [ngClass]="{
@@ -492,13 +530,19 @@
           <div class="ft-5 fw-bold text-uppercase txt-7th mb-2">Activities</div>
           <div class="table-responsive activities-scroll">
             <table class="w-100 activity-table">
+              <colgroup>
+                <col style="width: 20%" />
+                <col style="width: 18%" />
+                <col style="width: 16%" />
+                <col style="width: 16%" />
+                <col style="width: 30%" />
+              </colgroup>
               <thead>
                 <tr class="ft-6 text-uppercase txt-7th">
                   <th>Plan</th>
                   <th>Reference No#</th>
                   <th>Expiry Date</th>
-                  <th class="">Amount</th>
-                  <th></th>
+                  <th class="text-end">Amount</th>
                   <th class="text-center">Action</th>
                 </tr>
               </thead>
@@ -507,34 +551,33 @@
                   <td class="ft-5 txt-7th text-uppercase">{{ a.planName }}</td>
                   <td class="ft-5 txt-8th">{{ a.referenceNo }}</td>
                   <td class="ft-5 txt-8th">{{ formatDate(a.toDate) }}</td>
-                  <td class="ft-5 txt-8th text-end"> {{a.paidAmount | number}}</td>
-                  <td></td>
-                  <!-- <td class="text-center gap-2">
-                    <button
-                      class=" actions border-0 bg-transparent"
-                      [disabled]="!a.eDoc"
-                      (click)="onViewActivityDoc(a)"
-                    >
-                    </button>
-                    <i
-                      class="mb-3 bi bi-check-circle"
-                      [ngClass]="a.isActive === 1 ? 'text-success' : 'text-muted'"
-                      style="cursor: pointer"
-                      (click)="openVerifyConfirm(a)"
-                    ></i>
-                  </td> -->
-                  <td class="text-center gap-2 me-1">
-                    <button
-                      class="actions border-0 bg-transparent"
-                      [disabled]="!a.eDoc"
-                      (click)="onViewActivityDoc(a);"
-                    ></button>
-                    <span
-                      class="d-inline-block"
-                      [ngClass]="a.isActive === 1 ? 'check' : 'uncheck'"
-                      style="cursor: pointer"
-                      (click)="openVerifyConfirm(a)"
-                    ></span>
+                  <td class="ft-5 txt-8th text-end">
+                    {{ a.paidAmount | number }}
+                  </td>
+                  <td class="text-center">
+                    <div class="activity-action-cell">
+                      <button
+                        type="button"
+                        class="pill-btn slip-btn"
+                        [disabled]="!a.eDoc"
+                        (click)="onViewActivityDoc(a)"
+                      >
+                        <span class="actions"></span> Slip
+                      </button>
+                      <button
+                        type="button"
+                        class="pill-btn"
+                        [ngClass]="
+                          a.isActive === 1 ? 'approved-btn' : 'approve-btn'
+                        "
+                        (click)="openVerifyConfirm(a)"
+                      >
+                        <span
+                          [ngClass]="a.isActive === 1 ? 'check' : 'uncheck'"
+                        ></span>
+                        {{ a.isActive === 1 ? "Approved" : "Approve" }}
+                      </button>
+                    </div>
                   </td>
                 </tr>
                 <tr *ngIf="activities.length === 0">
@@ -654,15 +697,15 @@
     style="max-width: 380px; width: 90%"
     (click)="$event.stopPropagation()"
   >
-  <div
-  class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
-  style="width: 56px; height: 56px; background: rgba(89, 1, 23, 0.08)"
->
-  <span
-    [ngClass]="verifyTargetActivity?.isActive === 1 ? 'uncheck' : 'check'"
-    style="width: 28px; height: 28px;"
-  ></span>
-</div>
+    <div
+      class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+      style="width: 56px; height: 56px; background: rgba(89, 1, 23, 0.08)"
+    >
+      <span
+        [ngClass]="verifyTargetActivity?.isActive === 1 ? 'uncheck' : 'check'"
+        style="width: 28px; height: 28px"
+      ></span>
+    </div>
 
     <h5 class="fh-6 txt-8th fw-bold mb-2">
       {{
@@ -703,3 +746,48 @@
     </div>
   </div>
 </div>
+
+<!-- ─── Generic Action Confirm Modal (Accept/Reject/Undo/Block/UnBlock/Delete) ─── -->
+<div
+  *ngIf="isActionConfirmOpen"
+  class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+  style="z-index: 1090; background: rgba(0, 0, 0, 0.5)"
+  (click)="closeActionConfirm()"
+>
+  <div
+    class="bg-6th rounded-4 p-4 shadow text-center"
+    style="max-width: 380px; width: 90%"
+    (click)="$event.stopPropagation()"
+  >
+    <h5 class="fh-6 txt-8th fw-bold mb-2">{{ actionConfirmTitle }}</h5>
+    <p class="ft-4 txt-7th mb-4">{{ actionConfirmMessage }}</p>
+
+    <div class="d-flex gap-2">
+      <button
+        type="button"
+        class="w-50 py-2 rounded-2 border-6th bg-6th txt-8th ft-4 fw-medium"
+        (click)="closeActionConfirm()"
+        [disabled]="actionConfirmLoading"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="w-50 py-2 rounded-2 border-0 bg-2nd txt-6th ft-4 fw-medium"
+        (click)="confirmPendingAction()"
+        [disabled]="actionConfirmLoading"
+      >
+        <span *ngIf="!actionConfirmLoading">{{
+          actionConfirmButtonLabel
+        }}</span>
+        <span *ngIf="actionConfirmLoading">Please wait...</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal-backdrop fade show"
+  *ngIf="isActionConfirmOpen"
+  style="z-index: 1089"
+></div>
