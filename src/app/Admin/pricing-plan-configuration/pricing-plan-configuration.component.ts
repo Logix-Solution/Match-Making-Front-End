@@ -32,6 +32,7 @@ interface PlanTier {
   totalClientsPaid: number;
   totalClients: number;
   activeClients: number;
+  planShareCount: number; 
 }
 
 @Component({
@@ -143,6 +144,7 @@ export class PricingPlanConfigurationComponent implements OnInit {
       totalClientsPaid: +(p.totalClientsPaid || 0),
       totalClients: +(p.totalClients || 0),
       activeClients: +(p.activeClients || 0),
+      planShareCount: +(p.planShareCount || 0),
     };
   }
     private makeTier(partial: Partial<PlanTier>): PlanTier {
@@ -161,6 +163,7 @@ export class PricingPlanConfigurationComponent implements OnInit {
       totalClientsPaid: partial.totalClientsPaid || 0,
       totalClients: partial.totalClients || 0,
       activeClients: partial.activeClients || 0,
+      planShareCount: partial.planShareCount || 0,
     };
   }
 
@@ -247,6 +250,7 @@ export class PricingPlanConfigurationComponent implements OnInit {
       planID: this.workingTier.id || 0,
       planName: this.workingTier.name,
       planDescription: this.workingTier.details,
+      planShareCount: this.workingTier.planShareCount || 0,
       planJson: JSON.stringify(planJson),
       userID: this.sharedGlobalService.getUserID(),
       spType: this.editingTierId ? 'UPDATE' : 'INSERT',
