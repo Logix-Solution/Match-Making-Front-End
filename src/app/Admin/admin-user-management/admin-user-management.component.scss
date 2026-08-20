@@ -391,3 +391,20 @@ nav.d-inline-flex {
   color: #10b981;
   background: #eafbf3;
 }
+
+.blink-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  background: #dc3545;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  animation: blink-pulse 1.2s infinite;
+}
+
+@keyframes blink-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}

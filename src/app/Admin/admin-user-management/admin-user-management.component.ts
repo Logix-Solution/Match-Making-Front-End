@@ -22,6 +22,7 @@ interface UserItem {
   dateLabel: string;       // "Requested At" or "Member Since"
   dateValue: string;
   profilesSharedCount: number; // TODO: no field provided by API yet — defaulted
+  planeView: number;
 }
 
 interface ProfileSection {
@@ -41,6 +42,7 @@ interface ProfileHeader {
 
 interface ActivityItem {
   userPlanID: number;
+  planID: number;
   planName: string;
   referenceNo: string;
   paidAmount: string;
@@ -159,6 +161,8 @@ export class AdminUserManagementComponent implements OnInit {
       dateValue: this.formatDate(u.membersince || u.dob),
       // TODO: no "profiles shared" field provided by API — defaulting until wired up
       profilesSharedCount: u.profilesSharedCount ?? u.sharedProfileCount ?? 0,
+        planeView: u.planeView ?? 0,
+
     };
   }
 
@@ -572,6 +576,7 @@ export class AdminUserManagementComponent implements OnInit {
 
     const mapped: ActivityItem[] = plans.map((p: any) => ({
       userPlanID: p.userPlanID,
+        planID: p.planID,
       planName: p.planName === 'Registration' ? 'Registration Fee' : `${p.planName} Plan`,
       referenceNo: p.referenceNo,
       paidAmount: p.paidAmount,
@@ -719,4 +724,36 @@ export class AdminUserManagementComponent implements OnInit {
       },
     });
   }
+
+// ─── Mark Plan as Read (fires only for unapproved plans, isActive === 0) ───
+onApproveClick(activity: ActivityItem): void {
+  // Only send read-status for plans that are currently unapproved (isActive 0) —
+  // approved plans don't need this call, they just open the verify/unverify confirm.
+  if (activity.isActive === 0) {
+    this.saveReadPlan(activity);
+  }
+  this.openVerifyConfirm(activity);
+}
+
+private saveReadPlan(activity: ActivityItem): void {
+  if (!this.activityUser) return;
+
+  const adminID = this.sharedGlobalService.getUserID();
+  const payload = {
+    userID: adminID,
+    userPlanID: activity.userPlanID,
+    planID: activity.planID,
+    isRead: 1,
+    profileID: this.activityUser.id, // profileID comes from getRequestManagement, mapped as UserItem.id
+    spType: 'insert',
+  };
+
+  console.log('saveReadPlanByAdmin payload:', payload);
+
+  this.dataService.postDirect('core-api/Admin/saveReadPlanByAdmin', payload).subscribe({
+    next: (res: any) => console.log('saveReadPlanByAdmin response:', res),
+    error: (err) => console.error('saveReadPlanByAdmin error:', err),
+  });
+}
+
 }

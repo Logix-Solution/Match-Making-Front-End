@@ -72,6 +72,7 @@
             style="cursor: pointer"
             onerror="this.src = 'assets/images/profile1.png'"
           />
+          <span class="blink-dot" *ngIf="user.planeView === 1"></span>
           <div class="flex-grow-1 min-w-0">
             <h3
               class="fh-6 txt-8th m-0 mb-1 tooltip-top"
@@ -564,13 +565,26 @@
                       >
                         <span class="actions"></span> Slip
                       </button>
-                      <button
+                      <!-- <button
                         type="button"
                         class="pill-btn"
                         [ngClass]="
                           a.isActive === 1 ? 'approved-btn' : 'approve-btn'
                         "
                         (click)="openVerifyConfirm(a)"
+                      >
+                        <span
+                          [ngClass]="a.isActive === 1 ? 'check' : 'uncheck'"
+                        ></span>
+                        {{ a.isActive === 1 ? "Approved" : "Approve" }}
+                      </button> -->
+                      <button
+                        type="button"
+                        class="pill-btn"
+                        [ngClass]="
+                          a.isActive === 1 ? 'approved-btn' : 'approve-btn'
+                        "
+                        (click)="onApproveClick(a)"
                       >
                         <span
                           [ngClass]="a.isActive === 1 ? 'check' : 'uncheck'"
