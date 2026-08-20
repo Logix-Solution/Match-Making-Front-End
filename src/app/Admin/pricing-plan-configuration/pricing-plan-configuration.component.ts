@@ -47,7 +47,6 @@ export class PricingPlanConfigurationComponent implements OnInit {
 
   // Backend only sends a title, so map common titles to a display symbol
   private symbolMap: { [key: string]: string } = {
-    dollor: '$',
     dollar: '$',
     usd: '$',
     euro: '€',
@@ -224,14 +223,27 @@ export class PricingPlanConfigurationComponent implements OnInit {
   }
 
   // ─── Modal — open for Edit ───────────────────────────────────────────────
-  openEditModal(tier: PlanTier): void {
-    this.editingTierId = tier.id;
-    this.workingTier = {
-      ...tier,
-      fees: tier.fees.map((f) => ({ ...f })),
-    };
-    this.isModalOpen = true;
-  }
+openEditModal(tier: PlanTier): void {
+  this.editingTierId = tier.id;
+  this.workingTier = {
+    ...tier,
+    fees: this.buildFullFeeRows(tier.fees),
+  };
+  this.isModalOpen = true;
+}
+private buildFullFeeRows(existingFees: TierFee[]): TierFee[] {
+  return this.currencyTypes.map((c) => {
+    const existing = existingFees.find((f) => f.currencyTypeID === c.currencyTypeID);
+    return existing
+      ? { ...existing }
+      : {
+          currencyTypeID: c.currencyTypeID,
+          currencyTypeTitle: c.currencyTypeTitle,
+          fee: null,
+          durationID: null,
+        };
+  });
+}
 
   closeModal(): void {
     this.isModalOpen = false;
