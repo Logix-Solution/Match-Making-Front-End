@@ -22,7 +22,7 @@ interface UserItem {
   dateLabel: string;       // "Requested At" or "Member Since"
   dateValue: string;
   profilesSharedCount: number; // TODO: no field provided by API yet — defaulted
-  planeView: number;
+  planeView: number;       // 1 = has unread plan activity — drives the red blinking dot
 }
 
 interface ProfileSection {
@@ -38,6 +38,13 @@ interface ProfileHeader {
   location: string;
   occupation: string;
   status: string;
+}
+
+interface ProfileData {
+  header: ProfileHeader;
+  sections: ProfileSection[];
+  about: string;
+  preferenceSections: ProfileSection[];
 }
 
 interface ActivityItem {
@@ -89,6 +96,7 @@ export class AdminUserManagementComponent implements OnInit {
     avatar: '', name: '', age: '', location: '', occupation: '', status: '',
   };
   profileSections: ProfileSection[] = [];
+  profilePreferenceSections: ProfileSection[] = [];
 
   // ─── Activity Modal (Activities + Matches Profiles, opens on avatar click) ─
   isActivityModalOpen = false;
@@ -109,6 +117,18 @@ export class AdminUserManagementComponent implements OnInit {
   actionConfirmLoading = false;
   pendingActionType: ActionType | null = null;
   pendingActionUser: UserItem | null = null;
+
+  // ─── Match Profile Comparison Modal (View button in Matches Profiles table) ─
+  isMatchCompareOpen = false;
+  matchCompareLoading = false;
+  compareBaseHeader: ProfileHeader = { avatar: '', name: '', age: '', location: '', occupation: '', status: '' };
+  compareBaseSections: ProfileSection[] = [];
+  compareBasePreferenceSections: ProfileSection[] = [];
+  compareBaseAbout = '';
+  compareMatchHeader: ProfileHeader = { avatar: '', name: '', age: '', location: '', occupation: '', status: '' };
+  compareMatchSections: ProfileSection[] = [];
+  compareMatchPreferenceSections: ProfileSection[] = [];
+  compareMatchAbout = '';
 
   constructor(
     private dataService: SharedDataService,
@@ -161,8 +181,8 @@ export class AdminUserManagementComponent implements OnInit {
       dateValue: this.formatDate(u.membersince || u.dob),
       // TODO: no "profiles shared" field provided by API — defaulting until wired up
       profilesSharedCount: u.profilesSharedCount ?? u.sharedProfileCount ?? 0,
-        planeView: u.planeView ?? 0,
-
+      // planeView === 1 means this user has an unread/unseen plan activity — drives the red blinking dot
+      planeView: u.planeView ?? 0,
     };
   }
 
@@ -423,6 +443,7 @@ export class AdminUserManagementComponent implements OnInit {
     this.isDetailModalOpen = true;
     this.detailLoading = true;
     this.profileSections = [];
+    this.profilePreferenceSections = [];
     this.aboutText1 = '';
     document.body.classList.add('modal-open');
 
@@ -450,6 +471,17 @@ export class AdminUserManagementComponent implements OnInit {
   }
 
   buildProfile(user: any): void {
+    const data = this.mapProfileData(user);
+    this.profileHeader = data.header;
+    this.profileSections = data.sections;
+    this.profilePreferenceSections = data.preferenceSections;
+    this.aboutText1 = data.about;
+  }
+
+  // Shared mapping logic for any single user's userProfile + userPreference JSON
+  // into header + sections. Used by the "View Details" modal and the Match
+  // Comparison modal, so profile-parsing logic lives in exactly one place.
+  private mapProfileData(user: any): ProfileData {
     let profileItems: any[] = [];
     try { profileItems = JSON.parse(user.userProfile || '[]'); } catch { profileItems = []; }
 
@@ -461,11 +493,8 @@ export class AdminUserManagementComponent implements OnInit {
     const location = this.extractLocation(user.userProfile);
     const eduItem = getInstitute(4);
     const occItem = getInstitute(5);
-    const incItem = getInstitute(6);
 
-    this.aboutText1 = user.aboutme || '';
-
-    this.profileHeader = {
+    const header: ProfileHeader = {
       avatar: user.eDoc && user.eDoc.trim() !== ''
         ? environment.productUrl + 'assets/user-images/userProfile/' + user.eDoc
         : 'assets/images/profile1.png',
@@ -476,12 +505,12 @@ export class AdminUserManagementComponent implements OnInit {
       status: get(10),
     };
 
-    this.profileSections = [
+    const sections: ProfileSection[] = [
       { title: 'Education & Career', iconClass: 'bi bi-briefcase', items: [
         { description: 'Education', value: eduItem?.subTypeTitle || '—' },
         { description: 'Institute', value: eduItem?.instituteName || '—' },
         { description: 'Occupation', value: occItem?.subTypeTitle || '—' },
-        { description: 'Monthly Income', value: incItem?.subTypeTitle || '—' },
+        { description: 'Monthly Income', value: getInstitute(6)?.subTypeTitle || '—' },
       ]},
       { title: 'Personal Information', iconClass: 'bi bi-person', items: [
         { description: 'Cast', value: get(1) },
@@ -517,6 +546,62 @@ export class AdminUserManagementComponent implements OnInit {
         { description: 'Want Kids', value: get(19) },
       ]},
     ];
+
+    // ─── Partner Preferences (from userPreference JSON, isPreference: 1) ───
+    let prefItems: any[] = [];
+    try { prefItems = JSON.parse(user.userPreference || '[]'); } catch { prefItems = []; }
+
+    const getPref = (typeID: number) =>
+      prefItems.find((p: any) => p.typeID === typeID && p.isPreference === 1)?.subTypeTitle || '—';
+
+    // Fields that can have multiple ranked entries (priority 1/2/3) — join them together.
+    const getPrefAll = (typeID: number) => {
+      const values = prefItems
+        .filter((p: any) => p.typeID === typeID && p.isPreference === 1)
+        .map((p: any) => p.subTypeTitle);
+      return values.length ? values.join(', ') : '—';
+    };
+
+    const minAge = getPref(31);
+    const maxAge = getPref(32);
+    const ageRange = minAge !== '—' || maxAge !== '—' ? `${minAge} - ${maxAge}` : '—';
+
+    const preferenceSections: ProfileSection[] = [
+      { title: 'Preferred Background', iconClass: 'bi bi-search-heart', items: [
+        { description: 'Nationality', value: getPref(2) },
+        { description: 'Cast', value: getPrefAll(1) },
+        { description: 'Ethnicity', value: getPref(3) },
+        { description: 'Age Range', value: ageRange },
+        { description: 'Education Level', value: getPref(4) },
+        { description: 'Occupation', value: getPrefAll(5) },
+        { description: 'Monthly Income', value: getPref(6) },
+      ]},
+      { title: 'Preferred Religion & Marital', iconClass: 'bi bi-moon-stars', items: [
+        { description: 'Religion', value: getPref(7) },
+        { description: 'Sect', value: getPref(8) },
+        { description: 'Religion Importance', value: getPref(9) },
+        { description: 'Marital Status', value: getPrefAll(10) },
+        { description: 'Housing Situation', value: getPref(11) },
+        { description: 'Family Involvement', value: getPref(14) },
+      ]},
+      { title: 'Preferred Appearance & Lifestyle', iconClass: 'bi bi-person-heart', items: [
+        { description: 'Body Type', value: getPrefAll(15) },
+        { description: 'Skin Tone', value: getPrefAll(16) },
+        { description: 'Height', value: getPref(26) },
+        { description: 'Smoke', value: getPref(17) },
+        { description: 'Alcohol', value: getPref(18) },
+        { description: 'Want Kids', value: getPref(19) },
+        { description: 'Accept Partner With Kids', value: getPref(27) },
+        { description: 'Partner With Disabilities', value: getPref(28) },
+        { description: 'Disability', value: getPref(30) },
+      ]},
+      { title: 'Relocation & Timeline', iconClass: 'bi bi-signpost-2', items: [
+        { description: 'Willing to Relocate', value: getPref(20) },
+        { description: 'Timeline For Marriage', value: getPref(21) },
+      ]},
+    ];
+
+    return { header, sections, about: user.aboutme || '', preferenceSections };
   }
 
   // ─── Activity Modal (Activities + Matches Profiles) — opens on avatar click ─
@@ -576,7 +661,7 @@ export class AdminUserManagementComponent implements OnInit {
 
     const mapped: ActivityItem[] = plans.map((p: any) => ({
       userPlanID: p.userPlanID,
-        planID: p.planID,
+      planID: p.planID,
       planName: p.planName === 'Registration' ? 'Registration Fee' : `${p.planName} Plan`,
       referenceNo: p.referenceNo,
       paidAmount: p.paidAmount,
@@ -685,6 +770,36 @@ export class AdminUserManagementComponent implements OnInit {
     this.verifyTargetActivity = null;
   }
 
+  // ─── Mark Plan as Read (fires only for unapproved plans, isActive === 0) ───
+  // Called from the Approve/Approved pill button before opening the verify confirm.
+  onApproveClick(activity: ActivityItem): void {
+    if (activity.isActive === 0) {
+      this.saveReadPlan(activity);
+    }
+    this.openVerifyConfirm(activity);
+  }
+
+  private saveReadPlan(activity: ActivityItem): void {
+    if (!this.activityUser) return;
+
+    const adminID = this.sharedGlobalService.getUserID();
+    const payload = {
+      userID: adminID,
+      userPlanID: activity.userPlanID,
+      planID: activity.planID,
+      isRead: 1,
+      profileID: this.activityUser.id, // profileID comes from getRequestManagement, mapped as UserItem.id
+      spType: 'insert',
+    };
+
+    console.log('saveReadPlanByAdmin payload:', payload);
+
+    this.dataService.postDirect('core-api/Admin/saveReadPlanByAdmin', payload).subscribe({
+      next: (res: any) => console.log('saveReadPlanByAdmin response:', res),
+      error: (err) => console.error('saveReadPlanByAdmin error:', err),
+    });
+  }
+
   verifyplan(): void {
     if (!this.verifyTargetActivity || !this.activityUser) return;
 
@@ -725,35 +840,64 @@ export class AdminUserManagementComponent implements OnInit {
     });
   }
 
-// ─── Mark Plan as Read (fires only for unapproved plans, isActive === 0) ───
-onApproveClick(activity: ActivityItem): void {
-  // Only send read-status for plans that are currently unapproved (isActive 0) —
-  // approved plans don't need this call, they just open the verify/unverify confirm.
-  if (activity.isActive === 0) {
-    this.saveReadPlan(activity);
-  }
-  this.openVerifyConfirm(activity);
-}
-
-private saveReadPlan(activity: ActivityItem): void {
+  // ─── Match Profile Comparison Modal — "View" button in Matches Profiles table ─
+onViewMatchComparison(match: MatchProfileItem): void {
   if (!this.activityUser) return;
 
-  const adminID = this.sharedGlobalService.getUserID();
-  const payload = {
-    userID: adminID,
-    userPlanID: activity.userPlanID,
-    planID: activity.planID,
-    isRead: 1,
-    profileID: this.activityUser.id, // profileID comes from getRequestManagement, mapped as UserItem.id
-    spType: 'insert',
-  };
+  // getUserDetails only accepts UserID, not ProfileID (confirmed — ProfileID param
+  // returns nothing). destinationProfileID from getBestMatchProfiles is a profileID,
+  // so resolve it to a userID via the allUsers list (loaded from getRequestManagement,
+  // which maps id=profileID to userID) before calling getUserDetails.
+  const matchedUserRecord = this.allUsers.find((u) => u.id === match.destinationProfileID);
+  if (!matchedUserRecord) {
+    this.valid.apiErrorResponse('Unable to load this profile — Profile is not compeleted.');
+    return;
+  }
 
-  console.log('saveReadPlanByAdmin payload:', payload);
+  this.isMatchCompareOpen = true;
+  this.matchCompareLoading = true;
+  this.compareBaseSections = [];
+  this.compareBasePreferenceSections = [];
+  this.compareMatchSections = [];
+  this.compareMatchPreferenceSections = [];
+  this.compareBaseAbout = '';
+  this.compareMatchAbout = '';
 
-  this.dataService.postDirect('core-api/Admin/saveReadPlanByAdmin', payload).subscribe({
-    next: (res: any) => console.log('saveReadPlanByAdmin response:', res),
-    error: (err) => console.error('saveReadPlanByAdmin error:', err),
+  forkJoin({
+    base: this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${this.activityUser.userID}`, {}),
+    matched: this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${matchedUserRecord.userID}`, {}),
+  }).subscribe({
+    next: ({ base, matched }: any) => {
+      const baseUser = Array.isArray(base) ? base[0] : base;
+      const matchedUser = Array.isArray(matched) ? matched[0] : matched;
+
+      if (baseUser) {
+        const data = this.mapProfileData(baseUser);
+        this.compareBaseHeader = data.header;
+        this.compareBaseSections = data.sections;
+        this.compareBasePreferenceSections = data.preferenceSections;
+        this.compareBaseAbout = data.about;
+      }
+      if (matchedUser) {
+        const data = this.mapProfileData(matchedUser);
+        this.compareMatchHeader = data.header;
+        this.compareMatchSections = data.sections;
+        this.compareMatchPreferenceSections = data.preferenceSections;
+        this.compareMatchAbout = data.about;
+      }
+      this.matchCompareLoading = false;
+    },
+    error: (err) => {
+      console.error('Match comparison load error:', err);
+      this.matchCompareLoading = false;
+    },
   });
 }
+  closeMatchCompare(): void {
+    this.isMatchCompareOpen = false;
+  }
 
+  getSectionFrom(sections: ProfileSection[], title: string): ProfileSection | undefined {
+    return sections.find((s) => s.title === title);
+  }
 }

@@ -408,3 +408,14 @@ nav.d-inline-flex {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.25; }
 }
+
+
+.view-match-btn {
+  border-color: var(--primary) !important;
+  color: var(--primary);
+  background: #fff;
+
+  &:hover {
+    background: rgba(89, 1, 23, 0.06);
+  }
+}
