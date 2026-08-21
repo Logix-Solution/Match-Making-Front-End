@@ -126,6 +126,75 @@
 
       </div>
     </section>
+
+    <!-- Match Comparison Modal -->
+       <!-- Match Comparison Modal (full page) -->
+    <div class="position-fixed top-0 start-0 w-100 h-100 comparison-fullpage-overlay"
+         *ngIf="showComparisonModal"
+         style="z-index: 1075; overflow-y: auto;">
+      <div class="container-fluid bg-5th p-3 min-vh-100">
+
+        <div class="d-flex align-items-center justify-content-between mt-3 bg-5th py-3 px-3 rounded-3"
+             style="position: sticky; top: 0; z-index: 1076;">
+          <h2 class="fh-4 txt-8th m-0">Match Comparison</h2>
+          <button class="btn btn-light border rounded-circle d-flex align-items-center justify-content-center"
+                  style="width: 36px; height: 36px;"
+                  (click)="closeComparisonModal()">
+            <i class="bi bi-x-lg ft-4"></i>
+          </button>
+        </div>
+
+        <div *ngIf="comparisonLoading" class="text-center py-5">
+          <div class="spinner-border" style="color: var(--primary);"></div>
+          <p class="ft-4 txt-7th mt-2">Loading comparison...</p>
+        </div>
+
+         <div *ngIf="comparisonError && !comparisonLoading" class="text-center py-5 text-danger">
+          {{ comparisonError }}
+        </div>
+
+        <div class="row g-3 mt-1" *ngIf="!comparisonLoading && !comparisonError">
+
+          <!-- LEFT: Base Profile -->
+          <div class="col-12 col-lg-6">
+            <div class="bg-white rounded-4 p-3 shadow-sm border border-light-subtle text-center mb-3">
+              <img [src]="selectedProfile?.image" alt="Base Profile" class="rounded-circle compare-avatar mx-auto mb-2">
+              <h5 class="txt-8th fw-bold m-0 text-uppercase">{{ selectedProfile?.name }}</h5>
+              <!-- <p class="ft-5 txt-7th m-0">{{ selectedProfile?.age }} years</p> -->
+            </div>
+
+            <div class="bg-white rounded-4 p-3 shadow-sm border border-light-subtle mb-3" *ngFor="let sec of comparisonSections">
+              <h5 class="column-title"><i class="{{ sec.iconClass }}"></i> {{ sec.title }}</h5>
+              <div class="data-row" *ngFor="let row of sec.rows">
+                <span>{{ row.typeTitle }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <strong [class.text-danger]="!row.baseMatchesPreference">{{ row.baseValue }}</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Matched Profile -->
+          <div class="col-12 col-lg-6">
+            <div class="bg-white rounded-4 p-3 shadow-sm border border-light-subtle text-center mb-3">
+              <img [src]="comparisonMatchImage" alt="Matched Profile" class="rounded-circle compare-avatar mx-auto mb-2">
+              <h5 class="txt-8th fw-bold m-0 text-uppercase">{{ comparisonMatchName }}</h5>
+            </div>
+
+            <div class="bg-white rounded-4 p-3 shadow-sm border border-light-subtle mb-3" *ngFor="let sec of comparisonSections">
+              <h5 class="column-title"><i class="{{ sec.iconClass }}"></i> {{ sec.title }}</h5>
+              <div class="data-row" *ngFor="let row of sec.rows">
+                <span>{{ row.typeTitle }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <strong [class.text-danger]="!row.matchMatchesPreference">{{ row.matchValue }}</strong>
+              </div>
+            </div>
+          </div>
+
+          <p class="ft-5 txt-7th text-center mt-2 mb-0" *ngIf="!comparisonSections.length">
+            No attribute data available for comparison.
+          </p>
+        </div>
+
+      </div>
+    </div>
   </ng-container>
 
 </main>

@@ -483,3 +483,67 @@
     }
   }
 }
+
+/* ==========================================================================
+   MATCH COMPARISON MODAL
+   ========================================================================== */
+.comparison-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 1050;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem 1rem;
+  overflow-y: auto;
+}
+
+.comparison-modal-panel {
+  width: 100%;
+  max-width: 960px;
+  background-color: #f8fafc;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.comparison-modal-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.comparison-modal-body {
+  max-height: 78vh;
+  overflow-y: auto;
+}
+
+.btn-close-comparison {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: #718096;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover { color: #1a202c; }
+}
+
+.comparison-fullpage-overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.compare-avatar {
+  width: 5rem;
+  height: 5rem;
+  object-fit: cover;
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  background-color: #edf2f7;
+}
+
+@media (max-width: 991px) {
+  .comparison-modal-backdrop {
+    padding: 1rem 0.5rem;
+  }
+}

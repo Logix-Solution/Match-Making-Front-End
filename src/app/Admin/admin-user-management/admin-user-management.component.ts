@@ -90,6 +90,7 @@ export class AdminUserManagementComponent implements OnInit {
   // ─── Full Profile ("View Details") Modal ───────────────────────────────────
   isDetailModalOpen = false;
   detailLoading = false;
+  detailActiveTab: 'profile' | 'preferences' = 'profile';
   showAboutModal = false;
   aboutText1 = '';
   profileHeader: ProfileHeader = {
@@ -438,10 +439,15 @@ export class AdminUserManagementComponent implements OnInit {
     });
   }
 
+    setDetailTab(tab: 'profile' | 'preferences'): void {
+    this.detailActiveTab = tab;
+  }
+
   // ─── Full Profile ("View Details") Modal ───────────────────────────────────
   onViewDetails(item: UserItem): void {
     this.isDetailModalOpen = true;
     this.detailLoading = true;
+      this.detailActiveTab = 'profile';
     this.profileSections = [];
     this.profilePreferenceSections = [];
     this.aboutText1 = '';
@@ -567,36 +573,42 @@ export class AdminUserManagementComponent implements OnInit {
     const ageRange = minAge !== '—' || maxAge !== '—' ? `${minAge} - ${maxAge}` : '—';
 
     const preferenceSections: ProfileSection[] = [
-      { title: 'Preferred Background', iconClass: 'bi bi-search-heart', items: [
+      { title: 'Personal Information', iconClass: 'bi bi-person', items: [
         { description: 'Nationality', value: getPref(2) },
         { description: 'Cast', value: getPrefAll(1) },
         { description: 'Ethnicity', value: getPref(3) },
         { description: 'Age Range', value: ageRange },
+        { description: 'Marital Status', value: getPrefAll(10) },
+    
+      ]},
+
+       { title: 'Family', iconClass: 'bi bi-person', items: [
+      
+        { description: 'Housing Situation', value: getPref(11) },
+        { description: 'Family Involvement', value: getPref(14) },
+        { description: 'Willing to Relocate', value: getPref(20) },
+      ]},
+      { title: 'Religion', iconClass: 'bi bi-moon', items: [
+        { description: 'Religion', value: getPref(7) },
+        { description: 'Sect', value: getPref(8) },
+        { description: 'Religion Importance', value: getPref(9) },
+      ]},
+      { title: 'Education & Career', iconClass: 'bi bi-briefcase', items: [
         { description: 'Education Level', value: getPref(4) },
         { description: 'Occupation', value: getPrefAll(5) },
         { description: 'Monthly Income', value: getPref(6) },
       ]},
-      { title: 'Preferred Religion & Marital', iconClass: 'bi bi-moon-stars', items: [
-        { description: 'Religion', value: getPref(7) },
-        { description: 'Sect', value: getPref(8) },
-        { description: 'Religion Importance', value: getPref(9) },
-        { description: 'Marital Status', value: getPrefAll(10) },
-        { description: 'Housing Situation', value: getPref(11) },
-        { description: 'Family Involvement', value: getPref(14) },
-      ]},
-      { title: 'Preferred Appearance & Lifestyle', iconClass: 'bi bi-person-heart', items: [
+      { title: 'Appearance', iconClass: 'bi bi-person-bounding-box', items: [
+        { description: 'Height', value: getPref(26) },
         { description: 'Body Type', value: getPrefAll(15) },
         { description: 'Skin Tone', value: getPrefAll(16) },
-        { description: 'Height', value: getPref(26) },
-        { description: 'Smoke', value: getPref(17) },
-        { description: 'Alcohol', value: getPref(18) },
-        { description: 'Want Kids', value: getPref(19) },
-        { description: 'Accept Partner With Kids', value: getPref(27) },
-        { description: 'Partner With Disabilities', value: getPref(28) },
-        { description: 'Disability', value: getPref(30) },
+        { description: 'Open to Partner With Disabilities?', value: getPref(28) },
       ]},
-      { title: 'Relocation & Timeline', iconClass: 'bi bi-signpost-2', items: [
-        { description: 'Willing to Relocate', value: getPref(20) },
+      { title: 'Lifestyle', iconClass: 'bi bi-cup-hot', items: [
+        { description: 'Smoking Acceptable?', value: getPref(17) },
+        { description: 'Drink Alcohol Acceptable?', value: getPref(18) },
+        { description: 'Partner Want Kids?', value: getPref(19) },
+        { description: 'Accept Partner With Kids?', value: getPref(27) },
         { description: 'Timeline For Marriage', value: getPref(21) },
       ]},
     ];

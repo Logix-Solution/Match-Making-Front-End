@@ -65,14 +65,17 @@
         (click)="onOpenActivityModal(user)"
       >
         <div class="d-flex align-items-start gap-3 mb-3">
-          <img
-            [src]="user.image"
-            [alt]="user.name"
-            class="user-avatar rounded-2 object-fit-cover"
-            style="cursor: pointer"
-            onerror="this.src = 'assets/images/profile1.png'"
-          />
-          <span class="blink-dot" *ngIf="user.planeView === 1"></span>
+          <div class="position-relative flex-shrink-0">
+            <img
+              [src]="user.image"
+              [alt]="user.name"
+              class="user-avatar rounded-2 object-fit-cover"
+              style="cursor: pointer"
+              onerror="this.src = 'assets/images/profile1.png'"
+              (click)="onViewDetails(user); $event.stopPropagation()"
+            />
+            <span class="blink-dot" *ngIf="user.planeView === 1"></span>
+          </div>
           <div class="flex-grow-1 min-w-0">
             <h3
               class="fh-6 txt-8th m-0 mb-1 tooltip-top"
@@ -106,14 +109,6 @@
             <strong class="txt-8th">&nbsp; {{ user.dateValue }}</strong>
           </div>
           <div class="row g-2">
-            <div class="col-3">
-              <button
-                class="w-100 py-2 rounded-2 border-0 bg-5th txt-8th d-flex align-items-center justify-content-center"
-                (click)="onViewDetails(user); $event.stopPropagation()"
-              >
-                <i class="bi bi-eye"></i>
-              </button>
-            </div>
             <div class="col-4">
               <button
                 class="w-100 py-2 rounded-2 border-6th bg-6th txt-2nd ft-4 fw-medium reject-outline"
@@ -133,35 +128,6 @@
           </div>
         </ng-container>
 
-        <!-- ── ACCEPTED actions ────────────────────────────────────────── -->
-        <!-- <ng-container *ngIf="user.status === 'accepted'">
-          <div class="ft-6 txt-7th text-uppercase mb-2">
-            Member Since
-            <strong class="ms-1txt-8th">&nbsp;{{ user.dateValue }}</strong>
-          </div>
-          <div class="row g-2">
-            <div class="col-7">
-              <div
-                class="w-100 py-2 rounded-2 shared-pill text-center ft-4 fw-medium"
-              >
-                {{ user.profilesSharedCount }} Profiles Shared
-              </div>
-            </div>
-            <div class="col-5">
-              <button
-                class="w-100 py-2 rounded-2 ft-4 fw-medium block-hover"
-                [ngClass]="{
-                  'bg-6th txt-2nd border-danger-custom': user.active === 1,
-                  'bg-success-subtle text-success border-success-custom':
-                    user.active !== 1,
-                }"
-                (click)="onBlockUser(user); $event.stopPropagation()"
-              >
-                {{ user.active === 1 ? "Block" : "Un Block" }}
-              </button>
-            </div>
-          </div>
-        </ng-container> -->
         <!-- ── ACCEPTED actions ────────────────────────────────────────── -->
         <ng-container *ngIf="user.status === 'accepted'">
           <div class="ft-6 txt-7th text-uppercase mb-2">
@@ -272,8 +238,31 @@
       <p class="ft-4 txt-7th mt-2">Loading profile...</p>
     </div>
 
+    <!-- Tabs: Profile Details / Profile Preferences -->
+    <nav
+      class="d-inline-flex bg-6th border-6th p-2 rounded-3 mt-3 mb-3"
+      *ngIf="!detailLoading"
+    >
+      <button
+        type="button"
+        class="tab-btn px-4 py-2 border-0 rounded-2 ft-3 fw-semibold"
+        [class.active-tab]="detailActiveTab === 'profile'"
+        (click)="setDetailTab('profile')"
+      >
+        Profile Details
+      </button>
+      <button
+        type="button"
+        class="tab-btn px-4 py-2 border-0 rounded-2 ft-3 fw-semibold"
+        [class.active-tab]="detailActiveTab === 'preferences'"
+        (click)="setDetailTab('preferences')"
+      >
+        Profile Preferences
+      </button>
+    </nav>
+
     <!-- Profile Content -->
-    <div *ngIf="!detailLoading">
+    <div *ngIf="!detailLoading && detailActiveTab === 'profile'">
       <!-- TOP ROW -->
       <div class="row g-3">
         <!-- LEFT SIDEBAR -->
@@ -453,6 +442,42 @@
         </div>
       </div>
     </div>
+
+    <!-- Preferences Content -->
+    <div *ngIf="!detailLoading && detailActiveTab === 'preferences'">
+      <div class="row g-3">
+        <div
+          class="col-12 col-md-6"
+          *ngFor="let sec of profilePreferenceSections"
+        >
+          <div class="bg-6th rounded-4 p-3 shadow-sm txt-8th h-100">
+            <div
+              class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light"
+            >
+              <i class="{{ sec.iconClass }} text-secondary"></i> {{ sec.title }}
+            </div>
+            <div class="mt-1">
+              <div
+                *ngFor="let item of sec.items"
+                class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50"
+              >
+                <span class="ft-5 txt-7th">{{ item.description }}</span>
+                <span class="ft-5 fw-bold txt-8th text-end">{{
+                  item.value
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="col-12 text-center py-5 border border-dashed rounded-3 bg-5th"
+          *ngIf="profilePreferenceSections.length === 0"
+        >
+          <p class="ft-2 txt-7th m-0">No partner preferences set.</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -565,19 +590,6 @@
                       >
                         <span class="actions"></span> Slip
                       </button>
-                      <!-- <button
-                        type="button"
-                        class="pill-btn"
-                        [ngClass]="
-                          a.isActive === 1 ? 'approved-btn' : 'approve-btn'
-                        "
-                        (click)="openVerifyConfirm(a)"
-                      >
-                        <span
-                          [ngClass]="a.isActive === 1 ? 'check' : 'uncheck'"
-                        ></span>
-                        {{ a.isActive === 1 ? "Approved" : "Approve" }}
-                      </button> -->
                       <button
                         type="button"
                         class="pill-btn"
@@ -679,7 +691,6 @@
   </div>
 </div>
 
-
 <!-- ─── Match Profile Comparison Modal ─────────────────────────────────────── -->
 <div
   *ngIf="isMatchCompareOpen"
@@ -721,15 +732,21 @@
             style="width: 90px; height: 90px; object-fit: cover"
             onerror="this.src = 'assets/images/profile1.png'"
           />
-          <h3 class="txt-8th fh-6 fw-bold mt-2 mb-0">{{ compareBaseHeader.name }}</h3>
+          <h3 class="txt-8th fh-6 fw-bold mt-2 mb-0">
+            {{ compareBaseHeader.name }}
+          </h3>
           <div class="ft-4 txt-7th">{{ compareBaseHeader.age }}</div>
-          <div class="ft-5 txt-7th d-flex align-items-center justify-content-center gap-1 mt-1">
+          <div
+            class="ft-5 txt-7th d-flex align-items-center justify-content-center gap-1 mt-1"
+          >
             <i class="bi bi-geo-alt-fill"></i> {{ compareBaseHeader.location }}
           </div>
         </div>
 
         <div class="bg-6th rounded-4 p-3 shadow-sm txt-8th mb-3">
-          <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
+          <div
+            class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light"
+          >
             <i class="bi bi-person-circle text-secondary"></i> About Me
           </div>
           <p class="txt-7th ft-4 mt-2 mb-0 lh-base">
@@ -741,7 +758,9 @@
           class="bg-6th rounded-4 p-3 shadow-sm txt-8th mb-3"
           *ngFor="let sec of compareBaseSections"
         >
-          <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
+          <div
+            class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light"
+          >
             <i class="{{ sec.iconClass }} text-secondary"></i> {{ sec.title }}
           </div>
           <div class="mt-1">
@@ -750,30 +769,37 @@
               class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50"
             >
               <span class="ft-5 txt-7th">{{ item.description }}</span>
-              <span class="ft-5 fw-bold txt-8th text-end">{{ item.value }}</span>
+              <span class="ft-5 fw-bold txt-8th text-end">{{
+                item.value
+              }}</span>
             </div>
           </div>
         </div>
+
         <div class="ft-5 fw-bold text-uppercase txt-7th mt-4 mb-2">
-  Partner Preferences
-</div>
-<div
-  class="bg-6th rounded-4 p-3 shadow-sm txt-8th mb-3"
-  *ngFor="let sec of compareBasePreferenceSections"
->
-  <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
-    <i class="{{ sec.iconClass }} text-secondary"></i> {{ sec.title }}
-  </div>
-  <div class="mt-1">
-    <div
-      *ngFor="let item of sec.items"
-      class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50"
-    >
-      <span class="ft-5 txt-7th">{{ item.description }}</span>
-      <span class="ft-5 fw-bold txt-8th text-end">{{ item.value }}</span>
-    </div>
-  </div>
-</div>
+          Partner Preferences
+        </div>
+        <div
+          class="bg-6th rounded-4 p-3 shadow-sm txt-8th mb-3"
+          *ngFor="let sec of compareBasePreferenceSections"
+        >
+          <div
+            class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light"
+          >
+            <i class="{{ sec.iconClass }} text-secondary"></i> {{ sec.title }}
+          </div>
+          <div class="mt-1">
+            <div
+              *ngFor="let item of sec.items"
+              class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50"
+            >
+              <span class="ft-5 txt-7th">{{ item.description }}</span>
+              <span class="ft-5 fw-bold txt-8th text-end">{{
+                item.value
+              }}</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- RIGHT: Matched profile -->
@@ -786,15 +812,21 @@
             style="width: 90px; height: 90px; object-fit: cover"
             onerror="this.src = 'assets/images/profile1.png'"
           />
-          <h3 class="txt-8th fh-6 fw-bold mt-2 mb-0">{{ compareMatchHeader.name }}</h3>
+          <h3 class="txt-8th fh-6 fw-bold mt-2 mb-0">
+            {{ compareMatchHeader.name }}
+          </h3>
           <div class="ft-4 txt-7th">{{ compareMatchHeader.age }}</div>
-          <div class="ft-5 txt-7th d-flex align-items-center justify-content-center gap-1 mt-1">
+          <div
+            class="ft-5 txt-7th d-flex align-items-center justify-content-center gap-1 mt-1"
+          >
             <i class="bi bi-geo-alt-fill"></i> {{ compareMatchHeader.location }}
           </div>
         </div>
 
         <div class="bg-6th rounded-4 p-3 shadow-sm txt-8th mb-3">
-          <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
+          <div
+            class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light"
+          >
             <i class="bi bi-person-circle text-secondary"></i> About Me
           </div>
           <p class="txt-7th ft-4 mt-2 mb-0 lh-base">
@@ -806,7 +838,9 @@
           class="bg-6th rounded-4 p-3 shadow-sm txt-8th mb-3"
           *ngFor="let sec of compareMatchSections"
         >
-          <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
+          <div
+            class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light"
+          >
             <i class="{{ sec.iconClass }} text-secondary"></i> {{ sec.title }}
           </div>
           <div class="mt-1">
@@ -815,30 +849,37 @@
               class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50"
             >
               <span class="ft-5 txt-7th">{{ item.description }}</span>
-              <span class="ft-5 fw-bold txt-8th text-end">{{ item.value }}</span>
+              <span class="ft-5 fw-bold txt-8th text-end">{{
+                item.value
+              }}</span>
             </div>
           </div>
         </div>
+
         <div class="ft-5 fw-bold text-uppercase txt-7th mt-4 mb-2">
-  Partner Preferences
-</div>
-<div
-  class="bg-6th rounded-4 p-3 shadow-sm txt-8th mb-3"
-  *ngFor="let sec of compareMatchPreferenceSections"
->
-  <div class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light">
-    <i class="{{ sec.iconClass }} text-secondary"></i> {{ sec.title }}
-  </div>
-  <div class="mt-1">
-    <div
-      *ngFor="let item of sec.items"
-      class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50"
-    >
-      <span class="ft-5 txt-7th">{{ item.description }}</span>
-      <span class="ft-5 fw-bold txt-8th text-end">{{ item.value }}</span>
-    </div>
-  </div>
-</div>
+          Partner Preferences
+        </div>
+        <div
+          class="bg-6th rounded-4 p-3 shadow-sm txt-8th mb-3"
+          *ngFor="let sec of compareMatchPreferenceSections"
+        >
+          <div
+            class="ft-4 pb-2 d-flex align-items-center gap-2 fw-bold border-bottom border-light"
+          >
+            <i class="{{ sec.iconClass }} text-secondary"></i> {{ sec.title }}
+          </div>
+          <div class="mt-1">
+            <div
+              *ngFor="let item of sec.items"
+              class="d-flex justify-content-between align-items-center py-2 border-bottom border-light border-opacity-50"
+            >
+              <span class="ft-5 txt-7th">{{ item.description }}</span>
+              <span class="ft-5 fw-bold txt-8th text-end">{{
+                item.value
+              }}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
