@@ -64,33 +64,26 @@ interface ContactCard {
   target?: string;
 }
 
-// ---------- getBestMatchProfiles response shapes ----------
+// ---------- getUserShownProfiles response shapes ----------
 
-interface ApiBestMatchResponse {
+interface ApiUserShownResponse {
   baseProfileID: number;
   baseProfileName: string;
-  baseProfileInfo: string;
-  totalCount: number;
-  matchedProfiles: string; // JSON-stringified array of ApiBestMatchProfile
+  userShownProfiles: string; // JSON-stringified array of ApiUserShownProfile
+  userShownProfilesCount: string;
 }
 
-interface ApiBestMatchProfile {
-  MatchedProfileID: number;
-  MatchedProfileName: string;
-  userProfileStatusID?: number;
-  statusID?: number;
-  statusTitle?: string;
+interface ApiUserShownProfile {
+  ProfileID: number;
+  ProfileName: string;
   Age: number;
-  MatchedeDoc?: string;
   Gender: string;
   Occupation?: string;
+  InterestStatusID: number; // 1 = liked/shown as interested, 0 = not
   CityID?: number;
   CityName?: string;
   CountryID?: number;
   CountryName?: string;
-  MatchedAttributes: number;
-  TotalAttributeCount: number;
-  MatchPercentage: number;
 }
 
 interface MatchCard {
@@ -117,7 +110,7 @@ export class UserActivePlanComponent implements OnInit {
 
   currentPlanLabel: string = 'Free Plan';
   userName = '';
-  matchedProfiles = 0; // now driven by totalCount from getBestMatchProfiles
+  matchedProfiles = 0; // now driven by userShownProfilesCount from getUserShownProfiles
 
   profileID: number | null = null;
 
@@ -131,8 +124,10 @@ export class UserActivePlanComponent implements OnInit {
   // Populated from core-api/Admin/getSupport
   contacts: ContactCard[] = [];
 
-  // Populated from core-api/Admin/getBestMatchProfiles
+  // Populated from core-api/Profile/getUserShownProfiles
   bestMatches: MatchCard[] = [];
+
+  private readonly defaultImage = 'assets/img/default-avatar.png';
 
   constructor(
     private dataService: SharedDataService,
@@ -341,49 +336,47 @@ export class UserActivePlanComponent implements OnInit {
     });
   }
 
-  // ---------- Best Matches (core-api/Admin/getBestMatchProfiles) ----------
+  // ---------- Best Matches (core-api/Profile/getUserShownProfiles) ----------
 
   private loadBestMatches(profileID: number): void {
     this.dataService
-      .getHttp(`core-api/Admin/getBestMatchProfiles?baseProfileID=${profileID}`, {})
+      .getHttp(`core-api/Profile/getUserShownProfiles?profileID=${profileID}`, {})
       .subscribe({
         next: (res: any) => {
-          const data: ApiBestMatchResponse = Array.isArray(res) ? res[0] : res;
+          const data: ApiUserShownResponse = Array.isArray(res) ? res[0] : res;
           if (!data) return;
 
-          // matchedProfiles / totalCount drives the "Profiles" stat shown in the banner
-          this.matchedProfiles = Number(data.totalCount) || 0;
+          // userShownProfilesCount drives the "Profiles" stat shown in the banner
+          this.matchedProfiles = Number(data.userShownProfilesCount) || 0;
 
-          let matches: ApiBestMatchProfile[] = [];
+          let shown: ApiUserShownProfile[] = [];
           try {
-            matches = JSON.parse(data.matchedProfiles || '[]');
+            shown = JSON.parse(data.userShownProfiles || '[]');
           } catch {
-            matches = [];
+            shown = [];
           }
 
-          this.bestMatches = matches.map((m) => this.mapBestMatchToCard(profileID, m));
+          this.bestMatches = shown.map((m) => this.mapShownProfileToCard(profileID, m));
         },
-        error: (err) => console.error('getBestMatchProfiles error:', err),
+        error: (err) => console.error('getUserShownProfiles error:', err),
       });
   }
 
-  private mapBestMatchToCard(baseProfileID: number, m: ApiBestMatchProfile): MatchCard {
-    const imageDoc = environment.productUrl + 'assets/user-images/userProfile/' + (m.MatchedeDoc || '');
-
+  private mapShownProfileToCard(baseProfileID: number, m: ApiUserShownProfile): MatchCard {
     const address = [m.CityName, m.CountryName].filter(Boolean).join(', ');
 
     return {
-      sourceProfileID: baseProfileID,
-      destinationProfileID: +m.MatchedProfileID || 0,
-      name: m.MatchedProfileName || '',
+      sourceProfileID: baseProfileID,        // senderID
+      destinationProfileID: +m.ProfileID || 0, // receiverID
+      name: m.ProfileName || '',
       gender: m.Gender || '',
       age: m.Age !== undefined && m.Age !== null && m.Age > 0 ? m.Age : null,
       height: '',
       maritalStatus: '',
       occupation: m.Occupation || '',
       address: address,
-      imageDoc: imageDoc,
-      isInterested: false,
+      imageDoc: this.defaultImage, // no eDoc field provided by this endpoint
+      isInterested: +m.InterestStatusID === 1,
       isTogglingInterest: false,
     };
   }
