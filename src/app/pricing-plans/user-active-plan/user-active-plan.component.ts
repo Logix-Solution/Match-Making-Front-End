@@ -5,7 +5,6 @@ import { SharedGlobalService } from '../../../shared/services/shared-global.serv
 import { SharedFormFieldValidationService } from '../../../shared/services/shared-form-field-validation.service';
 import { environment } from 'src/envirnment/environment';
 
-
 interface ApiUserPlan {
   planID: number;
   planName: string;
@@ -84,6 +83,7 @@ interface ApiUserShownProfile {
   CityName?: string;
   CountryID?: number;
   CountryName?: string;
+  eDoc?: string;
 }
 
 interface MatchCard {
@@ -104,10 +104,9 @@ interface MatchCard {
 @Component({
   selector: 'app-user-active-plan',
   templateUrl: './user-active-plan.component.html',
-  styleUrls: ['./user-active-plan.component.scss']
+  styleUrls: ['./user-active-plan.component.scss'],
 })
 export class UserActivePlanComponent implements OnInit {
-
   currentPlanLabel: string = 'Free Plan';
   userName = '';
   matchedProfiles = 0; // now driven by userShownProfilesCount from getUserShownProfiles
@@ -127,7 +126,7 @@ export class UserActivePlanComponent implements OnInit {
   // Populated from core-api/Profile/getUserShownProfiles
   bestMatches: MatchCard[] = [];
 
-  private readonly defaultImage = 'assets/img/default-avatar.png';
+  private readonly defaultImage = 'assets/images/profile1.png';
 
   constructor(
     private dataService: SharedDataService,
@@ -160,10 +159,23 @@ export class UserActivePlanComponent implements OnInit {
 
   private mapCountsToStats(counts: ApiDashboardCounts): StatCard[] {
     return [
-      { value: counts.profileView ?? '0', label: 'Profile Views', icon: 'bi-graph-up' },
-      { value: counts.mutualLike ?? '0', label: 'Mutual Likes', icon: 'bi-star' },
+      {
+        value: counts.profileView ?? '0',
+        label: 'Profile Views',
+        icon: 'bi-graph-up',
+      },
+      {
+        value: counts.mutualLike ?? '0',
+        label: 'Mutual Likes',
+        icon: 'bi-star',
+      },
       { value: counts.countries ?? '0', label: 'Countries', icon: 'bi-globe' },
-      { value: counts.avgResponse ?? '0', unit: 'h', label: 'Avg Response', icon: 'bi-clock' },
+      {
+        value: counts.avgResponse ?? '0',
+        unit: 'h',
+        label: 'Avg Response',
+        icon: 'bi-clock',
+      },
     ];
   }
 
@@ -217,7 +229,10 @@ export class UserActivePlanComponent implements OnInit {
     ];
   }
 
-  private splitLeading(str: string, regex: RegExp): { main: string; rest: string } {
+  private splitLeading(
+    str: string,
+    regex: RegExp,
+  ): { main: string; rest: string } {
     if (!str) return { main: '', rest: '' };
     const match = str.match(regex);
     if (!match) return { main: str.trim(), rest: '' };
@@ -228,7 +243,10 @@ export class UserActivePlanComponent implements OnInit {
 
   private splitAddress(str: string): { main: string; rest: string } {
     if (!str) return { main: '', rest: '' };
-    const parts = str.split(/\s{2,}/).map((p) => p.trim()).filter(Boolean);
+    const parts = str
+      .split(/\s{2,}/)
+      .map((p) => p.trim())
+      .filter(Boolean);
     if (parts.length >= 2) {
       return { main: parts[0], rest: parts.slice(1).join(', ') };
     }
@@ -238,43 +256,49 @@ export class UserActivePlanComponent implements OnInit {
   private loadUserAndPlans(): void {
     const userID = this.sharedGlobalService.getUserID();
 
-    this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${userID}`, {}).subscribe({
-      next: (res: any) => {
-        const user = Array.isArray(res) ? res[0] : res;
-        if (!user) return;
+    this.dataService
+      .getHttp(`core-api/Profile/getUserDetails?UserID=${userID}`, {})
+      .subscribe({
+        next: (res: any) => {
+          const user = Array.isArray(res) ? res[0] : res;
+          if (!user) return;
 
-        this.profileID = user.profileID;
-        this.userName = user.fullname || user.firstName || '';
+          this.profileID = user.profileID;
+          this.userName = user.fullname || user.firstName || '';
 
-        let profileItems: any[] = [];
-        try {
-          profileItems = JSON.parse(user.userProfile || '[]');
-        } catch {
-          profileItems = [];
-        }
+          let profileItems: any[] = [];
+          try {
+            profileItems = JSON.parse(user.userProfile || '[]');
+          } catch {
+            profileItems = [];
+          }
 
-        const currencyItem = profileItems.find(
-          (p: any) => p.currencyTypeID !== undefined && p.currencyTypeID !== null,
-        );
-        const currencyTypeID = currencyItem?.currencyTypeID;
+          const currencyItem = profileItems.find(
+            (p: any) =>
+              p.currencyTypeID !== undefined && p.currencyTypeID !== null,
+          );
+          const currencyTypeID = currencyItem?.currencyTypeID;
 
-        if (this.profileID && currencyTypeID) {
-          this.loadPlans(this.profileID, currencyTypeID);
-          this.loadBestMatches(this.profileID);
-        } else {
-          console.error('Missing profileID or currencyTypeID', {
-            profileID: this.profileID,
-            currencyTypeID,
-          });
-        }
-      },
-      error: (err) => console.error('getUserDetails error:', err),
-    });
+          if (this.profileID && currencyTypeID) {
+            this.loadPlans(this.profileID, currencyTypeID);
+            this.loadBestMatches(this.profileID);
+          } else {
+            console.error('Missing profileID or currencyTypeID', {
+              profileID: this.profileID,
+              currencyTypeID,
+            });
+          }
+        },
+        error: (err) => console.error('getUserDetails error:', err),
+      });
   }
 
   private loadPlans(profileID: number, currencyTypeID: number | string): void {
     this.dataService
-      .getHttp(`core-api/Payment/getUserPlans?profileID=${profileID}&currencyTypeID=${currencyTypeID}`, {})
+      .getHttp(
+        `core-api/Payment/getUserPlans?profileID=${profileID}&currencyTypeID=${currencyTypeID}`,
+        {},
+      )
       .subscribe({
         next: (res: any) => {
           const data: ApiUserPlan[] = Array.isArray(res) ? res : [];
@@ -282,15 +306,19 @@ export class UserActivePlanComponent implements OnInit {
           this.plans = data
             .filter((p) => {
               const nameLower = (p.planName || '').toLowerCase();
-              return !nameLower.includes('free') && !nameLower.includes('registration');
+              return (
+                !nameLower.includes('free') &&
+                !nameLower.includes('registration')
+              );
             })
             .map((p) => this.mapApiPlanToDisplay(p));
 
           const currentItem = data.find((p) => p.currentPlan === 1);
 
-          this.currentPlanId = currentItem && this.plans.some((dp) => dp.id === currentItem.planID)
-            ? currentItem.planID
-            : null;
+          this.currentPlanId =
+            currentItem && this.plans.some((dp) => dp.id === currentItem.planID)
+              ? currentItem.planID
+              : null;
 
           if (this.currentPlanId) {
             this.selectedPlanId = this.currentPlanId;
@@ -340,7 +368,10 @@ export class UserActivePlanComponent implements OnInit {
 
   private loadBestMatches(profileID: number): void {
     this.dataService
-      .getHttp(`core-api/Profile/getUserShownProfiles?profileID=${profileID}`, {})
+      .getHttp(
+        `core-api/Profile/getUserShownProfiles?profileID=${profileID}`,
+        {},
+      )
       .subscribe({
         next: (res: any) => {
           const data: ApiUserShownResponse = Array.isArray(res) ? res[0] : res;
@@ -356,17 +387,22 @@ export class UserActivePlanComponent implements OnInit {
             shown = [];
           }
 
-          this.bestMatches = shown.map((m) => this.mapShownProfileToCard(profileID, m));
+          this.bestMatches = shown.map((m) =>
+            this.mapShownProfileToCard(profileID, m),
+          );
         },
         error: (err) => console.error('getUserShownProfiles error:', err),
       });
   }
 
-  private mapShownProfileToCard(baseProfileID: number, m: ApiUserShownProfile): MatchCard {
+  private mapShownProfileToCard(
+    baseProfileID: number,
+    m: ApiUserShownProfile,
+  ): MatchCard {
     const address = [m.CityName, m.CountryName].filter(Boolean).join(', ');
 
     return {
-      sourceProfileID: baseProfileID,        // senderID
+      sourceProfileID: baseProfileID, // senderID
       destinationProfileID: +m.ProfileID || 0, // receiverID
       name: m.ProfileName || '',
       gender: m.Gender || '',
@@ -375,7 +411,9 @@ export class UserActivePlanComponent implements OnInit {
       maritalStatus: '',
       occupation: m.Occupation || '',
       address: address,
-      imageDoc: this.defaultImage, // no eDoc field provided by this endpoint
+      imageDoc: m.eDoc
+        ? environment.productUrl + 'assets/user-images/userProfile/' + m.eDoc
+        : this.defaultImage, // no eDoc field provided by this endpoint
       isInterested: +m.InterestStatusID === 1,
       isTogglingInterest: false,
     };
@@ -396,26 +434,28 @@ export class UserActivePlanComponent implements OnInit {
       spType: 'insert',
     };
 
-    this.dataService.postDirect('core-api/Admin/saveUserInterest', payload).subscribe({
-      next: (res: any) => {
-        match.isTogglingInterest = false;
+    this.dataService
+      .postDirect('core-api/Admin/saveUserInterest', payload)
+      .subscribe({
+        next: (res: any) => {
+          match.isTogglingInterest = false;
 
-        if (res?.apiErrorResponse) {
-          this.validationService.validateToastr(res.apiErrorResponse);
-          return;
-        }
+          if (res?.apiErrorResponse) {
+            this.validationService.validateToastr(res.apiErrorResponse);
+            return;
+          }
 
-        match.isInterested = nextState;
+          match.isInterested = nextState;
 
-        const message = nextState
-          ? (res?.apiInfoResponse || 'Interest sent successfully')
-          : (res?.apiInfoResponse || 'Interest withdrawn successfully');
-        this.validationService.validateToastr(message);
-      },
-      error: (err) => {
-        match.isTogglingInterest = false;
-        console.error('saveUserInterest error:', err);
-      },
-    });
+          const message = nextState
+            ? res?.apiInfoResponse || 'Interest sent successfully'
+            : res?.apiInfoResponse || 'Interest withdrawn successfully';
+          this.validationService.validateToastr(message);
+        },
+        error: (err) => {
+          match.isTogglingInterest = false;
+          console.error('saveUserInterest error:', err);
+        },
+      });
   }
 }
