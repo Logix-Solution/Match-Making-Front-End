@@ -44,10 +44,21 @@ interface CompareAttributeGroup {
   Attributes: CompareAttribute[];
 }
 
+// "matches" array entries — carries MatchPercentage per compare profile
+interface MatchInfoRaw {
+  profileID: number;
+  fullName: string;
+  eDoc?: string;
+  Age: number;
+  MatchedAttributes: number;
+  TotalAttributes: number;
+  MatchPercentage: number;
+}
+
 interface MatchCompareApiItem {
   baseProfile: string;
   compareProfile: string;
-  matches: string;
+  matches: string;                // JSON string (array of MatchInfoRaw)
   matchedAttributes: string;      // JSON string (array of CompareAttributeGroup)
   differentAttributes: string;    // JSON string (array of CompareAttributeGroup)
 }
@@ -65,15 +76,24 @@ interface ProfileItem {
   selected: boolean;
 }
 
+interface AttributeRow {
+  label: string;
+  value: string;
+}
+
+interface AttributeSection {
+  icon: string;
+  title: string;
+  rows: AttributeRow[];
+}
+
 interface ComparisonColumnData {
   profileID: number;
-  maritalStatus: string;
-  ageRange: string;
-  city: string;
-  countries: string;
-  castes: string;
-  education: string;
-  income: string;
+  matchPercentage: number | null; // null for the base profile (nothing to match against itself)
+  matchedCount: number | null;
+  totalCount: number | null;
+  values: { [typeName: string]: string }; // flat lookup, used for header pills
+  sections: AttributeSection[];           // full grouped attribute breakdown
 }
 
 @Component({
@@ -93,6 +113,41 @@ export class AdminMatchComparisonComponent implements OnInit {
   isLoadingProfiles = false;
   isLoadingCompare = false;
 
+  // Ordered section config — every TypeName in the API that matters shows up
+  // under one of these; any TypeName not listed here is simply skipped.
+  private readonly sectionConfig: { icon: string; title: string; typeNames: string[] }[] = [
+    {
+      icon: 'bi-person-vcard',
+      title: 'Personal Information',
+      typeNames: ['Cast', 'Nationality', 'Ethnicity', 'Gender', 'Marital Status', 'Age Range', 'No Of Siblings'],
+    },
+    {
+      icon: 'bi-moon-stars',
+      title: 'Religion',
+      typeNames: ['Religion', 'Sect', 'Religion Importance'],
+    },
+    {
+      icon: 'bi-person-bounding-box',
+      title: 'Appearance',
+      typeNames: ['Height', 'Body Type', 'Skin Tone', 'Disability'],
+    },
+    {
+      icon: 'bi-cup-straw',
+      title: 'Lifestyle',
+      typeNames: ['Smoke', 'Alcohol', 'Want Kids', 'Accept Patner With Kids', 'Willing Relocate', 'Timeline For Marriage'],
+    },
+    {
+      icon: 'bi-house-heart',
+      title: 'Family',
+      typeNames: ['Housing Situation', 'Father Occupation', 'Mother Occupation', 'Family involvment'],
+    },
+    {
+      icon: 'bi-mortarboard',
+      title: 'Education & Career',
+      typeNames: ['Education Level', 'Occupation', 'Monthly Income'],
+    },
+  ];
+
   constructor(private dataService: SharedDataService) {}
 
   ngOnInit(): void {
@@ -108,14 +163,19 @@ export class AdminMatchComparisonComponent implements OnInit {
   }
 
   // ─── Load selection cards ─────────────────────────────────────────────────
-  private loadProfiles(): void {
+   private loadProfiles(): void {
     this.isLoadingProfiles = true;
     this.dataService.getHttp('core-api/Admin/getBestMatchProfiles', {}).subscribe({
       next: (res: any) => {
-        const data: BestMatchApiItem[] = Array.isArray(res) ? res : [];
-        this.profiles = data
-          .filter(item => item.totalCount > 0) // skip profiles with no data/matches at all
-          .map(item => this.mapToProfileItem(item));
+        try {
+          const data: BestMatchApiItem[] = Array.isArray(res) ? res : [];
+          this.profiles = data
+            .filter(item => item.totalCount > 0)
+            .map(item => this.mapToProfileItem(item));
+        } catch (mapErr) {
+          console.error('Failed to map getBestMatchProfiles response:', mapErr, res);
+          this.profiles = [];
+        }
         this.isLoadingProfiles = false;
       },
       error: (err) => {
@@ -158,21 +218,22 @@ export class AdminMatchComparisonComponent implements OnInit {
   }
 
   // ─── Selection handling ────────────────────────────────────────────────────
-  toggleProfileSelection(profile: ProfileItem): void {
+   toggleProfileSelection(profile: ProfileItem): void {
     if (profile.selected) {
       profile.selected = false;
+      this.selectedProfiles = this.selectedProfiles.filter(p => p.id !== profile.id);
     } else {
       if (this.getSelectedCount() >= 3) {
         alert('You can select a maximum of 3 profiles to compare at once.');
         return;
       }
       profile.selected = true;
+      this.selectedProfiles = [...this.selectedProfiles, profile];
     }
-    this.updateSelectedProfilesList();
   }
 
   getSelectedCount(): number {
-    return this.profiles.filter(p => p.selected).length;
+    return this.selectedProfiles.length;
   }
 
   updateSelectedProfilesList(): void {
@@ -221,64 +282,130 @@ export class AdminMatchComparisonComponent implements OnInit {
 
     let matchedGroups: CompareAttributeGroup[] = [];
     let differentGroups: CompareAttributeGroup[] = [];
+    let matchInfos: MatchInfoRaw[] = [];
 
     if (entry) {
       try { matchedGroups = JSON.parse(entry.matchedAttributes || '[]'); } catch { matchedGroups = []; }
       try { differentGroups = JSON.parse(entry.differentAttributes || '[]'); } catch { differentGroups = []; }
+      try { matchInfos = JSON.parse(entry.matches || '[]'); } catch { matchInfos = []; }
     }
 
-    // Looks up a TypeName's value for a given CompareProfileID pairing.
-    // side='base' reads BaseValue (or the shared MatchedValue), side='compare' reads CompareValue.
-    const findValue = (typeName: string, compareProfileID: number, side: 'base' | 'compare'): string => {
-      const diffGroup = differentGroups.find(g => g.CompareProfileID === compareProfileID);
-      if (diffGroup) {
-        const attr = diffGroup.Attributes.find(a => a.TypeName === typeName);
-        if (attr) return (side === 'base' ? attr.BaseValue : attr.CompareValue) || '—';
-      }
-      const matchGroup = matchedGroups.find(g => g.CompareProfileID === compareProfileID);
-      if (matchGroup) {
-        const attr = matchGroup.Attributes.find(a => a.TypeName === typeName);
-        if (attr) return attr.MatchedValue || '—';
-      }
-      return '—';
-    };
-
-    const buildAgeRange = (compareProfileID: number, side: 'base' | 'compare'): string => {
-      const min = findValue('Minimum Age', compareProfileID, side);
-      const max = findValue('Maximum Age', compareProfileID, side);
-      if (min === '—' && max === '—') return '—';
-      return `Ages ${min} to ${max}`;
-    };
-
     const [baseProfile, ...compareProfiles] = this.selectedProfiles;
-    const columns: ComparisonColumnData[] = [];
+    const compareProfileIDs = compareProfiles.map(p => p.id);
 
-    // BaseValue is identical across every pairing, so any compare-profile pairing works as the lookup key.
-    const referenceCompareID = compareProfiles.length ? compareProfiles[0].id : 0;
+    // Base column: a given TypeName may only appear in one pairing's diff/matched
+    // groups (not all), so merge the base-side map across every pairing to make
+    // sure the base profile's card shows everything, not just what's shared
+    // with whichever compare profile happens to carry that attribute.
+    const baseMap = new Map<string, Set<string>>();
+    compareProfileIDs.forEach(cid => {
+      this.mergeAttributeMap(
+        baseMap,
+        this.buildAttributeMap(cid, 'base', matchedGroups, differentGroups),
+      );
+    });
+    this.applyAgeRange(baseMap);
+
+    const columns: ComparisonColumnData[] = [];
     columns.push({
       profileID: baseProfile.id,
-      maritalStatus: findValue('Marital Status', referenceCompareID, 'base'),
-      ageRange: buildAgeRange(referenceCompareID, 'base'),
-      city: baseProfile.location.split(',')[0]?.trim() || '—',
-      countries: findValue('Nationality', referenceCompareID, 'base'),
-      castes: findValue('Cast', referenceCompareID, 'base'),
-      education: findValue('Education Level', referenceCompareID, 'base'),
-      income: findValue('Monthly Income', referenceCompareID, 'base'),
+      matchPercentage: null,
+      matchedCount: null,
+      totalCount: null,
+      values: this.mapToFlatValues(baseMap),
+      sections: this.buildSections(baseMap),
     });
 
     compareProfiles.forEach(cp => {
+      const map = this.buildAttributeMap(cp.id, 'compare', matchedGroups, differentGroups);
+      this.applyAgeRange(map);
+
+      const info = matchInfos.find(m => m.profileID === cp.id);
+
       columns.push({
         profileID: cp.id,
-        maritalStatus: findValue('Marital Status', cp.id, 'compare'),
-        ageRange: buildAgeRange(cp.id, 'compare'),
-        city: cp.location.split(',')[0]?.trim() || '—',
-        countries: findValue('Nationality', cp.id, 'compare'),
-        castes: findValue('Cast', cp.id, 'compare'),
-        education: findValue('Education Level', cp.id, 'compare'),
-        income: findValue('Monthly Income', cp.id, 'compare'),
+        matchPercentage: info ? Math.round(info.MatchPercentage) : null,
+        matchedCount: info ? info.MatchedAttributes : null,
+        totalCount: info ? info.TotalAttributes : null,
+        values: this.mapToFlatValues(map),
+        sections: this.buildSections(map),
       });
     });
 
     return columns;
+  }
+
+  // Collects every TypeName -> value(s) pairing available for one compareProfileID.
+  // 'base' reads BaseValue from differentAttributes; 'compare' reads CompareValue.
+  // Shared (matched) attributes come from matchedAttributes' MatchedValue either way.
+  // Multiple distinct values for the same TypeName (e.g. multi-select preferences
+  // like Occupation with several priorities) are kept as a Set and joined on display.
+  private buildAttributeMap(
+    compareProfileID: number,
+    side: 'base' | 'compare',
+    matchedGroups: CompareAttributeGroup[],
+    differentGroups: CompareAttributeGroup[],
+  ): Map<string, Set<string>> {
+    const map = new Map<string, Set<string>>();
+    const addVal = (name: string, val?: string) => {
+      if (!val) return;
+      if (!map.has(name)) map.set(name, new Set());
+      map.get(name)!.add(val);
+    };
+
+    const diffGroup = differentGroups.find(g => g.CompareProfileID === compareProfileID);
+    diffGroup?.Attributes.forEach(a => addVal(a.TypeName, side === 'base' ? a.BaseValue : a.CompareValue));
+
+    const matchGroup = matchedGroups.find(g => g.CompareProfileID === compareProfileID);
+    matchGroup?.Attributes.forEach(a => addVal(a.TypeName, a.MatchedValue));
+
+    return map;
+  }
+
+  private mergeAttributeMap(target: Map<string, Set<string>>, source: Map<string, Set<string>>): void {
+    source.forEach((vals, key) => {
+      if (!target.has(key)) target.set(key, new Set());
+      vals.forEach(v => target.get(key)!.add(v));
+    });
+  }
+
+  // Combines Minimum Age / Maximum Age into a single "Age Range" entry, e.g. "27 - 30"
+  private applyAgeRange(map: Map<string, Set<string>>): void {
+    const min = this.firstValue(map, 'Minimum Age');
+    const max = this.firstValue(map, 'Maximum Age');
+    if (min || max) {
+      map.set('Age Range', new Set([`${min || '—'} - ${max || '—'}`]));
+    }
+  }
+
+  private firstValue(map: Map<string, Set<string>>, key: string): string {
+    const vals = map.get(key);
+    return vals && vals.size ? Array.from(vals)[0] : '';
+  }
+
+  private getValue(map: Map<string, Set<string>>, key: string): string {
+    const vals = map.get(key);
+    return vals && vals.size ? Array.from(vals).join(', ') : '—';
+  }
+
+  private mapToFlatValues(map: Map<string, Set<string>>): { [typeName: string]: string } {
+    const out: { [typeName: string]: string } = {};
+    map.forEach((_, key) => { out[key] = this.getValue(map, key); });
+    return out;
+  }
+
+  private buildSections(map: Map<string, Set<string>>): AttributeSection[] {
+    return this.sectionConfig
+      .map(cfg => ({
+        icon: cfg.icon,
+        title: cfg.title,
+        rows: cfg.typeNames
+          .filter(name => map.has(name))
+          .map(name => ({ label: name, value: this.getValue(map, name) })),
+      }))
+      .filter(section => section.rows.length > 0); // drop empty sections entirely
+  }
+    getColumn(i: number): ComparisonColumnData | null {
+    return this.comparisonColumns[i] ?? null;
   }
 }
