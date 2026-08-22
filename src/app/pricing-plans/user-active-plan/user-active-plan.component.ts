@@ -73,6 +73,7 @@ interface ApiUserShownResponse {
 }
 
 interface ApiUserShownProfile {
+  UserID: number;
   ProfileID: number;
   ProfileName: string;
   Age: number;
@@ -89,6 +90,7 @@ interface ApiUserShownProfile {
 interface MatchCard {
   sourceProfileID: number;
   destinationProfileID: number;
+  userID: number; // needed to fetch full profile details on click
   name: string;
   gender: string;
   age: number | null;
@@ -99,6 +101,23 @@ interface MatchCard {
   imageDoc: string;
   isInterested: boolean;
   isTogglingInterest: boolean; // disables the heart button while a save is in-flight
+}
+
+// ---------- Profile Details / Preferences modal shapes ----------
+
+interface DetailField {
+  label: string;
+  value: string;
+}
+
+interface DetailRow {
+  fields: DetailField[]; // 1 field = full-width row, 2 fields = split row
+}
+
+interface DetailSection {
+  icon: string;
+  title: string;
+  rows: DetailRow[];
 }
 
 @Component({
@@ -127,6 +146,25 @@ export class UserActivePlanComponent implements OnInit {
   bestMatches: MatchCard[] = [];
 
   private readonly defaultImage = 'assets/images/profile1.png';
+
+  // ---------- Profile Details / Preferences modal state ----------
+  isProfileModalOpen = false;
+  isProfileModalLoading = false;
+  profileModalActiveTab: 'details' | 'preferences' = 'details';
+
+  profileModalHeader: {
+    name: string;
+    ageLabel: string;
+    address: string;
+    imageDoc: string;
+    occupation: string;
+    status: string;
+    aboutMe: string;
+    educationCareerRows: DetailRow[];
+  } | null = null;
+
+  profileDetailSections: DetailSection[] = [];
+  profilePreferenceSections: DetailSection[] = [];
 
   constructor(
     private dataService: SharedDataService,
@@ -404,6 +442,7 @@ export class UserActivePlanComponent implements OnInit {
     return {
       sourceProfileID: baseProfileID, // senderID
       destinationProfileID: +m.ProfileID || 0, // receiverID
+      userID: +m.UserID || 0, // used to fetch full profile details on click
       name: m.ProfileName || '',
       gender: m.Gender || '',
       age: m.Age !== undefined && m.Age !== null && m.Age > 0 ? m.Age : null,
@@ -457,5 +496,270 @@ export class UserActivePlanComponent implements OnInit {
           console.error('saveUserInterest error:', err);
         },
       });
+  }
+
+  // ---------- Profile Details / Profile Preferences modal ----------
+
+  openProfileDetail(match: MatchCard): void {
+    if (!match.userID) return;
+
+    this.isProfileModalOpen = true;
+    this.isProfileModalLoading = true;
+    this.profileModalActiveTab = 'details';
+    this.profileModalHeader = null;
+    this.profileDetailSections = [];
+    this.profilePreferenceSections = [];
+
+    this.dataService
+      .getHttp(`core-api/Profile/getUserDetails?UserID=${match.userID}`, {})
+      .subscribe({
+        next: (res: any) => {
+          this.isProfileModalLoading = false;
+          const user = Array.isArray(res) ? res[0] : res;
+          if (!user) return;
+
+          let profileItems: any[] = [];
+          try {
+            profileItems = JSON.parse(user.userProfile || '[]');
+          } catch {
+            profileItems = [];
+          }
+
+          let preferenceItems: any[] = [];
+          try {
+            preferenceItems = JSON.parse(user.userPreference || '[]');
+          } catch {
+            preferenceItems = [];
+          }
+
+          const profileMap = this.buildTypeMap(profileItems);
+          const preferenceMap = this.buildTypeMap(preferenceItems);
+
+          this.profileModalHeader = this.buildModalHeader(
+            match,
+            user,
+            profileMap,
+            profileItems,
+          );
+          this.profileDetailSections = this.buildDetailSections(profileMap);
+          this.profilePreferenceSections =
+            this.buildPreferenceSections(preferenceMap);
+        },
+        error: (err) => {
+          this.isProfileModalLoading = false;
+          console.error('getUserDetails (profile modal) error:', err);
+        },
+      });
+  }
+
+  closeProfileModal(): void {
+    this.isProfileModalOpen = false;
+    this.profileModalHeader = null;
+    this.profileDetailSections = [];
+    this.profilePreferenceSections = [];
+  }
+
+  setProfileModalTab(tab: 'details' | 'preferences'): void {
+    this.profileModalActiveTab = tab;
+  }
+
+  // Groups userProfile / userPreference JSON items by typeID.
+  // Multiple entries for the same typeID (e.g. preference priorities) are
+  // collected as separate values and joined with ", " when displayed.
+  private buildTypeMap(items: any[]): Map<number, string[]> {
+    const map = new Map<number, string[]>();
+    for (const item of items) {
+      if (item?.typeID === undefined || item?.typeID === null) continue;
+      const title = (item.subTypeTitle ?? '').toString().trim();
+      if (!title) continue;
+
+      const existing = map.get(item.typeID) || [];
+      if (!existing.includes(title)) existing.push(title);
+      map.set(item.typeID, existing);
+    }
+    return map;
+  }
+
+  private getValue(
+    map: Map<number, string[]>,
+    typeID: number,
+    fallback = '—',
+  ): string {
+    const vals = map.get(typeID);
+    return vals && vals.length ? vals.join(', ') : fallback;
+  }
+
+  private singleColRows(fields: DetailField[]): DetailRow[] {
+    return fields.map((f) => ({ fields: [f] }));
+  }
+
+  private pairColRows(fields: DetailField[]): DetailRow[] {
+    const rows: DetailRow[] = [];
+    for (let i = 0; i < fields.length; i += 2) {
+      rows.push({ fields: fields.slice(i, i + 2) });
+    }
+    return rows;
+  }
+
+  private buildModalHeader(
+    match: MatchCard,
+    user: any,
+    profileMap: Map<number, string[]>,
+    profileItems: any[],
+  ) {
+    const eduItem = profileItems.find((p) => p.typeID === 4);
+    const occItem = profileItems.find((p) => p.typeID === 5);
+    const institute =
+      eduItem?.instituteName || occItem?.instituteName || '—';
+
+    return {
+      name: match.name || user.fullname || '',
+      ageLabel: match.age !== null ? `${match.age} years` : '',
+      address: match.address || '',
+      imageDoc: match.imageDoc || this.defaultImage,
+      occupation: this.getValue(profileMap, 5),
+      status: this.getValue(profileMap, 10),
+      aboutMe: user.aboutme || '',
+      educationCareerRows: this.pairColRows([
+        { label: 'Education', value: this.getValue(profileMap, 4) },
+        { label: 'Institute', value: institute },
+        { label: 'Occupation', value: this.getValue(profileMap, 5) },
+        { label: 'Monthly Income', value: this.getValue(profileMap, 6) },
+      ]),
+    };
+  }
+
+  private buildDetailSections(map: Map<number, string[]>): DetailSection[] {
+    return [
+      {
+        icon: 'bi-person-vcard',
+        title: 'Personal Information',
+        rows: this.singleColRows([
+          { label: 'Cast', value: this.getValue(map, 1) },
+          { label: 'Ethnicity', value: this.getValue(map, 3) },
+          { label: 'Gender', value: this.getValue(map, 22) },
+          { label: 'Marital Status', value: this.getValue(map, 10) },
+          { label: 'Height', value: this.getValue(map, 26) },
+          { label: 'No of Siblings', value: this.getValue(map, 25) },
+          { label: 'Disability', value: this.getValue(map, 30) },
+        ]),
+      },
+      {
+        icon: 'bi-cup-straw',
+        title: 'Lifestyle',
+        rows: this.singleColRows([
+          { label: 'Smoke', value: this.getValue(map, 17) },
+          { label: 'Alcohol', value: this.getValue(map, 18) },
+          { label: 'Want Kids', value: this.getValue(map, 19) },
+        ]),
+      },
+      {
+        icon: 'bi-person-bounding-box',
+        title: 'Appearance',
+        rows: this.singleColRows([
+          { label: 'Body Type', value: this.getValue(map, 15) },
+          { label: 'Skin Tone', value: this.getValue(map, 16) },
+          { label: 'Height', value: this.getValue(map, 26) },
+          { label: 'Disability', value: this.getValue(map, 30) },
+        ]),
+      },
+      {
+        icon: 'bi-moon-stars',
+        title: 'Religion',
+        rows: this.singleColRows([
+          { label: 'Religion', value: this.getValue(map, 7) },
+          { label: 'Sect', value: this.getValue(map, 8) },
+          { label: 'Religion Importance', value: this.getValue(map, 9) },
+        ]),
+      },
+      {
+        icon: 'bi-house-heart',
+        title: 'Family',
+        rows: this.pairColRows([
+          { label: 'Housing Situation', value: this.getValue(map, 11) },
+          { label: 'Father Occupation', value: this.getValue(map, 12) },
+          { label: 'Mother Occupation', value: this.getValue(map, 13) },
+          { label: 'Family Involvement', value: this.getValue(map, 14) },
+          { label: 'No of Siblings', value: this.getValue(map, 25) },
+          { label: 'Want Kids', value: this.getValue(map, 19) },
+        ]),
+      },
+    ];
+  }
+
+  private buildPreferenceSections(
+    map: Map<number, string[]>,
+  ): DetailSection[] {
+    const minAge = this.getValue(map, 31, '');
+    const maxAge = this.getValue(map, 32, '');
+    const ageRange = minAge && maxAge ? `${minAge} - ${maxAge}` : '—';
+
+    return [
+      {
+        icon: 'bi-person-vcard',
+        title: 'Personal Information',
+        rows: this.singleColRows([
+          { label: 'Nationality', value: this.getValue(map, 2) },
+          { label: 'Cast', value: this.getValue(map, 1) },
+          { label: 'Ethnicity', value: this.getValue(map, 3) },
+          { label: 'Age Range', value: ageRange },
+          { label: 'Marital Status', value: this.getValue(map, 10) },
+        ]),
+      },
+      {
+        icon: 'bi-house-heart',
+        title: 'Family',
+        rows: this.singleColRows([
+          { label: 'Housing Situation', value: this.getValue(map, 11) },
+          { label: 'Family Involvement', value: this.getValue(map, 14) },
+          { label: 'Willing to Relocate', value: this.getValue(map, 20) },
+        ]),
+      },
+      {
+        icon: 'bi-moon-stars',
+        title: 'Religion',
+        rows: this.singleColRows([
+          { label: 'Religion', value: this.getValue(map, 7) },
+          { label: 'Sect', value: this.getValue(map, 8) },
+          { label: 'Religion Importance', value: this.getValue(map, 9) },
+        ]),
+      },
+      {
+        icon: 'bi-mortarboard',
+        title: 'Education & Career',
+        rows: this.singleColRows([
+          { label: 'Education Level', value: this.getValue(map, 4) },
+          { label: 'Occupation', value: this.getValue(map, 5) },
+          { label: 'Monthly Income', value: this.getValue(map, 6) },
+        ]),
+      },
+      {
+        icon: 'bi-person-bounding-box',
+        title: 'Appearance',
+        rows: this.singleColRows([
+          { label: 'Height', value: this.getValue(map, 26) },
+          { label: 'Body Type', value: this.getValue(map, 15) },
+          { label: 'Skin Tone', value: this.getValue(map, 16) },
+          {
+            label: 'Open to Partner With Disabilities?',
+            value: this.getValue(map, 30),
+          },
+        ]),
+      },
+      {
+        icon: 'bi-cup-straw',
+        title: 'Lifestyle',
+        rows: this.singleColRows([
+          { label: 'Smoking Acceptable?', value: this.getValue(map, 17) },
+          { label: 'Drink Alcohol Acceptable?', value: this.getValue(map, 18) },
+          { label: 'Partner Want Kids?', value: this.getValue(map, 19) },
+          {
+            label: 'Accept Partner With Kids?',
+            value: this.getValue(map, 27),
+          },
+          { label: 'Timeline For Marriage', value: this.getValue(map, 21) },
+        ]),
+      },
+    ];
   }
 }

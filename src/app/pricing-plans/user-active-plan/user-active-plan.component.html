@@ -84,6 +84,7 @@
             [src]="match.imageDoc "
             [alt]="match.name + ' Profile'"
             class="profile-img rounded-circle"
+             (click)="openProfileDetail(match)"
           />
         </div>
         <div class="flex-grow-1">
@@ -247,3 +248,128 @@
     </div>
   </div>
 </section>
+  <!-- ---------- Profile Details / Profile Preferences Modal ---------- -->
+  <div class="profile-detail-overlay" *ngIf="isProfileModalOpen" (click)="closeProfileModal()">
+    <div class="profile-detail-panel" (click)="$event.stopPropagation()">
+
+      <div class="d-flex align-items-center justify-content-between panel-header">
+        <h5 class="mb-0">Profile Details</h5>
+        <button class="btn-close-panel" (click)="closeProfileModal()" aria-label="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="panel-tabs mb-3">
+        <button
+          class="tab-btn"
+          [class.active]="profileModalActiveTab === 'details'"
+          (click)="setProfileModalTab('details')"
+        >
+          Profile Details
+        </button>
+        <button
+          class="tab-btn"
+          [class.active]="profileModalActiveTab === 'preferences'"
+          (click)="setProfileModalTab('preferences')"
+        >
+          Profile Preferences
+        </button>
+      </div>
+
+      <div class="panel-loading text-center py-5" *ngIf="isProfileModalLoading">
+        <div class="spinner-border" role="status"></div>
+      </div>
+
+      <ng-container *ngIf="!isProfileModalLoading && profileModalHeader">
+
+        <!-- ---------- Profile Details tab ---------- -->
+        <ng-container *ngIf="profileModalActiveTab === 'details'">
+          <div class="row g-3 mb-3">
+            <div class="col-lg-4">
+              <div class="detail-card h-100 text-center p-4">
+                <img [src]="profileModalHeader.imageDoc" [alt]="profileModalHeader.name" class="detail-avatar rounded-circle mb-3" />
+                <h5 class="mb-0">{{ profileModalHeader.name }}</h5>
+                <div class="text-muted mb-1" *ngIf="profileModalHeader.ageLabel">{{ profileModalHeader.ageLabel }}</div>
+                <div class="text-muted mb-3" *ngIf="profileModalHeader.address">
+                  <i class="bi bi-geo-alt"></i> {{ profileModalHeader.address }}
+                </div>
+                <div class="d-flex justify-content-center gap-2">
+                  <div class="info-pill">
+                    <div class="pill-label">Occupation</div>
+                    <div class="pill-value">{{ profileModalHeader.occupation }}</div>
+                  </div>
+                  <div class="info-pill">
+                    <div class="pill-label">Status</div>
+                    <div class="pill-value">{{ profileModalHeader.status }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-8">
+              <div class="detail-card p-4 mb-3">
+                <div class="detail-card-title mb-2"><i class="bi bi-person-lines-fill"></i> About Me</div>
+                <p class="mb-0 text-muted">{{ profileModalHeader.aboutMe || '—' }}</p>
+              </div>
+
+              <div class="detail-card p-4">
+                <div class="detail-card-title mb-3"><i class="bi bi-mortarboard"></i> Education &amp; Career</div>
+                <div class="detail-row" *ngFor="let row of profileModalHeader.educationCareerRows">
+                  <div class="detail-field" *ngFor="let f of row.fields">
+                    <span class="detail-label">{{ f.label }}</span>
+                    <span class="detail-value">{{ f.value }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-4" *ngFor="let section of profileDetailSections.slice(0, 3)">
+              <div class="detail-card p-4 h-100">
+                <div class="detail-card-title mb-3"><i class="bi {{ section.icon }}"></i> {{ section.title }}</div>
+                <div class="detail-row" *ngFor="let row of section.rows">
+                  <div class="detail-field" *ngFor="let f of row.fields">
+                    <span class="detail-label">{{ f.label }}</span>
+                    <span class="detail-value">{{ f.value }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3 mt-1">
+            <div class="col-md-6" *ngFor="let section of profileDetailSections.slice(3)">
+              <div class="detail-card p-4 h-100">
+                <div class="detail-card-title mb-3"><i class="bi {{ section.icon }}"></i> {{ section.title }}</div>
+                <div class="detail-row" *ngFor="let row of section.rows">
+                  <div class="detail-field" *ngFor="let f of row.fields">
+                    <span class="detail-label">{{ f.label }}</span>
+                    <span class="detail-value">{{ f.value }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- ---------- Profile Preferences tab ---------- -->
+        <ng-container *ngIf="profileModalActiveTab === 'preferences'">
+          <div class="row g-3">
+            <div class="col-md-6" *ngFor="let section of profilePreferenceSections">
+              <div class="detail-card p-4 h-100">
+                <div class="detail-card-title mb-3"><i class="bi {{ section.icon }}"></i> {{ section.title }}</div>
+                <div class="detail-row" *ngFor="let row of section.rows">
+                  <div class="detail-field" *ngFor="let f of row.fields">
+                    <span class="detail-label">{{ f.label }}</span>
+                    <span class="detail-value">{{ f.value }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+      </ng-container>
+    </div>
+  </div>

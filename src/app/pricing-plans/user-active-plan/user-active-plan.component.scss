@@ -328,3 +328,140 @@ $border-color-soft: #EAEAEA;
   
   }
 }
+// ─── Profile Details / Profile Preferences Modal ──────────────────────────
+.profile-img--clickable {
+  cursor: pointer;
+}
+
+.profile-detail-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 1050;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px 16px;
+  overflow-y: auto;
+}
+
+.profile-detail-panel {
+  background: #FAFAFA;
+  border-radius: 16px;
+  width: 100%;
+  max-width: auto;
+  padding: 24px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+
+  .panel-header {
+    
+    h5 {
+      font-family: 'Marcellus', serif, Georgia;
+      color: #4A0E17;
+    }
+  }
+
+  .btn-close-panel {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #6C757D;
+    cursor: pointer;
+  }
+
+  .panel-tabs {
+    display: inline-flex;
+    background: #EFEFEF;
+    border-radius: 10px;
+    padding: 4px;
+    gap: 4px;
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #4A0E17;
+
+      &.active {
+        background: #4A0E17;
+        color: #FFFFFF;
+      }
+    }
+  }
+}
+
+.detail-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+
+  .detail-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #4A0E17;
+
+    i {
+      margin-right: 6px;
+    }
+  }
+
+  .detail-avatar {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    background-color: #EAEAEA;
+  }
+
+  .detail-row {
+    display: flex;
+    gap: 16px;
+    padding: 6px 0;
+    border-bottom: 1px dashed #EAEAEA;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .detail-field {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 13px;
+  }
+
+  .detail-label {
+    color: #C14B32;
+  }
+
+  .detail-value {
+    color: #222222;
+    font-weight: 600;
+    text-align: right;
+  }
+}
+
+.info-pill {
+  background: #F7EDE4;
+  border-radius: 10px;
+  padding: 8px 14px;
+  min-width: 100px;
+
+  .pill-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #9E9E9E;
+  }
+
+  .pill-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: #4A0E17;
+  }
+}
