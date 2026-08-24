@@ -92,7 +92,7 @@
 <!-- Row 2: Nationality, Caste, Ethnicity -->
 <div class="row g-2 align-items-start mt-4">
 
-  <!-- Preferred Nationality (→ personalPrefrence JSON only) -->
+  <!-- Preferred Nationality — bound to countryList, same pattern as ProfilePersonalInfoInputComponent -->
   <div class="col-md-4">
     <div class="form-group">
       <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
@@ -105,8 +105,8 @@
         (blur)="markTouched('nationality')"
         style="height: 42px; font-size: 13px; appearance: none !important;">
         <option value="">Select a nationality</option>
-        <option *ngFor="let item of nationalityList" [value]="item.subTypeID">
-          {{ item.subTypeTitle }}
+        <option *ngFor="let item of countryList" [ngValue]="item.country_id">
+          {{ item.nationality }}
         </option>
       </select>
       <div class="field-error">{{ nationalityError }}</div>

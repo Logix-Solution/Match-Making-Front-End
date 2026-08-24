@@ -8,9 +8,10 @@ import { SharedFormFieldValidationService } from 'src/shared/services/shared-for
 interface PersonalPreferenceInterface {
   userID: number; // 0
   spType: string; // 1
-  nationalityID: number; // 2  → 0 (not used directly, goes into JSON)
+  nationalityID: number; // 2  → 0, unused (kept for compatibility)
   personalPrefrence: string; // 3  → [{typeID,subTypeID}, ...]
   cityID: number; // 4
+  nationality: number; // 5  → NEW, dedicated country_id field (same as ProfilePersonalInfoInputComponent)
 }
 
 @Component({
@@ -24,7 +25,7 @@ export class AdminPreferncesInfoComponent implements OnInit {
   @Input() cityList: any[] = [];
   @Input() minAgeList: any[] = [];
   @Input() maxAgeList: any[] = [];
-  @Input() nationalityList: any[] = [];
+  @Input() nationalityList: any[] = []; // no longer used for nationality dropdown, kept in case parent still passes it
   @Input() castList: any[] = [];
   @Input() ethnicityList: any[] = [];
 
@@ -37,7 +38,7 @@ export class AdminPreferncesInfoComponent implements OnInit {
   selectedCity: any = '';
   selectedMinAge: any = ''; // subTypeID from typeID=31
   selectedMaxAge: any = ''; // subTypeID from typeID=32
-  selectedNationality: any = ''; // → personalPrefrence JSON only
+  selectedNationality: any = ''; // ── country_id, matched against countryList (same as ProfilePersonalInfoInputComponent) ──
   selectedCast: any = ''; // → personalPrefrence JSON only
   selectedEthnicity: any = ''; // → personalPrefrence JSON only
 
@@ -50,15 +51,17 @@ export class AdminPreferncesInfoComponent implements OnInit {
     nationalityID: 0,
     personalPrefrence: '[]',
     cityID: 0,
+    nationality: 0,
   };
 
   // ─── Form Fields ──────────────────────────────────────────────────────────
   formFields: any[] = [
     { value: 0, msg: '', type: 'hidden', required: false }, // 0 userID
     { value: 'INSERT', msg: '', type: 'hidden', required: false }, // 1 spType
-    { value: 0, msg: '', type: 'hidden', required: false }, // 2 nationalityID (always 0)
+    { value: 0, msg: '', type: 'hidden', required: false }, // 2 nationalityID (unused)
     { value: '[]', msg: '', type: 'hidden', required: false }, // 3 personalPrefrence
     { value: 0, msg: '', type: 'hidden', required: false }, // 4 cityID
+    { value: 0, msg: '', type: 'hidden', required: false }, // 5 nationality (country_id) — NEW
   ];
 
   constructor(
@@ -121,14 +124,27 @@ export class AdminPreferncesInfoComponent implements OnInit {
 
     this.selectedMinAge = get(31) ? String(get(31)) : '';
     this.selectedMaxAge = get(32) ? String(get(32)) : '';
-    this.selectedNationality = get(2) ? String(get(2)) : '';
     this.selectedCast = get(1) ? String(get(1)) : '';
     this.selectedEthnicity = get(3) ? String(get(3)) : '';
+    // ── selectedNationality is NOT set from `get(2)` anymore ──
+    // it's derived below from locationItem.nationality, matched
+    // against countryList — same pattern as ProfilePersonalInfoInputComponent.
 
-    // city/country — stored in userPreference with countryID key
+    // city/country/nationality — stored in userPreference with countryID key
     const locationItem = prefItems.find(
       (p: any) => p.cityID !== undefined && p.isPreference === 1,
     );
+
+    // ── Nationality — matched against countryList's "nationality" field ──
+    if (locationItem?.nationality) {
+      const matchedNationality = this.countryList.find(
+        (c: any) => c.nationality === locationItem.nationality
+      );
+      this.selectedNationality = matchedNationality ? matchedNationality.country_id : '';
+    } else {
+      this.selectedNationality = '';
+    }
+
     if (locationItem) {
       this.selectedCountry = String(locationItem.countryID || '');
 
@@ -159,18 +175,20 @@ export class AdminPreferncesInfoComponent implements OnInit {
   // ─── Sync bound fields → formFields[] ────────────────────────────────────
   syncFormFields(): void {
     this.formFields[4].value = this.selectedCity || 0; // cityID
+    this.formFields[5].value = Number(this.selectedNationality) || 0; // nationality (country_id) — NEW
 
-    // personalPrefrence: build JSON from all selections
+    // personalPrefrence: build JSON from remaining selections
     // typeID=31 → minAge, typeID=32 → maxAge
-    // typeID=2  → nationality, typeID=1 → cast, typeID=3 → ethnicity
+    // typeID=1  → cast, typeID=3 → ethnicity
+    // NOTE: nationality (typeID=2) intentionally REMOVED from this array —
+    // it's now sent as its own dedicated `nationality` field (country_id),
+    // not as a subtype, same as ProfilePersonalInfoInputComponent.
     const prefArray: { typeID: number; subTypeID: number }[] = [];
 
     if (this.selectedMinAge)
       prefArray.push({ typeID: 31, subTypeID: Number(this.selectedMinAge) });
     if (this.selectedMaxAge)
       prefArray.push({ typeID: 32, subTypeID: Number(this.selectedMaxAge) });
-    if (this.selectedNationality)
-      prefArray.push({ typeID: 2, subTypeID: Number(this.selectedNationality) });
     if (this.selectedCast)
       prefArray.push({ typeID: 1, subTypeID: Number(this.selectedCast) });
     if (this.selectedEthnicity)
@@ -191,9 +209,10 @@ export class AdminPreferncesInfoComponent implements OnInit {
 
     this.pageFields.userID = this.formFields[0].value;
     this.pageFields.spType = this.formFields[1].value;
-    this.pageFields.nationalityID = this.formFields[2].value; // always 0
+    this.pageFields.nationalityID = this.formFields[2].value; // unused, always 0
     this.pageFields.personalPrefrence = this.formFields[3].value;
     this.pageFields.cityID = this.formFields[4].value;
+    this.pageFields.nationality = this.formFields[5].value; // NEW — country_id
 
     console.log('Personal Preference PageFields:', this.pageFields);
     console.log('Personal Preference FormFields:', this.formFields);
