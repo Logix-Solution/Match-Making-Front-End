@@ -7,17 +7,16 @@
       <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Religion<span class="text-danger">&nbsp;*</span>
       </label>
-      <select
-        class="form-select border-0 px-3 rounded-pill"
+      <app-searchable-select
+        [items]="religionList"
+        bindLabel="subTypeTitle"
+        bindValue="subTypeID"
+        placeholder="Select Religion"
+        searchPlaceholder="Search religion..."
         [(ngModel)]="selectedReligion"
-        (change)="onFieldChange(); markTouched('religion')"
-        (blur)="markTouched('religion')"
-        style="height: 42px; font-size: 13px; appearance: none !important;">
-        <option value="">Select Religion</option>
-        <option *ngFor="let item of religionList" [value]="item.subTypeID">
-          {{ item.subTypeTitle }}
-        </option>
-      </select>
+        (ngModelChange)="onFieldChange()"
+        (touched)="markTouched('religion')"
+      ></app-searchable-select>
       <div class="field-error">{{ religionError }}</div>
     </div>
   </div>
@@ -27,17 +26,16 @@
       <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Sect<span class="text-danger">&nbsp;*</span>
       </label>
-      <select
-        class="form-select border-0 px-3 rounded-pill"
+      <app-searchable-select
+        [items]="sectList"
+        bindLabel="subTypeTitle"
+        bindValue="subTypeID"
+        placeholder="Select Sect"
+        searchPlaceholder="Search sect..."
         [(ngModel)]="selectedSect"
-        (change)="onFieldChange(); markTouched('sect')"
-        (blur)="markTouched('sect')"
-        style="height: 42px; font-size: 13px; appearance: none !important;">
-        <option value="">Select Sect</option>
-        <option *ngFor="let item of sectList" [value]="item.subTypeID">
-          {{ item.subTypeTitle }}
-        </option>
-      </select>
+        (ngModelChange)="onFieldChange()"
+        (touched)="markTouched('sect')"
+      ></app-searchable-select>
       <div class="field-error">{{ sectError }}</div>
     </div>
   </div>
@@ -47,17 +45,16 @@
       <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         How Important is Religion to you?<span class="text-danger">&nbsp;*</span>
       </label>
-      <select
-        class="form-select border-0 px-3 rounded-pill"
+      <app-searchable-select
+        [items]="religionImportanceList"
+        bindLabel="subTypeTitle"
+        bindValue="subTypeID"
+        placeholder="Select Importance"
+        searchPlaceholder="Search..."
         [(ngModel)]="selectedReligionImportance"
-        (change)="onFieldChange(); markTouched('religionImportance')"
-        (blur)="markTouched('religionImportance')"
-        style="height: 42px; font-size: 13px; appearance: none !important;">
-        <option value="">Select Importance</option>
-        <option *ngFor="let item of religionImportanceList" [value]="item.subTypeID">
-          {{ item.subTypeTitle }}
-        </option>
-      </select>
+        (ngModelChange)="onFieldChange()"
+        (touched)="markTouched('religionImportance')"
+      ></app-searchable-select>
       <div class="field-error">{{ religionImportanceError }}</div>
     </div>
   </div>

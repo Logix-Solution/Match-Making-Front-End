@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit,OnChanges, SimpleChanges } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { SharedDataService } from '../../../../shared/services/shared-data.service';
 import { SharedGlobalService } from '../../../../shared/services/shared-global.service';
@@ -61,7 +61,7 @@ interface TouchedState {
   templateUrl: './profile-personal-info-input.component.html',
   styleUrls: ['./profile-personal-info-input.component.scss'],
 })
-export class ProfilePersonalInfoInputComponent implements OnInit {
+export class ProfilePersonalInfoInputComponent implements OnInit ,OnChanges {
 
   // ─── Inputs from Parent ───────────────────────────────────────────────────
   @Input() castList:        any[] = [];
@@ -92,6 +92,7 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
   selectedCountry:     any    = null;
   selectedCity:        any    = null;
   selectedCountryCode: string = '';
+  private pendingNationalityString: string | null = null
 
   // ─── Document Fields ──────────────────────────────────────────────────────
   documentType: 'selection' | 'cnic' | 'passport' = 'selection';
@@ -365,7 +366,11 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
     }
     this.loadUserDetails();
   }
-
+ngOnChanges(changes: SimpleChanges): void {
+  if (changes['countryList'] && this.countryList?.length && this.pendingNationalityString) {
+    this.resolveNationality();
+  }
+}
   // ─── Load User Details ────────────────────────────────────────────────────
   loadUserDetails(): void {
     const userID = this.sharedGlobalService.getUserID();
@@ -464,14 +469,18 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
         );
 
         // ── Nationality — matched against countryList's "nationality" field ─
-        if (locationItem?.nationality) {
-          const matchedNationality = this.countryList.find(
-            (c: any) => c.nationality === locationItem.nationality
-          );
-          this.selectedNationality = matchedNationality ? matchedNationality.country_id : null;
-        } else {
-          this.selectedNationality = null;
-        }
+        // if (locationItem?.nationality) {
+        //   const matchedNationality = this.countryList.find(
+        //     (c: any) => c.nationality === locationItem.nationality
+        //   );
+        //   this.selectedNationality = matchedNationality ? matchedNationality.country_id : null;
+        // } else {
+        //   this.selectedNationality = null;
+        // }
+
+         this.pendingNationalityString = locationItem?.nationality || null;
+        this.selectedNationality = null;
+        this.resolveNationality();
 
         // ── Country ─────────────────────────────────────────────────────
         const countryID = user.countryCodeID || locationItem?.countryID || null;
@@ -496,6 +505,19 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
       });
   }
 
+  private resolveNationality(): void {
+  if (!this.pendingNationalityString || !this.countryList?.length) return;
+
+  const matchedNationality = this.countryList.find(
+    (c: any) => c.nationality === this.pendingNationalityString
+  );
+
+  if (matchedNationality) {
+    this.selectedNationality = matchedNationality.country_id;
+    this.pendingNationalityString = null;
+    this.syncFormFields();
+  }
+}
   // ─── Document Type Switcher ───────────────────────────────────────────────
   setDocumentType(type: 'selection' | 'cnic' | 'passport'): void {
     this.documentType = type;
@@ -884,4 +906,6 @@ export class ProfilePersonalInfoInputComponent implements OnInit {
     this.markTouched('gallery');
     this.syncFormFields();
   }
+
+
 }

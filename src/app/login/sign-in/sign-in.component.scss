@@ -222,3 +222,14 @@ $input-bg: #fbf9f6;
     }
   }
 }
+.signup-country-code {
+  min-width: 100px;
+}
+
+.signup-country-code .dropdown-menu {
+  min-width: 150px;
+}
+
+.phone-code-row {
+  align-items: flex-start;
+}

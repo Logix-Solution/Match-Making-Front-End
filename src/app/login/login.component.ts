@@ -74,19 +74,72 @@ export class LoginComponent implements OnInit {
     google.accounts.id.prompt();
   }
 
-  // ─── Navigate based on profile/preferences completion (roleID 3 only) ────
+  // ─── Navigate based on profile/preferences completion, plan, and status (roleID 3 only) ────
   private navigateAfterLoginForRole3(): void {
     this.profileCompletionService.calculateCompletion().subscribe({
       next: (result) => {
-        if (result.overallCompletion === 100) {
-          this.router.navigate(['/Pricing-Plans']);
-        } else {
+        if (result.overallCompletion < 100) {
           this.router.navigate(['/welcome']);
+          return;
         }
+
+        // overallCompletion === 100 → check if the user has a registration plan
+        this.checkPlanAndNavigate();
       },
       error: (err) => {
         console.error('calculateCompletion error:', err);
         // Fallback: if completion check fails, still let the user in
+        this.router.navigate(['/welcome']);
+      }
+    });
+  }
+
+  private checkPlanAndNavigate(): void {
+    const userID = this.global.getUserID();
+
+    this.dataService.getHttp(`core-api/Profile/userRegistrationPlan?userID=${userID}`).subscribe({
+      next: (res: any) => {
+        const planData = Array.isArray(res) ? res[0] : res;
+        const hasPlan  = Array.isArray(res) ? res.length > 0 : !!planData;
+
+        console.log('userRegistrationPlan response:', res);
+
+        if (!hasPlan) {
+          this.router.navigate(['/registerationFee']);
+          return;
+        }
+
+        // User has a plan → check request status
+        this.checkStatusAndNavigate(userID);
+      },
+      error: (err) => {
+        console.error('userRegistrationPlan error:', err);
+        // Fallback: if plan check fails, still let the user in
+        this.router.navigate(['/welcome']);
+      }
+    });
+  }
+
+  private checkStatusAndNavigate(userID: any): void {
+    this.dataService.getHttp(`core-api/Profile/getUserDetails?UserID=${userID}`).subscribe({
+      next: (res: any) => {
+        const userDetails = Array.isArray(res) ? res[0] : res;
+        const statusTitle = userDetails?.statusTitle;
+
+        console.log('getUserDetails response:', res);
+        console.log('statusTitle:', statusTitle);
+
+        if (statusTitle === 'Pending') {
+          this.router.navigate(['/reguestSubmited']);
+        } else if (statusTitle === 'Approved') {
+          this.router.navigate(['/Pricing-Plans']);
+        } else {
+          // Fallback for any other status
+          this.router.navigate(['/welcome']);
+        }
+      },
+      error: (err) => {
+        console.error('getUserDetails error:', err);
         this.router.navigate(['/welcome']);
       }
     });

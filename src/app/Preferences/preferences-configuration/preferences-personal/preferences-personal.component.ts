@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit ,OnChanges, SimpleChanges } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { SharedDataService } from '../../../../shared/services/shared-data.service';
 import { SharedGlobalService } from '../../../../shared/services/shared-global.service';
@@ -29,7 +29,9 @@ interface PersonalPreferenceTouchedState {
   templateUrl: './preferences-personal.component.html',
   styleUrls: ['./preferences-personal.component.scss'],
 })
-export class PreferencesPersonalComponent implements OnInit {
+export class PreferencesPersonalComponent implements OnInit ,OnChanges {
+
+  private pendingNationalityString: string | null = null;
   // ─── Inputs from Parent ───────────────────────────────────────────────────
   @Input() countryList: any[] = [];
   @Input() cityList: any[] = [];
@@ -48,9 +50,13 @@ export class PreferencesPersonalComponent implements OnInit {
   selectedCity: any = '';
   selectedMinAge: any = ''; // subTypeID from typeID=31
   selectedMaxAge: any = ''; // subTypeID from typeID=32
-  selectedNationality: any = ''; // ── country_id, matched against countryList (same as ProfilePersonalInfoInputComponent) ──
+  selectedNationality: any = '';    
   selectedCast: any = ''; // → personalPrefrence JSON only
   selectedEthnicity: any = ''; // → personalPrefrence JSON only
+
+  
+
+  
 
   // ─── Validation: touched state per required field ──────────────────────────
   touched: PersonalPreferenceTouchedState = {
@@ -100,6 +106,12 @@ export class PreferencesPersonalComponent implements OnInit {
     this.loadUserDetails();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+  if (changes['countryList'] && this.countryList?.length && this.pendingNationalityString) {
+    this.resolveNationality();
+  }
+}
+
   // ─── Alias — HTML calls onFieldChange() ──────────────────────────────────
   onFieldChange(): void {
     this.syncFormFields();
@@ -112,6 +124,20 @@ export class PreferencesPersonalComponent implements OnInit {
     this.countrySelected.emit(this.selectedCountry);
     this.syncFormFields();
   }
+
+  private resolveNationality(): void {
+  if (!this.pendingNationalityString || !this.countryList?.length) return;
+
+  const matchedNationality = this.countryList.find(
+    (c: any) => c.nationality === this.pendingNationalityString
+  );
+
+  if (matchedNationality) {
+    this.selectedNationality = matchedNationality.country_id;
+    this.pendingNationalityString = null;
+    this.syncFormFields();
+  }
+}
 
   // ─── Touched Helpers ────────────────────────────────────────────────────
   markTouched(field: keyof PersonalPreferenceTouchedState): void {
@@ -310,14 +336,18 @@ export class PreferencesPersonalComponent implements OnInit {
 
           // ── Nationality — matched against countryList's "nationality" field ──
           // (identical logic to ProfilePersonalInfoInputComponent.loadUserDetails())
-          if (locationItem?.nationality) {
-            const matchedNationality = this.countryList.find(
-              (c: any) => c.nationality === locationItem.nationality
-            );
-            this.selectedNationality = matchedNationality ? matchedNationality.country_id : '';
-          } else {
-            this.selectedNationality = '';
-          }
+          // if (locationItem?.nationality) {
+          //   const matchedNationality = this.countryList.find(
+          //     (c: any) => c.nationality === locationItem.nationality
+          //   );
+          //   this.selectedNationality = matchedNationality ? matchedNationality.country_id : '';
+          // } else {
+          //   this.selectedNationality = '';
+          // }
+
+          this.pendingNationalityString = locationItem?.nationality || null;
+this.selectedNationality = '';
+this.resolveNationality();
 
           if (locationItem) {
             this.selectedCountry = String(locationItem.countryID || '');

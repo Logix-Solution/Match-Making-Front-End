@@ -7,17 +7,16 @@
       <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Marital Status<span class="text-danger">&nbsp;*</span>
       </label>
-      <select
-        class="form-select border-0 px-3 rounded-pill"
+      <app-searchable-select
+        [items]="maritalStatusList"
+        bindLabel="subTypeTitle"
+        bindValue="subTypeID"
+        placeholder="Select Marital Status"
+        searchPlaceholder="Search marital status..."
         [(ngModel)]="selectedMaritalStatus"
-        (change)="onFieldChange(); markTouched('maritalStatus')"
-        (blur)="markTouched('maritalStatus')"
-        style="height: 42px; font-size: 13px; appearance: none !important;">
-        <option value="">Select Marital Status</option>
-        <option *ngFor="let item of maritalStatusList" [value]="item.subTypeID">
-          {{ item.subTypeTitle }}
-        </option>
-      </select>
+        (ngModelChange)="onFieldChange()"
+        (touched)="markTouched('maritalStatus')"
+      ></app-searchable-select>
       <div class="field-error">{{ maritalStatusError }}</div>
     </div>
   </div>
@@ -27,17 +26,16 @@
       <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Housing Situation<span class="text-danger">&nbsp;*</span>
       </label>
-      <select
-        class="form-select border-0 px-3 rounded-pill"
+      <app-searchable-select
+        [items]="housingSituationList"
+        bindLabel="subTypeTitle"
+        bindValue="subTypeID"
+        placeholder="Select Housing Situation"
+        searchPlaceholder="Search housing..."
         [(ngModel)]="selectedHousingSituation"
-        (change)="onFieldChange(); markTouched('housingSituation')"
-        (blur)="markTouched('housingSituation')"
-        style="height: 42px; font-size: 13px; appearance: none !important;">
-        <option value="">Select Housing Situation</option>
-        <option *ngFor="let item of housingSituationList" [value]="item.subTypeID">
-          {{ item.subTypeTitle }}
-        </option>
-      </select>
+        (ngModelChange)="onFieldChange()"
+        (touched)="markTouched('housingSituation')"
+      ></app-searchable-select>
       <div class="field-error">{{ housingSituationError }}</div>
     </div>
   </div>
@@ -47,17 +45,16 @@
       <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Father's Occupation<span class="text-danger">&nbsp;*</span>
       </label>
-      <select
-        class="form-select border-0 px-3 rounded-pill"
+      <app-searchable-select
+        [items]="fatherOccupationList"
+        bindLabel="subTypeTitle"
+        bindValue="subTypeID"
+        placeholder="Select Father's Occupation"
+        searchPlaceholder="Search occupation..."
         [(ngModel)]="selectedFatherOccupation"
-        (change)="onFieldChange(); markTouched('fatherOccupation')"
-        (blur)="markTouched('fatherOccupation')"
-        style="height: 42px; font-size: 13px; appearance: none !important;">
-        <option value="">Select Father's Occupation</option>
-        <option *ngFor="let item of fatherOccupationList" [value]="item.subTypeID">
-          {{ item.subTypeTitle }}
-        </option>
-      </select>
+        (ngModelChange)="onFieldChange()"
+        (touched)="markTouched('fatherOccupation')"
+      ></app-searchable-select>
       <div class="field-error">{{ fatherOccupationError }}</div>
     </div>
   </div>
@@ -67,17 +64,16 @@
       <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Mother's Occupation<span class="text-danger">&nbsp;*</span>
       </label>
-      <select
-        class="form-select border-0 px-3 rounded-pill"
+      <app-searchable-select
+        [items]="motherOccupationList"
+        bindLabel="subTypeTitle"
+        bindValue="subTypeID"
+        placeholder="Select Mother's Occupation"
+        searchPlaceholder="Search occupation..."
         [(ngModel)]="selectedMotherOccupation"
-        (change)="onFieldChange(); markTouched('motherOccupation')"
-        (blur)="markTouched('motherOccupation')"
-        style="height: 42px; font-size: 13px; appearance: none !important;">
-        <option value="">Select Mother's Occupation</option>
-        <option *ngFor="let item of motherOccupationList" [value]="item.subTypeID">
-          {{ item.subTypeTitle }}
-        </option>
-      </select>
+        (ngModelChange)="onFieldChange()"
+        (touched)="markTouched('motherOccupation')"
+      ></app-searchable-select>
       <div class="field-error">{{ motherOccupationError }}</div>
     </div>
   </div>
@@ -94,17 +90,16 @@
       </div>
       <div class="col-4">
         <div class="form-group">
-          <select
-            class="form-select border-0 px-2 rounded-pill"
+          <app-searchable-select
+            [items]="countryList"
+            bindLabel="country_code"
+            bindValue="country_code"
+            placeholder="Code"
+            searchPlaceholder="Search code..."
             [(ngModel)]="selectedParentCountryCode"
-            (change)="onFieldChange(); markTouched('parentCountryCode')"
-            (blur)="markTouched('parentCountryCode')"
-            style="height: 42px; font-size: 13px; appearance: none !important;">
-            <option value="">Code</option>
-            <option *ngFor="let item of countryList" [value]="item.country_code">
-              {{ item.country_code }}
-            </option>
-          </select>
+            (ngModelChange)="onFieldChange()"
+            (touched)="markTouched('parentCountryCode')"
+          ></app-searchable-select>
           <div class="field-error">{{ parentCountryCodeError }}</div>
         </div>
       </div>
@@ -130,17 +125,16 @@
       <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         No. of Siblings<span class="text-danger">&nbsp;*</span>
       </label>
-      <select
-        class="form-select border-0 px-3 rounded-pill"
+      <app-searchable-select
+        [items]="noOfSiblingsList"
+        bindLabel="subTypeTitle"
+        bindValue="subTypeID"
+        placeholder="Select No. of Siblings"
+        searchPlaceholder="Search siblings..."
         [(ngModel)]="selectedNoOfSiblings"
-        (change)="onFieldChange(); markTouched('noOfSiblings')"
-        (blur)="markTouched('noOfSiblings')"
-        style="height: 42px; font-size: 13px; appearance: none !important;">
-        <option value="">Select No. of Siblings</option>
-        <option *ngFor="let item of noOfSiblingsList" [value]="item.subTypeID">
-          {{ item.subTypeTitle }}
-        </option>
-      </select>
+        (ngModelChange)="onFieldChange()"
+        (touched)="markTouched('noOfSiblings')"
+      ></app-searchable-select>
       <div class="field-error">{{ noOfSiblingsError }}</div>
     </div>
   </div>
@@ -150,17 +144,16 @@
       <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Family Involvement Presence<span class="text-danger">&nbsp;*</span>
       </label>
-      <select
-        class="form-select border-0 px-3 rounded-pill"
+      <app-searchable-select
+        [items]="familyInvolvementList"
+        bindLabel="subTypeTitle"
+        bindValue="subTypeID"
+        placeholder="Select Family Involvement"
+        searchPlaceholder="Search involvement..."
         [(ngModel)]="selectedFamilyInvolvement"
-        (change)="onFieldChange(); markTouched('familyInvolvement')"
-        (blur)="markTouched('familyInvolvement')"
-        style="height: 42px; font-size: 13px; appearance: none !important;">
-        <option value="">Select Family Involvement</option>
-        <option *ngFor="let item of familyInvolvementList" [value]="item.subTypeID">
-          {{ item.subTypeTitle }}
-        </option>
-      </select>
+        (ngModelChange)="onFieldChange()"
+        (touched)="markTouched('familyInvolvement')"
+      ></app-searchable-select>
       <div class="field-error">{{ familyInvolvementError }}</div>
     </div>
   </div>

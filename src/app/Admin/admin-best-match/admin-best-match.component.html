@@ -167,7 +167,7 @@
               <h5 class="column-title"><i class="{{ sec.iconClass }}"></i> {{ sec.title }}</h5>
               <div class="data-row" *ngFor="let row of sec.rows">
                 <span>{{ row.typeTitle }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <strong [class.text-danger]="!row.baseMatchesPreference">{{ row.baseValue }}</strong>
+                <strong [class.text-dark]="!row.baseMatchesPreference">{{ row.baseValue }}</strong>
               </div>
             </div>
           </div>
@@ -183,7 +183,7 @@
               <h5 class="column-title"><i class="{{ sec.iconClass }}"></i> {{ sec.title }}</h5>
               <div class="data-row" *ngFor="let row of sec.rows">
                 <span>{{ row.typeTitle }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <strong [class.text-danger]="!row.matchMatchesPreference">{{ row.matchValue }}</strong>
+                <strong [class.text-dark]="!row.matchMatchesPreference">{{ row.matchValue }}</strong>
               </div>
             </div>
           </div>

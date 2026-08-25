@@ -1,0 +1,46 @@
+<div class="searchable-select-wrapper" [class.disabled]="disabled">
+  <div
+    class="form-select-custom border-0 px-3 rounded-pill d-flex align-items-center justify-content-between"
+    (click)="toggleOpen()"
+  >
+    <span class="selected-text" [class.placeholder-text]="!selectedLabel">
+      {{ selectedLabel || placeholder }}
+    </span>
+    <div class="d-flex align-items-center gap-1">
+      <i
+        *ngIf="selectedLabel && clearable"
+        class="bi bi-x-circle-fill clear-icon"
+        (click)="clearSelection($event)"
+      ></i>
+      <i class="bi bi-chevron-down caret-icon" [class.rotate]="isOpen"></i>
+    </div>
+  </div>
+
+  <div class="dropdown-panel shadow-sm" *ngIf="isOpen">
+    <div class="search-box">
+      <i class="bi bi-search search-icon"></i>
+      <input
+        type="text"
+        class="search-input"
+        [placeholder]="searchPlaceholder"
+        [(ngModel)]="searchTerm"
+        (click)="$event.stopPropagation()"
+      />
+    </div>
+
+    <div class="options-list">
+      <div
+        *ngFor="let item of filteredItems"
+        class="option-item"
+        [class.selected]="item[bindValue] === selectedValue"
+        (click)="selectItem(item)"
+      >
+        {{ item[bindLabel] }}
+      </div>
+
+      <div *ngIf="filteredItems.length === 0" class="no-results">
+        No results found
+      </div>
+    </div>
+  </div>
+</div>

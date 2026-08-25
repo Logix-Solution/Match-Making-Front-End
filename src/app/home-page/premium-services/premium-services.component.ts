@@ -120,7 +120,7 @@ export class PremiumServicesComponent implements OnInit {
                   ? environment.productUrl +
                     'assets/user-images/Events/' +
                     event.eDoc
-                  : 'assets/images/default-event.png',
+                  : 'assets/images/profile1.png',
             }));
           } catch (e) {
             this.modalEvents = [];

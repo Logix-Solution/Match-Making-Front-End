@@ -4,6 +4,7 @@ import { SharedDataService } from '../../../../shared/services/shared-data.servi
 import { SharedGlobalService } from '../../../../shared/services/shared-global.service';
 import { SharedFormFieldValidationService } from 'src/shared/services/shared-form-field-validation.service';
 import { Router } from '@angular/router';
+import { ProfileCompletionService } from 'src/shared/services/profile-completion.service';
 
 // ─── Interface ────────────────────────────────────────────────────────────────
 interface LifestylePreferenceInterface {
@@ -59,6 +60,7 @@ export class PreferencesLifestyleComponent implements OnInit {
     private toastr: ToastrService,
     private valid: SharedFormFieldValidationService,
     private router: Router,
+      private profileCompletionService: ProfileCompletionService,
   ) {}
 
   ngOnInit(): void {
@@ -153,33 +155,70 @@ export class PreferencesLifestyleComponent implements OnInit {
       });
   }
 
+  private checkRegistrationPlanAndNavigate(userID: number): void {
+  this.dataService
+    .getHttp(`core-api/Profile/userRegistrationPlan?userID=${userID}`)
+    .subscribe({
+      next: (response: any) => {
+        console.log('userRegistrationPlan response:', response);
+
+        const hasPlan = Array.isArray(response)
+          ? response.length > 0
+          : !!response; // handles a single object being returned instead of an array
+
+        // hasPlan alone isn't enough — also confirm profile & preferences are fully complete
+        this.profileCompletionService.calculateCompletion().subscribe({
+          next: (result) => {
+            const isFullyComplete =
+              result.profileCompletion === 100 &&
+              result.preferencesCompletion === 100;
+
+            if (!hasPlan && isFullyComplete) {
+              this.router.navigate(['/Consultation']);
+            } else {
+              this.router.navigate(['/welcome']);
+            }
+          },
+          error: (err) => {
+            console.log('calculateCompletion error:', err);
+            // Can't confirm completion — safest to send to /welcome rather than Consultation
+            this.router.navigate(['/welcome']);
+          },
+        });
+      },
+      error: (err: any) => {
+        console.log('userRegistrationPlan check error:', err);
+        this.router.navigate(['/welcome']);
+      },
+    });
+}
   // ─── Checks whether the user already has a registration plan on file.
   // If the API returns data, they already have a plan → don't redirect to the fee page.
   // If the API returns an empty array, they don't have one yet → send them to pay it.
-  private checkRegistrationPlanAndNavigate(userID: number): void {
-    this.dataService
-      .getHttp(`core-api/Profile/userRegistrationPlan?userID=${userID}`)
-      .subscribe({
-        next: (response: any) => {
-          console.log('userRegistrationPlan response:', response);
+  // private checkRegistrationPlanAndNavigate(userID: number): void {
+  //   this.dataService
+  //     .getHttp(`core-api/Profile/userRegistrationPlan?userID=${userID}`)
+  //     .subscribe({
+  //       next: (response: any) => {
+  //         console.log('userRegistrationPlan response:', response);
 
-          const hasPlan = Array.isArray(response)
-            ? response.length > 0
-            : !!response; // handles a single object being returned instead of an array
+  //         const hasPlan = Array.isArray(response)
+  //           ? response.length > 0
+  //           : !!response; // handles a single object being returned instead of an array
 
-          if (!hasPlan) {
-            this.router.navigate(['/Consultation']);
-          }
-        },
-        error: (err: any) => {
-          console.log('userRegistrationPlan check error:', err);
-          // If the check itself fails, we don't know the user's plan status —
-          // erring on the side of NOT redirecting avoids sending someone who
-          // already has a plan back to the fee page. Adjust if you'd rather
-          // default the other way.
-        },
-      });
-  }
+  //         if (!hasPlan) {
+  //           this.router.navigate(['/Consultation']);
+  //         }
+  //       },
+  //       error: (err: any) => {
+  //         console.log('userRegistrationPlan check error:', err);
+  //         // If the check itself fails, we don't know the user's plan status —
+  //         // erring on the side of NOT redirecting avoids sending someone who
+  //         // already has a plan back to the fee page. Adjust if you'd rather
+  //         // default the other way.
+  //       },
+  //     });
+  // }
 
   loadUserDetails(): void {
     const userID = this.sharedGlobalService.getUserID();

@@ -284,6 +284,9 @@ export class ConsultationComponent implements OnInit {
     console.log('Payload for saving consultation:', payload);
     this.saveConsultation(payload);
   }
+  skip(){
+    this.router.navigate(['/registerationFee']);
+  }
 
   // ─── Save consultation ──────────────────────────────────────────────
   private saveConsultation(payload: any): void {

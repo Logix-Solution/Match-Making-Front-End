@@ -7,17 +7,16 @@
       <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Height<span class="text-danger">&nbsp;*</span>
       </label>
-      <select
-        class="form-select border-0 px-3 rounded-pill"
+      <app-searchable-select
+        [items]="heightList"
+        bindLabel="subTypeTitle"
+        bindValue="subTypeID"
+        placeholder="Select Height"
+        searchPlaceholder="Search height..."
         [(ngModel)]="selectedHeight"
-        (change)="onFieldChange(); markTouched('height')"
-        (blur)="markTouched('height')"
-        style="height: 42px; font-size: 13px; appearance: none !important;">
-        <option value="">Select Height</option>
-        <option *ngFor="let item of heightList" [value]="item.subTypeID">
-          {{ item.subTypeTitle }}
-        </option>
-      </select>
+        (ngModelChange)="onFieldChange()"
+        (touched)="markTouched('height')"
+      ></app-searchable-select>
       <div class="field-error">{{ heightError }}</div>
     </div>
   </div>
@@ -27,17 +26,16 @@
       <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Body Type<span class="text-danger">&nbsp;*</span>
       </label>
-      <select
-        class="form-select border-0 px-3 rounded-pill"
+      <app-searchable-select
+        [items]="bodyTypeList"
+        bindLabel="subTypeTitle"
+        bindValue="subTypeID"
+        placeholder="Select Body Type"
+        searchPlaceholder="Search body type..."
         [(ngModel)]="selectedBodyType"
-        (change)="onFieldChange(); markTouched('bodyType')"
-        (blur)="markTouched('bodyType')"
-        style="height: 42px; font-size: 13px; appearance: none !important;">
-        <option value="">Select Body Type</option>
-        <option *ngFor="let item of bodyTypeList" [value]="item.subTypeID">
-          {{ item.subTypeTitle }}
-        </option>
-      </select>
+        (ngModelChange)="onFieldChange()"
+        (touched)="markTouched('bodyType')"
+      ></app-searchable-select>
       <div class="field-error">{{ bodyTypeError }}</div>
     </div>
   </div>
@@ -47,17 +45,16 @@
       <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Skin Tone<span class="text-danger">&nbsp;*</span>
       </label>
-      <select
-        class="form-select border-0 px-3 rounded-pill"
+      <app-searchable-select
+        [items]="skinToneList"
+        bindLabel="subTypeTitle"
+        bindValue="subTypeID"
+        placeholder="Select Skin Tone"
+        searchPlaceholder="Search skin tone..."
         [(ngModel)]="selectedSkinTone"
-        (change)="onFieldChange(); markTouched('skinTone')"
-        (blur)="markTouched('skinTone')"
-        style="height: 42px; font-size: 13px; appearance: none !important;">
-        <option value="">Select Skin Tone</option>
-        <option *ngFor="let item of skinToneList" [value]="item.subTypeID">
-          {{ item.subTypeTitle }}
-        </option>
-      </select>
+        (ngModelChange)="onFieldChange()"
+        (touched)="markTouched('skinTone')"
+      ></app-searchable-select>
       <div class="field-error">{{ skinToneError }}</div>
     </div>
   </div>
@@ -67,17 +64,16 @@
       <label class="txt-7th ft-6 fw-bold text-uppercase mb-1 field-label">
         Disability<span class="text-danger">&nbsp;*</span>
       </label>
-      <select
-        class="form-select border-0 px-3 rounded-pill"
+      <app-searchable-select
+        [items]="disabilityList"
+        bindLabel="subTypeTitle"
+        bindValue="subTypeID"
+        placeholder="Select Disability"
+        searchPlaceholder="Search disability..."
         [(ngModel)]="selectedDisability"
-        (change)="onFieldChange(); markTouched('disability')"
-        (blur)="markTouched('disability')"
-        style="height: 42px; font-size: 13px; appearance: none !important;">
-        <option value="">Select Disability</option>
-        <option *ngFor="let item of disabilityList" [value]="item.subTypeID">
-          {{ item.subTypeTitle }}
-        </option>
-      </select>
+        (ngModelChange)="onFieldChange()"
+        (touched)="markTouched('disability')"
+      ></app-searchable-select>
       <div class="field-error">{{ disabilityError }}</div>
     </div>
   </div>

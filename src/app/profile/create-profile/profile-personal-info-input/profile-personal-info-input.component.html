@@ -30,18 +30,16 @@
         <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
           Gender<span class="text-danger">&nbsp;*</span>
         </label>
-        <select
-          class="form-select border-0 px-3 rounded-pill"
+        <app-searchable-select
+          [items]="genderList"
+          bindLabel="subTypeTitle"
+          bindValue="subTypeID"
+          placeholder="Select Gender"
+          searchPlaceholder="Search gender..."
           [(ngModel)]="selectedGender"
-          (change)="onFieldChange(); markTouched('gender')"
-          (blur)="markTouched('gender')"
-          style="height: 42px; font-size: 13px; appearance: none !important;"
-        >
-          <option [ngValue]="null">Select Gender</option>
-          <option *ngFor="let item of genderList" [ngValue]="item.subTypeID">
-            {{ item.subTypeTitle }}
-          </option>
-        </select>
+          (ngModelChange)="onFieldChange()"
+          (touched)="markTouched('gender')"
+        ></app-searchable-select>
         <div class="text-danger mt-1" style="font-size: 11px" *ngIf="genderError">
           {{ genderError }}
         </div>
@@ -79,17 +77,16 @@
         </label>
         <div class="d-flex flex-row gap-1 w-100">
           <div style="width: 32%">
-            <select
-              class="form-select border-0 text-center rounded-pill ps-2 pe-3"
+            <app-searchable-select
+              [items]="countryList"
+              bindLabel="country_code"
+              bindValue="country_code"
+              placeholder="+92"
+              searchPlaceholder="Search country code..."
               [(ngModel)]="selectedCountryCode"
-              (change)="onFieldChange()"
-              style="height: 42px; font-size: 13px; appearance: none !important"
-            >
-              <option value="">+92</option>
-              <option *ngFor="let item of countryList" [value]="item.country_code">
-                {{ item.country_code }}
-              </option>
-            </select>
+              (ngModelChange)="onFieldChange()"
+            
+            ></app-searchable-select>
           </div>
           <div style="width: 68%">
             <input
@@ -139,17 +136,16 @@
         <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
           Country<span class="text-danger">&nbsp;*</span>
         </label>
-        <select
-          class="form-select border-0 px-3 rounded-pill"
+        <app-searchable-select
+          [items]="countryList"
+          bindLabel="country_name"
+          bindValue="country_id"
+          placeholder="Select Country"
+          searchPlaceholder="Search country..."
           [(ngModel)]="selectedCountry"
-          (change)="onCountryChange()"
-          style="height: 42px; font-size: 13px; appearance: none !important;"
-        >
-          <option [ngValue]="null">Select Country</option>
-          <option *ngFor="let item of countryList" [ngValue]="item.country_id">
-            {{ item.country_name }}
-          </option>
-        </select>
+          (ngModelChange)="onCountryChange()"
+          (touched)="markTouched('country')"
+        ></app-searchable-select>
         <div class="text-danger mt-1" style="font-size: 11px" *ngIf="countryError">
           {{ countryError }}
         </div>
@@ -162,18 +158,16 @@
         <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
           City<span class="text-danger">&nbsp;*</span>
         </label>
-        <select
-          class="form-select border-0 px-3 rounded-pill"
+        <app-searchable-select
+          [items]="cityList"
+          bindLabel="city_name"
+          bindValue="city_id"
+          placeholder="Select City"
+          searchPlaceholder="Search city..."
           [(ngModel)]="selectedCity"
-          (change)="onFieldChange(); markTouched('city')"
-          (blur)="markTouched('city')"
-          style="height: 42px; font-size: 13px; appearance: none !important;"
-        >
-          <option [ngValue]="null">Select City</option>
-          <option *ngFor="let item of cityList" [ngValue]="item.city_id">
-            {{ item.city_name }}
-          </option>
-        </select>
+          (ngModelChange)="onFieldChange()"
+          (touched)="markTouched('city')"
+        ></app-searchable-select>
         <div class="text-danger mt-1" style="font-size: 11px" *ngIf="cityError">
           {{ cityError }}
         </div>
@@ -186,18 +180,16 @@
         <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
           Nationality<span class="text-danger">&nbsp;*</span>
         </label>
-        <select
-          class="form-select border-0 px-3 rounded-pill"
+        <app-searchable-select
+          [items]="countryList"
+          bindLabel="nationality"
+          bindValue="country_id"
+          placeholder="Select Nationality"
+          searchPlaceholder="Search nationality..."
           [(ngModel)]="selectedNationality"
-          (change)="onFieldChange(); markTouched('nationality')"
-          (blur)="markTouched('nationality')"
-          style="height: 42px; font-size: 13px; appearance: none !important;"
-        >
-          <option [ngValue]="null">Select Nationality</option>
-          <option *ngFor="let item of countryList" [ngValue]="item.country_id">
-            {{ item.nationality }}
-          </option>
-        </select>
+          (ngModelChange)="onFieldChange()"
+          (touched)="markTouched('nationality')"
+        ></app-searchable-select>
         <div class="text-danger mt-1" style="font-size: 11px" *ngIf="nationalityError">
           {{ nationalityError }}
         </div>
@@ -210,18 +202,16 @@
         <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
           Cast<span class="text-danger">&nbsp;*</span>
         </label>
-        <select
-          class="form-select border-0 px-3 rounded-pill"
+        <app-searchable-select
+          [items]="castList"
+          bindLabel="subTypeTitle"
+          bindValue="subTypeID"
+          placeholder="Select Cast"
+          searchPlaceholder="Search cast..."
           [(ngModel)]="selectedCast"
-          (change)="onFieldChange(); markTouched('cast')"
-          (blur)="markTouched('cast')"
-          style="height: 42px; font-size: 13px; appearance: none !important;"
-        >
-          <option [ngValue]="null">Select Cast</option>
-          <option *ngFor="let item of castList" [ngValue]="item.subTypeID">
-            {{ item.subTypeTitle }}
-          </option>
-        </select>
+          (ngModelChange)="onFieldChange()"
+          (touched)="markTouched('cast')"
+        ></app-searchable-select>
         <div class="text-danger mt-1" style="font-size: 11px" *ngIf="castError">
           {{ castError }}
         </div>
@@ -234,18 +224,16 @@
         <label class="txt-7th ft-6 fw-bold text-uppercase mb-1" style="font-size: 11px">
           Ethnicity<span class="text-danger">&nbsp;*</span>
         </label>
-        <select
-          class="form-select border-0 px-3 rounded-pill"
+        <app-searchable-select
+          [items]="ethnicityList"
+          bindLabel="subTypeTitle"
+          bindValue="subTypeID"
+          placeholder="Select Ethnicity"
+          searchPlaceholder="Search ethnicity..."
           [(ngModel)]="selectedEthnicity"
-          (change)="onFieldChange(); markTouched('ethnicity')"
-          (blur)="markTouched('ethnicity')"
-          style="height: 42px; font-size: 13px; appearance: none !important;"
-        >
-          <option [ngValue]="null">Select Ethnicity</option>
-          <option *ngFor="let item of ethnicityList" [ngValue]="item.subTypeID">
-            {{ item.subTypeTitle }}
-          </option>
-        </select>
+          (ngModelChange)="onFieldChange()"
+          (touched)="markTouched('ethnicity')"
+        ></app-searchable-select>
         <div class="text-danger mt-1" style="font-size: 11px" *ngIf="ethnicityError">
           {{ ethnicityError }}
         </div>

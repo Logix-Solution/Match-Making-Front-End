@@ -96,6 +96,7 @@ import { AdminPreferncesFamilyComponent } from './Admin/admin-prefernces-configu
 import { AdminPreferncesReligionComponent } from './Admin/admin-prefernces-configuration/admin-prefernces-religion/admin-prefernces-religion.component';
 import { AdminPreferncesAppeareanceComponent } from './Admin/admin-prefernces-configuration/admin-prefernces-appeareance/admin-prefernces-appeareance.component';
 import { AdminPreferncesLifeSyleComponent } from './Admin/admin-prefernces-configuration/admin-prefernces-life-syle/admin-prefernces-life-syle.component';
+import { SearchableSelectComponent } from './searchable-select/searchable-select.component';
 
 
 @NgModule({
@@ -181,6 +182,7 @@ import { AdminPreferncesLifeSyleComponent } from './Admin/admin-prefernces-confi
     AdminPreferncesReligionComponent,
     AdminPreferncesAppeareanceComponent,
     AdminPreferncesLifeSyleComponent,
+    SearchableSelectComponent,
 
   ],
   imports: [

@@ -80,8 +80,10 @@ export class AdminEventGalleryComponent implements OnInit {
           cityID: e.cityID,
           country: e.countryName,
           countryID: e.countryID,
-          //  imageUrl:  e.eDoc || 'assets/images/default-event.png',
-          imageUrl:  environment.productUrl + 'assets/user-images/Events/' + e.eDoc || 'assets/images/default-event.png',
+          //  imageUrl:  e.eDoc || 'assets/images/profile1.png',
+          imageUrl:
+            environment.productUrl + 'assets/user-images/Events/' + e.eDoc ||
+            'assets/images/profile1.png',
           eventTypeID: e.eventTypeID,
           eventTypeTitle: e.eventTypeTitle,
           eventDescription: e.eventDescription || '',

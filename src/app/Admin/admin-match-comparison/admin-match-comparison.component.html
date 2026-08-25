@@ -1,125 +1,197 @@
-<div class="container-fluid  ps-3  match-comparison-wrapper">
-
+<div class="container-fluid ps-3 match-comparison-wrapper">
   <ng-container *ngIf="currentStep === 'selection'">
-    <header class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
+    <header
+      class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4"
+    >
       <div>
         <h1 class="heading-marcellus m-0">Match Comparison</h1>
-        <p class=" mt-1 mb-0"  style="font-weight: 400; color: #6C727A;">Select 2-3 profiles to compare side-by-side.</p>
+        <p class="mt-1 mb-0" style="font-weight: 400; color: #6c727a">
+          Select 2-3 profiles to compare side-by-side.
+        </p>
       </div>
-      <button 
-        type="button" 
+      <button
+        type="button"
         class="btn bg-2nd txt-6th px-4 py-2 rounded-2 ft-3 fw-medium compare-action-btn"
         [disabled]="getSelectedCount() < 2 || isLoadingCompare"
-        (click)="navigateToComparePage()">
-        <span *ngIf="!isLoadingCompare">Selected compare ({{ getSelectedCount() }})</span>
+        (click)="navigateToComparePage()"
+      >
+        <span *ngIf="!isLoadingCompare"
+          >Selected compare ({{ getSelectedCount() }})</span
+        >
         <span *ngIf="isLoadingCompare">Loading...</span>
       </button>
     </header>
 
     <section class="mb-4 col-md-3">
       <div class="position-relative">
-        <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-        <input 
-          type="text" 
-          class="form-control ps-5 py-2 custom-search-input" 
+        <i
+          class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"
+        ></i>
+        <input
+          type="text"
+          class="form-control ps-5 py-2 custom-search-input"
           placeholder="Search profiles..."
-          [(ngModel)]="searchQuery">
+          [(ngModel)]="searchQuery"
+        />
       </div>
     </section>
 
-    <section class="row g-3" *ngIf="filteredProfiles && filteredProfiles.length > 0; else noProfilesBlock">
-      <div class="col-12 col-md-6 col-xl-4" *ngFor="let profile of filteredProfiles">
-        <div 
+    <section
+      class="row g-3"
+      *ngIf="
+        filteredProfiles && filteredProfiles.length > 0;
+        else noProfilesBlock
+      "
+    >
+      <div
+        class="col-12 col-md-6 col-xl-4"
+        *ngFor="let profile of filteredProfiles"
+      >
+        <div
           class="card bg-6th rounded-3 p-3 position-relative selection-card transition-all h-100"
           [class.card-selected]="profile.selected"
-          (click)="toggleProfileSelection(profile)">
-          
+          (click)="toggleProfileSelection(profile)"
+        >
           <div class="d-flex align-items-start gap-3 mb-3">
-            <img [src]="profile.image" [alt]="profile.name" class="profile-avatar rounded-2 object-fit-cover">
+            <img
+              [src]="profile.image"
+              [alt]="profile.name"
+              class="profile-avatar rounded-2 object-fit-cover"
+            />
             <div class="flex-grow-1 min-w-0">
-              <h3 class="profile-card-name m-0 mb-1 fw-bold text-truncate">{{ profile.name }}</h3>
+              <h3 class="profile-card-name m-0 mb-1 fw-bold text-truncate">
+                {{ profile.name }}
+              </h3>
               <p class="ft-4 text-muted m-0 mb-1 text-truncate">
-                <span class="txt-primary fw-semibold">{{ profile.gender }}</span> &bull; {{ profile.occupation }} &bull; {{ profile.age }}
+                <span class="txt-primary fw-semibold">{{
+                  profile.gender
+                }}</span>
+                &bull; {{ profile.occupation }} &bull; {{ profile.age }}
               </p>
-              <p class="ft-4 text-muted m-0 d-flex align-items-center gap-1 text-truncate">
-                <i class="bi bi-geo-alt-fill text-muted"></i> {{ profile.location }}
+              <p
+                class="ft-4 text-muted m-0 d-flex align-items-center gap-1 text-truncate"
+              >
+                <i class="bi bi-geo-alt-fill text-muted"></i>
+                {{ profile.location }}
               </p>
             </div>
 
-            <div class="custom-checkbox-marker d-flex align-items-center justify-content-center rounded-1 flex-shrink-0" [class.checked]="profile.selected">
+            <div
+              class="custom-checkbox-marker d-flex align-items-center justify-content-center rounded-1 flex-shrink-0"
+              [class.checked]="profile.selected"
+            >
               <i class="bi bi-check-lg text-white" *ngIf="profile.selected"></i>
             </div>
           </div>
-
         </div>
       </div>
     </section>
 
     <ng-template #noProfilesBlock>
       <div class="text-center p-5 text-muted">
-        {{ isLoadingProfiles ? 'Loading profiles...' : 'No profiles loaded.' }}
+        {{ isLoadingProfiles ? "Loading profiles..." : "No profiles loaded." }}
       </div>
     </ng-template>
   </ng-container>
 
   <ng-container *ngIf="currentStep === 'compare'">
     <header class="mb-4">
-      <button type="button" class="btn btn-sm btn-outline-secondary mb-3 d-flex align-items-center gap-1 ft-4" (click)="backToSelection()">
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary mb-3 d-flex align-items-center gap-1 ft-4"
+        (click)="backToSelection()"
+      >
         <i class="bi bi-arrow-left"></i> Back to selection
       </button>
       <h1 class="heading-marcellus m-0">Match Comparison</h1>
-      <p class="text-muted mt-1 mb-0">Select 2-3 profiles to compare side-by-side.</p>
+      <p class="text-muted mt-1 mb-0">
+        Select 2-3 profiles to compare side-by-side.
+      </p>
     </header>
 
-    <div class="comparison-overall-scroll-container ">
+    <div class="comparison-overall-scroll-container">
       <section class="d-flex gap-3 align-items-start pb-2">
-
-        <div class="comparison-column" *ngFor="let target of selectedProfiles; let i = index">
-          <div class="bg-white rounded-3 p-3 shadow-sm border border-light-subtle h-100 position-relative">
-
+        <div
+          class="comparison-column"
+          *ngFor="let target of selectedProfiles; let i = index"
+        >
+          <div
+            class="bg-white rounded-3 p-3 shadow-sm border border-light-subtle h-100 position-relative"
+          >
             <span
               class="match-badge"
-               [class.match-badge--base]="getColumn(i)?.matchPercentage === null"
+              [class.match-badge--base]="getColumn(i)?.matchPercentage === null"
               *ngIf="getColumn(i)"
             >
-              <ng-container *ngIf="getColumn(i)?.matchPercentage !== null; else basePill">
+              <ng-container
+                *ngIf="getColumn(i)?.matchPercentage !== null; else basePill"
+              >
                 {{ getColumn(i)?.matchPercentage }}% Match
               </ng-container>
               <ng-template #basePill>Base Profile</ng-template>
             </span>
 
-            <div class="d-flex align-items-center gap-3 mb-3 p-2 bg-light-subtle rounded-3">
-              <img [src]="target.image" [alt]="target.name" class="profile-avatar rounded-2 object-fit-cover">
+            <div
+              class="d-flex align-items-center gap-3 mb-3 p-2 bg-light-subtle rounded-3"
+            >
+              <img
+                [src]="target.image"
+                [alt]="target.name"
+                class="profile-avatar rounded-2 object-fit-cover"
+              />
               <div class="min-w-0">
-                <h3 class="profile-card-name m-0 fw-bold text-truncate">{{ target.name }}</h3>
-                <p class="ft-4 text-muted m-0 text-truncate">{{ target.age }} years &bull; {{ target.location }}</p>
+                <h3 class="profile-card-name m-0 fw-bold text-truncate">
+                  {{ target.name }}
+                </h3>
+                <p class="ft-4 text-muted m-0 text-truncate">
+                  {{ target.age }} years &bull; {{ target.location }}
+                </p>
                 <p
                   class="ft-5 text-muted m-0 text-truncate"
                   *ngIf="getColumn(i)?.matchedCount !== null"
                 >
-                  {{ getColumn(i)?.matchedCount }} / {{ getColumn(i)?.totalCount }} attributes matched
+                  {{ getColumn(i)?.matchedCount }} /
+                  {{ getColumn(i)?.totalCount }} attributes matched
                 </p>
               </div>
             </div>
 
             <div class="row g-2 mb-3">
               <div class="col-6">
-                <div class="pill-attribute p-2 rounded-2 text-center d-flex flex-column justify-content-center">
-                  <span class="ft-4 fw-bold d-block text-dark text-truncate" [title]="target.occupation">{{ target.occupation }}</span>
-                  <span class="attribute-sub-text text-uppercase">Occupation</span>
+                <div
+                  class="pill-attribute p-2 rounded-2 text-center d-flex flex-column justify-content-center"
+                >
+                  <span
+                    class="ft-4 fw-bold d-block text-dark text-truncate"
+                    [title]="target.occupation"
+                    >{{ target.occupation }}</span
+                  >
+                  <span class="attribute-sub-text text-uppercase"
+                    >Occupation</span
+                  >
                 </div>
               </div>
               <div class="col-6">
-                <div class="pill-attribute p-2 rounded-2 text-center d-flex flex-column justify-content-center">
-                  <span class="ft-4 fw-bold d-block text-dark text-truncate">{{ getColumn(i)?.values?.['Marital Status'] || '—' }}</span>
+                <div
+                  class="pill-attribute p-2 rounded-2 text-center d-flex flex-column justify-content-center"
+                >
+                  <span class="ft-4 fw-bold d-block text-dark text-truncate">{{
+                    getColumn(i)?.values?.["Marital Status"] || "—"
+                  }}</span>
                   <span class="attribute-sub-text text-uppercase">Status</span>
                 </div>
               </div>
             </div>
 
-            <div class="attribute-group-box border border-light-subtle rounded-3 p-3 mb-3" *ngFor="let section of getColumn(i)?.sections">
-              <h4 class="ft-4 fw-bold txt-8th mb-2 d-flex align-items-center gap-2">
-                <i class="bi {{ section.icon }} txt-primary"></i> {{ section.title }}
+            <div
+              class="attribute-group-box border border-light-subtle rounded-3 p-3 mb-3"
+              *ngFor="let section of getColumn(i)?.sections"
+            >
+              <h4
+                class="ft-4 fw-bold txt-8th mb-2 d-flex align-items-center gap-2"
+              >
+                <i class="bi {{ section.icon }} txt-primary"></i>
+                {{ section.title }}
               </h4>
               <div
                 class="d-flex justify-content-between py-2 border-bottom border-light-subtle ft-4"
@@ -127,22 +199,31 @@
                 [class.border-bottom-0]="last"
               >
                 <span class="text-muted me-2">{{ row.label }}</span>
-                <span class="fw-semibold text-dark text-end text-truncate">{{ row.value }}</span>
+                <span
+                  class="fw-semibold text-end text-truncate"
+                  [class.text-dark]="!row.matched"
+                  [class.attribute-match]="row.matched"
+                  >{{ row.value }}</span
+                >
               </div>
             </div>
-
           </div>
         </div>
 
-        <div class="comparison-column column-placeholder d-flex flex-column align-items-center justify-content-center p-4 rounded-3 text-center" *ngIf="selectedProfiles.length < 3">
-          <button type="button" class="btn btn-light rounded-circle shadow-sm mb-2 add-slot-btn" (click)="backToSelection()">
+        <div
+          class="comparison-column column-placeholder d-flex flex-column align-items-center justify-content-center p-4 rounded-3 text-center"
+          *ngIf="selectedProfiles.length < 3"
+        >
+          <button
+            type="button"
+            class="btn btn-light rounded-circle shadow-sm mb-2 add-slot-btn"
+            (click)="backToSelection()"
+          >
             <i class="bi bi-plus-lg fs-4 txt-primary"></i>
           </button>
           <p class="ft-4 text-muted m-0">Add profile to compare</p>
         </div>
-
       </section>
     </div>
   </ng-container>
-
 </div>

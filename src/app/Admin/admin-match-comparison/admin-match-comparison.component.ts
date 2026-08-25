@@ -76,9 +76,12 @@ interface ProfileItem {
   selected: boolean;
 }
 
+// NEW: `matched` flags whether this row came from matchedAttributes (red)
+// or differentAttributes (black — base/compare respectively).
 interface AttributeRow {
   label: string;
   value: string;
+  matched: boolean;
 }
 
 interface AttributeSection {
@@ -94,6 +97,13 @@ interface ComparisonColumnData {
   totalCount: number | null;
   values: { [typeName: string]: string }; // flat lookup, used for header pills
   sections: AttributeSection[];           // full grouped attribute breakdown
+}
+
+// NEW: per-TypeName bucket, keeps matched vs different values separate
+// so the template can render matched in red and different in black.
+interface AttributeEntry {
+  matchedValues: Set<string>;
+  differentValues: Set<string>;
 }
 
 @Component({
@@ -297,7 +307,7 @@ export class AdminMatchComparisonComponent implements OnInit {
     // groups (not all), so merge the base-side map across every pairing to make
     // sure the base profile's card shows everything, not just what's shared
     // with whichever compare profile happens to carry that attribute.
-    const baseMap = new Map<string, Set<string>>();
+    const baseMap = new Map<string, AttributeEntry>();
     compareProfileIDs.forEach(cid => {
       this.mergeAttributeMap(
         baseMap,
@@ -335,77 +345,109 @@ export class AdminMatchComparisonComponent implements OnInit {
     return columns;
   }
 
-  // Collects every TypeName -> value(s) pairing available for one compareProfileID.
-  // 'base' reads BaseValue from differentAttributes; 'compare' reads CompareValue.
-  // Shared (matched) attributes come from matchedAttributes' MatchedValue either way.
-  // Multiple distinct values for the same TypeName (e.g. multi-select preferences
-  // like Occupation with several priorities) are kept as a Set and joined on display.
+  // Collects every TypeName -> { matchedValues, differentValues } for one
+  // compareProfileID. matchedValues comes from matchedAttributes (rendered
+  // red on both sides — same value). differentValues comes from
+  // differentAttributes: 'base' reads BaseValue, 'compare' reads CompareValue
+  // (rendered black — each side shows its own value).
+  // Multiple distinct values for the same TypeName (e.g. multi-select
+  // preferences like Occupation with several priorities) are kept as a Set
+  // and joined on display.
   private buildAttributeMap(
     compareProfileID: number,
     side: 'base' | 'compare',
     matchedGroups: CompareAttributeGroup[],
     differentGroups: CompareAttributeGroup[],
-  ): Map<string, Set<string>> {
-    const map = new Map<string, Set<string>>();
-    const addVal = (name: string, val?: string) => {
-      if (!val) return;
-      if (!map.has(name)) map.set(name, new Set());
-      map.get(name)!.add(val);
+  ): Map<string, AttributeEntry> {
+    const map = new Map<string, AttributeEntry>();
+
+    const getEntry = (name: string): AttributeEntry => {
+      if (!map.has(name)) {
+        map.set(name, { matchedValues: new Set<string>(), differentValues: new Set<string>() });
+      }
+      return map.get(name)!;
     };
 
     const diffGroup = differentGroups.find(g => g.CompareProfileID === compareProfileID);
-    diffGroup?.Attributes.forEach(a => addVal(a.TypeName, side === 'base' ? a.BaseValue : a.CompareValue));
+    diffGroup?.Attributes.forEach(a => {
+      const val = side === 'base' ? a.BaseValue : a.CompareValue;
+      if (val) getEntry(a.TypeName).differentValues.add(val);
+    });
 
     const matchGroup = matchedGroups.find(g => g.CompareProfileID === compareProfileID);
-    matchGroup?.Attributes.forEach(a => addVal(a.TypeName, a.MatchedValue));
+    matchGroup?.Attributes.forEach(a => {
+      if (a.MatchedValue) getEntry(a.TypeName).matchedValues.add(a.MatchedValue);
+    });
 
     return map;
   }
 
-  private mergeAttributeMap(target: Map<string, Set<string>>, source: Map<string, Set<string>>): void {
-    source.forEach((vals, key) => {
-      if (!target.has(key)) target.set(key, new Set());
-      vals.forEach(v => target.get(key)!.add(v));
+  private mergeAttributeMap(target: Map<string, AttributeEntry>, source: Map<string, AttributeEntry>): void {
+    source.forEach((entry, key) => {
+      const t = target.has(key)
+        ? target.get(key)!
+        : { matchedValues: new Set<string>(), differentValues: new Set<string>() };
+      entry.matchedValues.forEach(v => t.matchedValues.add(v));
+      entry.differentValues.forEach(v => t.differentValues.add(v));
+      target.set(key, t);
     });
   }
 
-  // Combines Minimum Age / Maximum Age into a single "Age Range" entry, e.g. "27 - 30"
-  private applyAgeRange(map: Map<string, Set<string>>): void {
-    const min = this.firstValue(map, 'Minimum Age');
-    const max = this.firstValue(map, 'Maximum Age');
+  // Combines Minimum Age / Maximum Age into a single "Age Range" entry, e.g.
+  // "27 - 30" — done separately for the matched bucket and the different
+  // bucket so the combined row still ends up on the correct (red/black) side.
+  private applyAgeRange(map: Map<string, AttributeEntry>): void {
+    this.combineAgeRange(map, 'differentValues');
+    this.combineAgeRange(map, 'matchedValues');
+  }
+
+  private combineAgeRange(map: Map<string, AttributeEntry>, bucket: 'matchedValues' | 'differentValues'): void {
+    const minEntry = map.get('Minimum Age');
+    const maxEntry = map.get('Maximum Age');
+    const min = minEntry && minEntry[bucket].size ? Array.from(minEntry[bucket])[0] : '';
+    const max = maxEntry && maxEntry[bucket].size ? Array.from(maxEntry[bucket])[0] : '';
     if (min || max) {
-      map.set('Age Range', new Set([`${min || '—'} - ${max || '—'}`]));
+      const entry = map.has('Age Range')
+        ? map.get('Age Range')!
+        : { matchedValues: new Set<string>(), differentValues: new Set<string>() };
+      entry[bucket].add(`${min || '—'} - ${max || '—'}`);
+      map.set('Age Range', entry);
     }
   }
 
-  private firstValue(map: Map<string, Set<string>>, key: string): string {
-    const vals = map.get(key);
-    return vals && vals.size ? Array.from(vals)[0] : '';
-  }
-
-  private getValue(map: Map<string, Set<string>>, key: string): string {
-    const vals = map.get(key);
-    return vals && vals.size ? Array.from(vals).join(', ') : '—';
-  }
-
-  private mapToFlatValues(map: Map<string, Set<string>>): { [typeName: string]: string } {
+  private mapToFlatValues(map: Map<string, AttributeEntry>): { [typeName: string]: string } {
     const out: { [typeName: string]: string } = {};
-    map.forEach((_, key) => { out[key] = this.getValue(map, key); });
+    map.forEach((entry, key) => {
+      const combined = new Set<string>([...entry.matchedValues, ...entry.differentValues]);
+      out[key] = combined.size ? Array.from(combined).join(', ') : '—';
+    });
     return out;
   }
 
-  private buildSections(map: Map<string, Set<string>>): AttributeSection[] {
+  // Builds rows for each section. A TypeName with matched values produces a
+  // red row; the same TypeName with different values produces a separate
+  // black row underneath it (this does happen — e.g. Occupation can be both
+  // partially matched and partially different at once).
+  private buildSections(map: Map<string, AttributeEntry>): AttributeSection[] {
     return this.sectionConfig
-      .map(cfg => ({
-        icon: cfg.icon,
-        title: cfg.title,
-        rows: cfg.typeNames
-          .filter(name => map.has(name))
-          .map(name => ({ label: name, value: this.getValue(map, name) })),
-      }))
+      .map(cfg => {
+        const rows: AttributeRow[] = [];
+        cfg.typeNames.forEach(name => {
+          const entry = map.get(name);
+          if (!entry) return;
+          if (entry.matchedValues.size) {
+            rows.push({ label: name, value: Array.from(entry.matchedValues).join(', '), matched: true });
+          }
+          if (entry.differentValues.size) {
+            rows.push({ label: name, value: Array.from(entry.differentValues).join(', '), matched: false });
+          }
+        });
+        return { icon: cfg.icon, title: cfg.title, rows };
+      })
       .filter(section => section.rows.length > 0); // drop empty sections entirely
   }
-    getColumn(i: number): ComparisonColumnData | null {
+
+  getColumn(i: number): ComparisonColumnData | null {
     return this.comparisonColumns[i] ?? null;
   }
 }
