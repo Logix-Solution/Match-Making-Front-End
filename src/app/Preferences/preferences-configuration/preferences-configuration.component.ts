@@ -52,7 +52,8 @@ export class PreferencesConfigurationComponent implements OnInit {
   motherOccupationList: any[] = [];
   noOfSiblingsList: any[] = [];
   familyInvolvementList: any[] = [];
-  appearanceHeightList: any[] = [];
+appearanceHeightList: any[] = [];    // typeID=26, min height
+appearanceMaxHeightList: any[] = []; // typeID=33, max height
   bodyTypeList: any[] = [];
   skinToneList: any[] = [];
   disabilityList: any[] = [];
@@ -154,6 +155,7 @@ export class PreferencesConfigurationComponent implements OnInit {
     this.getSubType(25); // No of Siblings
 
     this.getSubType(26); // Height
+    this.getSubType(33); // Max Height
     this.getSubType(15); // Body Type
     this.getSubType(16); // Skin Tone
     this.getSubType(30); // Disability
@@ -236,9 +238,12 @@ export class PreferencesConfigurationComponent implements OnInit {
       case 25:
         this.noOfSiblingsList = data;
         break;
-      case 26:
-        this.appearanceHeightList = data;
-        break;
+       case 26:
+      this.appearanceHeightList = data;
+      break;
+    case 33:
+      this.appearanceMaxHeightList = data;
+      break;
       case 15:
         this.bodyTypeList = data;
         break;

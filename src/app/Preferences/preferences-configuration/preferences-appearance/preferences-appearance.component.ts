@@ -21,6 +21,7 @@ export class PreferencesAppearanceComponent implements OnInit {
 
   // ─── Inputs from Parent ───────────────────────────────────────────────────
   @Input() appearanceHeightList: any[] = [];  // typeID=26 (min/max height dropdowns)
+  @Input() appearanceMaxHeightList: any[] = [];  // typeID=33 (max height)
   @Input() bodyTypeList:         any[] = [];  // typeID=15 (pills, up to 3 priorities)
   @Input() skinToneList:         any[] = [];  // typeID=16 (pills, up to 3 priorities)
   @Input() disabilityList:       any[] = [];  // typeID=30 (single select)
@@ -130,11 +131,14 @@ export class PreferencesAppearanceComponent implements OnInit {
   syncFormFields(): void {
     const appearanceArray: { typeID: number; subTypeID: number; priority: number }[] = [];
 
-    // Height — typeID 26 (single min, treated as priority 1; adjust if you need both min & max sent)
-    if (this.selectedMinHeight) {
-      appearanceArray.push({ typeID: 26, subTypeID: Number(this.selectedMinHeight), priority: 1 });
-    }
-
+   
+  // Height — Min = typeID 26, Max = typeID 33 (separate types)
+  if (this.selectedMinHeight) {
+    appearanceArray.push({ typeID: 26, subTypeID: Number(this.selectedMinHeight), priority: 1 });
+  }
+  if (this.selectedMaxHeight) {
+    appearanceArray.push({ typeID: 33, subTypeID: Number(this.selectedMaxHeight), priority: 1 });
+  }
     // Body Type — typeID 15, priority = selection order (1,2,3)
     this.selectedBodyTypes.forEach((subTypeID, i) => {
       appearanceArray.push({ typeID: 15, subTypeID: Number(subTypeID), priority: i + 1 });
@@ -157,9 +161,12 @@ export class PreferencesAppearanceComponent implements OnInit {
   save(): void {
 
     // ─── Manual validations ───────────────────────────────────────────────
-    if (!this.selectedMinHeight) {
-      this.toastr.warning('Please select preferred min height'); return;
-    }
+     if (!this.selectedMinHeight) {
+    this.toastr.warning('Please select preferred min height'); return;
+  }
+  if (!this.selectedMaxHeight) {
+    this.toastr.warning('Please select preferred max height'); return;
+  }
     if (this.selectedBodyTypes.length === 0) {
       this.toastr.warning('Please select at least one body type preference'); return;
     }
@@ -228,8 +235,9 @@ loadUserDetails(): void {
         prefItems.find((p: any) => p.typeID === typeID && p.isPreference === 1)?.subTypeID;
 
       // Single selects — String() to match [value]="item.subTypeID" in template
-      this.selectedMinHeight  = get(26) ? String(get(26)) : '';
-      this.selectedDisability = get(30) ? String(get(30)) : '';
+     this.selectedMinHeight  = get(26) ? String(get(26)) : '';
+     this.selectedMaxHeight  = get(33) ? String(get(33)) : '';
+    this.selectedDisability = get(30) ? String(get(30)) : '';
 
       // Body Type — multi priority typeID=15, stays Number[] for toggleBodyType()
       this.selectedBodyTypes = prefItems
