@@ -1,18 +1,28 @@
 <section class="testimonials-videos bgvideo h-100">
 
-  <div class="videos-slider mt-5">
-    <div class="video-card" *ngFor="let video of videos" (click)="openPlayer(video)">
-      <div class="video-thumb" [style.background-image]="'url(' + video.thumbnailUrl + ')'">
-        <div class="play-icon">
-          <i class="bi bi-play-fill"></i>
-        </div>
+  <div class="slider-row">
+    <button class="nav-btn nav-prev" (click)="prevSlide()" aria-label="Previous videos">
+      <i class="bi bi-chevron-left"></i>
+    </button>
 
-        <div class="thumb-overlay">
-          <div class="thumb-name">{{ video.personName }}</div>
-          <div class="thumb-date">{{ video.date }}</div>
+    <div class="videos-slider mt-5" #sliderRef>
+      <div class="video-card" *ngFor="let video of videos" (click)="openPlayer(video)">
+        <div class="video-thumb" [style.background-image]="'url(' + video.thumbnailUrl + ')'">
+          <div class="play-icon">
+            <i class="bi bi-play-fill"></i>
+          </div>
+
+          <div class="thumb-overlay">
+            <div class="thumb-name">{{ video.personName }}</div>
+            <div class="thumb-date">{{ video.date }}</div>
+          </div>
         </div>
       </div>
     </div>
+
+    <button class="nav-btn nav-next" (click)="nextSlide()" aria-label="Next videos">
+      <i class="bi bi-chevron-right"></i>
+    </button>
   </div>
 
   <div class="dots">

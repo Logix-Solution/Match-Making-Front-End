@@ -25,14 +25,16 @@ export class TestimonialsVideosComponent implements OnInit, AfterViewInit, OnDes
   isPlayerOpen: boolean                 = false;
   activeVideo:  TestimonialVideo | null = null;
 
-  // Dots — driven by scroll position
+  // Dots — driven by scroll position, 4 dots always, cycling per page of 5 cards
   activeDot = 0;
 
   private intervalRef:        any     = null;
   private scrollListenerRef:  any     = null;
   private dataLoaded:         boolean = false;
   private viewReady:          boolean = false;
-  private readonly SLIDE_INTERVAL     = 3000;
+  private readonly SLIDE_INTERVAL     = 15000;
+  private readonly CARDS_PER_PAGE     = 5;
+  private readonly DOT_COUNT          = 4;
 
   constructor(
     private dataService: SharedDataService,
@@ -102,16 +104,7 @@ export class TestimonialsVideosComponent implements OnInit, AfterViewInit, OnDes
     this.stopAutoScroll();
     this.intervalRef = setInterval(() => {
       if (this.isPaused || !this.sliderRef) return;
-
-      const el       = this.sliderRef.nativeElement;
-      const card     = el.querySelector('.video-card') as HTMLElement | null;
-      const cardStep = card ? card.offsetWidth + 12 : 180;
-
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 4) {
-        el.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        el.scrollBy({ left: cardStep, behavior: 'smooth' });
-      }
+      this.nextSlide();
     }, this.SLIDE_INTERVAL);
   }
 
@@ -122,16 +115,59 @@ export class TestimonialsVideosComponent implements OnInit, AfterViewInit, OnDes
     }
   }
 
-  // ── Update activeDot from scroll position ─────────────────────────────────
+  // ── Manual forward / backward navigation (one page = 5 cards) ─────────────
+  nextSlide(): void {
+    if (!this.sliderRef) return;
+    const el        = this.sliderRef.nativeElement;
+    const pageWidth = this.getPageWidth();
+    if (!pageWidth) return;
+
+    if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 4) {
+      el.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+      el.scrollBy({ left: pageWidth, behavior: 'smooth' });
+    }
+    this.restartAutoScrollTimer();
+  }
+
+  prevSlide(): void {
+    if (!this.sliderRef) return;
+    const el        = this.sliderRef.nativeElement;
+    const pageWidth = this.getPageWidth();
+    if (!pageWidth) return;
+
+    if (el.scrollLeft <= 4) {
+      el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
+    } else {
+      el.scrollBy({ left: -pageWidth, behavior: 'smooth' });
+    }
+    this.restartAutoScrollTimer();
+  }
+
+  // Manual click resets the auto-scroll countdown so it doesn't jump again immediately
+  private restartAutoScrollTimer(): void {
+    if (this.intervalRef) {
+      this.startAutoScroll();
+    }
+  }
+
+  private getPageWidth(): number {
+    if (!this.sliderRef) return 0;
+    const el   = this.sliderRef.nativeElement;
+    const card = el.querySelector('.video-card') as HTMLElement | null;
+    const cardStep = card ? card.offsetWidth + 12 : 180;
+    return cardStep * this.CARDS_PER_PAGE;
+  }
+
+  // ── Update activeDot from scroll position (page-based, cycles through 4 dots) ─
   private attachScrollListener(): void {
     if (!this.sliderRef) return;
     const el = this.sliderRef.nativeElement;
     this.scrollListenerRef = () => {
-      const card = el.querySelector('.video-card') as HTMLElement | null;
-      if (!card) return;
-      const cardStep  = card.offsetWidth + 12;
-      const index     = Math.round(el.scrollLeft / cardStep);
-      this.activeDot  = index % 4;   // 4 dots
+      const pageWidth = this.getPageWidth();
+      if (!pageWidth) return;
+      const page      = Math.round(el.scrollLeft / pageWidth);
+      this.activeDot  = page % this.DOT_COUNT;
     };
     el.addEventListener('scroll', this.scrollListenerRef, { passive: true });
   }
