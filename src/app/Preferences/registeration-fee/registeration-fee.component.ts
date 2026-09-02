@@ -133,6 +133,13 @@ export class RegisterationFeeComponent implements OnInit , OnDestroy{
           this.registrationPlan =
             data.find((p) => (p.planName || '').toLowerCase().includes('registration')) || null;
 
+          // Pre-fill the Paid Amount field with the plan's fee so it matches
+          // by default; the field itself stays editable and is still
+          // validated against requiredFeeAmount on change/submit as before.
+          if (this.registrationPlan) {
+            this.paidAmount = +this.registrationPlan.planFee || null;
+          }
+
           this.isLoadingPlan = false;
         },
         error: (err) => {

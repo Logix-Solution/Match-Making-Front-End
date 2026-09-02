@@ -34,9 +34,12 @@ interface SignupGrowthPoint {
   totalUsers: string;
 }
 
-interface ChartPoint {
-  x: number;
-  y: number;
+interface ChartBar {
+  x: number;       // left edge of the bar (SVG coords)
+  y: number;       // top of the bar (SVG coords)
+  width: number;
+  height: number;
+  centerX: number; // horizontal center, used for the hover hit-area + tooltip
   value: number;
   monthName: string;
   year: string;
@@ -74,15 +77,14 @@ export class AdminDashboardComponent implements OnInit {
 
   filteredProfiles: UserProfile[] = [];
 
-  // ─── User Signups Growth ────────────────────────────────────────────────
+  // ─── User Signups Growth (bar chart) ────────────────────────────────────
   signupGrowth: SignupGrowthPoint[] = [];
-  signupChartPath = '';
-  signupChartAreaPath = '';
   signupChartMonths: string[] = [];
   // Left side Y-axis labels (top → bottom, matches gridlines)
   signupChartYAxisLabels: number[] = [];
-  // Data points (in SVG coordinate space) used for hover markers + tooltip
-  signupChartPoints: ChartPoint[] = [];
+  // Bars (in SVG coordinate space) used for rendering + hover markers + tooltip
+  signupChartBars: ChartBar[] = [];
+  signupChartBarColor = '#590117';
 
   // ─── Hover tooltip state ─────────────────────────────────────────────────
   hoveredPointIndex: number | null = null;
@@ -169,8 +171,8 @@ export class AdminDashboardComponent implements OnInit {
     this.dataService.getHttp('core-api/Admin/getUserSignUpGrowth', {}).subscribe({
       next: (res: any) => {
         const data: SignupGrowthPoint[] = Array.isArray(res) ? res : [];
-        // API returns most-recent-first; chart reads left→right chronologically
-        this.signupGrowth = [...data].reverse();
+        // API already returns chronological order (oldest → newest)
+        this.signupGrowth = data;
         this.signupChartMonths = this.signupGrowth.map((m) => m.monthName);
         this.buildSignupChart();
       },
@@ -195,10 +197,8 @@ export class AdminDashboardComponent implements OnInit {
 
   private buildSignupChart(): void {
     if (!this.signupGrowth.length) {
-      this.signupChartPath = '';
-      this.signupChartAreaPath = '';
       this.signupChartYAxisLabels = [];
-      this.signupChartPoints = [];
+      this.signupChartBars = [];
       return;
     }
 
@@ -206,6 +206,7 @@ export class AdminDashboardComponent implements OnInit {
     const height = 200;
     const topPadding = 20;
     const bottomPadding = 20;
+    const baselineY = height - bottomPadding;
 
     const values = this.signupGrowth.map((m) => +m.totalUsers || 0);
     const rawMax = Math.max(...values, 1); // avoid divide-by-zero if all are 0
@@ -214,43 +215,35 @@ export class AdminDashboardComponent implements OnInit {
     // 5 evenly spaced labels top→bottom: maxVal, 0.75, 0.5, 0.25, 0
     this.signupChartYAxisLabels = [1, 0.75, 0.5, 0.25, 0].map((f) => Math.round(maxVal * f));
 
-    const stepX = this.signupGrowth.length > 1 ? width / (this.signupGrowth.length - 1) : width;
+    const n = this.signupGrowth.length;
+    const slotWidth = width / n;
+    const barWidth = Math.min(28, slotWidth * 0.25); // cap width so bars stay slim even with few months
 
-    const points = values.map((val, i) => {
-      const x = i * stepX;
-      const y = height - bottomPadding - (val / maxVal) * (height - topPadding - bottomPadding);
-      return { x, y };
+    this.signupChartBars = values.map((val, i) => {
+      const centerX = slotWidth * i + slotWidth / 2;
+      const barHeight = (val / maxVal) * (height - topPadding - bottomPadding);
+      const y = baselineY - barHeight;
+
+      return {
+        x: centerX - barWidth / 2,
+        y,
+        width: barWidth,
+        height: barHeight,
+        centerX,
+        value: val,
+        monthName: this.signupGrowth[i].monthName,
+        year: this.signupGrowth[i].year,
+      } as ChartBar;
     });
-
-    // Smooth line through points (simple quadratic-ish join, matching original style)
-    let line = `M ${points[0].x} ${points[0].y}`;
-    for (let i = 1; i < points.length; i++) {
-      const prev = points[i - 1];
-      const curr = points[i];
-      const midX = (prev.x + curr.x) / 2;
-      line += ` Q ${midX} ${prev.y} ${curr.x} ${curr.y}`;
-    }
-
-    this.signupChartPath = line;
-    this.signupChartAreaPath = `${line} L ${points[points.length - 1].x} ${height} L 0 ${height} Z`;
-
-    // Store hoverable points (pixel coords in the 600x200 viewBox, plus the raw value/month)
-    this.signupChartPoints = points.map((p, i) => ({
-      x: p.x,
-      y: p.y,
-      value: values[i],
-      monthName: this.signupGrowth[i].monthName,
-      year: this.signupGrowth[i].year,
-    }));
   }
 
   // ─── Hover handlers for chart tooltip ────────────────────────────────────
-  onChartPointHover(point: ChartPoint, index: number): void {
+  onChartPointHover(bar: ChartBar, index: number): void {
     this.hoveredPointIndex = index;
     // Convert SVG viewBox coords (600x200) to percentages so the tooltip
     // positions correctly regardless of the rendered chart's actual size.
-    this.tooltipLeftPct = (point.x / 600) * 100;
-    this.tooltipTopPct = (point.y / 200) * 100;
+    this.tooltipLeftPct = (bar.centerX / 600) * 100;
+    this.tooltipTopPct = (bar.y / 200) * 100;
   }
 
   onChartPointLeave(): void {
