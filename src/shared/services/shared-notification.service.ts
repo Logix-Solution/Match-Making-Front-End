@@ -87,32 +87,75 @@ export class SharedNotificationService {
 
     return new Date(+year, month, +day, hour, +minute);
   }
+markAsRead(notification: AppNotification, userID: number): void {
+  if (notification.isRead) return;
 
-  markAsRead(notification: AppNotification, userID: number): void {
-    if (notification.isRead) return;
+  const updated = this.notificationsSubject.value.map((n) =>
+    n.id === notification.id ? { ...n, isRead: true } : n
+  );
+  this.notificationsSubject.next(updated);
 
-    const updated = this.notificationsSubject.value.map((n) =>
-      n.id === notification.id ? { ...n, isRead: true } : n
-    );
-    this.notificationsSubject.next(updated);
+  const payload = {
+    userID,
+    notificationID: notification.id,
+    flag: 1,
+    spType: 'insert',
+  };
 
-    const payload = {
-      userID,
-      notificationID: notification.id,
-      flagID: 1,
-      spType: 'insert',
-    };
+  console.log('Marking notification as read — payload:', payload);
 
-    this.dataService.postDirect('notification-api/Notification/SaveReadNotification', payload).subscribe({
-      error: (err) => {
-        console.error('SaveReadNotification error:', err);
+  this.dataService.postDirect('notification-api/Notification/SaveReadNotification', payload).subscribe({
+    next: (res: any) => {
+      console.log('SaveReadNotification raw response:', res); // ← inspect this closely
+      const response = Array.isArray(res) ? res[0] : res;
+      const message = typeof response === 'string'
+        ? response
+        : (response?.message || response?.Message || '');
+
+      if (!message || !message.toLowerCase().includes('success')) {
+        console.warn('Backend did not confirm the read — rolling back UI state.', message);
         const rolledBack = this.notificationsSubject.value.map((n) =>
           n.id === notification.id ? { ...n, isRead: false } : n
         );
         this.notificationsSubject.next(rolledBack);
-      },
-    });
-  }
+      }
+    },
+    error: (err) => {
+      console.error('SaveReadNotification error:', err);
+      const rolledBack = this.notificationsSubject.value.map((n) =>
+        n.id === notification.id ? { ...n, isRead: false } : n
+      );
+      this.notificationsSubject.next(rolledBack);
+    },
+  });
+}
+  // markAsRead(notification: AppNotification, userID: number): void {
+  //   if (notification.isRead) return;
+
+  //   const updated = this.notificationsSubject.value.map((n) =>
+  //     n.id === notification.id ? { ...n, isRead: true } : n
+  //   );
+  //   this.notificationsSubject.next(updated);
+
+  //   const payload = {
+  //     userID,
+  //     notificationID: notification.id,
+  //     flagID: 1,
+  //     spType: 'insert',
+  //   };
+
+  //   console.log('Marking notification as read:', payload);
+
+  //   this.dataService.postDirect('notification-api/Notification/SaveReadNotification', payload).subscribe({
+  //     error: (err) => {
+  //       console.error('SaveReadNotification error:', err);
+  //       const rolledBack = this.notificationsSubject.value.map((n) =>
+  //         n.id === notification.id ? { ...n, isRead: false } : n
+  //       );
+  //       this.notificationsSubject.next(rolledBack);
+  //     },
+  //   });
+  // }
 
   timeAgo(date: Date): string {
     const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
