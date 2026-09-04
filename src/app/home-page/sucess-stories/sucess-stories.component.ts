@@ -14,10 +14,10 @@ interface Testimonial {
 export class SucessStoriesComponent implements OnInit, OnDestroy {
 
   testimonials: Testimonial[] = [
-    { quote: 'Muslim Matchmaking Services made our search simple and secure. We found exactly the kind of family and partner we were looking for. Truly a blessed experience.', name: 'Sarah & Ahmed', year: 'Married in 2023' },
-    { quote: 'The privacy and genuine profiles gave us confidence throughout the process. Highly recommended to anyone looking for a halal connection!', name: 'Yasmin & Bilal', year: 'Married in 2024' },
-    { quote: "I was hesitant at first, but the team's support and the quality of profiles made all the difference. Alhamdulillah, we are now happily married.", name: 'Fatima & Omar', year: 'Married in 2023' },
-    { quote: 'A trustworthy platform that respects Islamic values. The matching process was thoughtful and our families connected beautifully.', name: 'Noor & Hassan', year: 'Married in 2024' },
+    { quote: "Nadia's Matchmaking Services made our search simple and secure. We found exactly the kind of family and partner we were looking for. Truly a blessed experience.", name: 'Sarah & Ahmed', year: 'Married in 2023' },
+    { quote: "Nadia's Matchmaking Services made our search simple and secure. We found exactly the kind of family and partner we were looking for. Truly a blessed experience.", name: 'Sarah & Ahmed', year: 'Married in 2023' },
+    { quote: "Nadia's Matchmaking Services made our search simple and secure. We found exactly the kind of family and partner we were looking for. Truly a blessed experience.", name: 'Sarah & Ahmed', year: 'Married in 2023' },
+    { quote: "Nadia's Matchmaking Services made our search simple and secure. We found exactly the kind of family and partner we were looking for. Truly a blessed experience.", name: 'Sarah & Ahmed', year: 'Married in 2023' },
   ];
 
   currentIndex: number = 0;
