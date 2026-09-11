@@ -37,9 +37,9 @@ interface StatItem {
 interface ApiDashboardCounts {
   userID: number;
   profileView: string;
-  mutualLike: string;
-  countries: string;
-  avgResponse: string;
+  LikeReceived: string;
+  Favourites: string;
+  CompatibilityScore: string;
 }
 
 interface ApiSupport {
@@ -113,9 +113,9 @@ export class UserPricingPlanComponent implements OnInit {
  private mapCountsToStats(counts: ApiDashboardCounts): StatItem[] {
   return [
     { value: counts.profileView ?? '0', icon: 'bi-graph-up', label: 'Profile Views' },
-    { value: counts.mutualLike ?? '0', icon: 'bi-star', label: 'Mutual Likes' },
-    { value: counts.countries ?? '0', icon: 'bi-globe', label: 'Countries' },
-    { value: counts.avgResponse ?? '0', unit: 'h', icon: 'bi-clock', label: 'Avg Response' },
+    { value: counts.LikeReceived ?? '0', icon: 'bi-star', label: 'Received Likes' },
+    { value: counts.Favourites ?? '0', icon: 'bi-heart', label: 'Favourites' },
+    { value: counts.CompatibilityScore ?? '0', unit: '%', icon: 'bi-bar-chart', label: 'Compatibility Score' },
   ];
 }
 

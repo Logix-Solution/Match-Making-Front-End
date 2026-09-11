@@ -29,9 +29,9 @@ interface StatCard {
 interface ApiDashboardCounts {
   userID: number;
   profileView: string;
-  mutualLike: string;
-  countries: string;
-  avgResponse: string;
+  LikeReceived: string;
+  Favourites: string;
+  CompatibilityScore: string;
 }
 
 interface PricingPlan {
@@ -203,16 +203,16 @@ export class UserActivePlanComponent implements OnInit {
         icon: 'bi-graph-up',
       },
       {
-        value: counts.mutualLike ?? '0',
-        label: 'Mutual Likes',
+        value: counts.LikeReceived ?? '0',
+        label: 'Received Likes',
         icon: 'bi-star',
       },
-      { value: counts.countries ?? '0', label: 'Countries', icon: 'bi-globe' },
+      { value: counts.Favourites ?? '0', label: 'Favourites', icon: 'bi-heart' },
       {
-        value: counts.avgResponse ?? '0',
-        unit: 'h',
-        label: 'Avg Response',
-        icon: 'bi-clock',
+        value: counts.CompatibilityScore ?? '0',
+        unit: '%',
+        label: 'Compatibility Score',
+        icon: 'bi-bar-chart',
       },
     ];
   }
